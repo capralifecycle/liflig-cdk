@@ -1,0 +1,68 @@
+{
+  "version": "2.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "example1": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://112233445566/eu-west-1",
+      "properties": {
+        "templateFile": "example1.template.json"
+      },
+      "metadata": {
+        "/example1": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "StackName",
+                "Value": "example1"
+              },
+              {
+                "Key": "Project",
+                "Value": "my-project"
+              },
+              {
+                "Key": "SourceRepo",
+                "Value": "github/capralifecycle/liflig-cdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "example2": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://112233445566/eu-west-1",
+      "properties": {
+        "templateFile": "example2.template.json"
+      },
+      "metadata": {
+        "/example2": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "StackName",
+                "Value": "example2"
+              },
+              {
+                "Key": "Project",
+                "Value": "my-project"
+              },
+              {
+                "Key": "SourceRepo",
+                "Value": "github/capralifecycle/liflig-cdk"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "runtime": {}
+}

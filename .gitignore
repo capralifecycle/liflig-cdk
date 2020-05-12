@@ -1,0 +1,9 @@
+.vscode/
+*.js
+!/jest.config.js
+*.d.ts
+node_modules/
+/lib/
+.cdk.staging/
+cdk.out/
+/*.tgz

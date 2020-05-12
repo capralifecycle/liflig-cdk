@@ -1,0 +1,46 @@
+{
+  "name": "@liflig/cdk",
+  "version": "0.0.0-development",
+  "description": "Experimental CDK library for Liflig",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "lint": "eslint --ext ts --ext js .",
+    "lint:fix": "eslint --fix --ext ts --ext js ."
+  },
+  "bin": {
+    "cdk-create-snapshots": "dist/bin/cdk-create-snapshots.js"
+  },
+  "keywords": [
+    "cdk"
+  ],
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "devDependencies": {
+    "@aws-cdk/assert": "1.38.0",
+    "@types/jest": "25.2.1",
+    "@types/node": "13.13.5",
+    "@typescript-eslint/eslint-plugin": "2.31.0",
+    "@typescript-eslint/parser": "2.31.0",
+    "aws-cdk": "1.38.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-prettier": "3.1.3",
+    "jest": "26.0.1",
+    "prettier": "2.0.5",
+    "ts-jest": "25.4.0",
+    "ts-node": "8.10.1",
+    "typescript": "3.8.3"
+  },
+  "dependencies": {
+    "@aws-cdk/core": "^1.38.0",
+    "cpy": "^8.1.0",
+    "del": "^5.1.0",
+    "source-map-support": "^0.5.19"
+  }
+}
