@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix --ext ts --ext js ."
   },
   "bin": {
-    "cdk-create-snapshots": "dist/bin/cdk-create-snapshots.js"
+    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"
   },
   "keywords": [
     "cdk"
@@ -23,11 +23,13 @@
   ],
   "devDependencies": {
     "@aws-cdk/assert": "1.38.0",
+    "@types/aws-lambda": "8.10.51",
     "@types/jest": "25.2.1",
     "@types/node": "13.13.5",
     "@typescript-eslint/eslint-plugin": "2.31.0",
     "@typescript-eslint/parser": "2.31.0",
     "aws-cdk": "1.38.0",
+    "aws-sdk": "2.674.0",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-prettier": "3.1.3",
@@ -38,6 +40,10 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "@aws-cdk/aws-codebuild": "^1.38.0",
+    "@aws-cdk/aws-iam": "^1.38.0",
+    "@aws-cdk/aws-lambda": "^1.38.0",
+    "@aws-cdk/aws-s3": "^1.38.0",
     "@aws-cdk/core": "^1.38.0",
     "cpy": "^8.1.0",
     "del": "^5.1.0",

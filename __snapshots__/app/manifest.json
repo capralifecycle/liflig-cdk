@@ -32,6 +32,84 @@
               }
             ]
           }
+        ],
+        "/example1/CdkDeploy/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployRole9B95027D"
+          }
+        ],
+        "/example1/CdkDeploy/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployRoleDefaultPolicyA51C9EE9"
+          }
+        ],
+        "/example1/CdkDeploy/CodebuildSourceBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployCodebuildSourceBucket89BCBFD5"
+          }
+        ],
+        "/example1/CdkDeploy/CloudFormationRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployCloudFormationRoleB18AEE56"
+          }
+        ],
+        "/example1/CdkDeploy/CodebuildProject/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployCodebuildProjectRoleE598841E"
+          }
+        ],
+        "/example1/CdkDeploy/CodebuildProject/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployCodebuildProjectRoleDefaultPolicy9E1A5466"
+          }
+        ],
+        "/example1/CdkDeploy/CodebuildProject/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployCodebuildProject7215DCDC"
+          }
+        ],
+        "/example1/CdkDeploy/StartDeployFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStartDeployFunctionServiceRole191AEEB8"
+          }
+        ],
+        "/example1/CdkDeploy/StartDeployFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStartDeployFunctionServiceRoleDefaultPolicyCBAFBFD9"
+          }
+        ],
+        "/example1/CdkDeploy/StartDeployFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStartDeployFunctionC7011EBD"
+          }
+        ],
+        "/example1/CdkDeploy/StatusFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStatusFunctionServiceRole38060AFB"
+          }
+        ],
+        "/example1/CdkDeploy/StatusFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStatusFunctionServiceRoleDefaultPolicy29077604"
+          }
+        ],
+        "/example1/CdkDeploy/StatusFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStatusFunction54BEBDAD"
+          }
         ]
       }
     },
