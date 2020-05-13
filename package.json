@@ -10,8 +10,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "lint": "eslint --ext ts --ext js .",
-    "lint:fix": "eslint --fix --ext ts --ext js .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "prepare": "npm run build",
     "semantic-release": "semantic-release"
   },
