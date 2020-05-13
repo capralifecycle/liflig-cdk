@@ -33,7 +33,16 @@ buildConfig([
         '''
       }
 
-      // TODO: semantic-release
+      // We only run semantic-release on the release branches,
+      // as we do not want credentials to be exposed to the job
+      // on other branches or in PRs.
+      if (env.BRANCH_NAME ==~ /^(master|\d+\.(\d+|x)(\.x)?)$/) {
+        stage('Semantic release') {
+          withSemanticReleaseEnv {
+            sh 'npm run semantic-release'
+          }
+        }
+      }
     }
   }
 }

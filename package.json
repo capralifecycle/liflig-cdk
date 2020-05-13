@@ -2,13 +2,18 @@
   "name": "@liflig/cdk",
   "version": "0.0.0-development",
   "description": "Experimental CDK library for Liflig",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/capralifecycle/liflig-cdk"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "lint": "eslint --ext ts --ext js .",
     "lint:fix": "eslint --fix --ext ts --ext js .",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"
@@ -36,6 +41,7 @@
     "eslint-plugin-prettier": "3.1.3",
     "jest": "26.0.1",
     "prettier": "2.0.5",
+    "semantic-release": "17.0.7",
     "ts-jest": "25.5.1",
     "ts-node": "8.10.1",
     "typescript": "3.8.3"
