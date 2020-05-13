@@ -19,7 +19,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -32,7 +32,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/Role/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/Role/Resource"
       }
     },
     "CdkDeployRoleDefaultPolicyA51C9EE9": {
@@ -71,7 +71,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/Role/DefaultPolicy/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/Role/DefaultPolicy/Resource"
       }
     },
     "CdkDeployCodebuildSourceBucket89BCBFD5": {
@@ -103,7 +103,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -118,7 +118,7 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain",
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/CodebuildSourceBucket/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/CodebuildSourceBucket/Resource"
       }
     },
     "CdkDeployCloudFormationRoleB18AEE56": {
@@ -153,7 +153,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -166,7 +166,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/CloudFormationRole/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/CloudFormationRole/Resource"
       }
     },
     "CdkDeployCodebuildProjectRoleE598841E": {
@@ -187,7 +187,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -200,7 +200,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/CodebuildProject/Role/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/CodebuildProject/Role/Resource"
       }
     },
     "CdkDeployCodebuildProjectRoleDefaultPolicy9E1A5466": {
@@ -387,7 +387,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/CodebuildProject/Role/DefaultPolicy/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/CodebuildProject/Role/DefaultPolicy/Resource"
       }
     },
     "CdkDeployCodebuildProject7215DCDC": {
@@ -430,7 +430,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -444,7 +444,7 @@
         "TimeoutInMinutes": 240
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/CodebuildProject/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/CodebuildProject/Resource"
       }
     },
     "CdkDeployStartDeployFunctionServiceRole191AEEB8": {
@@ -479,7 +479,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -492,7 +492,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StartDeployFunction/ServiceRole/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StartDeployFunction/ServiceRole/Resource"
       }
     },
     "CdkDeployStartDeployFunctionServiceRoleDefaultPolicyCBAFBFD9": {
@@ -557,7 +557,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StartDeployFunction/ServiceRole/DefaultPolicy/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StartDeployFunction/ServiceRole/DefaultPolicy/Resource"
       }
     },
     "CdkDeployStartDeployFunctionC7011EBD": {
@@ -589,7 +589,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -607,7 +607,7 @@
         "CdkDeployStartDeployFunctionServiceRole191AEEB8"
       ],
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StartDeployFunction/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StartDeployFunction/Resource"
       }
     },
     "CdkDeployStatusFunctionServiceRole38060AFB": {
@@ -642,7 +642,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -655,7 +655,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StatusFunction/ServiceRole/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StatusFunction/ServiceRole/Resource"
       }
     },
     "CdkDeployStatusFunctionServiceRoleDefaultPolicy29077604": {
@@ -700,7 +700,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StatusFunction/ServiceRole/DefaultPolicy/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StatusFunction/ServiceRole/DefaultPolicy/Resource"
       }
     },
     "CdkDeployStatusFunction54BEBDAD": {
@@ -728,7 +728,7 @@
         "Tags": [
           {
             "Key": "StackName",
-            "Value": "example1"
+            "Value": "cdk-deploy-example"
           },
           {
             "Key": "Project",
@@ -746,7 +746,7 @@
         "CdkDeployStatusFunctionServiceRole38060AFB"
       ],
       "Metadata": {
-        "aws:cdk:path": "example1/CdkDeploy/StatusFunction/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StatusFunction/Resource"
       }
     }
   }

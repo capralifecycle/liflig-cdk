@@ -7,20 +7,20 @@
         "file": "tree.json"
       }
     },
-    "example1": {
+    "cdk-deploy-example": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "example1.template.json"
+        "templateFile": "cdk-deploy-example.template.json"
       },
       "metadata": {
-        "/example1": [
+        "/cdk-deploy-example": [
           {
             "type": "aws:cdk:stack-tags",
             "data": [
               {
                 "Key": "StackName",
-                "Value": "example1"
+                "Value": "cdk-deploy-example"
               },
               {
                 "Key": "Project",
@@ -33,110 +33,82 @@
             ]
           }
         ],
-        "/example1/CdkDeploy/Role/Resource": [
+        "/cdk-deploy-example/CdkDeploy/Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployRole9B95027D"
           }
         ],
-        "/example1/CdkDeploy/Role/DefaultPolicy/Resource": [
+        "/cdk-deploy-example/CdkDeploy/Role/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployRoleDefaultPolicyA51C9EE9"
           }
         ],
-        "/example1/CdkDeploy/CodebuildSourceBucket/Resource": [
+        "/cdk-deploy-example/CdkDeploy/CodebuildSourceBucket/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployCodebuildSourceBucket89BCBFD5"
           }
         ],
-        "/example1/CdkDeploy/CloudFormationRole/Resource": [
+        "/cdk-deploy-example/CdkDeploy/CloudFormationRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployCloudFormationRoleB18AEE56"
           }
         ],
-        "/example1/CdkDeploy/CodebuildProject/Role/Resource": [
+        "/cdk-deploy-example/CdkDeploy/CodebuildProject/Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployCodebuildProjectRoleE598841E"
           }
         ],
-        "/example1/CdkDeploy/CodebuildProject/Role/DefaultPolicy/Resource": [
+        "/cdk-deploy-example/CdkDeploy/CodebuildProject/Role/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployCodebuildProjectRoleDefaultPolicy9E1A5466"
           }
         ],
-        "/example1/CdkDeploy/CodebuildProject/Resource": [
+        "/cdk-deploy-example/CdkDeploy/CodebuildProject/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployCodebuildProject7215DCDC"
           }
         ],
-        "/example1/CdkDeploy/StartDeployFunction/ServiceRole/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StartDeployFunction/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStartDeployFunctionServiceRole191AEEB8"
           }
         ],
-        "/example1/CdkDeploy/StartDeployFunction/ServiceRole/DefaultPolicy/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StartDeployFunction/ServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStartDeployFunctionServiceRoleDefaultPolicyCBAFBFD9"
           }
         ],
-        "/example1/CdkDeploy/StartDeployFunction/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StartDeployFunction/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStartDeployFunctionC7011EBD"
           }
         ],
-        "/example1/CdkDeploy/StatusFunction/ServiceRole/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StatusFunction/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStatusFunctionServiceRole38060AFB"
           }
         ],
-        "/example1/CdkDeploy/StatusFunction/ServiceRole/DefaultPolicy/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StatusFunction/ServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStatusFunctionServiceRoleDefaultPolicy29077604"
           }
         ],
-        "/example1/CdkDeploy/StatusFunction/Resource": [
+        "/cdk-deploy-example/CdkDeploy/StatusFunction/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStatusFunction54BEBDAD"
-          }
-        ]
-      }
-    },
-    "example2": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://112233445566/eu-west-1",
-      "properties": {
-        "templateFile": "example2.template.json"
-      },
-      "metadata": {
-        "/example2": [
-          {
-            "type": "aws:cdk:stack-tags",
-            "data": [
-              {
-                "Key": "StackName",
-                "Value": "example2"
-              },
-              {
-                "Key": "Project",
-                "Value": "my-project"
-              },
-              {
-                "Key": "SourceRepo",
-                "Value": "github/capralifecycle/liflig-cdk"
-              }
-            ]
           }
         ]
       }
