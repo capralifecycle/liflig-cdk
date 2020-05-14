@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import * as cdk from "@aws-cdk/core"
 import "source-map-support/register"
-import { tagResources } from "../src/tags"
+import { EcsUpdateImageArtifactStatus, tagResources } from "../src"
 import { CdkDeployStack } from "./cdk-deploy-stack"
+import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 
 const app = new cdk.App()
 tagResources(app, (stack) => ({
@@ -17,3 +18,17 @@ const env = {
 }
 
 new CdkDeployStack(app, "cdk-deploy-example", { env })
+
+new EcsUpdateImageStack(app, "ecs-update-image-no-artifact", {
+  env,
+  artifactStatus: new EcsUpdateImageArtifactStatus({
+    artifactPushedAndTagUpdated: false,
+  }),
+})
+
+new EcsUpdateImageStack(app, "ecs-update-image", {
+  env,
+  artifactStatus: new EcsUpdateImageArtifactStatus({
+    artifactPushedAndTagUpdated: true,
+  }),
+})
