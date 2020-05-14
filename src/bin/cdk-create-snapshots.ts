@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { createCloudAssemblySnapshot } from "../snapshots"
 
 // In Node, first parameter is the third element.
