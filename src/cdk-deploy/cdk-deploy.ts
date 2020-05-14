@@ -167,7 +167,6 @@ export class CdkDeploy extends cdk.Construct {
 
     const startDeployFn = new lambda.Function(this, "StartDeployFunction", {
       code: new lambda.InlineCode(
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         `exports.handler = ${startDeployHandler.toString()};`,
       ),
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -193,7 +192,6 @@ export class CdkDeploy extends cdk.Construct {
 
     const statusFn = new lambda.Function(this, "StatusFunction", {
       code: new lambda.InlineCode(
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         `exports.handler = ${statusHandler.toString()};`,
       ),
       runtime: lambda.Runtime.NODEJS_12_X,

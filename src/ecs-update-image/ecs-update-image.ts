@@ -55,7 +55,6 @@ export class EcsUpdateImage extends cdk.Construct {
     const startDeployFn = new lambda.Function(this, "StartDeployFunction", {
       functionName: props.startDeployFunctionName,
       code: new lambda.InlineCode(
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         `exports.handler = ${startDeployHandler.toString()};`,
       ),
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -110,7 +109,6 @@ export class EcsUpdateImage extends cdk.Construct {
     const statusFn = new lambda.Function(this, "StatusFunction", {
       functionName: props.statusFunctionName,
       code: new lambda.InlineCode(
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         `exports.handler = ${statusHandler.toString()};`,
       ),
       runtime: lambda.Runtime.NODEJS_12_X,
