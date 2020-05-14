@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-codebuild": "^1.38.0",
-    "@aws-cdk/aws-ecs": "1.38.0",
+    "@aws-cdk/aws-ecs": "^1.38.0",
     "@aws-cdk/aws-iam": "^1.38.0",
     "@aws-cdk/aws-lambda": "^1.38.0",
     "@aws-cdk/aws-s3": "^1.38.0",
