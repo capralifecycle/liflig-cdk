@@ -4,7 +4,9 @@
   "automergeType": "branch",
   "packageRules": [
     {
-      "extends": "monorepo:aws-cdk",
+      "sourceUrlPrefixes": [
+        "https://github.com/aws/aws-cdk"
+      ],
       "rangeStrategy": "replace"
     }
   ]
