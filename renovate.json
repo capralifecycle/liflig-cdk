@@ -11,10 +11,17 @@
       "sourceUrlPrefixes": [
         "https://github.com/aws/aws-cdk"
       ],
-      "depTypeList": [
-        "devDependencies"
+      "rangeStrategy": "replace"
+    },
+    {
+      "packageNames": [
+        "@aws-cdk/assert",
+        "aws-cdk"
       ],
       "rangeStrategy": "replace"
     }
-  ]
+  ],
+  "pin": {
+    "automerge": false
+  }
 }
