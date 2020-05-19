@@ -5,16 +5,16 @@
       "Properties": {
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -31,8 +31,8 @@
         "InstanceTenancy": "default",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc"
           },
           {
             "Key": "Project",
@@ -43,8 +43,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -63,8 +63,16 @@
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -75,16 +83,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -100,8 +100,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -112,8 +112,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -159,8 +159,8 @@
         "Domain": "vpc",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -171,8 +171,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -194,8 +194,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -206,8 +206,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -226,8 +226,16 @@
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -238,16 +246,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -263,8 +263,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -275,8 +275,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -322,8 +322,8 @@
         "Domain": "vpc",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -334,8 +334,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -357,8 +357,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -369,8 +369,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -389,8 +389,16 @@
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet1"
           },
           {
             "Key": "Project",
@@ -401,16 +409,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet1"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Private"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Private"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -426,8 +426,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet1"
           },
           {
             "Key": "Project",
@@ -438,8 +438,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -487,8 +487,16 @@
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet2"
           },
           {
             "Key": "Project",
@@ -499,16 +507,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet2"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Private"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Private"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -524,8 +524,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet2"
           },
           {
             "Key": "Project",
@@ -536,8 +536,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc/PrivateSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -579,8 +579,8 @@
       "Properties": {
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
+            "Key": "Name",
+            "Value": "ecs-update-image/Cluster/Vpc"
           },
           {
             "Key": "Project",
@@ -591,8 +591,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image/Cluster/Vpc"
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -624,16 +624,16 @@
         "Name": "/my-service/image-tag",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -658,16 +658,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -725,16 +725,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ],
         "TaskRoleArn": {
@@ -773,16 +773,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -872,16 +872,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ],
         "TaskDefinition": {
@@ -905,16 +905,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ],
         "VpcId": {
@@ -943,16 +943,16 @@
         "RoleName": "my-service-deploy",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -1030,16 +1030,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -1164,16 +1164,16 @@
         "ReservedConcurrentExecutions": 1,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ],
         "Timeout": 60
@@ -1217,16 +1217,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ]
       },
@@ -1295,16 +1295,16 @@
         "FunctionName": "my-service-deploy-status",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image"
           }
         ],
         "Timeout": 60

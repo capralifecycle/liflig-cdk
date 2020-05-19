@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "artifacts": {
     "Tree": {
       "type": "cdk:tree",
@@ -19,16 +19,16 @@
             "type": "aws:cdk:stack-tags",
             "data": [
               {
-                "Key": "StackName",
-                "Value": "cdk-deploy-example"
-              },
-              {
                 "Key": "Project",
                 "Value": "my-project"
               },
               {
                 "Key": "SourceRepo",
                 "Value": "github/capralifecycle/liflig-cdk"
+              },
+              {
+                "Key": "StackName",
+                "Value": "cdk-deploy-example"
               }
             ]
           }
@@ -125,16 +125,16 @@
             "type": "aws:cdk:stack-tags",
             "data": [
               {
-                "Key": "StackName",
-                "Value": "ecs-update-image-no-artifact"
-              },
-              {
                 "Key": "Project",
                 "Value": "my-project"
               },
               {
                 "Key": "SourceRepo",
                 "Value": "github/capralifecycle/liflig-cdk"
+              },
+              {
+                "Key": "StackName",
+                "Value": "ecs-update-image-no-artifact"
               }
             ]
           }
@@ -351,16 +351,16 @@
             "type": "aws:cdk:stack-tags",
             "data": [
               {
-                "Key": "StackName",
-                "Value": "ecs-update-image"
-              },
-              {
                 "Key": "Project",
                 "Value": "my-project"
               },
               {
                 "Key": "SourceRepo",
                 "Value": "github/capralifecycle/liflig-cdk"
+              },
+              {
+                "Key": "StackName",
+                "Value": "ecs-update-image"
               }
             ]
           }
