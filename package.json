@@ -32,6 +32,12 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.38.0",
+    "@aws-cdk/aws-codebuild": "^1.38.0",
+    "@aws-cdk/aws-ecs": "^1.38.0",
+    "@aws-cdk/aws-iam": "^1.38.0",
+    "@aws-cdk/aws-lambda": "^1.38.0",
+    "@aws-cdk/aws-s3": "^1.38.0",
+    "@aws-cdk/core": "^1.38.0",
     "@commitlint/cli": "8.3.5",
     "@commitlint/config-conventional": "8.3.4",
     "@types/aws-lambda": "8.10.51",
@@ -54,12 +60,6 @@
     "typescript": "3.9.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-codebuild": "^1.38.0",
-    "@aws-cdk/aws-ecs": "^1.38.0",
-    "@aws-cdk/aws-iam": "^1.38.0",
-    "@aws-cdk/aws-lambda": "^1.38.0",
-    "@aws-cdk/aws-s3": "^1.38.0",
-    "@aws-cdk/core": "^1.38.0",
     "cpy": "^8.1.0",
     "del": "^5.1.0",
     "source-map-support": "^0.5.19"
@@ -68,5 +68,13 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-codebuild": "^1.38.0",
+    "@aws-cdk/aws-ecs": "^1.38.0",
+    "@aws-cdk/aws-iam": "^1.38.0",
+    "@aws-cdk/aws-lambda": "^1.38.0",
+    "@aws-cdk/aws-s3": "^1.38.0",
+    "@aws-cdk/core": "^1.38.0"
   }
 }
