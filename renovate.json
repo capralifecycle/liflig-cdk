@@ -1,5 +1,11 @@
 {
   "extends": ["github>capraconsulting/renovate-config:library"],
   "automerge": true,
-  "automergeType": "branch"
+  "automergeType": "branch",
+  "packageRules": [
+    {
+      "extends": "monorepo:aws-cdk",
+      "rangeStrategy": "replace"
+    }
+  ]
 }
