@@ -5,16 +5,16 @@
       "Properties": {
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -31,8 +31,8 @@
         "InstanceTenancy": "default",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc"
           },
           {
             "Key": "Project",
@@ -43,8 +43,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -63,8 +63,16 @@
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -75,16 +83,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -100,8 +100,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -112,8 +112,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -159,8 +159,8 @@
         "Domain": "vpc",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -171,8 +171,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -194,8 +194,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
           },
           {
             "Key": "Project",
@@ -206,8 +206,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -226,8 +226,16 @@
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -238,16 +246,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -263,8 +263,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -275,8 +275,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -322,8 +322,8 @@
         "Domain": "vpc",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -334,8 +334,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -357,8 +357,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
           },
           {
             "Key": "Project",
@@ -369,8 +369,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -389,8 +389,16 @@
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1"
           },
           {
             "Key": "Project",
@@ -401,16 +409,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Private"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Private"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -426,8 +426,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1"
           },
           {
             "Key": "Project",
@@ -438,8 +438,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -487,8 +487,16 @@
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2"
           },
           {
             "Key": "Project",
@@ -499,16 +507,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2"
-          },
-          {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Private"
-          },
-          {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Private"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -524,8 +524,8 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2"
           },
           {
             "Key": "Project",
@@ -536,8 +536,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -579,8 +579,8 @@
       "Properties": {
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
+            "Key": "Name",
+            "Value": "ecs-update-image-no-artifact/Cluster/Vpc"
           },
           {
             "Key": "Project",
@@ -591,8 +591,8 @@
             "Value": "github/capralifecycle/liflig-cdk"
           },
           {
-            "Key": "Name",
-            "Value": "ecs-update-image-no-artifact/Cluster/Vpc"
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -624,16 +624,16 @@
         "Name": "/my-service/image-tag",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -659,16 +659,16 @@
         "RoleName": "my-service-deploy",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -746,16 +746,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -830,16 +830,16 @@
         "ReservedConcurrentExecutions": 1,
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ],
         "Timeout": 60
@@ -883,16 +883,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ]
       },
@@ -956,16 +956,16 @@
         "FunctionName": "my-service-deploy-status",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "ecs-update-image-no-artifact"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "ecs-update-image-no-artifact"
           }
         ],
         "Timeout": 60

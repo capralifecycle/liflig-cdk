@@ -18,16 +18,16 @@
         "RoleName": "some-role-name",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -102,16 +102,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -152,16 +152,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -186,16 +186,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -429,16 +429,16 @@
         },
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ],
         "TimeoutInMinutes": 240
@@ -478,16 +478,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -588,16 +588,16 @@
         "FunctionName": "start-deploy",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ],
         "Timeout": 30
@@ -641,16 +641,16 @@
         ],
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ]
       },
@@ -727,16 +727,16 @@
         "FunctionName": "status",
         "Tags": [
           {
-            "Key": "StackName",
-            "Value": "cdk-deploy-example"
-          },
-          {
             "Key": "Project",
             "Value": "my-project"
           },
           {
             "Key": "SourceRepo",
             "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-deploy-example"
           }
         ],
         "Timeout": 30
