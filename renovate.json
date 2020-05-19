@@ -7,6 +7,9 @@
       "sourceUrlPrefixes": [
         "https://github.com/aws/aws-cdk"
       ],
+      "depTypeList": [
+        "devDependencies"
+      ],
       "rangeStrategy": "replace"
     }
   ]
