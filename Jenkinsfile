@@ -13,16 +13,12 @@ buildConfig([
     checkout scm
 
     insideToolImage("node:12-alpine") {
-      stage('Install dependencies') {
+      stage('Install dependencies and build') {
         sh 'npm ci'
       }
 
       stage('Lint') {
         sh 'npm run lint'
-      }
-
-      stage('Build') {
-        sh 'npm run build'
       }
 
       stage('Verify CDK snapshots') {
