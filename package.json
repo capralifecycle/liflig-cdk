@@ -57,7 +57,7 @@
     "semantic-release": "17.0.7",
     "ts-jest": "26.0.0",
     "ts-node": "8.10.1",
-    "typescript": "3.9.2"
+    "typescript": "3.9.3"
   },
   "dependencies": {
     "cpy": "^8.1.0",
