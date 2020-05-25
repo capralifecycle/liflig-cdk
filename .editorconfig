@@ -12,7 +12,3 @@ insert_final_newline = true
 [*.md]
 # Markdown uses double trailing whitespaces as special chars to force newlines
 trim_trailing_whitespace = false
-
-[Makefile]
-indent_style = tab
-indent_size = 4

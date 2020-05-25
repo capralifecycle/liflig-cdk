@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "npm run build",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "snapshots": "./scripts/create-snapshots.sh"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"

@@ -23,7 +23,7 @@ buildConfig([
 
       stage('Verify CDK snapshots') {
         sh '''
-          make snapshots
+          npm run snapshots
           git status
           git diff --exit-code
         '''
