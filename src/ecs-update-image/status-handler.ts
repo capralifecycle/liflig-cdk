@@ -94,7 +94,7 @@ export const statusHandler: Handler<unknown, Response> = async () => {
   )
 
   const taskDefinition = await getTaskDefinition(
-    mainDeployment?.taskDefinition!,
+    mainDeployment!.taskDefinition!,
   )
 
   // Only one container is supported for the task definition.
