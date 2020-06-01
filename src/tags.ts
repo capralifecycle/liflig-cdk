@@ -8,7 +8,7 @@ import * as cdk from "@aws-cdk/core"
 export function tagResources(
   app: cdk.App,
   tags: (stack: cdk.Stack) => Record<string, string>,
-) {
+): void {
   app.node.applyAspect({
     visit(construct: cdk.IConstruct) {
       if (construct instanceof cdk.Construct) {
