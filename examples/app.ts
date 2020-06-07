@@ -2,6 +2,7 @@
 import * as cdk from "@aws-cdk/core"
 import "source-map-support/register"
 import { EcsUpdateImageArtifactStatus, tagResources } from "../src"
+import { BuildArtifactsStack } from "./build-artifacts"
 import { CdkDeployStack } from "./cdk-deploy-stack"
 import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 
@@ -16,6 +17,8 @@ const env = {
   account: "112233445566",
   region: "eu-west-1",
 }
+
+new BuildArtifactsStack(app, "build-artifacts", { env })
 
 new CdkDeployStack(app, "cdk-deploy-example", { env })
 

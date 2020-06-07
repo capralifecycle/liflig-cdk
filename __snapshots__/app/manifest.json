@@ -7,6 +7,64 @@
         "file": "tree.json"
       }
     },
+    "build-artifacts": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://112233445566/eu-west-1",
+      "properties": {
+        "templateFile": "build-artifacts.template.json"
+      },
+      "metadata": {
+        "/build-artifacts": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Project",
+                "Value": "my-project"
+              },
+              {
+                "Key": "SourceRepo",
+                "Value": "github/capralifecycle/liflig-cdk"
+              },
+              {
+                "Key": "StackName",
+                "Value": "build-artifacts"
+              }
+            ]
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/Artifacts/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifacts60155D2C"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/Artifacts/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsPolicyA8046F51"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/CiRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsCiRole8A88D092"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/CiRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsCiRoleDefaultPolicy02A0C8B2"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/EcrRepository/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsEcrRepository58C90D9A"
+          }
+        ]
+      }
+    },
     "cdk-deploy-example": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",

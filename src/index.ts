@@ -1,3 +1,4 @@
+export * from "./build-artifacts"
 export * from "./cdk-deploy"
 export * from "./ecs-update-image"
 export { createCloudAssemblySnapshot } from "./snapshots"
