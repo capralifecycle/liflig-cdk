@@ -33,16 +33,16 @@
             ]
           }
         ],
-        "/build-artifacts/BuildArtifacts/Artifacts/Resource": [
+        "/build-artifacts/BuildArtifacts/S3Bucket/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BuildArtifacts60155D2C"
+            "data": "BuildArtifactsS3BucketF34A0F91"
           }
         ],
-        "/build-artifacts/BuildArtifacts/Artifacts/Policy/Resource": [
+        "/build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BuildArtifactsPolicyA8046F51"
+            "data": "BuildArtifactsS3BucketPolicy963F6593"
           }
         ],
         "/build-artifacts/BuildArtifacts/CiRole/Resource": [

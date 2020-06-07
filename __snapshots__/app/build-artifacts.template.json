@@ -1,6 +1,6 @@
 {
   "Resources": {
-    "BuildArtifacts60155D2C": {
+    "BuildArtifactsS3BucketF34A0F91": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketEncryption": {
@@ -37,14 +37,14 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain",
       "Metadata": {
-        "aws:cdk:path": "build-artifacts/BuildArtifacts/Artifacts/Resource"
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/S3Bucket/Resource"
       }
     },
-    "BuildArtifactsPolicyA8046F51": {
+    "BuildArtifactsS3BucketPolicy963F6593": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
         "Bucket": {
-          "Ref": "BuildArtifacts60155D2C"
+          "Ref": "BuildArtifactsS3BucketF34A0F91"
         },
         "PolicyDocument": {
           "Statement": [
@@ -72,7 +72,7 @@
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "BuildArtifacts60155D2C",
+                    "BuildArtifactsS3BucketF34A0F91",
                     "Arn"
                   ]
                 },
@@ -82,7 +82,7 @@
                     [
                       {
                         "Fn::GetAtt": [
-                          "BuildArtifacts60155D2C",
+                          "BuildArtifactsS3BucketF34A0F91",
                           "Arn"
                         ]
                       },
@@ -97,7 +97,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "build-artifacts/BuildArtifacts/Artifacts/Policy/Resource"
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource"
       }
     },
     "BuildArtifactsCiRole8A88D092": {
@@ -153,7 +153,7 @@
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "BuildArtifacts60155D2C",
+                    "BuildArtifactsS3BucketF34A0F91",
                     "Arn"
                   ]
                 },
@@ -163,7 +163,7 @@
                     [
                       {
                         "Fn::GetAtt": [
-                          "BuildArtifacts60155D2C",
+                          "BuildArtifactsS3BucketF34A0F91",
                           "Arn"
                         ]
                       },

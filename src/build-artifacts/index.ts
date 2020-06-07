@@ -62,7 +62,7 @@ export class BuildArtifacts extends cdk.Construct {
       cdk.Stack.of(this),
     )
 
-    const bucket = new s3.Bucket(this, "Artifacts", {
+    const bucket = new s3.Bucket(this, "S3Bucket", {
       bucketName: this.bucketName,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
