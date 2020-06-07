@@ -41,7 +41,7 @@
     "@aws-cdk/core": "1.42.0",
     "@commitlint/cli": "8.3.5",
     "@commitlint/config-conventional": "8.3.4",
-    "@types/aws-lambda": "8.10.51",
+    "@types/aws-lambda": "8.10.53",
     "@types/jest": "25.2.3",
     "@types/node": "13.13.9",
     "@typescript-eslint/eslint-plugin": "3.1.0",
