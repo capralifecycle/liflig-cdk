@@ -65,7 +65,10 @@ export async function createCloudAssemblySnapshot(
   src: string,
   dst: string,
 ): Promise<void> {
-  await cpy(src, dst)
+  await cpy(".", path.join(process.cwd(), dst), {
+    parents: true,
+    cwd: path.join(process.cwd(), src),
+  })
 
   // Transform the manifest to be more snapshot friendly.
   await prepareManifestFileForSnapshot(path.join(dst, "manifest.json"))
