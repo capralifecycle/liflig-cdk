@@ -1,3 +1,4 @@
+export { BastionHost } from "./bastion-host"
 export * from "./build-artifacts"
 export * from "./cdk-deploy"
 export * from "./ecs-update-image"
