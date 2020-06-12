@@ -6,6 +6,10 @@ import { BuildArtifactsStack } from "./build-artifacts"
 import { CdkDeployStack } from "./cdk-deploy-stack"
 import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 
+// NOTE: New stacks must be added to the manual-stacks.txt file
+// so that the jenkinsfileCheckReferencedStacks test works
+// as expected.
+
 const app = new cdk.App()
 tagResources(app, (stack) => ({
   StackName: stack.stackName,

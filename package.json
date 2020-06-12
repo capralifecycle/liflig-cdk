@@ -17,7 +17,8 @@
     "snapshots": "./scripts/create-snapshots.sh"
   },
   "bin": {
-    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"
+    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
+    "cdk-jenkinsfile-check-referenced-stacks": "lib/bin/cdk-jenkinsfile-check-referenced-stacks.js"
   },
   "keywords": [
     "cdk"
@@ -62,6 +63,7 @@
   "dependencies": {
     "cpy": "^8.1.0",
     "del": "^5.1.0",
+    "execa": "^4.0.2",
     "source-map-support": "^0.5.19"
   },
   "husky": {

@@ -3,6 +3,10 @@
 // See https://github.com/capralifecycle/jenkins-pipeline-library
 @Library('cals') _
 
+// These lines are only here due to the jenkinsfileCheckReferencedStacks test.
+// build-artifacts
+// cdk-deploy-example
+
 buildConfig([
   slack: [
     channel: '#cals-dev-info',
@@ -17,8 +21,9 @@ buildConfig([
         sh 'npm ci'
       }
 
-      stage('Lint') {
+      stage('Lint and test') {
         sh 'npm run lint'
+        sh 'npm run test'
       }
 
       stage('Verify CDK snapshots') {
