@@ -87,5 +87,12 @@ export class BuildArtifacts extends cdk.Construct {
       bucket.grantRead(new iam.AccountPrincipal(targetAccountId))
       ecrRepo.grantPull(new iam.AccountPrincipal(targetAccountId))
     }
+
+    new cdk.CfnOutput(this, "BucketName", {
+      value: this.bucketName,
+    })
+    new cdk.CfnOutput(this, "CiRoleArn", {
+      value: ciRole.roleArn,
+    })
   }
 }

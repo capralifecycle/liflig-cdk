@@ -62,6 +62,18 @@
             "type": "aws:cdk:logicalId",
             "data": "BuildArtifactsEcrRepository58C90D9A"
           }
+        ],
+        "/build-artifacts/BuildArtifacts/BucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsBucketNameFFDA2A82"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/CiRoleArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsCiRoleArn6A5A560C"
+          }
         ]
       }
     },

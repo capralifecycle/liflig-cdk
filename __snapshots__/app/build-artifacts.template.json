@@ -273,5 +273,18 @@
         "aws:cdk:path": "build-artifacts/BuildArtifacts/EcrRepository/Resource"
       }
     }
+  },
+  "Outputs": {
+    "BuildArtifactsBucketNameFFDA2A82": {
+      "Value": "some-bucket-name"
+    },
+    "BuildArtifactsCiRoleArn6A5A560C": {
+      "Value": {
+        "Fn::GetAtt": [
+          "BuildArtifactsCiRole8A88D092",
+          "Arn"
+        ]
+      }
+    }
   }
 }
