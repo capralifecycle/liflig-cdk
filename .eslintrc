@@ -1,6 +1,7 @@
 {
   "extends": [
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
@@ -16,8 +17,6 @@
   },
   "rules": {
     "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": "error",
-    // Detect floating promises.
-    "@typescript-eslint/no-floating-promises": "error"
+    "@typescript-eslint/no-unused-vars": "error"
   }
 }
