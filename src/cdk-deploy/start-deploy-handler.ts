@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type * as AWS from "aws-sdk"
+import type * as _AWS from "aws-sdk"
 
 interface StartDeployExpectedInput {
   bucketName: string
@@ -13,11 +16,10 @@ interface StartDeployExpectedInput {
 export const startDeployHandler: Handler<Partial<
   StartDeployExpectedInput
 >> = async (event, context) => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const AWS = require("aws-sdk")
 
-  const codebuild = new AWS.CodeBuild()
-  const s3 = new AWS.S3()
+  const codebuild = new AWS.CodeBuild() as _AWS.CodeBuild
+  const s3 = new AWS.S3() as _AWS.S3
 
   function requireEnv(name: string): string {
     const value = process.env[name]

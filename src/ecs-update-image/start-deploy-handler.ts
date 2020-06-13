@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type * as AWS from "aws-sdk"
+import type * as _AWS from "aws-sdk"
 
 interface ExpectedInput {
   tag: string
@@ -11,10 +15,9 @@ interface ExpectedInput {
 export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
   event,
 ) => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const AWS = require("aws-sdk")
-  const ecs = new AWS.ECS()
-  const sm = new AWS.SecretsManager()
+  const ecs = new AWS.ECS() as _AWS.ECS
+  const sm = new AWS.SecretsManager() as _AWS.SecretsManager
 
   function requireEnv(name: string): string {
     const value = process.env[name]
@@ -66,7 +69,7 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
     const prevTaskDefinition = await getTaskDefinition(service.taskDefinition!)
 
     // Don't bother updating the service if the image is already the latest.
-    const prevImage = prevTaskDefinition.containerDefinitions![0].image
+    const prevImage = prevTaskDefinition.containerDefinitions![0].image!
     if (prevImage === image) {
       return
     }

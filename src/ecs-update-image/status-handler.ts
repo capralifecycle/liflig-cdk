@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type * as AWS from "aws-sdk"
+import type * as _AWS from "aws-sdk"
 
 interface Response {
   /**
@@ -14,9 +17,8 @@ interface Response {
 // This function is inline-compiled for the lambda.
 // It must be self-contained.
 export const statusHandler: Handler<unknown, Response> = async () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const AWS = require("aws-sdk")
-  const ecs = new AWS.ECS()
+  const ecs = new AWS.ECS() as _AWS.ECS
 
   function requireEnv(name: string): string {
     const value = process.env[name]

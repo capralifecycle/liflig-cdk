@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type * as AWS from "aws-sdk"
+import type * as _AWS from "aws-sdk"
 
 interface StatusExpectedInput {
   jobId: string
@@ -11,7 +14,6 @@ interface StatusExpectedInput {
 export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
   event,
 ) => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const AWS = require("aws-sdk")
 
   function requireEnv(name: string): string {
@@ -44,11 +46,13 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
   }
 
   async function getBuild(buildId: string): Promise<AWS.CodeBuild.Build> {
-    const codebuild: AWS.CodeBuild = new AWS.CodeBuild()
+    const codebuild: AWS.CodeBuild = new AWS.CodeBuild() as _AWS.CodeBuild
     const result = await codebuild.batchGetBuilds({ ids: [buildId] }).promise()
 
     if (result.builds?.length !== 1) {
-      throw new Error(`Expected 1 item, found ${result.builds?.length}`)
+      throw new Error(
+        `Expected 1 item, found ${result.builds?.length ?? "unknown"}`,
+      )
     }
 
     return result.builds[0]
@@ -67,7 +71,7 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
       throw new Error("Missing log streamName")
     }
 
-    const cloudwatchlogs: AWS.CloudWatchLogs = new AWS.CloudWatchLogs()
+    const cloudwatchlogs: AWS.CloudWatchLogs = new AWS.CloudWatchLogs() as _AWS.CloudWatchLogs
     const data = await cloudwatchlogs
       .getLogEvents({
         logGroupName: build.logs.groupName,
