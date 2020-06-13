@@ -1,5 +1,5 @@
 *.d.ts
-src/**/*.js
-test/**/*.js
+/src/**/*.js
+/test/**/*.js
 /lib/
 /cdk.out/

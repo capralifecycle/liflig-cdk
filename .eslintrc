@@ -6,23 +6,18 @@
   ],
   "overrides": [
     {
-      "files": ["src/**/*.ts"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": "./tsconfig.json"
-      },
-      "rules": {
-        // Detect floating promises.
-        "@typescript-eslint/no-floating-promises": "error"
-      }
+      "files": ["*.ts"]
     }
   ],
   "parserOptions": {
     "ecmaVersion": 2018,
+    "project": "./tsconfig.eslint.json",
     "sourceType": "module"
   },
   "rules": {
     "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": "error",
+    // Detect floating promises.
+    "@typescript-eslint/no-floating-promises": "error"
   }
 }
