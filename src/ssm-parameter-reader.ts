@@ -9,7 +9,7 @@ interface Props {
    *
    * @default Date.now().toString()
    */
-  digest?: string
+  nonce?: string
 }
 
 function removeLeadingSlash(value: string): string {
@@ -32,7 +32,7 @@ export class SsmParameterReader extends cr.AwsCustomResource {
         region: props.region,
         // Update physical id to fetch the latest version.
         physicalResourceId: cr.PhysicalResourceId.of(
-          props.digest ?? Date.now().toString(),
+          props.nonce ?? Date.now().toString(),
         ),
       },
       policy: cr.AwsCustomResourcePolicy.fromSdkCalls({

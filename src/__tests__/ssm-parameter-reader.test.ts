@@ -18,7 +18,7 @@ test("ssm-parameter-reader", () => {
   new SsmParameterReader(stack2, "ParamReader", {
     parameterName,
     region: "eu-west-1",
-    digest: "123",
+    nonce: "123",
   })
 
   expect(stack2).toMatchCdkSnapshot()
