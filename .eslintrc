@@ -5,6 +5,9 @@
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
+  "plugins": [
+    "deprecation"
+  ],
   "overrides": [
     {
       "files": ["*.ts"]
@@ -16,6 +19,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "deprecation/deprecation": "error",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": "error"
   }
