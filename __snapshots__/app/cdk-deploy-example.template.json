@@ -749,5 +749,31 @@
         "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StatusFunction/Resource"
       }
     }
+  },
+  "Outputs": {
+    "CdkDeployRoleToBeAssumedArn81F19EA6": {
+      "Value": {
+        "Fn::GetAtt": [
+          "CdkDeployRole9B95027D",
+          "Arn"
+        ]
+      }
+    },
+    "CdkDeployStatusFunctionArnBA3D8551": {
+      "Value": {
+        "Fn::GetAtt": [
+          "CdkDeployStatusFunction54BEBDAD",
+          "Arn"
+        ]
+      }
+    },
+    "CdkDeployStartDeployFunctionArn175B012C": {
+      "Value": {
+        "Fn::GetAtt": [
+          "CdkDeployStartDeployFunctionC7011EBD",
+          "Arn"
+        ]
+      }
+    }
   }
 }

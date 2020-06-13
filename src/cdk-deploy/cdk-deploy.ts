@@ -220,5 +220,15 @@ export class CdkDeploy extends cdk.Construct {
         ],
       }),
     )
+
+    new cdk.CfnOutput(this, "RoleToBeAssumedArn", {
+      value: roleToBeAssumed.roleArn,
+    })
+    new cdk.CfnOutput(this, "StatusFunctionArn", {
+      value: statusFn.functionArn,
+    })
+    new cdk.CfnOutput(this, "StartDeployFunctionArn", {
+      value: startDeployFn.functionArn,
+    })
   }
 }

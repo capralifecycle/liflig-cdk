@@ -180,6 +180,24 @@
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStatusFunction54BEBDAD"
           }
+        ],
+        "/cdk-deploy-example/CdkDeploy/RoleToBeAssumedArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployRoleToBeAssumedArn81F19EA6"
+          }
+        ],
+        "/cdk-deploy-example/CdkDeploy/StatusFunctionArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStatusFunctionArnBA3D8551"
+          }
+        ],
+        "/cdk-deploy-example/CdkDeploy/StartDeployFunctionArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CdkDeployStartDeployFunctionArn175B012C"
+          }
         ]
       }
     },
