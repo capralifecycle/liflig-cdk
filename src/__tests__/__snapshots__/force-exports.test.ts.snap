@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`force-exports 1`] = `
+Object {
+  "Outputs": Object {
+    "Output0": Object {
+      "Value": Object {
+        "Fn::ImportValue": "Stack1:ExportsOutputRefVpc8378EB38272D6E3A",
+      },
+    },
+    "Output1": Object {
+      "Value": Object {
+        "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+      },
+    },
+    "Output2": Object {
+      "Value": Object {
+        "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3",
+      },
+    },
+    "Output3": Object {
+      "Value": Object {
+        "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+      },
+    },
+    "Output4": Object {
+      "Value": Object {
+        "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+      },
+    },
+  },
+}
+`;
