@@ -1,7 +1,7 @@
 import { SecurityGroup, Vpc } from "@aws-cdk/aws-ec2"
-import { Stack, App } from "@aws-cdk/core"
+import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
-import { BastionHost } from "../src"
+import { BastionHost } from ".."
 
 test("bastion-host", () => {
   const app = new App()
