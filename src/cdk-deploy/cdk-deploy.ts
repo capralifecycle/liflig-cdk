@@ -133,6 +133,7 @@ export class CdkDeploy extends cdk.Construct {
           "cloudformation:GetTemplate",
           // For deploy.
           "cloudformation:CreateChangeSet",
+          "cloudformation:DeleteStack",
           "cloudformation:DescribeChangeSet",
           "cloudformation:ExecuteChangeSet",
           "cloudformation:DescribeStackEvents",

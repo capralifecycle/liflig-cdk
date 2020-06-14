@@ -279,6 +279,7 @@
                 "cloudformation:DescribeStacks",
                 "cloudformation:GetTemplate",
                 "cloudformation:CreateChangeSet",
+                "cloudformation:DeleteStack",
                 "cloudformation:DescribeChangeSet",
                 "cloudformation:ExecuteChangeSet",
                 "cloudformation:DescribeStackEvents",
