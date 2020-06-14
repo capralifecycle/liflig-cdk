@@ -154,7 +154,7 @@ export class CdkDeploy extends cdk.Construct {
           "s3:DeleteObject*",
         ],
         resources: [
-          `arn:aws:s3:::${props.cdkToolkitStackName}-stagingbucket-*`,
+          `arn:aws:s3:::${props.cdkToolkitStackName.toLowerCase()}-stagingbucket-*`,
         ],
       }),
     )
