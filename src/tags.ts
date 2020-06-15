@@ -11,9 +11,15 @@ export function tagResources(
 ): void {
   app.node.applyAspect({
     visit(construct: cdk.IConstruct) {
-      if (cdk.Stack.isStack(construct)) {
-        for (const [key, value] of Object.entries(tags(construct))) {
-          cdk.Tag.add(construct, key, value)
+      if (cdk.TagManager.isTaggable(construct)) {
+        const stack = construct.node.scopes.find((it): it is cdk.Stack =>
+          cdk.Stack.isStack(it),
+        )
+
+        if (stack != null) {
+          for (const [key, value] of Object.entries(tags(stack))) {
+            construct.tags.setTag(key, value, 100, true)
+          }
         }
       }
     },
