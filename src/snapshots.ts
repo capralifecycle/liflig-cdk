@@ -7,6 +7,16 @@ import * as fs from "fs"
 import * as path from "path"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeVersion(data: any): any {
+  const cp = {
+    ...data,
+  }
+
+  delete cp.version
+  return cp
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeTrace(data: any): any {
   if (data instanceof Array) {
     return data.map(removeTrace)
@@ -39,6 +49,7 @@ function removeRuntimeLibraries(data: any): any {
 function prepareManifestForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
+    removeVersion,
     // Remove the runtime version information so it don't conflict with CI
     // or other users generating the snapshots.
     removeRuntimeLibraries,
@@ -75,6 +86,9 @@ export async function createCloudAssemblySnapshot(
 
   // Transform the manifest to be more snapshot friendly.
   await prepareManifestFileForSnapshot(path.join(dst, "manifest.json"))
+
+  // Don't keep track of manifest version.
+  await del(path.join(dst, "cdk.out"))
 
   // The tree file doesn't give us much value as part of the snapshot.
   await del(path.join(dst, "tree.json"))
