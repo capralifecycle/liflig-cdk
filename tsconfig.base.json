@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "declaration": true,
+    "target": "ES2018",
+    "module": "commonjs",
+    "lib": ["es2018", "es2019"],
+    "strict": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
+  },
+}
