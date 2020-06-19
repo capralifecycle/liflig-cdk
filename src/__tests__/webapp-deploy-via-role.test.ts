@@ -1,0 +1,29 @@
+import { Bucket } from "@aws-cdk/aws-s3"
+import { App, Stack } from "@aws-cdk/core"
+import "jest-cdk-snapshot"
+import { WebappDeployViaRole } from "../webapp-deploy-via-role"
+
+test("webapp-deploy-via-role", () => {
+  const app = new App()
+  const stack1 = new Stack(app, "Stack1")
+
+  const buildsBucket = Bucket.fromBucketName(
+    stack1,
+    "BuildsBucket",
+    "bucket-name",
+  )
+
+  const webBucket = new Bucket(stack1, "WebBucket")
+
+  new WebappDeployViaRole(stack1, "WebappDeploy", {
+    externalRoleArn: "arn:aws:iam::112233445566:role/some-role",
+    roleName: "my-role",
+    webappDeploy: {
+      buildsBucket,
+      webBucket,
+      distributionId: "EKJ2IPY1KTEAR1",
+    },
+  })
+
+  expect(stack1).toMatchCdkSnapshot()
+})
