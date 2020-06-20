@@ -31,9 +31,7 @@ export class SsmParameterReader extends cr.AwsCustomResource {
         },
         region: props.region,
         // Update physical id to fetch the latest version.
-        physicalResourceId: cr.PhysicalResourceId.of(
-          props.nonce ?? Date.now().toString(),
-        ),
+        physicalResourceId: cr.PhysicalResourceId.of(props.parameterName),
       },
       policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
         resources: [
@@ -49,6 +47,11 @@ export class SsmParameterReader extends cr.AwsCustomResource {
         ],
       }),
     })
+
+    const r = this.node.findChild("Resource").node
+      .defaultChild as cdk.CfnResource
+    r.cfnOptions.metadata = r.cfnOptions.metadata || {}
+    r.cfnOptions.metadata.Nonce = props.nonce ?? Date.now().toString()
   }
 
   public getParameterValue(): string {

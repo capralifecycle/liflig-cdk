@@ -164,6 +164,9 @@ Object {
     },
     "BucketParameterEB93D4D4": Object {
       "DeletionPolicy": "Delete",
+      "Metadata": Object {
+        "Nonce": "1",
+      },
       "Properties": Object {
         "Create": Object {
           "action": "getParameter",
@@ -171,7 +174,7 @@ Object {
             "Name": "/my-param",
           },
           "physicalResourceId": Object {
-            "id": "1",
+            "id": "/my-param",
           },
           "region": "eu-west-1",
           "service": "SSM",
@@ -188,7 +191,7 @@ Object {
             "Name": "/my-param",
           },
           "physicalResourceId": Object {
-            "id": "1",
+            "id": "/my-param",
           },
           "region": "eu-west-1",
           "service": "SSM",

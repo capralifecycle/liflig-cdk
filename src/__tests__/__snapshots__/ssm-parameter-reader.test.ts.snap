@@ -142,6 +142,9 @@ Object {
     },
     "ParamReaderDE9769DB": Object {
       "DeletionPolicy": "Delete",
+      "Metadata": Object {
+        "Nonce": "123",
+      },
       "Properties": Object {
         "Create": Object {
           "action": "getParameter",
@@ -149,7 +152,7 @@ Object {
             "Name": "/my/param",
           },
           "physicalResourceId": Object {
-            "id": "123",
+            "id": "/my/param",
           },
           "region": "eu-west-1",
           "service": "SSM",
@@ -166,7 +169,7 @@ Object {
             "Name": "/my/param",
           },
           "physicalResourceId": Object {
-            "id": "123",
+            "id": "/my/param",
           },
           "region": "eu-west-1",
           "service": "SSM",

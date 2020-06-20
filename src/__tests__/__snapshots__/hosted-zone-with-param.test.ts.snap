@@ -195,6 +195,9 @@ Object {
     },
     "HostedZoneParam13DE3CEA": Object {
       "DeletionPolicy": "Delete",
+      "Metadata": Object {
+        "Nonce": "1",
+      },
       "Properties": Object {
         "Create": Object {
           "action": "getParameter",
@@ -202,7 +205,7 @@ Object {
             "Name": "/cf/hosted-zone-id/example.com-public",
           },
           "physicalResourceId": Object {
-            "id": "1",
+            "id": "/cf/hosted-zone-id/example.com-public",
           },
           "region": "eu-west-1",
           "service": "SSM",
@@ -219,7 +222,7 @@ Object {
             "Name": "/cf/hosted-zone-id/example.com-public",
           },
           "physicalResourceId": Object {
-            "id": "1",
+            "id": "/cf/hosted-zone-id/example.com-public",
           },
           "region": "eu-west-1",
           "service": "SSM",
