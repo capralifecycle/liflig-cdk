@@ -1,6 +1,6 @@
 import * as ssm from "@aws-cdk/aws-ssm"
 import * as cdk from "@aws-cdk/core"
-import { SsmParameterReader } from "./ssm-parameter-reader"
+import { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
 
 type ReferenceToResource<T> = (
   scope: cdk.Construct,
@@ -10,44 +10,58 @@ type ReferenceToResource<T> = (
 
 interface Props<T> {
   /**
-   * The nonce must be updated in case the parameter changes,
-   * forcing us to recheck the parameter.
+   * The nonce can be used to force the stack to update to check
+   * for a new value.
    *
-   * @default 1
+   * @default Date.now().toString()
    */
   nonce?: string
   parameterName: string
   resource: T
   resourceToReference(resource: T): string
   referenceToResource: ReferenceToResource<T>
+  /**
+   * List of regions that can retrieve this resource from an SSM Parameter.
+   */
+  regions: string[]
 }
 
 /**
- * Register a SSM Parameter and provide helpers so that a resource can be
- * backed by a SSM Parameter for cross-region reference.
+ * Register SSM Parameters in other regions storing a reference to
+ * a resource, which can then be resolved in the other region by
+ * reading from the parameter.
+ *
+ * Storing the SSM Parameters in the other regions speeds up the
+ * resolving of parameters, since we can use CloudFormation SSM
+ * Parameters instead of custom resources.
  *
  * If the resource is in the same region, the resource will be returned
  * like normally in CDK, causing an export/import if cross-stack.
  */
 export class SsmParameterBackedResource<T> extends cdk.Construct {
   private readonly nonce: string
-  readonly parameterName: string
+  private readonly parameterName: string
   private readonly resource: T
   private readonly referenceToResource: ReferenceToResource<T>
+  private readonly regions: string[]
 
   constructor(scope: cdk.Construct, id: string, props: Props<T>) {
     super(scope, id)
-    this.nonce = props.nonce ?? "1"
+    this.nonce = props.nonce ?? Date.now().toString()
     this.parameterName = props.parameterName
     this.resource = props.resource
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.referenceToResource = props.referenceToResource
+    this.regions = props.regions
 
-    new ssm.CfnParameter(this, "Resource", {
-      type: ssm.ParameterType.STRING,
-      name: this.parameterName,
-      value: props.resourceToReference(this.resource),
-    })
+    const value = props.resourceToReference(props.resource)
+
+    for (const region of props.regions) {
+      new CrossRegionSsmParameter(this, `Param${region}`, {
+        name: this.parameterName,
+        region,
+        value,
+      })
+    }
   }
 
   /**
@@ -63,14 +77,22 @@ export class SsmParameterBackedResource<T> extends cdk.Construct {
       return this.resource
     }
 
+    if (!this.regions.includes(consumerRegion)) {
+      throw new Error(
+        `The region ${consumerRegion} is not registered for the parameter`,
+      )
+    }
+
     scope.node.addDependency(this)
 
-    const reference = new SsmParameterReader(scope, `${id}Parameter`, {
-      parameterName: this.parameterName,
-      region: cdk.Stack.of(this).region,
-      nonce: this.nonce,
-    }).getParameterValue()
+    new cdk.CfnParameter(scope, `${id}Nonce`, {
+      default: this.nonce,
+    })
 
+    const reference = ssm.StringParameter.valueForStringParameter(
+      scope,
+      this.parameterName,
+    )
     return this.referenceToResource(scope, id, reference)
   }
 }

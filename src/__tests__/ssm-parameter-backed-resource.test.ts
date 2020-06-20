@@ -13,11 +13,13 @@ test("ssm-parameter-backed-resource in same region", () => {
 
   const bucket = new Bucket(stack1, "Bucket")
   const s = new SsmParameterBackedResource(stack1, "BucketParam", {
+    nonce: "123",
     parameterName: "/my-param",
     // eslint-disable-next-line @typescript-eslint/unbound-method
     referenceToResource: Bucket.fromBucketName,
     resource: bucket,
     resourceToReference: (resource) => resource.bucketName,
+    regions: ["eu-central-1", "us-east-1"],
   })
 
   const stack2 = new Stack(app, "Stack2", {
@@ -42,11 +44,13 @@ test("ssm-parameter-backed-resource in different region", () => {
 
   const bucket = new Bucket(stack1, "Bucket")
   const s = new SsmParameterBackedResource(stack1, "BucketParam", {
+    nonce: "123",
     parameterName: "/my-param",
     // eslint-disable-next-line @typescript-eslint/unbound-method
     referenceToResource: Bucket.fromBucketName,
     resource: bucket,
     resourceToReference: (resource) => resource.bucketName,
+    regions: ["eu-central-1"],
   })
 
   const stack2 = new Stack(app, "Stack2", {
