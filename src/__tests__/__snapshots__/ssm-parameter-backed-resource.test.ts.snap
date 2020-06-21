@@ -111,42 +111,12 @@ Object {
             Object {
               "Action": "ssm:PutParameter",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-central-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
+              "Resource": "*",
             },
             Object {
               "Action": "ssm:DeleteParameter",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-central-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
+              "Resource": "*",
             },
           ],
           "Version": "2012-10-17",
@@ -351,82 +321,12 @@ Object {
             Object {
               "Action": "ssm:PutParameter",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-central-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
+              "Resource": "*",
             },
             Object {
               "Action": "ssm:DeleteParameter",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-central-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "ssm:PutParameter",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:us-east-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "ssm:DeleteParameter",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:us-east-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/my-param",
-                  ],
-                ],
-              },
+              "Resource": "*",
             },
           ],
           "Version": "2012-10-17",

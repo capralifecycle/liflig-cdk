@@ -7,10 +7,6 @@ interface Props {
   value: string
 }
 
-function removeLeadingSlash(value: string): string {
-  return value.slice(0, 1) == "/" ? value.slice(1) : value
-}
-
 /**
  * SSM Parameter stored in another region.
  */
@@ -44,17 +40,10 @@ export class CrossRegionSsmParameter extends cdk.Construct {
         physicalResourceId,
       },
       policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
-        resources: [
-          cdk.Arn.format(
-            {
-              service: "ssm",
-              resource: "parameter",
-              region: props.region,
-              resourceName: removeLeadingSlash(props.name),
-            },
-            cdk.Stack.of(this),
-          ),
-        ],
+        // We grant the Custom Resource access to write to any
+        // parameter, as this is needed to be able to rename
+        // a parameter later.
+        resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
       }),
     })
   }
