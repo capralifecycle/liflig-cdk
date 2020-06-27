@@ -1,3 +1,4 @@
 # These lines are only here due to jenkinsfileCheckReferencedStacks test.
 ecs-update-image
 ecs-update-image-no-artifact
+ssm-parameter-reader
