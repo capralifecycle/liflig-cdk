@@ -127,7 +127,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": {
-            "Ref": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3Bucket536257BA"
+            "Ref": "snapshot-value"
           },
           "S3Key": {
             "Fn::Join": [
@@ -140,7 +140,7 @@
                       "Fn::Split": [
                         "||",
                         {
-                          "Ref": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3VersionKeyC1EF3D23"
+                          "Ref": "snapshot-value"
                         }
                       ]
                     }
@@ -153,7 +153,7 @@
                       "Fn::Split": [
                         "||",
                         {
-                          "Ref": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3VersionKeyC1EF3D23"
+                          "Ref": "snapshot-value"
                         }
                       ]
                     }
@@ -193,23 +193,10 @@
       ],
       "Metadata": {
         "aws:cdk:path": "ssm-parameter-reader/AWS679f53fac002430cb0da5b7982bd2287/Resource",
-        "aws:asset:path": "asset.f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669",
+        "aws:asset:path": "asset.snapshot-value",
         "aws:asset:property": "Code"
       }
     }
   },
-  "Parameters": {
-    "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3Bucket536257BA": {
-      "Type": "String",
-      "Description": "S3 bucket for asset \"f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669\""
-    },
-    "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3VersionKeyC1EF3D23": {
-      "Type": "String",
-      "Description": "S3 key for asset version \"f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669\""
-    },
-    "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669ArtifactHash2C09C7CA": {
-      "Type": "String",
-      "Description": "Artifact hash for asset \"f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669\""
-    }
-  }
+  "Parameters": {}
 }

@@ -704,15 +704,7 @@
         "/ssm-parameter-reader": [
           {
             "type": "aws:cdk:asset",
-            "data": {
-              "path": "asset.f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669",
-              "id": "f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669",
-              "packaging": "zip",
-              "sourceHash": "f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669",
-              "s3BucketParameter": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3Bucket536257BA",
-              "s3KeyParameter": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3VersionKeyC1EF3D23",
-              "artifactHashParameter": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669ArtifactHash2C09C7CA"
-            }
+            "data": "snapshot-value"
           },
           {
             "type": "aws:cdk:stack-tags",
@@ -754,24 +746,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
-          }
-        ],
-        "/ssm-parameter-reader/AssetParameters/f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669/S3Bucket": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3Bucket536257BA"
-          }
-        ],
-        "/ssm-parameter-reader/AssetParameters/f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669/S3VersionKey": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669S3VersionKeyC1EF3D23"
-          }
-        ],
-        "/ssm-parameter-reader/AssetParameters/f35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669/ArtifactHash": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AssetParametersf35d0a3ea655835ce2bf399c19e80a38397cebc9cff491b04a9312c92d338669ArtifactHash2C09C7CA"
           }
         ]
       }

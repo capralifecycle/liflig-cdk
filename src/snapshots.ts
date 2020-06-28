@@ -46,6 +46,72 @@ function removeRuntimeLibraries(data: any): any {
   return cp
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeAssetDetailsFromTemplate(data: any): any {
+  if (data instanceof Array) {
+    return data.map(removeAssetDetailsFromTemplate)
+  }
+
+  if (data === Object(data)) {
+    return Object.fromEntries(
+      Object.entries(data)
+        .map(([key, value]) => {
+          if (key.includes("AssetParameter")) {
+            return null
+          } else if (
+            key === "Ref" &&
+            typeof value === "string" &&
+            value.includes("AssetParameters")
+          ) {
+            return [key, "snapshot-value"]
+          } else if (
+            key === "aws:asset:path" &&
+            typeof value === "string" &&
+            value.startsWith("asset.")
+          ) {
+            return [key, "asset.snapshot-value"]
+          } else {
+            return [key, removeAssetDetailsFromTemplate(value)]
+          }
+        })
+        .filter((it): it is [] => it != null),
+    )
+  }
+
+  return data
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeAssetDetailsFromManifest(data: any): any {
+  if (data instanceof Array) {
+    return data.map(removeAssetDetailsFromManifest)
+  }
+
+  if (data === Object(data)) {
+    // aws:cdk:asset in metadata
+    if (data["type"] === "aws:cdk:asset" && "data" in data) {
+      return {
+        ...data,
+        data: "snapshot-value",
+      }
+    }
+
+    return Object.fromEntries(
+      Object.entries(data)
+        .map(([key, value]) => {
+          if (key.includes("AssetParameters")) {
+            return null
+          } else {
+            return [key, removeAssetDetailsFromManifest(value)]
+          }
+        })
+        .filter((it): it is [] => it != null),
+    )
+  }
+
+  return data
+}
+
 function prepareManifestForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
@@ -55,6 +121,8 @@ function prepareManifestForSnapshot(content: string): string {
     removeRuntimeLibraries,
     // Remove the trace from manifest for now.
     removeTrace,
+    // Avoid details (hashes) from assets.
+    removeAssetDetailsFromManifest,
   ].reduce((acc, fn) => fn(acc), input)
 
   return JSON.stringify(output, undefined, "  ")
@@ -66,6 +134,28 @@ function prepareManifestForSnapshot(content: string): string {
  */
 async function prepareManifestFileForSnapshot(file: string): Promise<void> {
   const result = prepareManifestForSnapshot(
+    await fs.promises.readFile(file, "utf8"),
+  )
+
+  await fs.promises.writeFile(file, result)
+}
+
+function prepareTemplateForSnapshot(content: string): string {
+  const input = JSON.parse(content)
+  const output = [
+    // Avoid details (hashes) from assets.
+    removeAssetDetailsFromTemplate,
+  ].reduce((acc, fn) => fn(acc), input)
+
+  return JSON.stringify(output, undefined, "  ")
+}
+
+/**
+ * Transform a Cloud Assembly template file so that it can be persisted
+ * as a snapshot without causing invalidations for minor changes.
+ */
+async function prepareTemplateFileForSnapshot(file: string): Promise<void> {
+  const result = prepareTemplateForSnapshot(
     await fs.promises.readFile(file, "utf8"),
   )
 
@@ -95,4 +185,11 @@ export async function createCloudAssemblySnapshot(
 
   // Remove asset contents for now.
   await del(path.join(dst, "asset.*"))
+
+  // Transform all templates.
+  for (const file of fs.readdirSync(dst, "utf-8")) {
+    if (file.endsWith("template.json")) {
+      await prepareTemplateFileForSnapshot(path.join(dst, file))
+    }
+  }
 }
