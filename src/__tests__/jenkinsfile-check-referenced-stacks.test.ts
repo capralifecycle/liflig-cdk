@@ -6,5 +6,5 @@ describe("jenkinsfileCheckReferencedStacks", () => {
       "Jenkinsfile",
       "examples/manual-stacks.txt",
     )
-  }, 30000)
+  }, 60000)
 })
