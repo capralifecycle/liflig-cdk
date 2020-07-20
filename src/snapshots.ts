@@ -46,6 +46,18 @@ function removeRuntimeLibraries(data: any): any {
   return cp
 }
 
+const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/
+
+/**
+ * Match a resource created by `lambda.Function.currentVersion`, which
+ * will include the asset hash as part of the reousrce name and return
+ * a snapshot-friendly version of it if found.
+ */
+function rewriteCurrentVersionIfFound(value: string): string | null {
+  const match = currentVersionRegex.exec(value)
+  return match ? `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` : null
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeAssetDetailsFromTemplate(data: any): any {
   if (data instanceof Array) {
@@ -56,7 +68,10 @@ function removeAssetDetailsFromTemplate(data: any): any {
     return Object.fromEntries(
       Object.entries(data)
         .map(([key, value]) => {
-          if (key.includes("AssetParameter")) {
+          const newCurrentVersion = rewriteCurrentVersionIfFound(key)
+          if (newCurrentVersion) {
+            return [newCurrentVersion, removeAssetDetailsFromTemplate(value)]
+          } else if (key.includes("AssetParameter")) {
             return null
           } else if (
             key === "Ref" &&
@@ -76,6 +91,13 @@ function removeAssetDetailsFromTemplate(data: any): any {
         })
         .filter((it): it is [] => it != null),
     )
+  }
+
+  if (typeof data === "string") {
+    const newCurrentVersion = rewriteCurrentVersionIfFound(data)
+    if (newCurrentVersion) {
+      return newCurrentVersion
+    }
   }
 
   return data
@@ -107,6 +129,13 @@ function removeAssetDetailsFromManifest(data: any): any {
         })
         .filter((it): it is [] => it != null),
     )
+  }
+
+  if (typeof data === "string") {
+    const newCurrentVersion = rewriteCurrentVersionIfFound(data)
+    if (newCurrentVersion) {
+      return newCurrentVersion
+    }
   }
 
   return data
