@@ -10,3 +10,12 @@ export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
 export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
+
+/**
+ * Check if we are synthesizing a snapshot by setting IS_SNAPSHOT
+ * environment variable to true.
+ *
+ * This allows for special conditional logic that should only
+ * happen during snapshot creation.
+ */
+export const isSnapshot = process.env.IS_SNAPSHOT === "true"
