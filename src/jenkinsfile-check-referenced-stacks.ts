@@ -38,7 +38,11 @@ function verifyStacks({
     (it) => !automatedStacks.includes(it),
   )
 
-  assert.deepStrictEqual(listedAsManualStacks, stacksNotAutomated)
+  assert.deepStrictEqual(
+    // sort() mutates.
+    [...listedAsManualStacks].sort(),
+    [...stacksNotAutomated].sort(),
+  )
 }
 
 /**
