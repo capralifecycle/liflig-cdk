@@ -19,7 +19,7 @@ interface Props {
  * must have the bastion host security group as allowed ingress.
  *
  * For more internal details, see
- * https://github.com/capralifecycle/cals-tools/pull/3
+ * https://confluence.capraconsulting.no/x/q8UBC
  */
 export class BastionHost extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: Props) {
