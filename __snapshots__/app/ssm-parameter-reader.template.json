@@ -30,7 +30,8 @@
           "physicalResourceId": {
             "id": "/some/parameter"
           }
-        }
+        },
+        "InstallLatestAwsSdk": true
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
