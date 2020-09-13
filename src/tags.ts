@@ -9,6 +9,9 @@ export function tagResources(
   app: cdk.App,
   tags: (stack: cdk.Stack) => Record<string, string>,
 ): void {
+  // Keep the deprecated code to remain compatible with older CDK versions.
+  // We will resolve this deprecation later.
+  // eslint-disable-next-line deprecation/deprecation
   app.node.applyAspect({
     visit(construct: cdk.IConstruct) {
       if (cdk.TagManager.isTaggable(construct)) {
