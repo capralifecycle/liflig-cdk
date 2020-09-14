@@ -275,6 +275,56 @@
     }
   },
   "Outputs": {
+    "BuildArtifactsEcrRepoUri8E98C2C4": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            {
+              "Fn::Select": [
+                4,
+                {
+                  "Fn::Split": [
+                    ":",
+                    {
+                      "Fn::GetAtt": [
+                        "BuildArtifactsEcrRepository58C90D9A",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            ".dkr.ecr.",
+            {
+              "Fn::Select": [
+                3,
+                {
+                  "Fn::Split": [
+                    ":",
+                    {
+                      "Fn::GetAtt": [
+                        "BuildArtifactsEcrRepository58C90D9A",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/",
+            {
+              "Ref": "BuildArtifactsEcrRepository58C90D9A"
+            }
+          ]
+        ]
+      }
+    },
     "BuildArtifactsBucketNameFFDA2A82": {
       "Value": "some-bucket-name"
     },
