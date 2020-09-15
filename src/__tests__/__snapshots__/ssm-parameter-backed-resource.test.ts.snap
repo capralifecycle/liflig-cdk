@@ -19,7 +19,6 @@ Object {
   "Resources": Object {
     "AWS679f53fac002430cb0da5b7982bd22872D164C4C": Object {
       "DependsOn": Array [
-        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
         "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
       ],
       "Properties": Object {
@@ -104,32 +103,6 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "ssm:PutParameter",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            Object {
-              "Action": "ssm:DeleteParameter",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
-        "Roles": Array [
-          Object {
-            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "Bucket83908E77": Object {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -137,6 +110,9 @@ Object {
     },
     "BucketParamParameucentral1ResoureB1DD6C9F": Object {
       "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC",
+      ],
       "Properties": Object {
         "Create": Object {
           "action": "putParameter",
@@ -191,6 +167,32 @@ Object {
       },
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",
+    },
+    "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "ssm:DeleteParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
   },
 }
@@ -230,7 +232,6 @@ Object {
   "Resources": Object {
     "AWS679f53fac002430cb0da5b7982bd22872D164C4C": Object {
       "DependsOn": Array [
-        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
         "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
       ],
       "Properties": Object {
@@ -315,32 +316,6 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "ssm:PutParameter",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            Object {
-              "Action": "ssm:DeleteParameter",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
-        "Roles": Array [
-          Object {
-            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "Bucket83908E77": Object {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -348,6 +323,9 @@ Object {
     },
     "BucketParamParameucentral1ResoureB1DD6C9F": Object {
       "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC",
+      ],
       "Properties": Object {
         "Create": Object {
           "action": "putParameter",
@@ -403,8 +381,63 @@ Object {
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",
     },
+    "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "ssm:DeleteParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BucketParamParameucentral1ResoureCustomResourcePolicyEAAE68EC",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BucketParamParamuseast1ResoureCustomResourcePolicyE00D6F85": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "ssm:DeleteParameter",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BucketParamParamuseast1ResoureCustomResourcePolicyE00D6F85",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "BucketParamParamuseast1ResoureEC3872F3": Object {
       "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "BucketParamParamuseast1ResoureCustomResourcePolicyE00D6F85",
+      ],
       "Properties": Object {
         "Create": Object {
           "action": "putParameter",
