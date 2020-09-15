@@ -140,6 +140,22 @@ function removeAssetDetailsFromManifest(data: any): any {
 
   return data
 }
+/**
+ * Remove the CDKMetadata resources that is part of the synthesized
+ * template since CDK 1.63.0.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeCdkMetadataResourceFromTemplate(data: any): any {
+  const cp = {
+    ...data,
+    Resources: {
+      ...data.Resources,
+    },
+  }
+
+  delete cp.Resources.CDKMetadata
+  return cp
+}
 
 function prepareManifestForSnapshot(content: string): string {
   const input = JSON.parse(content)
@@ -172,6 +188,7 @@ async function prepareManifestFileForSnapshot(file: string): Promise<void> {
 function prepareTemplateForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
+    removeCdkMetadataResourceFromTemplate,
     // Avoid details (hashes) from assets.
     removeAssetDetailsFromTemplate,
   ].reduce((acc, fn) => fn(acc), input)
