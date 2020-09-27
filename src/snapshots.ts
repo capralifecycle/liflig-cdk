@@ -5,6 +5,7 @@ import * as cpy from "cpy"
 import * as del from "del"
 import * as fs from "fs"
 import * as path from "path"
+import * as glob from "glob"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeVersion(data: any): any {
@@ -215,27 +216,29 @@ export async function createCloudAssemblySnapshot(
   src: string,
   dst: string,
 ): Promise<void> {
-  await cpy(".", path.join(process.cwd(), dst), {
+  const base = path.join(process.cwd(), dst)
+
+  await cpy(".", base, {
     parents: true,
     cwd: path.join(process.cwd(), src),
   })
 
-  // Transform the manifest to be more snapshot friendly.
-  await prepareManifestFileForSnapshot(path.join(dst, "manifest.json"))
-
   // Don't keep track of manifest version.
-  await del(path.join(dst, "cdk.out"))
+  await del(path.join(dst, "**/cdk.out"))
 
   // The tree file doesn't give us much value as part of the snapshot.
   await del(path.join(dst, "tree.json"))
 
   // Remove asset contents for now.
-  await del(path.join(dst, "asset.*"))
+  await del(path.join(dst, "**/asset.*"))
+
+  // Transform the manifest to be more snapshot friendly.
+  for (const file of glob.sync("**/manifest.json", { cwd: base })) {
+    await prepareManifestFileForSnapshot(path.join(base, file))
+  }
 
   // Transform all templates.
-  for (const file of fs.readdirSync(dst, "utf-8")) {
-    if (file.endsWith("template.json")) {
-      await prepareTemplateFileForSnapshot(path.join(dst, file))
-    }
+  for (const file of glob.sync("**/*.template.json", { cwd: base })) {
+    await prepareTemplateFileForSnapshot(path.join(base, file))
   }
 }
