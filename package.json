@@ -65,7 +65,7 @@
   "dependencies": {
     "@capraconsulting/webapp-deploy-lambda": "1.1.1",
     "cpy": "^8.1.0",
-    "del": "^5.1.0",
+    "del": "^6.0.0",
     "execa": "^4.0.2",
     "glob": "7.1.6",
     "source-map-support": "^0.5.19"
