@@ -428,6 +428,7 @@
           },
           "Type": "NO_SOURCE"
         },
+        "EncryptionKey": "alias/aws/s3",
         "Tags": [
           {
             "Key": "Project",
