@@ -10,7 +10,12 @@
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "build-artifacts.template.json"
+        "templateFile": "build-artifacts.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "build-artifacts"
+        }
       },
       "metadata": {
         "/build-artifacts": [
@@ -79,6 +84,12 @@
             "type": "aws:cdk:logicalId",
             "data": "BuildArtifactsCiRoleArn6A5A560C"
           }
+        ],
+        "/build-artifacts/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
         ]
       }
     },
@@ -86,7 +97,12 @@
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "cdk-deploy-example.template.json"
+        "templateFile": "cdk-deploy-example.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "cdk-deploy-example"
+        }
       },
       "metadata": {
         "/cdk-deploy-example": [
@@ -203,6 +219,12 @@
             "type": "aws:cdk:logicalId",
             "data": "CdkDeployStartDeployFunctionArn175B012C"
           }
+        ],
+        "/cdk-deploy-example/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
         ]
       }
     },
@@ -210,7 +232,12 @@
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "ecs-update-image-no-artifact.template.json"
+        "templateFile": "ecs-update-image-no-artifact.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "ecs-update-image-no-artifact"
+        }
       },
       "metadata": {
         "/ecs-update-image-no-artifact": [
@@ -429,6 +456,12 @@
             "type": "aws:cdk:logicalId",
             "data": "EcsUpdateImageStatusFunction5A0B47E5"
           }
+        ],
+        "/ecs-update-image-no-artifact/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
         ]
       }
     },
@@ -436,7 +469,12 @@
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "ecs-update-image.template.json"
+        "templateFile": "ecs-update-image.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "ecs-update-image"
+        }
       },
       "metadata": {
         "/ecs-update-image": [
@@ -697,6 +735,12 @@
             "type": "aws:cdk:logicalId",
             "data": "EcsUpdateImageStatusFunction5A0B47E5"
           }
+        ],
+        "/ecs-update-image/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
         ]
       }
     },
@@ -704,7 +748,12 @@
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
-        "templateFile": "ssm-parameter-reader.template.json"
+        "templateFile": "ssm-parameter-reader.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "ssm-parameter-reader"
+        }
       },
       "metadata": {
         "/ssm-parameter-reader": [
@@ -752,6 +801,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          }
+        ],
+        "/ssm-parameter-reader/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
           }
         ]
       }
