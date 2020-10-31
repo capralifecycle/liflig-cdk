@@ -50,7 +50,7 @@
     "aws-cdk": "1.70.0",
     "aws-sdk": "2.686.0",
     "eslint": "7.12.1",
-    "eslint-config-prettier": "6.14.0",
+    "eslint-config-prettier": "6.15.0",
     "eslint-plugin-deprecation": "1.1.0",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "4.3.0",
