@@ -1,3 +1,8 @@
+import * as ses from "./ses"
+
+// TODO: We want to switch exports so they every construct under
+//  a namespace such as the sns export.
+
 export { BastionHost } from "./bastion-host"
 export * from "./build-artifacts"
 export * from "./cdk-deploy"
@@ -10,6 +15,7 @@ export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
 export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
+export { ses }
 
 /**
  * Check if we are synthesizing a snapshot by setting IS_SNAPSHOT
