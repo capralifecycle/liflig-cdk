@@ -38,12 +38,16 @@ function removeTrace(data: any): any {
 function removeRuntimeLibraries(data: any): any {
   const cp = {
     ...data,
-    runtime: {
-      ...data.runtime,
-    },
   }
 
-  delete cp.runtime.libraries
+  if (data.runtime) {
+    cp.runtime = {
+      ...data.runtime,
+    }
+
+    delete cp.runtime.libraries
+  }
+
   return cp
 }
 
