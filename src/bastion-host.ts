@@ -3,8 +3,8 @@ import * as iam from "@aws-cdk/aws-iam"
 import * as cdk from "@aws-cdk/core"
 
 interface Props {
-  vpc: ec2.Vpc
-  securityGroup: ec2.SecurityGroup
+  vpc: ec2.IVpc
+  securityGroup: ec2.ISecurityGroup
   subnetSelection?: ec2.SubnetSelection
 }
 
