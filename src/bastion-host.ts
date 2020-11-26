@@ -4,7 +4,12 @@ import * as cdk from "@aws-cdk/core"
 
 interface Props {
   vpc: ec2.IVpc
-  securityGroup: ec2.ISecurityGroup
+  /**
+   * The security group used for the EC2 instance.
+   *
+   * @default - a security group will be created
+   */
+  securityGroup?: ec2.ISecurityGroup
   /**
    * The subnets to place the bastion host.
    *
@@ -33,17 +38,25 @@ interface Props {
  * https://confluence.capraconsulting.no/x/q8UBC
  */
 export class BastionHost extends cdk.Construct {
+  public readonly securityGroup: ec2.ISecurityGroup
+
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id)
 
     const region = cdk.Stack.of(this).region
+
+    this.securityGroup =
+      props.securityGroup ??
+      new ec2.SecurityGroup(this, "SecurityGroup", {
+        vpc: props.vpc,
+      })
 
     const instance = new ec2.Instance(this, "Instance", {
       vpc: props.vpc,
       vpcSubnets: props.subnetSelection ?? {
         subnetType: ec2.SubnetType.PUBLIC,
       },
-      securityGroup: props.securityGroup,
+      securityGroup: this.securityGroup,
       instanceName: "Bastion",
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,
