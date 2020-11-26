@@ -5,6 +5,17 @@ import * as cdk from "@aws-cdk/core"
 interface Props {
   vpc: ec2.IVpc
   securityGroup: ec2.ISecurityGroup
+  /**
+   * The subnets to place the bastion host.
+   *
+   * Note that if placed inside private subnet, the VPC must have
+   * VPC endpoints to access relevant AWS services for Systems Manager
+   * to work in order to be able to connect to the instance.
+   *
+   * See https://aws.amazon.com/premiumsupport/knowledge-center/ec2-systems-manager-vpc-endpoints/
+   *
+   * @default - public subnets
+   */
   subnetSelection?: ec2.SubnetSelection
 }
 
@@ -29,7 +40,9 @@ export class BastionHost extends cdk.Construct {
 
     const instance = new ec2.Instance(this, "Instance", {
       vpc: props.vpc,
-      vpcSubnets: props.subnetSelection,
+      vpcSubnets: props.subnetSelection ?? {
+        subnetType: ec2.SubnetType.PUBLIC,
+      },
       securityGroup: props.securityGroup,
       instanceName: "Bastion",
       instanceType: ec2.InstanceType.of(

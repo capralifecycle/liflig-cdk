@@ -43,7 +43,7 @@ Object {
           },
         ],
         "SubnetId": Object {
-          "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+          "Fn::ImportValue": "Stack1:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
         },
         "Tags": Array [
           Object {
