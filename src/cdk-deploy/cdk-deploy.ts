@@ -3,6 +3,7 @@ import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
+import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
 import { startDeployHandler } from "./start-deploy-handler"
 import { statusHandler } from "./status-handler"
 
@@ -37,6 +38,12 @@ interface Props extends cdk.StackProps {
    * used by the CDK CLI.
    */
   cdkContext: Record<string, string | string[]>
+  /**
+   * The secret containing username and password (or access token)
+   * for a valid docker user. This is used to access private
+   * repositories or to handle docker hub's pull rate limiting.
+   */
+  dockerCredentialsSecretName?: string
 }
 
 /**
@@ -102,7 +109,16 @@ export class CdkDeploy extends cdk.Construct {
     // See https://aws.amazon.com/blogs/devops/using-aws-codebuild-to-execute-administrative-tasks/
     const codebuildProject = new codebuild.Project(this, "CodebuildProject", {
       environment: {
-        buildImage: codebuild.LinuxBuildImage.fromDockerRegistry("node:12"),
+        buildImage:
+          props.dockerCredentialsSecretName == null
+            ? codebuild.LinuxBuildImage.fromDockerRegistry("node:12")
+            : codebuild.LinuxBuildImage.fromDockerRegistry("node:12", {
+                secretsManagerCredentials: secretsmanager.Secret.fromSecretNameV2(
+                  this,
+                  "dockerCredentialsSecretName",
+                  props.dockerCredentialsSecretName,
+                ),
+              }),
       },
       buildSpec: codebuild.BuildSpec.fromObject({
         version: "0.2",
