@@ -8,6 +8,7 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "DomainName": "example.com",
+        "Serial": 1,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",
@@ -209,6 +210,7 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "DomainName": "example.com",
+        "Serial": 1,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",

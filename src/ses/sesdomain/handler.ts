@@ -27,7 +27,6 @@ interface RecordSetProperty {
 export const sesDomainHandler: OnEventHandler = async (event) => {
   const AWS = require("aws-sdk")
 
-  const dmarc = '"v=DMARC1; p=none; pct=100; sp=none; aspf=r;"'
   const ttl = "1800"
 
   const ses: AWS.SES = new AWS.SES() as _AWS.SES
@@ -56,13 +55,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
       })
     }
 
-    records.push({
-      Name: `_dmarc.${domainName}.`,
-      Type: "TXT",
-      ResourceRecords: [dmarc],
-      TTL: ttl,
-    })
-
     return records
   }
 
@@ -79,6 +71,7 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
 
     case "Create":
     case "Update":
+      // Idempotent.
       const response1 = await ses
         .verifyDomainIdentity({
           Domain: domainName,
@@ -88,6 +81,7 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
       console.log(`ses.verifyDomainIdentity: ${JSON.stringify(response1)}`)
       const verificationToken = response1["VerificationToken"]
 
+      // Idempotent.
       const response2 = await ses
         .verifyDomainDkim({ Domain: domainName })
         .promise()

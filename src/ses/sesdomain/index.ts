@@ -27,6 +27,9 @@ export class SesDomain extends cdk.Construct {
       serviceToken: SesDomainProvider.getOrCreate(this).serviceToken,
       properties: {
         DomainName: props.domainName,
+        // Bump this if changing logic in the lambda that should be
+        // re-evaluated.
+        Serial: 1,
       },
     })
 
