@@ -15,10 +15,23 @@ interface Props {
    * be performed manually.
    */
   hostedZone?: r53.IHostedZone
+  /**
+   * Include or exclude verification TXT record.
+   *
+   * CNAME records for DKIM tokens will still be created.
+   *
+   * Route 53 will not allow multiple TXT records with the same name.
+   * This option allows to "opt-out" of the records and leaving
+   * the caller responsible of handling it.
+   *
+   * @default true
+   */
+  includeVerificationRecord?: boolean
 }
 
 export class SesDomain extends cdk.Construct {
   public route53RecordSets: cdk.IResolvable
+  public verificationToken: string
 
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id)
@@ -27,6 +40,9 @@ export class SesDomain extends cdk.Construct {
       serviceToken: SesDomainProvider.getOrCreate(this).serviceToken,
       properties: {
         DomainName: props.domainName,
+        IncludeVerificationRecord: (
+          props.includeVerificationRecord ?? true
+        ).toString(),
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,
@@ -34,6 +50,7 @@ export class SesDomain extends cdk.Construct {
     })
 
     this.route53RecordSets = resource.getAtt("Route53RecordSets")
+    this.verificationToken = resource.getAttString("VerificationToken")
 
     if (props.hostedZone) {
       new r53.CfnRecordSetGroup(this, "RecordSetGroup", {

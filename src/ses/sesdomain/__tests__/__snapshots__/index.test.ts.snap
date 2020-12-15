@@ -8,6 +8,7 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "DomainName": "example.com",
+        "IncludeVerificationRecord": "true",
         "Serial": 1,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -210,6 +211,7 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "DomainName": "example.com",
+        "IncludeVerificationRecord": "true",
         "Serial": 1,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [

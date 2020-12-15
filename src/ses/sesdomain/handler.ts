@@ -32,6 +32,12 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
   const ses: AWS.SES = new AWS.SES() as _AWS.SES
 
   const domainName = event.ResourceProperties["DomainName"]
+  const includeVerificationRecord =
+    event.ResourceProperties["IncludeVerificationRecord"] == "true"
+
+  if (!includeVerificationRecord) {
+    console.log("Excluding verification TXT record")
+  }
 
   function createRoute53RecordSets(
     verificationToken: string,
@@ -39,12 +45,14 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
   ) {
     const records: RecordSetProperty[] = []
 
-    records.push({
-      Name: `_amazonses.${domainName}.`,
-      Type: "TXT",
-      ResourceRecords: [`"${verificationToken}"`],
-      TTL: ttl,
-    })
+    if (includeVerificationRecord) {
+      records.push({
+        Name: `_amazonses.${domainName}.`,
+        Type: "TXT",
+        ResourceRecords: [`"${verificationToken}"`],
+        TTL: ttl,
+      })
+    }
 
     for (const token of dkimTokens) {
       records.push({
@@ -95,6 +103,7 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
             verificationToken,
             dkimTokens,
           ),
+          VerificationToken: verificationToken,
         },
       }
   }
