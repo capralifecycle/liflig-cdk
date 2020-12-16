@@ -13,9 +13,9 @@ interface StartDeployExpectedInput {
 
 // This function is inline-compiled for the lambda.
 // It must be self-contained.
-export const startDeployHandler: Handler<Partial<
-  StartDeployExpectedInput
->> = async (event, context) => {
+export const startDeployHandler: Handler<
+  Partial<StartDeployExpectedInput>
+> = async (event, context) => {
   const AWS = require("aws-sdk")
 
   const codebuild = new AWS.CodeBuild() as _AWS.CodeBuild
