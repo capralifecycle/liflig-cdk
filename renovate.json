@@ -1,5 +1,6 @@
 {
-  "extends": ["github>capraconsulting/renovate-config:library"],
-  "automerge": true,
-  "automergeType": "branch"
+  "extends": [
+    "github>capraconsulting/renovate-config:library",
+    "github>capraconsulting/renovate-config:aggressive"
+  ]
 }
