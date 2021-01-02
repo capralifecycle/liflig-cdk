@@ -326,7 +326,9 @@
       }
     },
     "BuildArtifactsBucketNameFFDA2A82": {
-      "Value": "some-bucket-name"
+      "Value": {
+        "Ref": "BuildArtifactsS3BucketF34A0F91"
+      }
     },
     "BuildArtifactsCiRoleArn6A5A560C": {
       "Value": {
