@@ -1,6 +1,11 @@
 import * as cdk from "@aws-cdk/core"
 
-function getApp(scope: cdk.Construct): cdk.App {
+function getStageOrApp(scope: cdk.Construct): cdk.Construct {
+  const stage = cdk.Stage.of(scope)
+  if (stage != null) {
+    return stage
+  }
+
   const app = scope.node.root
   if (!cdk.App.isApp(app)) {
     throw new Error(`Could not locate cdk App for ${scope.node.id}`)
@@ -30,7 +35,7 @@ export class ForceExports extends cdk.Stack {
   private i = 0
 
   constructor(scope: cdk.Construct) {
-    super(getApp(scope), `EXPORTS-${scope.node.id}`, {
+    super(getStageOrApp(scope), `EXPORTS-${scope.node.id}`, {
       env: {
         account: cdk.Stack.of(scope).account,
         region: cdk.Stack.of(scope).region,
