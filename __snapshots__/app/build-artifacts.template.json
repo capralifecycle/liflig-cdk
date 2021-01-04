@@ -13,6 +13,14 @@
           ]
         },
         "BucketName": "some-bucket-name",
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "NoncurrentVersionExpirationInDays": 10,
+              "Status": "Enabled"
+            }
+          ]
+        },
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
@@ -32,7 +40,10 @@
             "Key": "StackName",
             "Value": "build-artifacts"
           }
-        ]
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
       },
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain",

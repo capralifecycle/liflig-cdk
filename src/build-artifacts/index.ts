@@ -90,6 +90,12 @@ export class BuildArtifacts extends cdk.Construct {
         bucketName: props.bucketName,
         encryption: s3.BucketEncryption.S3_MANAGED,
         blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        versioned: true,
+        lifecycleRules: [
+          {
+            noncurrentVersionExpiration: cdk.Duration.days(10),
+          },
+        ],
       })
     }
 
