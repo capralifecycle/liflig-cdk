@@ -6,6 +6,13 @@
         "file": "tree.json"
       }
     },
+    "build-artifacts.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "build-artifacts.assets.json",
+        "requiresBootstrapStackVersion": 4
+      }
+    },
     "build-artifacts": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://112233445566/eu-west-1",
@@ -15,8 +22,18 @@
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "build-artifacts"
-        }
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "requiresBootstrapStackVersion": 4,
+        "additionalDependencies": [
+          "build-artifacts.assets"
+        ]
       },
+      "dependencies": [
+        "build-artifacts.assets"
+      ],
       "metadata": {
         "/build-artifacts": [
           {
@@ -90,7 +107,26 @@
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
+        ],
+        "/build-artifacts/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/build-artifacts/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
         ]
+      }
+    },
+    "cdk-deploy-example.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "cdk-deploy-example.assets.json",
+        "requiresBootstrapStackVersion": 4
       }
     },
     "cdk-deploy-example": {
@@ -102,8 +138,18 @@
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "cdk-deploy-example"
-        }
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "requiresBootstrapStackVersion": 4,
+        "additionalDependencies": [
+          "cdk-deploy-example.assets"
+        ]
       },
+      "dependencies": [
+        "cdk-deploy-example.assets"
+      ],
       "metadata": {
         "/cdk-deploy-example": [
           {
@@ -225,7 +271,26 @@
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
+        ],
+        "/cdk-deploy-example/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/cdk-deploy-example/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
         ]
+      }
+    },
+    "ecs-update-image-no-artifact.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ecs-update-image-no-artifact.assets.json",
+        "requiresBootstrapStackVersion": 4
       }
     },
     "ecs-update-image-no-artifact": {
@@ -237,8 +302,18 @@
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ecs-update-image-no-artifact"
-        }
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "requiresBootstrapStackVersion": 4,
+        "additionalDependencies": [
+          "ecs-update-image-no-artifact.assets"
+        ]
       },
+      "dependencies": [
+        "ecs-update-image-no-artifact.assets"
+      ],
       "metadata": {
         "/ecs-update-image-no-artifact": [
           {
@@ -462,7 +537,26 @@
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
+        ],
+        "/ecs-update-image-no-artifact/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ecs-update-image-no-artifact/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
         ]
+      }
+    },
+    "ecs-update-image.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ecs-update-image.assets.json",
+        "requiresBootstrapStackVersion": 4
       }
     },
     "ecs-update-image": {
@@ -474,8 +568,18 @@
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ecs-update-image"
-        }
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "requiresBootstrapStackVersion": 4,
+        "additionalDependencies": [
+          "ecs-update-image.assets"
+        ]
       },
+      "dependencies": [
+        "ecs-update-image.assets"
+      ],
       "metadata": {
         "/ecs-update-image": [
           {
@@ -741,7 +845,26 @@
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
+        ],
+        "/ecs-update-image/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ecs-update-image/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
         ]
+      }
+    },
+    "ssm-parameter-reader.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ssm-parameter-reader.assets.json",
+        "requiresBootstrapStackVersion": 4
       }
     },
     "ssm-parameter-reader": {
@@ -753,14 +876,20 @@
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ssm-parameter-reader"
-        }
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "requiresBootstrapStackVersion": 4,
+        "additionalDependencies": [
+          "ssm-parameter-reader.assets"
+        ]
       },
+      "dependencies": [
+        "ssm-parameter-reader.assets"
+      ],
       "metadata": {
         "/ssm-parameter-reader": [
-          {
-            "type": "aws:cdk:asset",
-            "data": "snapshot-value"
-          },
           {
             "type": "aws:cdk:stack-tags",
             "data": [
@@ -807,6 +936,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
+          }
+        ],
+        "/ssm-parameter-reader/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ssm-parameter-reader/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
           }
         ]
       }

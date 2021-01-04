@@ -1,4 +1,5 @@
 {
+  "@aws-cdk/core:newStyleStackSynthesis": "true",
   "availability-zones:account=112233445566:region=eu-west-1": [
     "eu-west-1a",
     "eu-west-1b",
