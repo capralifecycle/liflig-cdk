@@ -4,6 +4,10 @@ import "source-map-support/register"
 import { EcsUpdateImageArtifactStatus, tagResources } from "../src"
 import { BuildArtifactsStack } from "./build-artifacts"
 import { CdkDeployStack } from "./cdk-deploy-stack"
+import {
+  LifligCdkPipelineCdkSourceStack,
+  LifligCdkPipelineCloudAssemblyStack,
+} from "./cdk-pipelines"
 import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 import { SsmParameterReaderStack } from "./ssm-parameter-reader-stack"
 
@@ -43,3 +47,7 @@ new EcsUpdateImageStack(app, "ecs-update-image", {
 
 // This stack is used primarily to have a stack with assets.
 new SsmParameterReaderStack(app, "ssm-parameter-reader", { env })
+
+// CDK Pipelines don't work well with snapshots yet.
+new LifligCdkPipelineCdkSourceStack(app, "cdk-pipeline-cdk-source")
+new LifligCdkPipelineCloudAssemblyStack(app, "cdk-pipeline-cloud-assembly")

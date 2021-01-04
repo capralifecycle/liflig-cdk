@@ -1,5 +1,7 @@
 # These lines are only here due to jenkinsfileCheckReferencedStacks test.
 # They are intentionally not ordered lexicographically.
+cdk-pipeline-cdk-source
+cdk-pipeline-cloud-assembly
 ssm-parameter-reader
 ecs-update-image
 ecs-update-image-no-artifact

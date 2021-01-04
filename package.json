@@ -27,6 +27,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
+    "assets/**/*",
     "lib/**/*"
   ],
   "publishConfig": {
@@ -35,6 +36,8 @@
   "devDependencies": {
     "@aws-cdk/assert": "1.81.0",
     "@aws-cdk/aws-codebuild": "1.81.0",
+    "@aws-cdk/aws-codepipeline": "1.81.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.81.0",
     "@aws-cdk/aws-ecs": "1.81.0",
     "@aws-cdk/aws-events-targets": "1.81.0",
     "@aws-cdk/aws-iam": "1.81.0",
@@ -44,6 +47,7 @@
     "@aws-cdk/aws-stepfunctions-tasks": "1.81.0",
     "@aws-cdk/core": "1.81.0",
     "@aws-cdk/custom-resources": "1.81.0",
+    "@aws-cdk/pipelines": "1.81.0",
     "@commitlint/cli": "11.0.0",
     "@commitlint/config-conventional": "11.0.0",
     "@types/aws-lambda": "8.10.68",
@@ -81,6 +85,8 @@
   },
   "peerDependencies": {
     "@aws-cdk/aws-codebuild": "^1.38.0",
+    "@aws-cdk/aws-codepipeline": "^1.38.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.38.0",
     "@aws-cdk/aws-ecs": "^1.38.0",
     "@aws-cdk/aws-events-targets": "^1.38.0",
     "@aws-cdk/aws-iam": "^1.38.0",
@@ -89,6 +95,7 @@
     "@aws-cdk/aws-stepfunctions": "^1.38.0",
     "@aws-cdk/aws-stepfunctions-tasks": "^1.38.0",
     "@aws-cdk/core": "^1.38.0",
-    "@aws-cdk/custom-resources": "^1.38.0"
+    "@aws-cdk/custom-resources": "^1.38.0",
+    "@aws-cdk/pipelines": "^1.38.0"
   }
 }
