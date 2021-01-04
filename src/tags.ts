@@ -12,7 +12,7 @@ export function tagResources(
   // Keep the deprecated code to remain compatible with older CDK versions.
   // We will resolve this deprecation later.
   // eslint-disable-next-line deprecation/deprecation
-  scope.node.applyAspect({
+  cdk.Aspects.of(scope).add({
     visit(construct: cdk.IConstruct) {
       if (cdk.TagManager.isTaggable(construct)) {
         // We pick the last stack in chain to support stages where
