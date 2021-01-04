@@ -1,6 +1,7 @@
 import * as ssm from "@aws-cdk/aws-ssm"
 import * as cdk from "@aws-cdk/core"
 import { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
+import { getStageOrApp } from "./utils"
 
 type ReferenceToResource<T> = (
   scope: cdk.Construct,
@@ -66,14 +67,16 @@ export class SsmParameterBackedResource<T> extends cdk.Construct {
 
   /**
    * Get the resource by resolving the value from SSM Parameter Store
-   * in case we are cross-region.
+   * in case we are cross-region or cross-stage.
    */
   public get(scope: cdk.Construct, id: string): T {
     const producerRegion = cdk.Stack.of(this).region
     const consumerRegion = cdk.Stack.of(scope).region
 
-    // Fast-path: Same region.
-    if (producerRegion === consumerRegion) {
+    const sameStageOrApp = getStageOrApp(this) === getStageOrApp(scope)
+
+    // Fast-path: Same region and parent stage/app.
+    if (producerRegion === consumerRegion && sameStageOrApp) {
       return this.resource
     }
 
@@ -83,7 +86,11 @@ export class SsmParameterBackedResource<T> extends cdk.Construct {
       )
     }
 
-    scope.node.addDependency(this)
+    // Only add dependency if within same app/stage. If not it
+    // is the caller responsibility to ensure deployment order.
+    if (sameStageOrApp) {
+      scope.node.addDependency(this)
+    }
 
     new cdk.CfnParameter(scope, `${id}Nonce`, {
       default: this.nonce,

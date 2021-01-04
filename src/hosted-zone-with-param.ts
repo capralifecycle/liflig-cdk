@@ -2,6 +2,7 @@ import * as route53 from "@aws-cdk/aws-route53"
 import * as ssm from "@aws-cdk/aws-ssm"
 import * as cdk from "@aws-cdk/core"
 import { SsmParameterReader } from "./ssm-parameter-reader"
+import { getStageOrApp } from "./utils"
 
 interface Props extends route53.HostedZoneProps {
   /**
@@ -60,12 +61,19 @@ export class HostedZoneWithParam extends cdk.Construct {
     const hostedZoneRegion = cdk.Stack.of(this).region
     const consumerRegion = cdk.Stack.of(scope).region
 
-    // Fast-path: Same region.
-    if (hostedZoneRegion === consumerRegion) {
+    const sameStageOrApp = getStageOrApp(this) === getStageOrApp(scope)
+
+    // Fast-path: Same region and parent stage/app.
+    if (hostedZoneRegion === consumerRegion && sameStageOrApp) {
       return this.hostedZone
     }
 
-    scope.node.addDependency(this)
+    // Only add dependency if within same app/stage. If not it
+    // is the caller responsibility to ensure deployment order.
+    if (sameStageOrApp) {
+      scope.node.addDependency(this)
+    }
+
     const hostedZoneId = new SsmParameterReader(scope, `${id}Param`, {
       parameterName: this.idParamName,
       region: cdk.Stack.of(this).region,
