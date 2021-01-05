@@ -18,7 +18,7 @@ export function getVariable(name: string): string {
   }
 
   if (variables == null) {
-    const variablesFile = path.join(process.cwd(), "../variables.json")
+    const variablesFile = path.join(process.cwd(), "variables.json")
 
     if (!fs.existsSync(variablesFile)) {
       throw new Error("variables.json not found")
