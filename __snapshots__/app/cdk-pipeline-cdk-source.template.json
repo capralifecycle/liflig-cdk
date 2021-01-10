@@ -161,15 +161,15 @@
           },
           "S3Key": "snapshot-value.zip"
         },
-        "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": [
             "PipelinePrepareCdkSourceFnServiceRole4C7FA4DB",
             "Arn"
           ]
         },
-        "Runtime": "python3.8",
+        "Handler": "index.handler",
         "MemorySize": 512,
+        "Runtime": "python3.8",
         "Tags": [
           {
             "Key": "Project",
