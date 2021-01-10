@@ -1,3 +1,4 @@
+import { Distribution } from "@aws-cdk/aws-cloudfront"
 import { Bucket } from "@aws-cdk/aws-s3"
 import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
@@ -15,13 +16,22 @@ test("webapp-deploy-via-role", () => {
 
   const webBucket = new Bucket(stack1, "WebBucket")
 
+  const distribution = Distribution.fromDistributionAttributes(
+    stack1,
+    "Distribution",
+    {
+      distributionId: "EKJ2IPY1KTEAR1",
+      domainName: "example.com",
+    },
+  )
+
   new WebappDeployViaRole(stack1, "WebappDeploy", {
     externalRoleArn: "arn:aws:iam::112233445566:role/some-role",
     roleName: "my-role",
     webappDeploy: {
       buildsBucket,
       webBucket,
-      distributionId: "EKJ2IPY1KTEAR1",
+      distribution,
     },
   })
 
