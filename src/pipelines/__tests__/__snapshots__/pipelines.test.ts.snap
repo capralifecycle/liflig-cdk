@@ -624,7 +624,7 @@ Object {
                     },
                     ":kms:eu-west-1:",
                     Object {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     ":key/",
                     Object {
@@ -897,7 +897,7 @@ Object {
                     },
                     ":kms:eu-west-1:",
                     Object {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     ":key/",
                     Object {
@@ -1484,7 +1484,7 @@ Object {
                     },
                     ":kms:eu-west-1:",
                     Object {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     ":key/",
                     Object {
@@ -1757,7 +1757,7 @@ Object {
                     },
                     ":kms:eu-west-1:",
                     Object {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     ":key/",
                     Object {
