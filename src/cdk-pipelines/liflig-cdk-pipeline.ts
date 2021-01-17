@@ -106,6 +106,7 @@ export class LifligCdkPipeline extends cdk.Construct {
   }
 
   public readonly cdkPipeline: pipelines.CdkPipeline
+  public readonly codePipeline: codepipeline.Pipeline
 
   constructor(scope: cdk.Construct, id: string, props: LifligCdkPipelineProps) {
     super(scope, id)
@@ -136,7 +137,7 @@ export class LifligCdkPipeline extends cdk.Construct {
 
     const dummyArtifact = new codepipeline.Artifact()
 
-    const codePipeline = new codepipeline.Pipeline(this, "CodePipeline", {
+    this.codePipeline = new codepipeline.Pipeline(this, "CodePipeline", {
       pipelineName: props.pipelineName,
       stages: [
         {
@@ -159,7 +160,7 @@ export class LifligCdkPipeline extends cdk.Construct {
 
     this.cdkPipeline = new pipelines.CdkPipeline(this, "CdkPipeline", {
       cloudAssemblyArtifact: cloudAssemblyArtifact,
-      codePipeline,
+      codePipeline: this.codePipeline,
     })
   }
 
