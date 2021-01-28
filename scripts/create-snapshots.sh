@@ -3,7 +3,7 @@ set -eu -o pipefail
 
 rm -rf cdk.out
 
-node_modules/.bin/cdk synth
+IS_SNAPSHOT=true node_modules/.bin/cdk synth
 
 # Wipe previous snapshots as we are overwriting it.
 rm -rf __snapshots__

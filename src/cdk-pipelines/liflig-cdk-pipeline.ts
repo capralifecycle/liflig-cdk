@@ -4,7 +4,9 @@ import * as lambda from "@aws-cdk/aws-lambda"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 import * as pipelines from "@aws-cdk/pipelines"
+import * as fs from "fs"
 import * as path from "path"
+import { isSnapshot } from ".."
 import { getGriidArtefactBucket } from "../griid/artefact-bucket"
 import {
   cloudAssemblyLookupHandler,
@@ -161,7 +163,26 @@ export class LifligCdkPipeline extends cdk.Construct {
     this.cdkPipeline = new pipelines.CdkPipeline(this, "CdkPipeline", {
       cloudAssemblyArtifact: cloudAssemblyArtifact,
       codePipeline: this.codePipeline,
+      cdkCliVersion: LifligCdkPipeline.getCdkCliVersion(),
     })
+  }
+
+  private static getCdkCliVersion(): string {
+    const file = path.join(process.cwd(), "node_modules/aws-cdk/package.json")
+    if (!fs.existsSync(file)) {
+      throw new Error(`Could not find package.json for aws-dk at '${file}'`)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const version = JSON.parse(fs.readFileSync(file, "utf-8")).version as string
+
+    // Check for snapshot after running code above, so we
+    // ensure the code works.
+    if (isSnapshot) {
+      return "snapshot-value"
+    }
+
+    return version
   }
 
   private cloudAssemblyStage(
