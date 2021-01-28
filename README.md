@@ -1,7 +1,5 @@
 # Liflig CDK
 
-[![Build Status](https://jenkins.capra.tv/buildStatus/icon?job=cals-libs/liflig-cdk/master)](https://jenkins.capra.tv/job/cals-libs/job/liflig-cdk/job/master)
-
 More details to come.
 
 ## State of repository and package
