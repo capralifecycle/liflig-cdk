@@ -167,10 +167,28 @@ export class LifligCdkPipeline extends cdk.Construct {
     })
   }
 
+  private static getAwsCdkPackageJsonFile(): string | undefined {
+    // Also look up the tree a bit to handle yarn workspaces.
+    const candidates = [
+      path.join(process.cwd(), "node_modules/aws-cdk/package.json"),
+      path.join(process.cwd(), "../node_modules/aws-cdk/package.json"),
+      path.join(process.cwd(), "../../node_modules/aws-cdk/package.json"),
+      path.join(process.cwd(), "../../../node_modules/aws-cdk/package.json"),
+    ]
+
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) {
+        return candidate
+      }
+    }
+
+    return undefined
+  }
+
   private static getCdkCliVersion(): string {
-    const file = path.join(process.cwd(), "node_modules/aws-cdk/package.json")
-    if (!fs.existsSync(file)) {
-      throw new Error(`Could not find package.json for aws-dk at '${file}'`)
+    const file = this.getAwsCdkPackageJsonFile()
+    if (file == null) {
+      throw new Error(`Could not find installed package.json for aws-cdk`)
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
