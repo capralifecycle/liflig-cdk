@@ -239,11 +239,7 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"TaskDefinition\\":\\"",
-              Object {
-                "Ref": "PipelinedevTaskDefinition33E76EBD",
-              },
-              "\\",\\"NetworkConfiguration\\":{\\"AwsvpcConfiguration\\":{\\"AssignPublicIp\\":\\"ENABLED\\",\\"Subnets\\":[\\"",
+              "\\",\\"TaskDefinition\\":\\"StackPipelinedevTaskDefinitionA1B33879\\",\\"NetworkConfiguration\\":{\\"AwsvpcConfiguration\\":{\\"AssignPublicIp\\":\\"ENABLED\\",\\"Subnets\\":[\\"",
               Object {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
               },
@@ -356,7 +352,115 @@ Object {
               "Action": "ecs:RunTask",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "PipelinedevTaskDefinition33E76EBD",
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        2,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        3,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        4,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        0,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "PipelinedevTaskDefinition33E76EBD",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "/",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "PipelinedevTaskDefinition33E76EBD",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                ],
               },
             },
             Object {
@@ -1099,11 +1203,7 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"TaskDefinition\\":\\"",
-              Object {
-                "Ref": "PipelinedevTaskDefinition33E76EBD",
-              },
-              "\\",\\"NetworkConfiguration\\":{\\"AwsvpcConfiguration\\":{\\"AssignPublicIp\\":\\"ENABLED\\",\\"Subnets\\":[\\"",
+              "\\",\\"TaskDefinition\\":\\"StackPipelinedevTaskDefinitionA1B33879\\",\\"NetworkConfiguration\\":{\\"AwsvpcConfiguration\\":{\\"AssignPublicIp\\":\\"ENABLED\\",\\"Subnets\\":[\\"",
               Object {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
               },
@@ -1216,7 +1316,115 @@ Object {
               "Action": "ecs:RunTask",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "PipelinedevTaskDefinition33E76EBD",
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        2,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        3,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        4,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "PipelinedevTaskDefinition33E76EBD",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        0,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "PipelinedevTaskDefinition33E76EBD",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "/",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "PipelinedevTaskDefinition33E76EBD",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                ],
               },
             },
             Object {
