@@ -4,7 +4,8 @@
       "type": "cdk:asset-manifest",
       "properties": {
         "file": "cdkpipelinecdksourceexample06670C59.assets.json",
-        "requiresBootstrapStackVersion": 4
+        "requiresBootstrapStackVersion": 4,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
     "cdkpipelinecdksourceexample06670C59": {
@@ -16,6 +17,7 @@
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value",
         "requiresBootstrapStackVersion": 4,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "cdkpipelinecdksourceexample06670C59.assets"
         ],
