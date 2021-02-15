@@ -40,7 +40,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -158,7 +158,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -324,7 +324,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -592,7 +592,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -902,7 +902,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -996,7 +996,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -1222,7 +1222,7 @@
         },
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
         "requiresBootstrapStackVersion": 4,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
