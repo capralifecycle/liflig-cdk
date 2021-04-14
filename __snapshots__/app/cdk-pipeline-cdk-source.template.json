@@ -1994,6 +1994,14 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "ap-east-1"
               ]
             },
@@ -2060,14 +2068,6 @@
                 },
                 "cn-northwest-1"
               ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-central-1"
-              ]
             }
           ]
         },
@@ -2078,7 +2078,23 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
               ]
             },
             {
@@ -2136,7 +2152,11 @@
                 },
                 "us-east-2"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
