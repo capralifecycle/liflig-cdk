@@ -72,7 +72,7 @@
     "typescript": "4.2.4"
   },
   "dependencies": {
-    "@capraconsulting/webapp-deploy-lambda": "1.2.1",
+    "@capraconsulting/webapp-deploy-lambda": "^1.2.1",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
     "execa": "^5.0.0",
