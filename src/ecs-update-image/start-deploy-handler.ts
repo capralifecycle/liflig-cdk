@@ -79,6 +79,8 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
     )
 
     const exclude = [
+      "registeredAt",
+      "registeredBy",
       "compatibilities",
       "requiresAttributes",
       "revision",
