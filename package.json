@@ -12,7 +12,7 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prepare": "npm run build",
+    "prepare": "npm run build && husky install",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh"
   },
@@ -62,7 +62,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-deprecation": "1.2.0",
     "eslint-plugin-prettier": "3.4.0",
-    "husky": "4.3.8",
+    "husky": "6.0.0",
     "jest": "26.6.3",
     "jest-cdk-snapshot": "1.4.1",
     "prettier": "2.2.1",
@@ -78,11 +78,6 @@
     "execa": "^5.0.0",
     "glob": "7.1.6",
     "source-map-support": "^0.5.19"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "peerDependencies": {
     "@aws-cdk/aws-codebuild": "^1.81.0",
