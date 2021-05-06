@@ -3,10 +3,6 @@
 // See https://github.com/capralifecycle/jenkins-pipeline-library
 @Library('cals') _
 
-// These lines are only here due to the jenkinsfileCheckReferencedStacks test.
-// build-artifacts
-// cdk-deploy-example
-
 buildConfig([
   slack: [
     channel: '#cals-dev-info',

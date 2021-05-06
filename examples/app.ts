@@ -11,10 +11,6 @@ import {
 import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 import { SsmParameterReaderStack } from "./ssm-parameter-reader-stack"
 
-// NOTE: New stacks must be added to the manual-stacks.txt file
-// so that the jenkinsfileCheckReferencedStacks test works
-// as expected.
-
 const app = new cdk.App()
 tagResources(app, (stack) => ({
   StackName: stack.stackName,

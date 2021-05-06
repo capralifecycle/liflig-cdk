@@ -17,8 +17,7 @@
     "snapshots": "./scripts/create-snapshots.sh"
   },
   "bin": {
-    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
-    "cdk-jenkinsfile-check-referenced-stacks": "lib/bin/cdk-jenkinsfile-check-referenced-stacks.js"
+    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"
   },
   "keywords": [
     "cdk"
