@@ -57,7 +57,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "cdk-pipeline-cloud-assembly/example/example"
     }
   }
 }

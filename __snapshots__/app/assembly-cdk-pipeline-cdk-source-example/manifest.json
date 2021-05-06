@@ -57,7 +57,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "cdk-pipeline-cdk-source/example/example"
     }
   }
 }

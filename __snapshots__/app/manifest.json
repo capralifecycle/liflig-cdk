@@ -136,7 +136,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "build-artifacts"
     },
     "cdk-deploy-example.assets": {
       "type": "cdk:asset-manifest",
@@ -302,7 +303,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "cdk-deploy-example"
     },
     "ecs-update-image-no-artifact.assets": {
       "type": "cdk:asset-manifest",
@@ -570,7 +572,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "ecs-update-image-no-artifact"
     },
     "ecs-update-image.assets": {
       "type": "cdk:asset-manifest",
@@ -880,7 +883,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "ecs-update-image"
     },
     "ssm-parameter-reader.assets": {
       "type": "cdk:asset-manifest",
@@ -974,7 +978,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "ssm-parameter-reader"
     },
     "cdk-pipeline-cdk-source.assets": {
       "type": "cdk:asset-manifest",
@@ -1164,18 +1169,6 @@
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
           }
         ],
-        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
         "/cdk-pipeline-cdk-source/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -1200,7 +1193,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "cdk-pipeline-cdk-source"
     },
     "cdk-pipeline-cloud-assembly.assets": {
       "type": "cdk:asset-manifest",
@@ -1360,18 +1354,6 @@
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
           }
         ],
-        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
         "/cdk-pipeline-cloud-assembly/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -1396,7 +1378,8 @@
             "data": "CheckBootstrapVersion"
           }
         ]
-      }
+      },
+      "displayName": "cdk-pipeline-cloud-assembly"
     }
   }
 }
