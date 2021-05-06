@@ -1,4 +1,14 @@
 import * as cdk from "@aws-cdk/core"
+import * as cm from "@aws-cdk/aws-certificatemanager"
+
+function shouldTag(construct: cdk.IConstruct) {
+  // See https://github.com/aws/aws-cdk/issues/14519#issuecomment-833103147
+  if (construct instanceof cm.DnsValidatedCertificate) {
+    return false
+  }
+
+  return true
+}
 
 /**
  * Tag all supported resources within an application.
@@ -11,7 +21,7 @@ export function tagResources(
 ): void {
   cdk.Aspects.of(scope).add({
     visit(construct: cdk.IConstruct) {
-      if (cdk.TagManager.isTaggable(construct)) {
+      if (cdk.TagManager.isTaggable(construct) && shouldTag(construct)) {
         // We pick the last stack in chain to support stages where
         // there are multiple stacks.
         const allStacks = construct.node.scopes.filter((it): it is cdk.Stack =>
