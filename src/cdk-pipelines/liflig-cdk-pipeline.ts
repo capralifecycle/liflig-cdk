@@ -6,7 +6,6 @@ import * as cdk from "@aws-cdk/core"
 import * as pipelines from "@aws-cdk/pipelines"
 import * as fs from "fs"
 import * as path from "path"
-import { isSnapshot } from ".."
 import { getGriidArtefactBucket } from "../griid/artefact-bucket"
 import {
   cloudAssemblyLookupHandler,
@@ -163,7 +162,6 @@ export class LifligCdkPipeline extends cdk.Construct {
     this.cdkPipeline = new pipelines.CdkPipeline(this, "CdkPipeline", {
       cloudAssemblyArtifact: cloudAssemblyArtifact,
       codePipeline: this.codePipeline,
-      cdkCliVersion: LifligCdkPipeline.getCdkCliVersion(),
     })
   }
 
@@ -183,24 +181,6 @@ export class LifligCdkPipeline extends cdk.Construct {
     }
 
     return undefined
-  }
-
-  private static getCdkCliVersion(): string {
-    const file = this.getAwsCdkPackageJsonFile()
-    if (file == null) {
-      throw new Error(`Could not find installed package.json for aws-cdk`)
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const version = JSON.parse(fs.readFileSync(file, "utf-8")).version as string
-
-    // Check for snapshot after running code above, so we
-    // ensure the code works.
-    if (isSnapshot) {
-      return "snapshot-value"
-    }
-
-    return version
   }
 
   private cloudAssemblyStage(
