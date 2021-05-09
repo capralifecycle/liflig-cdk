@@ -10,6 +10,7 @@ import {
 } from "./cdk-pipelines"
 import { EcsUpdateImageStack } from "./ecs-update-image-stack"
 import { SsmParameterReaderStack } from "./ssm-parameter-reader-stack"
+import { WebappStack } from "./webapp-stack"
 
 const app = new cdk.App()
 tagResources(app, (stack) => ({
@@ -47,3 +48,5 @@ new SsmParameterReaderStack(app, "ssm-parameter-reader", { env })
 // CDK Pipelines don't work well with snapshots yet.
 new LifligCdkPipelineCdkSourceStack(app, "cdk-pipeline-cdk-source")
 new LifligCdkPipelineCloudAssemblyStack(app, "cdk-pipeline-cloud-assembly")
+
+new WebappStack(app, "webapp", { env })

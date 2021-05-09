@@ -2,6 +2,7 @@ import * as cdkPipelines from "./cdk-pipelines"
 import * as griid from "./griid"
 import * as pipelines from "./pipelines"
 import * as ses from "./ses"
+import * as webapp from "./webapp"
 
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
@@ -17,7 +18,7 @@ export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
 export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
-export { cdkPipelines, griid, pipelines, ses }
+export { cdkPipelines, griid, pipelines, ses, webapp }
 
 /**
  * Check if we are synthesizing a snapshot by setting IS_SNAPSHOT

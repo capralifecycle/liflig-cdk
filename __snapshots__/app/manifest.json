@@ -1380,6 +1380,101 @@
         ]
       },
       "displayName": "cdk-pipeline-cloud-assembly"
+    },
+    "webapp.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "webapp.assets.json",
+        "requiresBootstrapStackVersion": 4,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "webapp": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://112233445566/eu-west-1",
+      "properties": {
+        "templateFile": "webapp.template.json",
+        "tags": {
+          "Project": "my-project",
+          "SourceRepo": "github/capralifecycle/liflig-cdk",
+          "StackName": "webapp"
+        },
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
+        "requiresBootstrapStackVersion": 4,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "webapp.assets"
+        ]
+      },
+      "dependencies": [
+        "webapp.assets"
+      ],
+      "metadata": {
+        "/webapp": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Project",
+                "Value": "my-project"
+              },
+              {
+                "Key": "SourceRepo",
+                "Value": "github/capralifecycle/liflig-cdk"
+              },
+              {
+                "Key": "StackName",
+                "Value": "webapp"
+              }
+            ]
+          }
+        ],
+        "/webapp/Webapp/Bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WebappBucketD38541E4"
+          }
+        ],
+        "/webapp/Webapp/Bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WebappBucketPolicy4224ABFE"
+          }
+        ],
+        "/webapp/Webapp/OriginAccessIdentity/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WebappOriginAccessIdentityA216A4CF"
+          }
+        ],
+        "/webapp/Webapp/Distribution/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WebappDistribution43D777AD"
+          }
+        ],
+        "/webapp/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/webapp/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/webapp/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "webapp"
     }
   }
 }

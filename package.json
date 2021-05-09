@@ -34,7 +34,9 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.102.0",
+    "@aws-cdk/aws-certificatemanager": "1.102.0",
     "@aws-cdk/aws-cloudfront": "1.102.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.102.0",
     "@aws-cdk/aws-codebuild": "1.102.0",
     "@aws-cdk/aws-codepipeline": "1.102.0",
     "@aws-cdk/aws-codepipeline-actions": "1.102.0",
@@ -42,6 +44,8 @@
     "@aws-cdk/aws-events-targets": "1.102.0",
     "@aws-cdk/aws-iam": "1.102.0",
     "@aws-cdk/aws-lambda": "1.102.0",
+    "@aws-cdk/aws-route53": "1.102.0",
+    "@aws-cdk/aws-route53-targets": "1.102.0",
     "@aws-cdk/aws-s3": "1.102.0",
     "@aws-cdk/aws-stepfunctions": "1.102.0",
     "@aws-cdk/aws-stepfunctions-tasks": "1.102.0",
@@ -79,6 +83,9 @@
     "source-map-support": "^0.5.19"
   },
   "peerDependencies": {
+    "@aws-cdk/aws-certificatemanager": "^1.81.0",
+    "@aws-cdk/aws-cloudfront": "^1.81.0",
+    "@aws-cdk/aws-cloudfront-origins": "^1.81.0",
     "@aws-cdk/aws-codebuild": "^1.81.0",
     "@aws-cdk/aws-codepipeline": "^1.81.0",
     "@aws-cdk/aws-codepipeline-actions": "^1.81.0",
@@ -86,6 +93,8 @@
     "@aws-cdk/aws-events-targets": "^1.81.0",
     "@aws-cdk/aws-iam": "^1.81.0",
     "@aws-cdk/aws-lambda": "^1.81.0",
+    "@aws-cdk/aws-route53": "^1.81.0",
+    "@aws-cdk/aws-route53-targets": "^1.81.0",
     "@aws-cdk/aws-s3": "^1.81.0",
     "@aws-cdk/aws-stepfunctions": "^1.81.0",
     "@aws-cdk/aws-stepfunctions-tasks": "^1.81.0",
