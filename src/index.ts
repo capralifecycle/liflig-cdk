@@ -19,6 +19,7 @@ export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
 export { cdkPipelines, griid, pipelines, ses, webapp }
+export { PlatformProducer, PlatformConsumer } from "./liflig-platform"
 
 /**
  * Check if we are synthesizing a snapshot by setting IS_SNAPSHOT
