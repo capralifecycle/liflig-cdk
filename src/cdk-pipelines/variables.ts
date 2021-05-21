@@ -11,6 +11,9 @@ let variables: Record<string, string | undefined> | undefined = undefined
  *
  * The name must exist or an error will be thrown.
  *
+ * The variables.json file should have variablesTimestamp field
+ * with a timestamp no longer than 6 hours old.
+ *
  * To be used with sourceType "cdk-source" in LifligCdkPipeline.
  */
 export function getVariable(name: string): string {
@@ -29,6 +32,18 @@ export function getVariable(name: string): string {
       string,
       string | undefined
     >
+  }
+
+  const timestampStr = variables["variablesTimestamp"]
+  if (timestampStr == null) {
+    throw new Error(`Variable variablesTimestamp not found`)
+  }
+  const ageMs =
+    new Date().getTime() - new Date(Date.parse(timestampStr)).getTime()
+  if (ageMs > 3600 * 6 * 1000) {
+    throw new Error(
+      "The timestamp stored in variables.json is too old and must be refreshed - refetch variables or manually override",
+    )
   }
 
   const value = variables[name]
