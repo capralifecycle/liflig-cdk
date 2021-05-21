@@ -1,5 +1,6 @@
 import * as codepipeline from "@aws-cdk/aws-codepipeline"
 import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions"
+import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
@@ -47,6 +48,14 @@ export interface LifligCdkPipelineProps {
    *     See https://github.com/aws/aws-cdk/issues/9560
    */
   sourceType: "cdk-source" | "cloud-assembly"
+  /**
+   * The namespace used for parameters in Parameter Store.
+   *
+   * Only relevant for sourceType of "cdk-soruce".
+   *
+   * @default default
+   */
+  parametersNamespace?: string
 }
 
 /**
@@ -132,6 +141,7 @@ export class LifligCdkPipeline extends cdk.Construct {
           cloudAssemblyArtifact,
           artifactsBucket,
           props.pipelineName,
+          props.parametersNamespace ?? "default",
         )
         break
     }
@@ -228,6 +238,7 @@ export class LifligCdkPipeline extends cdk.Construct {
     cloudAssemblyArtifact: codepipeline.Artifact,
     cdkBucket: s3.IBucket,
     pipelineName: string,
+    parametersNamespace: string,
   ): codepipeline.StageProps[] {
     const prepareCdkSourceFn = new lambda.Function(this, "PrepareCdkSourceFn", {
       code: lambda.Code.fromAsset(
@@ -240,6 +251,18 @@ export class LifligCdkPipeline extends cdk.Construct {
       memorySize: 512,
     })
 
+    const account = cdk.Stack.of(this).account
+    const region = cdk.Stack.of(this).region
+
+    prepareCdkSourceFn.grantPrincipal.addToPrincipalPolicy(
+      new iam.PolicyStatement({
+        actions: ["ssm:GetParametersByPath"],
+        resources: [
+          `arn:aws:ssm:${region}:${account}:parameter/liflig-cdk/*/pipeline-variables/*`,
+        ],
+      }),
+    )
+
     cdkBucket.grantReadWrite(prepareCdkSourceFn)
 
     const cdkSourceArtifact = new codepipeline.Artifact()
@@ -247,6 +270,7 @@ export class LifligCdkPipeline extends cdk.Construct {
     const userParameters: PrepareCdkSourceUserParameters = {
       bucketName: cdkBucket.bucketName,
       prefix: `pipelines/${pipelineName}/`,
+      parametersNamespace: parametersNamespace,
     }
 
     return [
@@ -277,4 +301,5 @@ export class LifligCdkPipeline extends cdk.Construct {
 interface PrepareCdkSourceUserParameters {
   bucketName: string
   prefix: string
+  parametersNamespace: string
 }

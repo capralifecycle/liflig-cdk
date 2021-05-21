@@ -54,6 +54,26 @@
         "PolicyDocument": {
           "Statement": [
             {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":parameter/liflig-cdk/*/pipeline-variables/*"
+                  ]
+                ]
+              }
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
@@ -697,7 +717,7 @@
                   "FunctionName": {
                     "Ref": "PipelinePrepareCdkSourceFnF78E92C9"
                   },
-                  "UserParameters": "{\"bucketName\":\"artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}\",\"prefix\":\"pipelines/test-pipeline/\"}"
+                  "UserParameters": "{\"bucketName\":\"artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}\",\"prefix\":\"pipelines/test-pipeline/\",\"parametersNamespace\":\"default\"}"
                 },
                 "Name": "prepare-cdk-source",
                 "OutputArtifacts": [

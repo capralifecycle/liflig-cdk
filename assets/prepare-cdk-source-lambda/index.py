@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import re
@@ -11,6 +12,35 @@ from boto3.session import Session
 
 s3 = boto3.client("s3")
 codepipeline = boto3.client("codepipeline")
+ssm = boto3.client("ssm")
+
+
+def get_variables_from_parameters(namespace):
+    next_token = None
+    result = {}
+
+    prefix = f'/liflig-cdk/{namespace}/pipeline-variables/'
+    params = {
+        'Path': prefix,
+    }
+
+    while True:
+        if next_token is not None:
+            params['NextToken'] = next_token
+        response = ssm.get_parameters_by_path(**params)
+
+        parameters = response['Parameters']
+        if len(parameters) == 0:
+            break
+
+        for parameter in parameters:
+            result[parameter['Name'][len(prefix) :]] = parameter['Value']
+
+        if 'NextToken' not in response:
+            break
+        next_token = response['NextToken']
+
+    return result
 
 
 def handler(event, context):
@@ -32,7 +62,13 @@ def handler(event, context):
             return result["Body"].read()
 
         cdk_source_ref = None
-        variables = {}
+        now = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+        variables = {
+            # Special variable that can be used when reading variables
+            # to ensure it is not stale. In the pipeline, variables
+            # will never be stale, but locally it can be.
+            'variablesTimestamp': now.isoformat(),
+        }
 
         for file in files.get("Contents", []):
             key = file["Key"]
@@ -43,12 +79,20 @@ def handler(event, context):
             if filename == "cdk-source.json":
                 cdk_source_ref = json.loads(get_data(key))
             elif re.match(r"^variables.*\.json$", filename):
+                # Legacy variables from S3 scoped only to this pipeline.
+                # Consider removing this later.
+                # See https://jira.capraconsulting.no/browse/CALS-408 for context
                 variables.update(json.loads(get_data(key)))
             else:
                 print("Ignoring unknown file")
 
         if cdk_source_ref is None:
             raise Exception("cdk-source.json not found")
+
+        # Modern variables from Parameter Store.
+        variables.update(
+            get_variables_from_parameters(user_parameters["parametersNamespace"])
+        )
 
         s3_loc = job["data"]["outputArtifacts"][0]["location"]["s3Location"]
 
@@ -65,6 +109,9 @@ def handler(event, context):
 
             with zipfile.ZipFile(tmp_file.name, "r") as zip_file:
                 zip_file.extractall(temp_dir)
+
+        for name, value in variables.items():
+            print(f"Variable: {name}={value}")
 
         Path(os.path.join(temp_dir, "variables.json")).write_text(json.dumps(variables))
 
