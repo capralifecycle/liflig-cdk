@@ -17,7 +17,8 @@
     "snapshots": "./scripts/create-snapshots.sh"
   },
   "bin": {
-    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js"
+    "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
+    "fetch-pipeline-variables": "lib/bin/fetch-pipeline-variables.js"
   },
   "keywords": [
     "cdk"

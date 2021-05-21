@@ -1,3 +1,4 @@
+import { SSM } from "aws-sdk"
 import * as fs from "fs"
 import * as path from "path"
 import * as process from "process"
@@ -37,4 +38,34 @@ export function getVariable(name: string): string {
   }
 
   return value
+}
+
+/**
+ * Read all variables from SSM Parameter Store under a given prefix.
+ */
+export async function getVariablesFromParameterStore(
+  prefix: string,
+): Promise<Record<string, string>> {
+  const ssm = new SSM()
+
+  const parameters: Record<string, string> = {}
+
+  let nextToken: string | undefined = undefined
+  do {
+    const result: SSM.GetParametersByPathResult = await ssm
+      .getParametersByPath({
+        Path: prefix,
+        NextToken: nextToken,
+      })
+      .promise()
+
+    for (const parameter of result.Parameters!) {
+      const name = parameter.Name!.slice(prefix.length)
+      parameters[name] = parameter.Value!
+    }
+
+    nextToken = result.NextToken
+  } while (nextToken != null)
+
+  return parameters
 }
