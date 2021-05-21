@@ -61,7 +61,6 @@
     "@typescript-eslint/eslint-plugin": "4.24.0",
     "@typescript-eslint/parser": "4.24.0",
     "aws-cdk": "1.102.0",
-    "aws-sdk": "2.799.0",
     "eslint": "7.26.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-deprecation": "1.2.1",
@@ -77,6 +76,7 @@
   },
   "dependencies": {
     "@capraconsulting/webapp-deploy-lambda": "^1.2.1",
+    "aws-sdk": "^2.799.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
     "execa": "^5.0.0",
