@@ -140,6 +140,21 @@ export class BuildArtifacts extends cdk.Construct {
       ecrRepo.grantPull(new iam.AccountPrincipal(targetAccountId))
     }
 
+    // Grant permissions to write pipeline variables.
+    if (ciRole || griidCiRole) {
+      const account = cdk.Stack.of(this).account
+      const region = cdk.Stack.of(this).region
+      const statement = new iam.PolicyStatement({
+        actions: ["ssm:PutParameter"],
+        resources: [
+          `arn:aws:ssm:${region}:${account}:parameter/liflig-cdk/*/pipeline-variables/*`,
+        ],
+      })
+
+      ciRole?.grantPrincipal.addToPrincipalPolicy(statement)
+      griidCiRole?.grantPrincipal.addToPrincipalPolicy(statement)
+    }
+
     new cdk.CfnOutput(this, "EcrRepoUri", {
       value: ecrRepo.repositoryUri,
     })

@@ -217,6 +217,11 @@
                   "Arn"
                 ]
               }
+            },
+            {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "arn:aws:ssm:eu-west-1:112233445566:parameter/liflig-cdk/*/pipeline-variables/*"
             }
           ],
           "Version": "2012-10-17"
