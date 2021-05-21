@@ -6,6 +6,30 @@ import { isSnapshot } from ".."
 
 let variables: Record<string, string | undefined> | undefined = undefined
 
+function isInCodeBuild() {
+  return "CODEBUILD_BUILD_ID" in process.env
+}
+
+function checkTimestamp(timestampStr: string | undefined) {
+  if (timestampStr == null) {
+    // Don't enforce check in CodeBuild. This is needed for migration before
+    // the lambda itself is updated to generate the variablesTimestamp field.
+    if (isInCodeBuild()) {
+      return
+    }
+
+    throw new Error(`Variable variablesTimestamp not found`)
+  }
+
+  const ageMs =
+    new Date().getTime() - new Date(Date.parse(timestampStr)).getTime()
+  if (ageMs > 3600 * 6 * 1000) {
+    throw new Error(
+      "The timestamp stored in variables.json is too old and must be refreshed - refetch variables or manually override",
+    )
+  }
+}
+
 /**
  * Get a value from "variables.json" in the current working directory.
  *
@@ -35,16 +59,7 @@ export function getVariable(name: string): string {
   }
 
   const timestampStr = variables["variablesTimestamp"]
-  if (timestampStr == null) {
-    throw new Error(`Variable variablesTimestamp not found`)
-  }
-  const ageMs =
-    new Date().getTime() - new Date(Date.parse(timestampStr)).getTime()
-  if (ageMs > 3600 * 6 * 1000) {
-    throw new Error(
-      "The timestamp stored in variables.json is too old and must be refreshed - refetch variables or manually override",
-    )
-  }
+  checkTimestamp(timestampStr)
 
   const value = variables[name]
 
