@@ -71,7 +71,8 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
       throw new Error("Missing log streamName")
     }
 
-    const cloudwatchlogs: AWS.CloudWatchLogs = new AWS.CloudWatchLogs() as _AWS.CloudWatchLogs
+    const cloudwatchlogs: AWS.CloudWatchLogs =
+      new AWS.CloudWatchLogs() as _AWS.CloudWatchLogs
     const data = await cloudwatchlogs
       .getLogEvents({
         logGroupName: build.logs.groupName,
