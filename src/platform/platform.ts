@@ -18,7 +18,7 @@ export interface PlatformProducerProps {
 const defaultParamNamespace = "liflig-cdk"
 
 /**
- * Abstrasct class to be extended.
+ * Abstract class to be extended.
  *
  * Produces the resources that will be consumed in PlatformConsumer.
  * In other words; this must run before PlatformConsumer.
@@ -58,7 +58,7 @@ export interface PlatformConsumerProps {
   envName: string
 }
 /**
- * Abstrasct class to be extended.
+ * Abstract class to be extended.
  *
  * Consumes the resources that have been produced by PlatformProducer.
  * In other words; this must run after PlatformProducer.
