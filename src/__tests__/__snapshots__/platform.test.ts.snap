@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create platform producer and consumer 1`] = `
+Object {
+  "Resources": Object {
+    "PlatformProduceralarmtopicarnC48B2B79": Object {
+      "Properties": Object {
+        "Name": "/liflig-cdk/platform/liflig-cdk/default/alarm-topic-arn",
+        "Type": "String",
+        "Value": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+    "TopicBFC7AF6E": Object {
+      "Properties": Object {
+        "DisplayName": "Alarm topic",
+        "TopicName": "alarmtopic",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
+exports[`create platform producer and consumer 2`] = `
+Object {
+  "Resources": Object {
+    "TestParam211A9454": Object {
+      "Properties": Object {
+        "Name": "testparam",
+        "Type": "String",
+        "Value": "{{resolve:ssm:/liflig-cdk/platform/liflig-cdk/default/alarm-topic-arn}}",
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+  },
+}
+`;

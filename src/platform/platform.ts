@@ -7,7 +7,7 @@ function paramName(
   platformName: string,
   resourceName: string,
 ): string {
-  return `/${namespace}/${envName}/platform/${platformName}/${resourceName}`
+  return `/liflig-cdk/platform/${namespace}/${platformName}/${resourceName}`
 }
 
 interface ProducerProps {
