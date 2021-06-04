@@ -12,7 +12,7 @@ interface ProducerProps {
 
 const alarmTopicArn = "alarm-topic-arn"
 
-export class CorePlatformProducer extends PlatformProducer {
+export class ExamplePlatformProducer extends PlatformProducer {
   constructor(scope: Construct, id: string, props: ProducerProps) {
     super(scope, id, props)
     this.putParam(alarmTopicArn, props.alarmTopic.topicArn)
@@ -23,7 +23,7 @@ interface ConsumerProps {
   envName: string
 }
 
-export class CorePlatformConsumer extends PlatformConsumer {
+export class ExamplePlatformConsumer extends PlatformConsumer {
   constructor(scope: Construct, id: string, props: ConsumerProps) {
     super(scope, id, props)
   }
@@ -46,19 +46,18 @@ test("create platform producer and consumer", () => {
     displayName: "Alarm topic",
   })
 
-  new CorePlatformProducer(stack1, "PlatformProducer", {
+  new ExamplePlatformProducer(stack1, "PlatformProducer", {
     envName: "dev",
     alarmTopic: alarmTopic,
   })
 
-  const platform = new CorePlatformConsumer(stack2, "PlatformConsumer", {
+  const platform = new ExamplePlatformConsumer(stack2, "PlatformConsumer", {
     envName: "dev",
   })
 
   // only here to get the value of topicArn, somehow
-  new ssm.StringParameter(stack2, "TestParam", {
+  new ssm.StringParameter(stack2, "ExampleParam", {
     stringValue: platform.alarmTopic.topicArn,
-    parameterName: "testparam",
   })
 
   expect(stack1).toMatchCdkSnapshot()

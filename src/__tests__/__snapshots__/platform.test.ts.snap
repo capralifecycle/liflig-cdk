@@ -27,9 +27,8 @@ Object {
 exports[`create platform producer and consumer 2`] = `
 Object {
   "Resources": Object {
-    "TestParam211A9454": Object {
+    "ExampleParam05F8FCAC": Object {
       "Properties": Object {
-        "Name": "testparam",
         "Type": "String",
         "Value": "{{resolve:ssm:/liflig-cdk/platform/liflig-cdk/default/alarm-topic-arn}}",
       },
