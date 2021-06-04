@@ -12,7 +12,7 @@ interface ProducerProps {
 
 const alarmTopicArn = "alarm-topic-arn"
 
-export class ExamplePlatformProducer extends PlatformProducer {
+class ExamplePlatformProducer extends PlatformProducer {
   constructor(scope: Construct, id: string, props: ProducerProps) {
     super(scope, id, props)
     this.putParam(alarmTopicArn, props.alarmTopic.topicArn)
@@ -23,7 +23,7 @@ interface ConsumerProps {
   envName: string
 }
 
-export class ExamplePlatformConsumer extends PlatformConsumer {
+class ExamplePlatformConsumer extends PlatformConsumer {
   constructor(scope: Construct, id: string, props: ConsumerProps) {
     super(scope, id, props)
   }
