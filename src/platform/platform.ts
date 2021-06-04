@@ -10,7 +10,7 @@ function paramName(
   return `/liflig-cdk/platform/${namespace}/${platformName}/${resourceName}`
 }
 
-interface ProducerProps {
+export interface PlatformProducerProps {
   paramNamespace?: string
   envName: string
 }
@@ -18,6 +18,8 @@ interface ProducerProps {
 const defaultParamNamespace = "liflig-cdk"
 
 /**
+ * Abstrasct class to be extended.
+ *
  * Produces the resources that will be consumed in PlatformConsumer.
  * In other words; this must run before PlatformConsumer.
  *
@@ -28,7 +30,7 @@ export class PlatformProducer extends cdk.Construct {
   private envName: string
   private platformName: string
 
-  constructor(scope: cdk.Construct, id: string, props: ProducerProps) {
+  constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
     super(scope, id)
 
     // For later extension.
@@ -51,11 +53,13 @@ export class PlatformProducer extends cdk.Construct {
   }
 }
 
-interface ConsumerProps {
+export interface PlatformConsumerProps {
   paramNamespace?: string
   envName: string
 }
 /**
+ * Abstrasct class to be extended.
+ *
  * Consumes the resources that have been produced by PlatformProducer.
  * In other words; this must run after PlatformProducer.
  *
@@ -66,7 +70,7 @@ export class PlatformConsumer extends cdk.Construct {
   private paramNamespace: string
   private envName: string
 
-  constructor(scope: cdk.Construct, id: string, props: ConsumerProps) {
+  constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id)
 
     // For later extension.
