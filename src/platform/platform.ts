@@ -17,6 +17,12 @@ interface ProducerProps {
 
 const defaultParamNamespace = "liflig-cdk"
 
+/**
+ * Produces the resources that will be consumed in PlatformConsumer.
+ * In other words; this must run before PlatformConsumer.
+ *
+ * Used for producing references to the core resources.
+ */
 export class PlatformProducer extends cdk.Construct {
   private paramNamespace: string
   private envName: string
@@ -49,7 +55,12 @@ interface ConsumerProps {
   paramNamespace?: string
   envName: string
 }
-
+/**
+ * Consumes the resources that have been produced by PlatformProducer.
+ * In other words; this must run after PlatformProducer.
+ *
+ * Used for consuming the core resources, which PlatformProducer creates references to.
+ */
 export class PlatformConsumer extends cdk.Construct {
   private platformName: string
   private paramNamespace: string
