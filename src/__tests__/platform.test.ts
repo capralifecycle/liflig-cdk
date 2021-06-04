@@ -43,32 +43,37 @@ class ExamplePlatformConsumer extends PlatformConsumer {
   )
 }
 
-test("create platform producer and consumer", () => {
+test("produce example plaform", () => {
   const app = new App()
-  const stack1 = new Stack(app, "Stack1")
-  const stack2 = new Stack(app, "Stack2")
+  const stack = new Stack(app, "ProducerStack")
 
-  const alarmTopic = new sns.Topic(stack1, "Topic", {
+  const alarmTopic = new sns.Topic(stack, "Topic", {
     topicName: "alarmtopic",
     displayName: "Alarm topic",
   })
 
-  new ExamplePlatformProducer(stack1, "PlatformProducer", {
+  new ExamplePlatformProducer(stack, "PlatformProducer", {
     platformName: "test",
     paramNamespace: "test",
     alarmTopic: alarmTopic,
   })
 
-  const platform = new ExamplePlatformConsumer(stack2, "PlatformConsumer", {
+  expect(stack).toMatchCdkSnapshot()
+})
+
+test("consume example platform", () => {
+  const app = new App()
+  const stack = new Stack(app, "ConsumerStack")
+
+  const platform = new ExamplePlatformConsumer(stack, "PlatformConsumer", {
     platformName: "test",
     paramNamespace: "test",
   })
 
   // only here to get the value of topicArn, somehow
-  new ssm.StringParameter(stack2, "ExampleParam", {
+  new ssm.StringParameter(stack, "ExampleParam", {
     stringValue: platform.alarmTopic.topicArn,
   })
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  expect(stack).toMatchCdkSnapshot()
 })
