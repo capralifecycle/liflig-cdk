@@ -4,9 +4,9 @@ import * as ec2 from "@aws-cdk/aws-ec2"
 import * as ecs from "@aws-cdk/aws-ecs"
 import * as sm from "@aws-cdk/aws-secretsmanager"
 import * as ecr from "@aws-cdk/aws-ecr"
+import * as route53 from "@aws-cdk/aws-route53"
 import * as cm from "@aws-cdk/aws-certificatemanager"
 import "jest-cdk-snapshot"
-import { HostedZoneWithParam } from "../hosted-zone-with-param"
 import { LoadBalancer } from "../load-balancer"
 import { EcsFargateService } from "../ecs-fargate-service"
 import { EcsServiceDns } from "../ecs-service-dns"
@@ -26,11 +26,9 @@ test("creates fargate service with parameters and DNS", () => {
     ],
   })
 
-  const hostedZoneWithParam = new HostedZoneWithParam(stack, "HostedZone", {
+  const hostedZone = new route53.HostedZone(stack, "HostedZone", {
     zoneName: "example.com",
   })
-
-  const hostedZone = hostedZoneWithParam.getHostedZone(stack, "HostedZone")
 
   const certificate = new cm.Certificate(stack, "Certificate", {
     domainName: `*.example.com`,

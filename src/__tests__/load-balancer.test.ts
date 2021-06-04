@@ -1,9 +1,9 @@
 import "@aws-cdk/assert/jest"
 import { App, Stack } from "@aws-cdk/core"
 import * as ec2 from "@aws-cdk/aws-ec2"
+import * as route53 from "@aws-cdk/aws-route53"
 import * as cm from "@aws-cdk/aws-certificatemanager"
 import "jest-cdk-snapshot"
-import { HostedZoneWithParam } from "../hosted-zone-with-param"
 import { LoadBalancer } from "../load-balancer"
 
 test("create load balancer", () => {
@@ -20,11 +20,9 @@ test("create load balancer", () => {
     ],
   })
 
-  const hostedZoneWithParam = new HostedZoneWithParam(stack, "HostedZone", {
+  const hostedZone = new route53.HostedZone(stack, "HostedZone", {
     zoneName: "example.com",
   })
-
-  const hostedZone = hostedZoneWithParam.getHostedZone(stack, "HostedZone")
 
   const certificate = new cm.Certificate(stack, "Certificate", {
     domainName: `*.example.com`,

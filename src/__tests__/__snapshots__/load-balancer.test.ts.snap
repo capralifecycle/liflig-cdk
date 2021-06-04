@@ -2,26 +2,6 @@
 
 exports[`create load balancer 1`] = `
 Object {
-  "Outputs": Object {
-    "HostedZoneIdFC741845": Object {
-      "Value": Object {
-        "Ref": "HostedZoneA9DD9B89",
-      },
-    },
-    "HostedZoneNameservers0897D4B3": Object {
-      "Value": Object {
-        "Fn::Join": Array [
-          ", ",
-          Object {
-            "Fn::GetAtt": Array [
-              "HostedZoneA9DD9B89",
-              "NameServers",
-            ],
-          },
-        ],
-      },
-    },
-  },
   "Resources": Object {
     "Certificate4E7ABB08": Object {
       "Properties": Object {
@@ -30,7 +10,7 @@ Object {
           Object {
             "DomainName": "example.com",
             "HostedZoneId": Object {
-              "Ref": "HostedZoneA9DD9B89",
+              "Ref": "HostedZoneDB99F866",
             },
           },
         ],
@@ -41,21 +21,11 @@ Object {
       },
       "Type": "AWS::CertificateManager::Certificate",
     },
-    "HostedZoneA9DD9B89": Object {
+    "HostedZoneDB99F866": Object {
       "Properties": Object {
         "Name": "example.com.",
       },
       "Type": "AWS::Route53::HostedZone",
-    },
-    "HostedZoneIdParamE55EE91C": Object {
-      "Properties": Object {
-        "Name": "/cf/hosted-zone-id/example.com-public",
-        "Type": "String",
-        "Value": Object {
-          "Ref": "HostedZoneA9DD9B89",
-        },
-      },
-      "Type": "AWS::SSM::Parameter",
     },
     "LoadBalancer8E47CE52": Object {
       "DependsOn": Array [
