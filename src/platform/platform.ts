@@ -3,7 +3,6 @@ import * as cdk from "@aws-cdk/core"
 
 function paramName(
   namespace: string,
-  envName: string,
   platformName: string,
   resourceName: string,
 ): string {
@@ -27,7 +26,6 @@ const defaultParamNamespace = "liflig-cdk"
  */
 export class PlatformProducer extends cdk.Construct {
   private paramNamespace: string
-  private envName: string
   private platformName: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
@@ -37,18 +35,12 @@ export class PlatformProducer extends cdk.Construct {
     this.platformName = "default"
 
     this.paramNamespace = props.paramNamespace ?? defaultParamNamespace
-    this.envName = props.envName
   }
 
   protected putParam(name: string, value: string): ssm.StringParameter {
     return new ssm.StringParameter(this, name, {
       stringValue: value,
-      parameterName: paramName(
-        this.paramNamespace,
-        this.envName,
-        this.platformName,
-        name,
-      ),
+      parameterName: paramName(this.paramNamespace, this.platformName, name),
     })
   }
 }
@@ -68,7 +60,6 @@ export interface PlatformConsumerProps {
 export class PlatformConsumer extends cdk.Construct {
   private platformName: string
   private paramNamespace: string
-  private envName: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id)
@@ -77,7 +68,6 @@ export class PlatformConsumer extends cdk.Construct {
     this.platformName = "default"
 
     this.paramNamespace = props.paramNamespace ?? defaultParamNamespace
-    this.envName = props.envName
   }
 
   protected lazy<T>(producer: () => T): () => T {
@@ -94,7 +84,7 @@ export class PlatformConsumer extends cdk.Construct {
   protected getParam(name: string): string {
     return ssm.StringParameter.valueForStringParameter(
       this,
-      paramName(this.paramNamespace, this.envName, this.platformName, name),
+      paramName(this.paramNamespace, this.platformName, name),
     )
   }
 }
