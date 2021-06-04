@@ -10,8 +10,8 @@ function paramName(
 }
 
 export interface PlatformProducerProps {
+  platformName: string
   paramNamespace: string
-  envName: string
 }
 
 /**
@@ -23,14 +23,14 @@ export interface PlatformProducerProps {
  * Used for producing references to the core resources.
  */
 export class PlatformProducer extends cdk.Construct {
-  private paramNamespace: string
   private platformName: string
+  private paramNamespace: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
     super(scope, id)
 
     // For later extension.
-    this.platformName = "default"
+    this.platformName = props.platformName
 
     this.paramNamespace = props.paramNamespace
   }
@@ -44,8 +44,8 @@ export class PlatformProducer extends cdk.Construct {
 }
 
 export interface PlatformConsumerProps {
+  platformName: string
   paramNamespace: string
-  envName: string
 }
 /**
  * Abstract class to be extended.
@@ -63,7 +63,7 @@ export class PlatformConsumer extends cdk.Construct {
     super(scope, id)
 
     // For later extension.
-    this.platformName = "default"
+    this.platformName = props.platformName
 
     this.paramNamespace = props.paramNamespace
   }

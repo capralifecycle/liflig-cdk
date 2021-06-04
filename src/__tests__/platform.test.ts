@@ -3,10 +3,16 @@ import { App, Stack, Construct } from "@aws-cdk/core"
 import * as sns from "@aws-cdk/aws-sns"
 import * as ssm from "@aws-cdk/aws-ssm"
 import "jest-cdk-snapshot"
-import { PlatformProducer, PlatformConsumer } from "../platform"
+import {
+  PlatformProducer,
+  PlatformConsumer,
+  PlatformConsumerProps,
+  PlatformProducerProps,
+} from "../platform"
 
-interface ProducerProps {
-  envName: string
+interface ProducerProps extends PlatformProducerProps {
+  platformName: string
+  paramNamespace: string
   alarmTopic: sns.Topic
 }
 
@@ -19,8 +25,9 @@ class ExamplePlatformProducer extends PlatformProducer {
   }
 }
 
-interface ConsumerProps {
-  envName: string
+interface ConsumerProps extends PlatformConsumerProps {
+  platformName: string
+  paramNamespace: string
 }
 
 class ExamplePlatformConsumer extends PlatformConsumer {
@@ -47,12 +54,14 @@ test("create platform producer and consumer", () => {
   })
 
   new ExamplePlatformProducer(stack1, "PlatformProducer", {
-    envName: "dev",
+    platformName: "test",
+    paramNamespace: "test",
     alarmTopic: alarmTopic,
   })
 
   const platform = new ExamplePlatformConsumer(stack2, "PlatformConsumer", {
-    envName: "dev",
+    platformName: "test",
+    paramNamespace: "test",
   })
 
   // only here to get the value of topicArn, somehow
