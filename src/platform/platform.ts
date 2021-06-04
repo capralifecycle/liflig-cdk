@@ -3,14 +3,14 @@ import * as cdk from "@aws-cdk/core"
 
 function paramName(
   namespace: string,
-  platformName: string,
+  platformNamespace: string,
   resourceName: string,
 ): string {
-  return `/liflig-cdk/platform/${namespace}/${platformName}/${resourceName}`
+  return `/liflig-cdk/platform/${namespace}/${platformNamespace}/${resourceName}`
 }
 
 export interface PlatformProducerProps {
-  platformName: string
+  platformNamespace: string
   paramNamespace: string
 }
 
@@ -23,14 +23,14 @@ export interface PlatformProducerProps {
  * Used for producing references to the core resources.
  */
 export class PlatformProducer extends cdk.Construct {
-  private platformName: string
+  private platformNamespace: string
   private paramNamespace: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
     super(scope, id)
 
     // For later extension.
-    this.platformName = props.platformName
+    this.platformNamespace = props.platformNamespace
 
     this.paramNamespace = props.paramNamespace
   }
@@ -38,13 +38,17 @@ export class PlatformProducer extends cdk.Construct {
   protected putParam(name: string, value: string): ssm.StringParameter {
     return new ssm.StringParameter(this, name, {
       stringValue: value,
-      parameterName: paramName(this.paramNamespace, this.platformName, name),
+      parameterName: paramName(
+        this.paramNamespace,
+        this.platformNamespace,
+        name,
+      ),
     })
   }
 }
 
 export interface PlatformConsumerProps {
-  platformName: string
+  platformNamespace: string
   paramNamespace: string
 }
 /**
@@ -56,14 +60,14 @@ export interface PlatformConsumerProps {
  * Used for consuming the core resources, which PlatformProducer creates references to.
  */
 export class PlatformConsumer extends cdk.Construct {
-  private platformName: string
+  private platformNamespace: string
   private paramNamespace: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id)
 
     // For later extension.
-    this.platformName = props.platformName
+    this.platformNamespace = props.platformNamespace
 
     this.paramNamespace = props.paramNamespace
   }
@@ -82,7 +86,7 @@ export class PlatformConsumer extends cdk.Construct {
   protected getParam(name: string): string {
     return ssm.StringParameter.valueForStringParameter(
       this,
-      paramName(this.paramNamespace, this.platformName, name),
+      paramName(this.paramNamespace, this.platformNamespace, name),
     )
   }
 }

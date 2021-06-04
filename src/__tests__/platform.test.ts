@@ -46,7 +46,7 @@ test("produce example plaform", () => {
   })
 
   new ExamplePlatformProducer(stack, "PlatformProducer", {
-    platformName: "test",
+    platformNamespace: "test",
     paramNamespace: "test",
     alarmTopic: alarmTopic,
   })
@@ -59,7 +59,7 @@ test("consume example platform", () => {
   const stack = new Stack(app, "ConsumerStack")
 
   const platform = new ExamplePlatformConsumer(stack, "PlatformConsumer", {
-    platformName: "test",
+    platformNamespace: "test",
     paramNamespace: "test",
   })
 
