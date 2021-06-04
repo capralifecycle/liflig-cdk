@@ -11,8 +11,6 @@ import {
 } from "../platform"
 
 interface ProducerProps extends PlatformProducerProps {
-  platformName: string
-  paramNamespace: string
   alarmTopic: sns.Topic
 }
 
@@ -25,13 +23,8 @@ class ExamplePlatformProducer extends PlatformProducer {
   }
 }
 
-interface ConsumerProps extends PlatformConsumerProps {
-  platformName: string
-  paramNamespace: string
-}
-
 class ExamplePlatformConsumer extends PlatformConsumer {
-  constructor(scope: Construct, id: string, props: ConsumerProps) {
+  constructor(scope: Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id, props)
   }
 
