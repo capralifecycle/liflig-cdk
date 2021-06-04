@@ -3,6 +3,11 @@ import * as griid from "./griid"
 import * as pipelines from "./pipelines"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
+import * as configureParameters from "./configure-parameters"
+import * as ecsServiceDns from "./ecs-service-dns"
+import * as ecsFargateService from "./ecs-fargate-service"
+import * as loadBalancer from "./load-balancer"
+import * as postgresDatabase from "./postgres-database"
 
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
@@ -18,7 +23,18 @@ export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
 export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
-export { cdkPipelines, griid, pipelines, ses, webapp }
+export {
+  cdkPipelines,
+  griid,
+  pipelines,
+  ses,
+  webapp,
+  configureParameters,
+  ecsServiceDns,
+  ecsFargateService,
+  loadBalancer,
+  postgresDatabase,
+}
 
 /**
  * Check if we are synthesizing a snapshot by setting IS_SNAPSHOT
