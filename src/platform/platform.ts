@@ -10,11 +10,9 @@ function paramName(
 }
 
 export interface PlatformProducerProps {
-  paramNamespace?: string
+  paramNamespace: string
   envName: string
 }
-
-const defaultParamNamespace = "liflig-cdk"
 
 /**
  * Abstract class to be extended.
@@ -34,7 +32,7 @@ export class PlatformProducer extends cdk.Construct {
     // For later extension.
     this.platformName = "default"
 
-    this.paramNamespace = props.paramNamespace ?? defaultParamNamespace
+    this.paramNamespace = props.paramNamespace
   }
 
   protected putParam(name: string, value: string): ssm.StringParameter {
@@ -46,7 +44,7 @@ export class PlatformProducer extends cdk.Construct {
 }
 
 export interface PlatformConsumerProps {
-  paramNamespace?: string
+  paramNamespace: string
   envName: string
 }
 /**
@@ -67,7 +65,7 @@ export class PlatformConsumer extends cdk.Construct {
     // For later extension.
     this.platformName = "default"
 
-    this.paramNamespace = props.paramNamespace ?? defaultParamNamespace
+    this.paramNamespace = props.paramNamespace
   }
 
   protected lazy<T>(producer: () => T): () => T {
