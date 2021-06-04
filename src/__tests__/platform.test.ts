@@ -1,4 +1,3 @@
-import { arrayWith, objectLike } from "@aws-cdk/assert"
 import "@aws-cdk/assert/jest"
 import { App, Stack, Construct } from "@aws-cdk/core"
 import * as sns from "@aws-cdk/aws-sns"
