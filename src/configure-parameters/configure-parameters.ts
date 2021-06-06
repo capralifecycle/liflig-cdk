@@ -45,7 +45,8 @@ export type Parameter =
 
 interface Props {
   /**
-   * Prefix used for parameter names. Should start with /.
+   * Prefix used for parameter names.
+   * Should start with '/' and end without '/'.
    */
   ssmPrefix: string
   parameters: Parameter[]
@@ -60,6 +61,10 @@ export class ConfigureParameters {
   private secretParameters: SecretParameter[]
 
   constructor(scope: cdk.Construct, props: Props) {
+    if (!props.ssmPrefix.startsWith("/") || props.ssmPrefix.endsWith("/")) {
+      throw new Error("ssmPrefix should start with '/' and end without '/'")
+    }
+
     this.ssmPrefix = props.ssmPrefix
 
     this.configParameters = []
@@ -133,7 +138,7 @@ export class ConfigureParameters {
    * and a manual redeployment might be needed.
    */
   get hashValue(): string {
-    const hash = crypto.createHash("md5")
+    const hash = crypto.createHash("sha256")
 
     if (this.configParameters) {
       this.configParameters.forEach((it) => {
