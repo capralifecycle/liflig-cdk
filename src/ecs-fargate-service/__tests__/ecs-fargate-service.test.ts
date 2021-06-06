@@ -56,8 +56,8 @@ test("creates fargate service with parameters and DNS", () => {
       ),
     },
     {
-      key: "ExampleSecretReferenceParameter",
-      secretName: "SecretReferenceParameter",
+      key: "ExampleSecretByNameParameter",
+      secretName: "ExampleSecretByNameParameter",
     },
   ]
 

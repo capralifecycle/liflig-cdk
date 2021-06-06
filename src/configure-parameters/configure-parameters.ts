@@ -33,7 +33,7 @@ export interface SecretParameter {
  * parameter seen by the application will be the key given here and the
  * keys from the secret JSON object appended.
  */
-export interface SecretReferenceParameter {
+export interface SecretByNameParameter {
   key: string
   secretName: string
 }
@@ -41,7 +41,7 @@ export interface SecretReferenceParameter {
 export type Parameter =
   | PlainTextParameter
   | SecretParameter
-  | SecretReferenceParameter
+  | SecretByNameParameter
 
 interface Props {
   /**

@@ -58,8 +58,8 @@ Object {
       "DependsOn": Array [
         "DnsListenerRule18B182CC",
         "ServiceConfigExamplePlainTextParameterC948638B",
+        "ServiceSecretExampleSecretByNameParameterB153ADD4",
         "ServiceSecretExampleSecretParameter2147C87C",
-        "ServiceSecretExampleSecretReferenceParameter9AB84512",
       ],
       "Properties": Object {
         "Cluster": Object {
@@ -127,6 +127,33 @@ Object {
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
+    "ServiceSecretExampleSecretByNameParameterB153ADD4": Object {
+      "Properties": Object {
+        "Name": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/secrets/ExampleSecretByNameParameter",
+        "Type": "String",
+        "Value": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":secretsmanager:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":secret:ExampleSecretByNameParameter",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
     "ServiceSecretExampleSecretParameter2147C87C": Object {
       "Properties": Object {
         "Name": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/secrets/ExampleSecretParameter",
@@ -148,33 +175,6 @@ Object {
                 "Ref": "AWS::AccountId",
               },
               ":secret:ExampleSecretParameter",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::SSM::Parameter",
-    },
-    "ServiceSecretExampleSecretReferenceParameter9AB84512": Object {
-      "Properties": Object {
-        "Name": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/secrets/ExampleSecretReferenceParameter",
-        "Type": "String",
-        "Value": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":secretsmanager:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":secret:SecretReferenceParameter",
             ],
           ],
         },
@@ -264,7 +264,7 @@ Object {
               },
               Object {
                 "Name": "PARAMS_HASH",
-                "Value": "3a807a41646dc1f972e5cf6a70bb7938",
+                "Value": "bbaa2117cf834261e762540043193be5",
               },
             ],
             "Essential": true,
@@ -508,7 +508,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:SecretReferenceParameter-??????",
+                    ":secret:ExampleSecretByNameParameter-??????",
                   ],
                 ],
               },
