@@ -4,27 +4,20 @@ import * as ec2 from "@aws-cdk/aws-ec2"
 import * as route53 from "@aws-cdk/aws-route53"
 import * as cm from "@aws-cdk/aws-certificatemanager"
 import "jest-cdk-snapshot"
-import { LoadBalancer } from "../load-balancer"
+import { LoadBalancer } from ".."
 
 test("create load balancer", () => {
   const app = new App()
+  const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
 
-  const vpc = new ec2.Vpc(stack, "Vpc", {
-    subnetConfiguration: [
-      {
-        cidrMask: 19,
-        name: "Public",
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
-    ],
-  })
+  const vpc = new ec2.Vpc(supportStack, "Vpc")
 
-  const hostedZone = new route53.HostedZone(stack, "HostedZone", {
+  const hostedZone = new route53.HostedZone(supportStack, "HostedZone", {
     zoneName: "example.com",
   })
 
-  const certificate = new cm.Certificate(stack, "Certificate", {
+  const certificate = new cm.Certificate(supportStack, "Certificate", {
     domainName: `*.example.com`,
     subjectAlternativeNames: ["example.com"],
     validation: cm.CertificateValidation.fromDns(hostedZone),

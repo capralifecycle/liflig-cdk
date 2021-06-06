@@ -2,21 +2,14 @@ import "@aws-cdk/assert/jest"
 import { App, Stack } from "@aws-cdk/core"
 import * as ec2 from "@aws-cdk/aws-ec2"
 import "jest-cdk-snapshot"
-import { PostgresDatabase } from "../postgres-database"
+import { PostgresDatabase } from ".."
 
 test("create postgres database", () => {
   const app = new App()
+  const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
 
-  const vpc = new ec2.Vpc(stack, "Vpc", {
-    subnetConfiguration: [
-      {
-        cidrMask: 19,
-        name: "Public",
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
-    ],
-  })
+  const vpc = new ec2.Vpc(supportStack, "Vpc")
 
   new PostgresDatabase(stack, "Database", {
     vpc: vpc,

@@ -7,45 +7,38 @@ import * as ecr from "@aws-cdk/aws-ecr"
 import * as route53 from "@aws-cdk/aws-route53"
 import * as cm from "@aws-cdk/aws-certificatemanager"
 import "jest-cdk-snapshot"
-import { LoadBalancer } from "../load-balancer"
-import { EcsFargateService } from "../ecs-fargate-service"
-import { EcsServiceDns } from "../ecs-service-dns"
-import { Parameter } from "../configure-parameters/configure-parameters"
+import { LoadBalancer } from "../../load-balancer"
+import { EcsFargateService } from ".."
+import { EcsServiceDns } from "../../ecs-service-dns"
+import { Parameter } from "../../configure-parameters/configure-parameters"
 
 test("creates fargate service with parameters and DNS", () => {
   const app = new App()
+  const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
 
-  const vpc = new ec2.Vpc(stack, "Vpc", {
-    subnetConfiguration: [
-      {
-        cidrMask: 19,
-        name: "Public",
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
-    ],
-  })
+  const vpc = new ec2.Vpc(supportStack, "Vpc")
 
-  const hostedZone = new route53.HostedZone(stack, "HostedZone", {
+  const hostedZone = new route53.HostedZone(supportStack, "HostedZone", {
     zoneName: "example.com",
   })
 
-  const certificate = new cm.Certificate(stack, "Certificate", {
+  const certificate = new cm.Certificate(supportStack, "Certificate", {
     domainName: `*.example.com`,
     subjectAlternativeNames: ["example.com"],
     validation: cm.CertificateValidation.fromDns(hostedZone),
   })
 
-  const loadBalancer = new LoadBalancer(stack, "LoadBalancer", {
+  const loadBalancer = new LoadBalancer(supportStack, "LoadBalancer", {
     certificates: [certificate],
     vpc: vpc,
   })
 
-  const ecsCluster = new ecs.Cluster(stack, "Cluster", {
+  const ecsCluster = new ecs.Cluster(supportStack, "Cluster", {
     vpc,
   })
 
-  const ecrRepository = new ecr.Repository(stack, "Repository", {
+  const ecrRepository = new ecr.Repository(supportStack, "Repository", {
     repositoryName: "example-repository",
   })
 
