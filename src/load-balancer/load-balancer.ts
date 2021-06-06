@@ -49,19 +49,6 @@ export class LoadBalancer extends cdk.Construct {
       },
     )
 
-    // The default target group needs a health check.
-    // TODO: Remove commented code if this works without or uncomment to fix.
-    /*
-    defaultTargetGroup.configureHealthCheck({
-      interval: Duration.seconds(10),
-      path: "/",
-      port: "traffic-port",
-      protocol: elb.Protocol.HTTP,
-      healthyThresholdCount: 2,
-      timeout: Duration.seconds(5),
-    })
-    */
-
     this.httpsListener = this.loadBalancer.addListener("HttpsListener", {
       sslPolicy: elb.SslPolicy.TLS12,
       protocol: elb.ApplicationProtocol.HTTPS,
