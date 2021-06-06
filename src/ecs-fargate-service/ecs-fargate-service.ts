@@ -12,9 +12,14 @@ interface Props {
   vpc: ec2.IVpc
   cluster: ecs.ICluster
   desiredCount: number
-  parameters?: Parameter[]
   ecsImage: ecs.ContainerImage
+  /**
+   * @default 256
+   */
   cpu?: number
+  /**
+   * @default 512
+   */
   memoryLimitMiB?: number
   /**
    * @default 2 weeks
@@ -32,9 +37,15 @@ interface Props {
    * @default 60 seconds
    */
   healthCheckGracePeriod?: cdk.Duration
+  /**
+   * @default []
+   */
+  parameters?: Parameter[]
   overrideHealthCheck?: Partial<elb.HealthCheck>
-  stickinessCookieName?: string
-  stickinessCookieDuration?: cdk.Duration
+  overrideTargetGroupProps?: Partial<elb.ApplicationTargetGroupProps>
+  /**
+   * @default []
+   */
   secrets?: Record<string, ecs.Secret>
   environment?: Record<string, string>
 }
@@ -74,18 +85,6 @@ export class EcsFargateService extends cdk.Construct {
 
     parameters.grantRead(this.taskDefinition.taskRole)
 
-    const environment: Record<string, string> = {
-      SSM_PREFIX: parameters.ssmPrefix,
-      // Not read by the application, only used to help with redeployments.
-      PARAMS_HASH: parameters.hashValue,
-    }
-
-    if (props.environment) {
-      for (const key in props.environment) {
-        environment[key] = props.environment[key]
-      }
-    }
-
     const container = this.taskDefinition.addContainer("Container", {
       logging: ecs.LogDriver.awsLogs({
         logGroup: this.logGroup,
@@ -94,7 +93,12 @@ export class EcsFargateService extends cdk.Construct {
       }),
       image: props.ecsImage,
       secrets: props.secrets,
-      environment: environment,
+      environment: {
+        SSM_PREFIX: parameters.ssmPrefix,
+        // Not read by the application, only used to help with redeployments.
+        PARAMS_HASH: parameters.hashValue,
+        ...(props.environment ?? {}),
+      },
     })
 
     const port = props.containerPort ?? 8080
@@ -129,10 +133,9 @@ export class EcsFargateService extends cdk.Construct {
       vpc: props.vpc,
       targetType: elb.TargetType.IP,
       targets: [service],
-      stickinessCookieName: props.stickinessCookieName,
-      stickinessCookieDuration: props.stickinessCookieDuration,
       deregistrationDelay:
         props.deregistrationDelay ?? cdk.Duration.seconds(15),
+      ...props.overrideTargetGroupProps,
     })
 
     this.targetGroup.configureHealthCheck({
