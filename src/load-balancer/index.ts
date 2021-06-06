@@ -1,1 +1,1 @@
-export { LoadBalancer } from "./load-balancer"
+export { LoadBalancer, LoadBalancerProps } from "./load-balancer"

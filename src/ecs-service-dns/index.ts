@@ -1,1 +1,1 @@
-export { EcsServiceDns } from "./ecs-service-dns"
+export { EcsServiceDns, EcsServiceDnsProps } from "./ecs-service-dns"

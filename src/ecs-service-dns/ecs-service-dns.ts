@@ -3,7 +3,7 @@ import * as route53 from "@aws-cdk/aws-route53"
 import * as route53Targets from "@aws-cdk/aws-route53-targets"
 import * as cdk from "@aws-cdk/core"
 
-interface Props {
+export interface EcsServiceDnsProps {
   httpsListener: elb.IApplicationListener
   loadBalancer: elb.IApplicationLoadBalancer
   domainName: string
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export class EcsServiceDns extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: cdk.Construct, id: string, props: EcsServiceDnsProps) {
     super(scope, id)
 
     new elb.ApplicationListenerRule(this, "ListenerRule", {

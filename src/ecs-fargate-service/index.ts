@@ -1,1 +1,4 @@
-export { EcsFargateService } from "./ecs-fargate-service"
+export {
+  EcsFargateService,
+  EcsFargateServiceProps,
+} from "./ecs-fargate-service"

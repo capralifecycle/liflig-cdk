@@ -4,7 +4,7 @@ import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
 import { ListenerAction } from "@aws-cdk/aws-elasticloadbalancingv2"
 import * as cdk from "@aws-cdk/core"
 
-interface Props {
+export interface LoadBalancerProps {
   certificates: certificatemanager.ICertificate[]
   vpc: ec2.IVpc
 }
@@ -13,7 +13,7 @@ export class LoadBalancer extends cdk.Construct {
   public readonly loadBalancer: elb.ApplicationLoadBalancer
   public readonly httpsListener: elb.ApplicationListener
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: cdk.Construct, id: string, props: LoadBalancerProps) {
     super(scope, id)
 
     this.loadBalancer = new elb.ApplicationLoadBalancer(this, "LoadBalancer", {
