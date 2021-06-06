@@ -7,6 +7,7 @@ import * as webapp from "./webapp"
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
 
+export * from "./artifacts"
 export { BastionHost } from "./bastion-host"
 export * from "./build-artifacts"
 export * from "./cdk-deploy"
