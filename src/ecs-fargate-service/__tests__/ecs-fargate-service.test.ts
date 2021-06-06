@@ -67,8 +67,10 @@ test("creates fargate service with parameters and DNS", () => {
     cluster: ecsCluster,
     desiredCount: 2,
     parameters,
-    ecrRepository: ecrRepository,
-    ecrTag: "exampleEcrTag",
+    ecsImage: ecs.ContainerImage.fromEcrRepository(
+      ecrRepository,
+      "exampleEcrTag",
+    ),
   })
 
   new EcsServiceDns(stack, "Dns", {

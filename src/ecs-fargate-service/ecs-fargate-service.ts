@@ -1,5 +1,4 @@
 import * as ec2 from "@aws-cdk/aws-ec2"
-import * as ecr from "@aws-cdk/aws-ecr"
 import * as ecs from "@aws-cdk/aws-ecs"
 import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
 import * as logs from "@aws-cdk/aws-logs"
@@ -14,8 +13,7 @@ interface Props {
   cluster: ecs.ICluster
   desiredCount: number
   parameters?: Parameter[]
-  ecrRepository: ecr.IRepository
-  ecrTag: string
+  ecsImage: ecs.ContainerImage
   cpu?: number
   memoryLimitMiB?: number
   /**
@@ -94,10 +92,7 @@ export class EcsFargateService extends cdk.Construct {
         streamPrefix: "ecs",
         datetimeFormat: "%Y-%m-%dT%H:%M:%S",
       }),
-      image: ecs.ContainerImage.fromEcrRepository(
-        props.ecrRepository,
-        props.ecrTag,
-      ),
+      image: props.ecsImage,
       secrets: props.secrets,
       environment: environment,
     })
