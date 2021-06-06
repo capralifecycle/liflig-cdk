@@ -19,6 +19,13 @@ interface Props extends cdk.StackProps {
   allocatedStorageGb?: number
   instanceType: ec2.InstanceType
   instanceIdentifier: string
+  /**
+   * Must not be removed once it has been set, as changing this
+   * results in a new DB instance being created.
+   *
+   * Also, remember to give database a new name when changing this prop, or else
+   * the new instance name will crash with the existing instance.
+   */
   snapshotIdentifier?: string
   /**
    * @default false
