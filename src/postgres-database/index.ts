@@ -1,1 +1,1 @@
-export { PostgresDatabase } from "./postgres-database"
+export { PostgresDatabase, PostgresDatabaseProps } from "./postgres-database"

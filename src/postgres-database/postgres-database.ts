@@ -3,7 +3,7 @@ import * as rds from "@aws-cdk/aws-rds"
 import * as sm from "@aws-cdk/aws-secretsmanager"
 import * as cdk from "@aws-cdk/core"
 
-interface Props extends cdk.StackProps {
+export interface PostgresDatabaseProps extends cdk.StackProps {
   vpc: ec2.IVpc
   /**
    * @default master
@@ -20,6 +20,14 @@ interface Props extends cdk.StackProps {
   instanceType: ec2.InstanceType
   instanceIdentifier: string
   /**
+   * @default rds.PostgresEngineVersion.VER_12
+   */
+  databasePostgresVersion?: rds.PostgresEngineVersion
+  /**
+   * @default true
+   */
+  isMultiAz?: boolean
+  /**
    * Must not be removed once it has been set, as changing this
    * results in a new DB instance being created.
    *
@@ -31,13 +39,14 @@ interface Props extends cdk.StackProps {
    * @default false
    */
   usePublicSubnets?: boolean
+  overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
 }
 
 export class PostgresDatabase extends cdk.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: cdk.Construct, id: string, props: PostgresDatabaseProps) {
     super(scope, id)
 
     const masterUsername = props.masterUsername ?? "master"
@@ -49,7 +58,8 @@ export class PostgresDatabase extends cdk.Construct {
 
     const dbOptions: rds.DatabaseInstanceSourceProps = {
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.VER_12,
+        version:
+          props.databasePostgresVersion ?? rds.PostgresEngineVersion.VER_12,
       }),
       allowMajorVersionUpgrade: true,
       instanceIdentifier: props.instanceIdentifier,
@@ -60,12 +70,13 @@ export class PostgresDatabase extends cdk.Construct {
             subnetType: ec2.SubnetType.PUBLIC,
           }
         : undefined,
-      multiAz: true,
+      multiAz: props.isMultiAz !== undefined ? props.isMultiAz : true,
       // We default to 25 GiB storage instead of 100 GiB
       // if we do not specify.
       allocatedStorage: props.allocatedStorageGb ?? 25,
       // We specify maximum backup retention.
       backupRetention: cdk.Duration.days(35),
+      ...props.overrideDbOptions,
     }
 
     const db = props.snapshotIdentifier
