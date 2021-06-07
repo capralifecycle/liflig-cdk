@@ -1,3 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getGriidArtefactBucket 1`] = `Object {}`;
+exports[`getGriidArtefactBucket 1`] = `
+Object {
+  "Parameters": Object {
+    "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/build",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/key",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+}
+`;

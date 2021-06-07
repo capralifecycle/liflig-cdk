@@ -9,6 +9,12 @@ Object {
       },
     },
   },
+  "Parameters": Object {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+    },
+  },
   "Resources": Object {
     "BastionHostInstance82B9AD9B": Object {
       "DependsOn": Array [
@@ -27,7 +33,9 @@ Object {
         "IamInstanceProfile": Object {
           "Ref": "BastionHostInstanceInstanceProfileB1DB546D",
         },
-        "ImageId": "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}",
+        "ImageId": Object {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
         "InstanceType": "t3.nano",
         "SecurityGroupIds": Array [
           Object {
@@ -154,6 +162,12 @@ Object {
       },
     },
   },
+  "Parameters": Object {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+    },
+  },
   "Resources": Object {
     "BastionHostInstance82B9AD9B": Object {
       "DependsOn": Array [
@@ -172,7 +186,9 @@ Object {
         "IamInstanceProfile": Object {
           "Ref": "BastionHostInstanceInstanceProfileB1DB546D",
         },
-        "ImageId": "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}",
+        "ImageId": Object {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
         "InstanceType": "t3.nano",
         "SecurityGroupIds": Array [
           Object {
