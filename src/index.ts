@@ -4,7 +4,7 @@ import * as pipelines from "./pipelines"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
-import * as ecsServiceDns from "./ecs-service-dns"
+import * as ecsListenerRule from "./ecs-listener-rule"
 import * as ecsFargateService from "./ecs-fargate-service"
 import * as loadBalancer from "./load-balancer"
 import * as postgresDatabase from "./postgres-database"
@@ -30,7 +30,7 @@ export {
   ses,
   webapp,
   configureParameters,
-  ecsServiceDns,
+  ecsListenerRule,
   ecsFargateService,
   loadBalancer,
   postgresDatabase,

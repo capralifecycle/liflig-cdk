@@ -43,7 +43,7 @@ export type Parameter =
   | SecretParameter
   | SecretByNameParameter
 
-interface Props {
+export interface ConfigureParametersProps {
   /**
    * Prefix used for parameter names.
    * Should start with '/' and end without '/'.
@@ -60,7 +60,7 @@ export class ConfigureParameters {
   private configParameters: PlainTextParameter[]
   private secretParameters: SecretParameter[]
 
-  constructor(scope: cdk.Construct, props: Props) {
+  constructor(scope: cdk.Construct, props: ConfigureParametersProps) {
     if (!props.ssmPrefix.startsWith("/") || props.ssmPrefix.endsWith("/")) {
       throw new Error("ssmPrefix should start with '/' and end without '/'")
     }

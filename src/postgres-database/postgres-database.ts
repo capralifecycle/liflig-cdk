@@ -20,10 +20,6 @@ export interface PostgresDatabaseProps extends cdk.StackProps {
   instanceType: ec2.InstanceType
   instanceIdentifier: string
   /**
-   * @default rds.PostgresEngineVersion.VER_12
-   */
-  databasePostgresVersion?: rds.PostgresEngineVersion
-  /**
    * @default true
    */
   isMultiAz?: boolean
@@ -58,8 +54,7 @@ export class PostgresDatabase extends cdk.Construct {
 
     const dbOptions: rds.DatabaseInstanceSourceProps = {
       engine: rds.DatabaseInstanceEngine.postgres({
-        version:
-          props.databasePostgresVersion ?? rds.PostgresEngineVersion.VER_12,
+        version: rds.PostgresEngineVersion.VER_12,
       }),
       allowMajorVersionUpgrade: true,
       instanceIdentifier: props.instanceIdentifier,

@@ -37,15 +37,10 @@ export interface EcsFargateServiceProps {
    * @default 60 seconds
    */
   healthCheckGracePeriod?: cdk.Duration
-  /**
-   * @default []
-   */
   parameters?: Parameter[]
+  overrideFargateServiceProps?: Partial<ecs.FargateServiceProps>
   overrideHealthCheck?: Partial<elb.HealthCheck>
   overrideTargetGroupProps?: Partial<elb.ApplicationTargetGroupProps>
-  /**
-   * @default []
-   */
   secrets?: Record<string, ecs.Secret>
   environment?: Record<string, string>
 }
@@ -121,6 +116,7 @@ export class EcsFargateService extends cdk.Construct {
       assignPublicIp: true,
       securityGroup: this.securityGroup,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
+      ...props.overrideFargateServiceProps,
     })
 
     for (const param of parameters.parameters) {

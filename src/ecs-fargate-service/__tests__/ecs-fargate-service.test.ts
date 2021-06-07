@@ -9,7 +9,7 @@ import * as cm from "@aws-cdk/aws-certificatemanager"
 import "jest-cdk-snapshot"
 import { LoadBalancer } from "../../load-balancer"
 import { EcsFargateService } from ".."
-import { EcsServiceDns } from "../../ecs-service-dns"
+import { EcsListenerRule } from "../../ecs-listener-rule"
 import { Parameter } from "../../configure-parameters/configure-parameters"
 
 test("creates fargate service with parameters and DNS", () => {
@@ -73,7 +73,7 @@ test("creates fargate service with parameters and DNS", () => {
     ),
   })
 
-  new EcsServiceDns(stack, "Dns", {
+  new EcsListenerRule(stack, "Dns", {
     domainName: `example.com`,
     hostedZone: hostedZone,
     httpsListener: loadBalancer.httpsListener,
