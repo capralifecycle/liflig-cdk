@@ -38,6 +38,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "build-artifacts"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -157,6 +158,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "cdk-deploy-example"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -324,6 +326,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ecs-update-image-no-artifact"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -593,6 +596,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ecs-update-image"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -904,6 +908,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "ssm-parameter-reader"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -999,6 +1004,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "cdk-pipeline-cdk-source"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
@@ -1169,6 +1175,18 @@
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
           }
         ],
+        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
         "/cdk-pipeline-cdk-source/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -1214,6 +1232,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "cdk-pipeline-cloud-assembly"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
@@ -1354,6 +1373,18 @@
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
           }
         ],
+        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
         "/cdk-pipeline-cloud-assembly/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -1399,6 +1430,7 @@
           "SourceRepo": "github/capralifecycle/liflig-cdk",
           "StackName": "webapp"
         },
+        "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
