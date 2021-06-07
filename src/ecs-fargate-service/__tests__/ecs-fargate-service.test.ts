@@ -12,7 +12,7 @@ import { EcsFargateService } from ".."
 import { EcsListenerRule } from "../../ecs-listener-rule"
 import { Parameter } from "../../configure-parameters/configure-parameters"
 
-test("creates fargate service with parameters and DNS", () => {
+test("creates fargate service with parameters and listener rule", () => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")

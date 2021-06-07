@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`creates fargate service with parameters and DNS 1`] = `
+exports[`creates fargate service with parameters and listener rule 1`] = `
 Object {
   "Resources": Object {
     "DnsARecordFED6ED67": Object {
