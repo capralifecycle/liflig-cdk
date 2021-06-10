@@ -46,8 +46,8 @@ test("produce example plaform", () => {
   })
 
   new ExamplePlatformProducer(stack, "PlatformProducer", {
-    platformNamespace: "test",
-    platformName: "test",
+    platformNamespace: "platformNamespaceTest",
+    platformName: "platformNameTest",
     alarmTopic: alarmTopic,
   })
 
@@ -59,8 +59,8 @@ test("consume example platform", () => {
   const stack = new Stack(app, "ConsumerStack")
 
   const platform = new ExamplePlatformConsumer(stack, "PlatformConsumer", {
-    platformNamespace: "test",
-    platformName: "test",
+    platformNamespace: "platformNamespaceTest",
+    platformName: "platformNameTest",
   })
 
   // only here to get the value of topicArn, somehow
