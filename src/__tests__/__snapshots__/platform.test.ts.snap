@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`consume example platform 1`] = `
+Object {
+  "Parameters": Object {
+    "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "ExampleParam05F8FCAC": Object {
+      "Properties": Object {
+        "Type": "String",
+        "Value": Object {
+          "Ref": "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+  },
+}
+`;
+
+exports[`produce example plaform 1`] = `
+Object {
+  "Resources": Object {
+    "PlatformProduceralarmtopicarnC48B2B79": Object {
+      "Properties": Object {
+        "Name": "/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn",
+        "Type": "String",
+        "Value": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+    "TopicBFC7AF6E": Object {
+      "Properties": Object {
+        "DisplayName": "Alarm topic",
+        "TopicName": "alarmtopic",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;

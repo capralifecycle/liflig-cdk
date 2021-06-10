@@ -8,7 +8,7 @@ import * as ecsListenerRule from "./ecs-listener-rule"
 import * as ecsFargateService from "./ecs-fargate-service"
 import * as loadBalancer from "./load-balancer"
 import * as postgresDatabase from "./postgres-database"
-
+import * as platform from "./platform"
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
 
@@ -23,6 +23,7 @@ export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
 export { SsmParameterReader } from "./ssm-parameter-reader"
 export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
+
 export {
   cdkPipelines,
   griid,
@@ -34,6 +35,7 @@ export {
   ecsFargateService,
   loadBalancer,
   postgresDatabase,
+  platform,
 }
 
 /**
