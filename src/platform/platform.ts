@@ -2,16 +2,16 @@ import * as ssm from "@aws-cdk/aws-ssm"
 import * as cdk from "@aws-cdk/core"
 
 function paramName(
-  namespace: string,
   platformNamespace: string,
+  platformName: string,
   resourceName: string,
 ): string {
-  return `/liflig-cdk/platform/${namespace}/${platformNamespace}/${resourceName}`
+  return `/liflig-cdk/${platformNamespace}/platform/${platformName}/${resourceName}`
 }
 
 export interface PlatformProducerProps {
   platformNamespace: string
-  paramNamespace: string
+  platformName: string
 }
 
 /**
@@ -24,7 +24,7 @@ export interface PlatformProducerProps {
  */
 export class PlatformProducer extends cdk.Construct {
   private platformNamespace: string
-  private paramNamespace: string
+  private platformName: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
     super(scope, id)
@@ -32,24 +32,20 @@ export class PlatformProducer extends cdk.Construct {
     // For later extension.
     this.platformNamespace = props.platformNamespace
 
-    this.paramNamespace = props.paramNamespace
+    this.platformName = props.platformName
   }
 
   protected putParam(name: string, value: string): ssm.StringParameter {
     return new ssm.StringParameter(this, name, {
       stringValue: value,
-      parameterName: paramName(
-        this.paramNamespace,
-        this.platformNamespace,
-        name,
-      ),
+      parameterName: paramName(this.platformNamespace, this.platformName, name),
     })
   }
 }
 
 export interface PlatformConsumerProps {
   platformNamespace: string
-  paramNamespace: string
+  platformName: string
 }
 /**
  * Abstract class to be extended.
@@ -61,7 +57,7 @@ export interface PlatformConsumerProps {
  */
 export class PlatformConsumer extends cdk.Construct {
   private platformNamespace: string
-  private paramNamespace: string
+  private platformName: string
 
   constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id)
@@ -69,7 +65,7 @@ export class PlatformConsumer extends cdk.Construct {
     // For later extension.
     this.platformNamespace = props.platformNamespace
 
-    this.paramNamespace = props.paramNamespace
+    this.platformName = props.platformName
   }
 
   protected lazy<T>(producer: () => T): () => T {
@@ -86,7 +82,7 @@ export class PlatformConsumer extends cdk.Construct {
   protected getParam(name: string): string {
     return ssm.StringParameter.valueForStringParameter(
       this,
-      paramName(this.paramNamespace, this.platformNamespace, name),
+      paramName(this.platformNamespace, this.platformName, name),
     )
   }
 }

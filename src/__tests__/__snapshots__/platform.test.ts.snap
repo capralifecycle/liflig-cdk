@@ -6,7 +6,7 @@ Object {
     "ExampleParam05F8FCAC": Object {
       "Properties": Object {
         "Type": "String",
-        "Value": "{{resolve:ssm:/liflig-cdk/platform/test/test/alarm-topic-arn}}",
+        "Value": "{{resolve:ssm:/liflig-cdk/test/platform/test/alarm-topic-arn}}",
       },
       "Type": "AWS::SSM::Parameter",
     },
@@ -19,7 +19,7 @@ Object {
   "Resources": Object {
     "PlatformProduceralarmtopicarnC48B2B79": Object {
       "Properties": Object {
-        "Name": "/liflig-cdk/platform/test/test/alarm-topic-arn",
+        "Name": "/liflig-cdk/test/platform/test/alarm-topic-arn",
         "Type": "String",
         "Value": Object {
           "Ref": "TopicBFC7AF6E",
