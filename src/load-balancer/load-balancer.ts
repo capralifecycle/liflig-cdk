@@ -7,6 +7,7 @@ import * as cdk from "@aws-cdk/core"
 export interface LoadBalancerProps {
   certificates: certificatemanager.ICertificate[]
   vpc: ec2.IVpc
+  overrideLoadBalancerProps?: elb.ApplicationLoadBalancerProps
 }
 
 export class LoadBalancer extends cdk.Construct {
@@ -22,6 +23,7 @@ export class LoadBalancer extends cdk.Construct {
       vpcSubnets: props.vpc.selectSubnets({
         subnetType: ec2.SubnetType.PUBLIC,
       }),
+      ...props.overrideLoadBalancerProps,
     })
 
     this.loadBalancer
