@@ -29,7 +29,6 @@ export class PlatformProducer extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
     super(scope, id)
 
-    // For later extension.
     this.platformNamespace = props.platformNamespace
 
     this.platformName = props.platformName
@@ -62,7 +61,6 @@ export class PlatformConsumer extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
     super(scope, id)
 
-    // For later extension.
     this.platformNamespace = props.platformNamespace
 
     this.platformName = props.platformName
