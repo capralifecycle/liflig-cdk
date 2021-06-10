@@ -113,11 +113,12 @@ export class CdkDeploy extends cdk.Construct {
           props.dockerCredentialsSecretName == null
             ? codebuild.LinuxBuildImage.fromDockerRegistry("node:12")
             : codebuild.LinuxBuildImage.fromDockerRegistry("node:12", {
-                secretsManagerCredentials: secretsmanager.Secret.fromSecretNameV2(
-                  this,
-                  "dockerCredentialsSecretName",
-                  props.dockerCredentialsSecretName,
-                ),
+                secretsManagerCredentials:
+                  secretsmanager.Secret.fromSecretNameV2(
+                    this,
+                    "dockerCredentialsSecretName",
+                    props.dockerCredentialsSecretName,
+                  ),
               }),
       },
       buildSpec: codebuild.BuildSpec.fromObject({

@@ -92,7 +92,10 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}"
+                      ":s3:::artefact.eu-west-1.",
+                      {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                      }
                     ]
                   ]
                 },
@@ -104,7 +107,11 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*"
+                      ":s3:::artefact.eu-west-1.",
+                      {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                      },
+                      "/*"
                     ]
                   ]
                 }
@@ -135,7 +142,10 @@
                     {
                       "Ref": "AWS::AccountId"
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}"
+                    ":key/",
+                    {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
+                    }
                   ]
                 ]
               }
@@ -684,7 +694,17 @@
                   "Version": "1"
                 },
                 "Configuration": {
-                  "S3Bucket": "artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                  "S3Bucket": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "artefact.eu-west-1.",
+                        {
+                          "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                        }
+                      ]
+                    ]
+                  },
                   "S3ObjectKey": "pipelines/test-pipeline/trigger"
                 },
                 "Name": "source",
@@ -717,7 +737,18 @@
                   "FunctionName": {
                     "Ref": "PipelinePrepareCdkSourceFnF78E92C9"
                   },
-                  "UserParameters": "{\"bucketName\":\"artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}\",\"prefix\":\"pipelines/test-pipeline/\",\"parametersNamespace\":\"default\"}"
+                  "UserParameters": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "{\"bucketName\":\"artefact.eu-west-1.",
+                        {
+                          "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                        },
+                        "\",\"prefix\":\"pipelines/test-pipeline/\",\"parametersNamespace\":\"default\"}"
+                      ]
+                    ]
+                  }
                 },
                 "Name": "prepare-cdk-source",
                 "OutputArtifacts": [
@@ -1026,7 +1057,10 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}"
+                      ":s3:::artefact.eu-west-1.",
+                      {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                      }
                     ]
                   ]
                 },
@@ -1038,7 +1072,11 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*"
+                      ":s3:::artefact.eu-west-1.",
+                      {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                      },
+                      "/*"
                     ]
                   ]
                 }
@@ -1066,7 +1104,10 @@
                     {
                       "Ref": "AWS::AccountId"
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}"
+                    ":key/",
+                    {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
+                    }
                   ]
                 ]
               }
@@ -1556,6 +1597,13 @@
         },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
+          "EnvironmentVariables": [
+            {
+              "Name": "NPM_CONFIG_UNSAFE_PERM",
+              "Type": "PLAINTEXT",
+              "Value": "true"
+            }
+          ],
           "Image": "aws/codebuild/standard:5.0",
           "ImagePullCredentialsType": "CODEBUILD",
           "PrivilegedMode": false,
@@ -1947,6 +1995,21 @@
       }
     }
   },
+  "Parameters": {
+    "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/ccas/global/build"
+    },
+    "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/ccas/global/key"
+    },
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store."
+    }
+  },
   "Conditions": {
     "CDKMetadataAvailable": {
       "Fn::Or": [
@@ -2139,13 +2202,6 @@
           ]
         }
       ]
-    }
-  },
-  "Parameters": {
-    "BootstrapVersion": {
-      "Type": "AWS::SSM::Parameter::Value<String>",
-      "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store."
     }
   },
   "Rules": {
