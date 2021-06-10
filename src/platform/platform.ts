@@ -15,14 +15,13 @@ export interface PlatformProducerProps {
 }
 
 /**
- * Abstract class to be extended.
  *
  * Produces the resources that will be consumed in PlatformConsumer.
  * In other words; this must run before PlatformConsumer.
  *
  * Used for producing references to the core resources.
  */
-export class PlatformProducer extends cdk.Construct {
+export abstract class PlatformProducer extends cdk.Construct {
   private platformNamespace: string
   private platformName: string
 
@@ -47,14 +46,13 @@ export interface PlatformConsumerProps {
   platformName: string
 }
 /**
- * Abstract class to be extended.
  *
  * Consumes the resources that have been produced by PlatformProducer.
  * In other words; this must run after PlatformProducer.
  *
  * Used for consuming the core resources, which PlatformProducer creates references to.
  */
-export class PlatformConsumer extends cdk.Construct {
+export abstract class PlatformConsumer extends cdk.Construct {
   private platformNamespace: string
   private platformName: string
 

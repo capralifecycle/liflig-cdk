@@ -84,6 +84,16 @@ Object {
 
 exports[`Pipeline 1`] = `
 Object {
+  "Parameters": Object {
+    "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/build",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/key",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "PipelineArtefactBucketTriggerFA12D176": Object {
       "Properties": Object {
@@ -96,7 +106,17 @@ Object {
             ],
             "requestParameters": Object {
               "bucketName": Array [
-                "artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                    ],
+                  ],
+                },
               ],
               "key": Array [
                 "pipelines/dev-something/trigger",
@@ -112,7 +132,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/pipelines/dev-something/trigger",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/pipelines/dev-something/trigger",
                     ],
                   ],
                 },
@@ -200,7 +224,11 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"Payload\\":{\\"bucketName\\":\\"artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}\\",\\"bucketPrefix\\":\\"pipelines/dev-something/\\",\\"envNames\\":[\\"dev\\"]}}},\\"Check if dev has stacks\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Or\\":[{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"IsNull\\":true},{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"NumericEquals\\":0}],\\"Next\\":\\"Skip dev\\"}],\\"Default\\":\\"Deploy dev\\"},\\"Deploy dev\\":{\\"End\\":true,\\"Type\\":\\"Task\\",\\"ResultPath\\":null,\\"Resource\\":\\"arn:",
+              "\\",\\"Payload\\":{\\"bucketName\\":\\"artefact.eu-west-1.",
+              Object {
+                "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+              },
+              "\\",\\"bucketPrefix\\":\\"pipelines/dev-something/\\",\\"envNames\\":[\\"dev\\"]}}},\\"Check if dev has stacks\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Or\\":[{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"IsNull\\":true},{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"NumericEquals\\":0}],\\"Next\\":\\"Skip dev\\"}],\\"Default\\":\\"Deploy dev\\"},\\"Deploy dev\\":{\\"End\\":true,\\"Type\\":\\"Task\\",\\"ResultPath\\":null,\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -659,7 +687,10 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
                     ],
                   ],
                 },
@@ -671,7 +702,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/*",
                     ],
                   ],
                 },
@@ -695,7 +730,10 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}",
+                    ":key/",
+                    Object {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter",
+                    },
                   ],
                 ],
               },
@@ -922,7 +960,10 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
                     ],
                   ],
                 },
@@ -934,7 +975,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/*",
                     ],
                   ],
                 },
@@ -958,7 +1003,10 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}",
+                    ":key/",
+                    Object {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter",
+                    },
                   ],
                 ],
               },
@@ -1000,6 +1048,16 @@ Object {
 
 exports[`Pipeline with after deploy task 1`] = `
 Object {
+  "Parameters": Object {
+    "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/build",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/ccas/global/key",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "PipelineArtefactBucketTriggerFA12D176": Object {
       "Properties": Object {
@@ -1012,7 +1070,17 @@ Object {
             ],
             "requestParameters": Object {
               "bucketName": Array [
-                "artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                    ],
+                  ],
+                },
               ],
               "key": Array [
                 "pipelines/dev-something/trigger",
@@ -1028,7 +1096,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/pipelines/dev-something/trigger",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/pipelines/dev-something/trigger",
                     ],
                   ],
                 },
@@ -1116,7 +1188,11 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"Payload\\":{\\"bucketName\\":\\"artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}\\",\\"bucketPrefix\\":\\"pipelines/dev-something/\\",\\"envNames\\":[\\"dev\\"]}}},\\"Check if dev has stacks\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Or\\":[{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"IsNull\\":true},{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"NumericEquals\\":0}],\\"Next\\":\\"Skip dev\\"}],\\"Default\\":\\"Deploy dev\\"},\\"Deploy dev\\":{\\"Next\\":\\"AfterDeploy\\",\\"Type\\":\\"Task\\",\\"ResultPath\\":null,\\"Resource\\":\\"arn:",
+              "\\",\\"Payload\\":{\\"bucketName\\":\\"artefact.eu-west-1.",
+              Object {
+                "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+              },
+              "\\",\\"bucketPrefix\\":\\"pipelines/dev-something/\\",\\"envNames\\":[\\"dev\\"]}}},\\"Check if dev has stacks\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Or\\":[{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"IsNull\\":true},{\\"Variable\\":\\"$.StackCountPerEnv.dev\\",\\"NumericEquals\\":0}],\\"Next\\":\\"Skip dev\\"}],\\"Default\\":\\"Deploy dev\\"},\\"Deploy dev\\":{\\"Next\\":\\"AfterDeploy\\",\\"Type\\":\\"Task\\",\\"ResultPath\\":null,\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -1575,7 +1651,10 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
                     ],
                   ],
                 },
@@ -1587,7 +1666,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/*",
                     ],
                   ],
                 },
@@ -1611,7 +1694,10 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}",
+                    ":key/",
+                    Object {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter",
+                    },
                   ],
                 ],
               },
@@ -1838,7 +1924,10 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
                     ],
                   ],
                 },
@@ -1850,7 +1939,11 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::artefact.eu-west-1.{{resolve:ssm:/ccas/global/build}}/*",
+                      ":s3:::artefact.eu-west-1.",
+                      Object {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      },
+                      "/*",
                     ],
                   ],
                 },
@@ -1874,7 +1967,10 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":key/{{resolve:ssm:/ccas/global/key}}",
+                    ":key/",
+                    Object {
+                      "Ref": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter",
+                    },
                   ],
                 ],
               },

@@ -2,11 +2,19 @@
 
 exports[`consume example platform 1`] = `
 Object {
+  "Parameters": Object {
+    "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "ExampleParam05F8FCAC": Object {
       "Properties": Object {
         "Type": "String",
-        "Value": "{{resolve:ssm:/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn}}",
+        "Value": Object {
+          "Ref": "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
       },
       "Type": "AWS::SSM::Parameter",
     },
