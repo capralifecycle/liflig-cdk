@@ -89,11 +89,9 @@ export class Database extends cdk.Construct {
     this.secret = db.secret!
     this.connections = db.connections
 
-    if (props.usePublicSubnets) {
-      // Override due to being in public subnet.
-      // It will default to being public accessible which we do not want.
-      ;(db.node.defaultChild as rds.CfnDBInstance).publiclyAccessible = false
-    }
+    // Override in case we have placed it in a public subnet.
+    // It would default to being public accessible which we do not want.
+    ;(db.node.defaultChild as rds.CfnDBInstance).publiclyAccessible = false
   }
 
   public allowConnectionFrom(source: ec2.ISecurityGroup): void {
