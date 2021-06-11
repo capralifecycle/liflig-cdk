@@ -3,7 +3,7 @@
 exports[`create alarms 1`] = `
 Object {
   "Resources": Object {
-    "LogGroupError71677B53": Object {
+    "LogGroupErrorMetricFilter551B92D2": Object {
       "Properties": Object {
         "FilterPattern": "{ ($.level = \\"ERROR\\") || ($.level = \\"FATAL\\") || ($.requestInfo.status.code = \\"INTERNAL_SERVER_ERROR\\") }",
         "LogGroupName": Object {

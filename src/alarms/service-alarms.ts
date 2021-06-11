@@ -35,24 +35,27 @@ export class ServiceAlarms extends cdk.Construct {
     logGroup: logs.ILogGroup
     alarmDescription?: string
   }): void {
-    const errorMetricFilter = props.logGroup.addMetricFilter("Error", {
-      filterPattern: logs.FilterPattern.any(
-        logs.FilterPattern.stringValue("$.level", "=", "ERROR"),
-        // FATAL covers some applications we run that uses log4j or
-        // other libraries. It is not existent in slf4j.
-        logs.FilterPattern.stringValue("$.level", "=", "FATAL"),
-        logs.FilterPattern.stringValue(
-          // For liflig-logging.
-          "$.requestInfo.status.code",
-          "=",
-          "INTERNAL_SERVER_ERROR",
+    const errorMetricFilter = props.logGroup.addMetricFilter(
+      "ErrorMetricFilter",
+      {
+        filterPattern: logs.FilterPattern.any(
+          logs.FilterPattern.stringValue("$.level", "=", "ERROR"),
+          // FATAL covers some applications we run that uses log4j or
+          // other libraries. It is not existent in slf4j.
+          logs.FilterPattern.stringValue("$.level", "=", "FATAL"),
+          logs.FilterPattern.stringValue(
+            // For liflig-logging.
+            "$.requestInfo.status.code",
+            "=",
+            "INTERNAL_SERVER_ERROR",
+          ),
         ),
-      ),
-      metricName: "Errors",
-      metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${
-        this.serviceName
-      }/Errors`,
-    })
+        metricName: "Errors",
+        metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${
+          this.serviceName
+        }/Errors`,
+      },
+    )
 
     const errorAlarm = errorMetricFilter
       .metric()
