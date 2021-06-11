@@ -28,7 +28,7 @@ export class ServiceAlarms extends cdk.Construct {
   }
 
   /**
-   * For logs stored as JSON, monitor log entires logged
+   * For logs stored as JSON, monitor log entries logged
    * with level ERROR or higher, as well as any requests
    * that causes 500 for logging with liflig-logging.
    */
