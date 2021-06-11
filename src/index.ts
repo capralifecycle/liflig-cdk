@@ -1,3 +1,4 @@
+import * as alarms from "./alarms"
 import * as cdkPipelines from "./cdk-pipelines"
 import * as griid from "./griid"
 import * as pipelines from "./pipelines"
@@ -9,6 +10,7 @@ import * as ecsFargateService from "./ecs-fargate-service"
 import * as loadBalancer from "./load-balancer"
 import * as rds from "./rds"
 import * as platform from "./platform"
+
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
 
@@ -25,6 +27,7 @@ export { tagResources } from "./tags"
 export { WebappDeployViaRole } from "./webapp-deploy-via-role"
 
 export {
+  alarms,
   cdkPipelines,
   griid,
   pipelines,

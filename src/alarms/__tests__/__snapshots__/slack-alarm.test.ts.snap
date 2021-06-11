@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create slack alarm 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcArtifactHash5CE48134": Object {
+      "Description": "Artifact hash for asset \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
+      "Type": "String",
+    },
+    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3BucketEF5F551E": Object {
+      "Description": "S3 bucket for asset \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
+      "Type": "String",
+    },
+    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372": Object {
+      "Description": "S3 key for asset version \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "SlackAlarmFunction7A980434": Object {
+      "DependsOn": Array [
+        "SlackAlarmFunctionServiceRoleC8F1C44C",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3BucketEF5F551E",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
+        "Environment": Object {
+          "Variables": Object {
+            "ENVIRONMENT_NAME": "dev",
+            "PROJECT_NAME": "my-project",
+            "SLACK_CHANNEL": "#my-channel",
+            "SLACK_URL": "https://hooks.slack.com/services/ABC/DEF/123",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SlackAlarmFunctionServiceRoleC8F1C44C",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.8",
+        "Timeout": 6,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SlackAlarmFunctionInvokePermission99C6FD8D": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "SlackAlarmFunction7A980434",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": Object {
+          "Ref": "SlackAlarmTopicA880F65C",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "SlackAlarmFunctionServiceRoleC8F1C44C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SlackAlarmSubscriptionD0659B5B": Object {
+      "Properties": Object {
+        "Endpoint": Object {
+          "Fn::GetAtt": Array [
+            "SlackAlarmFunction7A980434",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": Object {
+          "Ref": "SlackAlarmTopicA880F65C",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "SlackAlarmTopicA880F65C": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
