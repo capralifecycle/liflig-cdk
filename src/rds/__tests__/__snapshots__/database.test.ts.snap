@@ -108,6 +108,34 @@ Object {
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "DatabaseSecurityGroupfromSupportStackSecurityGroupF35DA957IndirectPort55C732DA": Object {
+      "Properties": Object {
+        "Description": "from SupportStackSecurityGroupF35DA957:{IndirectPort}",
+        "FromPort": Object {
+          "Fn::GetAtt": Array [
+            "DatabaseF44359DD",
+            "Endpoint.Port",
+          ],
+        },
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "DatabaseSecurityGroupB7D8C207",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttSecurityGroupDD263621GroupIdDF6F8B09",
+        },
+        "ToPort": Object {
+          "Fn::GetAtt": Array [
+            "DatabaseF44359DD",
+            "Endpoint.Port",
+          ],
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "DatabaseSubnetGroup669F481A": Object {
       "Properties": Object {
         "DBSubnetGroupDescription": "Subnet group for Resource database",

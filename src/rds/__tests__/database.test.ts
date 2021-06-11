@@ -12,7 +12,15 @@ test("create database", () => {
 
   const vpc = new ec2.Vpc(supportStack, "Vpc")
 
-  new Database(stack, "Database", {
+  const otherSecurityGroup = new ec2.SecurityGroup(
+    supportStack,
+    "SecurityGroup",
+    {
+      vpc,
+    },
+  )
+
+  const database = new Database(stack, "Database", {
     vpc: vpc,
     engine: rds.DatabaseInstanceEngine.postgres({
       version: rds.PostgresEngineVersion.VER_12,
@@ -25,6 +33,8 @@ test("create database", () => {
     snapshotIdentifier: undefined,
     usePublicSubnets: true,
   })
+
+  database.allowConnectionFrom(otherSecurityGroup)
 
   expect(stack).toMatchCdkSnapshot()
 })

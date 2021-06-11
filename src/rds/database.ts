@@ -95,4 +95,8 @@ export class Database extends cdk.Construct {
       ;(db.node.defaultChild as rds.CfnDBInstance).publiclyAccessible = false
     }
   }
+
+  public allowConnectionFrom(source: ec2.ISecurityGroup): void {
+    this.connections.allowDefaultPortFrom(source)
+  }
 }
