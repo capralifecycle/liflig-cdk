@@ -3,8 +3,9 @@ import * as rds from "@aws-cdk/aws-rds"
 import * as sm from "@aws-cdk/aws-secretsmanager"
 import * as cdk from "@aws-cdk/core"
 
-export interface PostgresDatabaseProps extends cdk.StackProps {
+export interface DatabaseProps extends cdk.StackProps {
   vpc: ec2.IVpc
+  engine: rds.IInstanceEngine
   /**
    * @default master
    */
@@ -38,24 +39,22 @@ export interface PostgresDatabaseProps extends cdk.StackProps {
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
 }
 
-export class PostgresDatabase extends cdk.Construct {
+export class Database extends cdk.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
 
-  constructor(scope: cdk.Construct, id: string, props: PostgresDatabaseProps) {
+  constructor(scope: cdk.Construct, id: string, props: DatabaseProps) {
     super(scope, id)
 
     const masterUsername = props.masterUsername ?? "master"
     const databaseName = props.databaseName ?? "app"
 
-    const dbSecret = new rds.DatabaseSecret(this, "DbSecret", {
+    const secret = new rds.DatabaseSecret(this, "Secret", {
       username: masterUsername,
     })
 
-    const dbOptions: rds.DatabaseInstanceSourceProps = {
-      engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.VER_12,
-      }),
+    const options: rds.DatabaseInstanceSourceProps = {
+      engine: props.engine,
       allowMajorVersionUpgrade: true,
       instanceIdentifier: props.instanceIdentifier,
       instanceType: props.instanceType,
@@ -65,7 +64,7 @@ export class PostgresDatabase extends cdk.Construct {
             subnetType: ec2.SubnetType.PUBLIC,
           }
         : undefined,
-      multiAz: props.isMultiAz !== undefined ? props.isMultiAz : true,
+      multiAz: props.isMultiAz ?? true,
       // We default to 25 GiB storage instead of 100 GiB
       // if we do not specify.
       allocatedStorage: props.allocatedStorageGb ?? 25,
@@ -75,15 +74,15 @@ export class PostgresDatabase extends cdk.Construct {
     }
 
     const db = props.snapshotIdentifier
-      ? new rds.DatabaseInstanceFromSnapshot(this, "Db", {
-          ...dbOptions,
+      ? new rds.DatabaseInstanceFromSnapshot(this, "Resource", {
+          ...options,
           snapshotIdentifier: props.snapshotIdentifier,
-          credentials: rds.SnapshotCredentials.fromSecret(dbSecret),
+          credentials: rds.SnapshotCredentials.fromSecret(secret),
         })
-      : new rds.DatabaseInstance(this, "Db", {
-          ...dbOptions,
+      : new rds.DatabaseInstance(this, "Resource", {
+          ...options,
           databaseName,
-          credentials: rds.Credentials.fromSecret(dbSecret),
+          credentials: rds.Credentials.fromSecret(secret),
           storageEncrypted: true,
         })
 

@@ -7,7 +7,7 @@ import * as configureParameters from "./configure-parameters"
 import * as ecsListenerRule from "./ecs-listener-rule"
 import * as ecsFargateService from "./ecs-fargate-service"
 import * as loadBalancer from "./load-balancer"
-import * as postgresDatabase from "./postgres-database"
+import * as rds from "./rds"
 import * as platform from "./platform"
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
@@ -34,7 +34,7 @@ export {
   ecsListenerRule,
   ecsFargateService,
   loadBalancer,
-  postgresDatabase,
+  rds,
   platform,
 }
 
