@@ -12,13 +12,13 @@ test("create alarms", () => {
   const stack = new Stack(app, "Stack")
 
   const topic = new sns.Topic(supportStack, "Topic")
-  const snsAction = new cloudwatchActions.SnsAction(topic)
+  const action = new cloudwatchActions.SnsAction(topic)
 
   const logGroup = new logs.LogGroup(stack, "LogGroup")
 
   const alarms = new ServiceAlarms(stack, "ServiceAlarms", {
     serviceName: "service-name",
-    snsAction,
+    action,
   })
 
   alarms.addJsonErrorAlarm({

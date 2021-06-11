@@ -1,10 +1,9 @@
 import * as cloudwatch from "@aws-cdk/aws-cloudwatch"
-import * as cloudwatchActions from "@aws-cdk/aws-cloudwatch-actions"
 import * as logs from "@aws-cdk/aws-logs"
 import * as cdk from "@aws-cdk/core"
 
 export interface ServiceAlarmsProps extends cdk.StackProps {
-  snsAction: cloudwatchActions.SnsAction
+  action: cloudwatch.IAlarmAction
   serviceName: string
 }
 
@@ -17,13 +16,13 @@ export interface ServiceAlarmsProps extends cdk.StackProps {
  * See SlackAlarm construct for SNS Action.
  */
 export class ServiceAlarms extends cdk.Construct {
-  private readonly snsAction: cloudwatchActions.SnsAction
+  private readonly action: cloudwatch.IAlarmAction
   private readonly serviceName: string
 
   constructor(scope: cdk.Construct, id: string, props: ServiceAlarmsProps) {
     super(scope, id)
 
-    this.snsAction = props.snsAction
+    this.action = props.action
     this.serviceName = props.serviceName
   }
 
@@ -69,8 +68,8 @@ export class ServiceAlarms extends cdk.Construct {
         treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       })
 
-    errorAlarm.addAlarmAction(this.snsAction)
-    errorAlarm.addOkAction(this.snsAction)
+    errorAlarm.addAlarmAction(this.action)
+    errorAlarm.addOkAction(this.action)
   }
 
   /**
@@ -98,8 +97,8 @@ export class ServiceAlarms extends cdk.Construct {
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     })
 
-    healthAlarm.addAlarmAction(this.snsAction)
-    healthAlarm.addOkAction(this.snsAction)
+    healthAlarm.addAlarmAction(this.action)
+    healthAlarm.addOkAction(this.action)
 
     const connectionAlarm = new cloudwatch.Metric({
       metricName: "TargetConnectionErrorCount",
@@ -118,7 +117,7 @@ export class ServiceAlarms extends cdk.Construct {
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     })
 
-    connectionAlarm.addAlarmAction(this.snsAction)
-    connectionAlarm.addOkAction(this.snsAction)
+    connectionAlarm.addAlarmAction(this.action)
+    connectionAlarm.addOkAction(this.action)
   }
 }
