@@ -12,6 +12,7 @@ import {
   cloudAssemblyLookupHandler,
   CloudAssemblyLookupUserParameters,
 } from "./cloud-assembly-lookup-handler"
+import { SlackNotification, SlackNotificationProps } from "./slack-notification"
 
 export interface LifligCdkPipelineProps {
   /**
@@ -295,6 +296,13 @@ export class LifligCdkPipeline extends cdk.Construct {
         ],
       },
     ]
+  }
+
+  addSlackNotification(props: Omit<SlackNotificationProps, "pipeline">): void {
+    new SlackNotification(this, "Slack", {
+      pipeline: this.codePipeline,
+      ...props,
+    })
   }
 }
 
