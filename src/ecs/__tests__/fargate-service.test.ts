@@ -1,16 +1,15 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "@aws-cdk/core"
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as sm from "@aws-cdk/aws-secretsmanager"
-import * as ecr from "@aws-cdk/aws-ecr"
-import * as route53 from "@aws-cdk/aws-route53"
 import * as cm from "@aws-cdk/aws-certificatemanager"
+import * as ec2 from "@aws-cdk/aws-ec2"
+import * as ecr from "@aws-cdk/aws-ecr"
+import * as ecs from "@aws-cdk/aws-ecs"
+import * as route53 from "@aws-cdk/aws-route53"
+import * as sm from "@aws-cdk/aws-secretsmanager"
+import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
-import { LoadBalancer } from "../../load-balancer"
-import { EcsFargateService } from ".."
-import { EcsListenerRule } from "../../ecs-listener-rule"
+import { FargateService, ListenerRule } from ".."
 import { Parameter } from "../../configure-parameters/configure-parameters"
+import { LoadBalancer } from "../../load-balancer"
 
 test("creates fargate service with parameters and listener rule", () => {
   const app = new App()
@@ -61,7 +60,7 @@ test("creates fargate service with parameters and listener rule", () => {
     },
   ]
 
-  const service = new EcsFargateService(stack, "Service", {
+  const service = new FargateService(stack, "Service", {
     serviceName: "example-service",
     vpc: vpc,
     cluster: ecsCluster,
@@ -73,7 +72,7 @@ test("creates fargate service with parameters and listener rule", () => {
     ),
   })
 
-  new EcsListenerRule(stack, "Dns", {
+  new ListenerRule(stack, "Dns", {
     domainName: `example.com`,
     hostedZone: hostedZone,
     httpsListener: loadBalancer.httpsListener,

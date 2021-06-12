@@ -7,7 +7,7 @@ import { Duration } from "@aws-cdk/core"
 import { ConfigureParameters } from "../configure-parameters"
 import { Parameter } from "../configure-parameters/configure-parameters"
 
-export interface EcsFargateServiceProps {
+export interface FargateServiceProps {
   serviceName: string
   vpc: ec2.IVpc
   cluster: ecs.ICluster
@@ -45,13 +45,13 @@ export interface EcsFargateServiceProps {
   environment?: Record<string, string>
 }
 
-export class EcsFargateService extends cdk.Construct {
+export class FargateService extends cdk.Construct {
   public readonly securityGroup: ec2.SecurityGroup
   public readonly taskDefinition: ecs.TaskDefinition
   public readonly targetGroup: elb.ApplicationTargetGroup
   public readonly logGroup: logs.LogGroup
 
-  constructor(scope: cdk.Construct, id: string, props: EcsFargateServiceProps) {
+  constructor(scope: cdk.Construct, id: string, props: FargateServiceProps) {
     super(scope, id)
 
     const parameters = new ConfigureParameters(this, {

@@ -5,8 +5,7 @@ import * as pipelines from "./pipelines"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
-import * as ecsListenerRule from "./ecs-listener-rule"
-import * as ecsFargateService from "./ecs-fargate-service"
+import * as ecs from "./ecs"
 import * as loadBalancer from "./load-balancer"
 import * as rds from "./rds"
 import * as platform from "./platform"
@@ -34,8 +33,7 @@ export {
   ses,
   webapp,
   configureParameters,
-  ecsListenerRule,
-  ecsFargateService,
+  ecs,
   loadBalancer,
   rds,
   platform,
