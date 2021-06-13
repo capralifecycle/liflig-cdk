@@ -116,6 +116,7 @@ export class FargateService extends cdk.Construct {
       assignPublicIp: true,
       securityGroup: this.securityGroup,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
+      enableExecuteCommand: true,
       ...props.overrideFargateServiceProps,
     })
 

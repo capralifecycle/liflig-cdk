@@ -104,6 +104,13 @@ Object {
       "Type": "AWS::IAM::Role",
     },
     "Cluster9EE0221C": Object {
+      "Properties": Object {
+        "Configuration": Object {
+          "ExecuteCommandConfiguration": Object {
+            "Logging": "NONE",
+          },
+        },
+      },
       "Type": "AWS::ECS::Cluster",
     },
     "ClusterEventLogsD0A45D00": Object {

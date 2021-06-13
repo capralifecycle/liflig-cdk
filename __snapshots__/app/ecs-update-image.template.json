@@ -183,14 +183,14 @@
     "ClusterVpcPublicSubnet1NATGateway0693C346": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5"
+        },
         "AllocationId": {
           "Fn::GetAtt": [
             "ClusterVpcPublicSubnet1EIP433C56EE",
             "AllocationId"
           ]
-        },
-        "SubnetId": {
-          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5"
         },
         "Tags": [
           {
@@ -346,14 +346,14 @@
     "ClusterVpcPublicSubnet2NATGateway00B24686": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4"
+        },
         "AllocationId": {
           "Fn::GetAtt": [
             "ClusterVpcPublicSubnet2EIP203DF3E5",
             "AllocationId"
           ]
-        },
-        "SubnetId": {
-          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4"
         },
         "Tags": [
           {

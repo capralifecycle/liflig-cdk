@@ -28,6 +28,13 @@ export class Cluster extends cdk.Construct {
     this.cluster = new ecs.Cluster(this, "Resource", {
       clusterName: props.clusterName,
       vpc: props.vpc,
+      executeCommandConfiguration: {
+        // The default would log to the same awslogs setup as
+        // the tasks, which would produce different types of
+        // outputs in the same log group.
+        // We have not set up specific logging for this.
+        logging: ecs.ExecuteCommandLogging.NONE,
+      },
     })
 
     // The details in ECS console is available only for short time,
