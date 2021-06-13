@@ -41,14 +41,19 @@ export interface FargateServiceProps {
   overrideFargateServiceProps?: Partial<ecs.FargateServiceProps>
   overrideHealthCheck?: Partial<elb.HealthCheck>
   overrideTargetGroupProps?: Partial<elb.ApplicationTargetGroupProps>
+  overrideContainerProps?: Partial<ecs.ContainerDefinitionOptions>
   secrets?: Record<string, ecs.Secret>
   environment?: Record<string, string>
+  /**
+   * @default false
+   */
+  skipTargetGroup?: boolean
 }
 
 export class FargateService extends cdk.Construct {
   public readonly securityGroup: ec2.SecurityGroup
   public readonly taskDefinition: ecs.TaskDefinition
-  public readonly targetGroup: elb.ApplicationTargetGroup
+  public readonly targetGroup: elb.ApplicationTargetGroup | undefined
   public readonly logGroup: logs.LogGroup
 
   constructor(scope: cdk.Construct, id: string, props: FargateServiceProps) {
@@ -94,6 +99,7 @@ export class FargateService extends cdk.Construct {
         PARAMS_HASH: parameters.hashValue,
         ...(props.environment ?? {}),
       },
+      ...props.overrideContainerProps,
     })
 
     const port = props.containerPort ?? 8080
@@ -124,22 +130,24 @@ export class FargateService extends cdk.Construct {
       service.node.addDependency(param)
     }
 
-    this.targetGroup = new elb.ApplicationTargetGroup(this, "TargetGroup", {
-      protocol: elb.ApplicationProtocol.HTTP,
-      port: port,
-      vpc: props.vpc,
-      targetType: elb.TargetType.IP,
-      targets: [service],
-      deregistrationDelay:
-        props.deregistrationDelay ?? cdk.Duration.seconds(15),
-      ...props.overrideTargetGroupProps,
-    })
+    if (!props.skipTargetGroup) {
+      this.targetGroup = new elb.ApplicationTargetGroup(this, "TargetGroup", {
+        protocol: elb.ApplicationProtocol.HTTP,
+        port: port,
+        vpc: props.vpc,
+        targetType: elb.TargetType.IP,
+        targets: [service],
+        deregistrationDelay:
+          props.deregistrationDelay ?? cdk.Duration.seconds(15),
+        ...props.overrideTargetGroupProps,
+      })
 
-    this.targetGroup.configureHealthCheck({
-      interval: Duration.seconds(10),
-      path: "/health",
-      healthyThresholdCount: 2,
-      ...props.overrideHealthCheck,
-    })
+      this.targetGroup.configureHealthCheck({
+        interval: Duration.seconds(10),
+        path: "/health",
+        healthyThresholdCount: 2,
+        ...props.overrideHealthCheck,
+      })
+    }
   }
 }

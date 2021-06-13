@@ -78,7 +78,7 @@ test("creates fargate service with parameters and listener rule", () => {
     httpsListener: loadBalancer.httpsListener,
     listenerPriority: 10,
     loadBalancer: loadBalancer.loadBalancer,
-    targetGroup: service.targetGroup,
+    targetGroup: service.targetGroup!,
   })
 
   expect(stack).toMatchCdkSnapshot()
