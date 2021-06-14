@@ -2,6 +2,7 @@ import * as certificatemanager from "@aws-cdk/aws-certificatemanager"
 import * as ec2 from "@aws-cdk/aws-ec2"
 import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
 import { ListenerAction } from "@aws-cdk/aws-elasticloadbalancingv2"
+import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 
 export interface LoadBalancerProps {
@@ -13,6 +14,7 @@ export interface LoadBalancerProps {
 export class LoadBalancer extends cdk.Construct {
   public readonly loadBalancer: elb.ApplicationLoadBalancer
   public readonly httpsListener: elb.ApplicationListener
+  public readonly accessLogsBucket: s3.Bucket
 
   constructor(scope: cdk.Construct, id: string, props: LoadBalancerProps) {
     super(scope, id)
@@ -58,5 +60,17 @@ export class LoadBalancer extends cdk.Construct {
       certificates: props.certificates,
       defaultTargetGroups: [defaultTargetGroup],
     })
+
+    this.accessLogsBucket = new s3.Bucket(this, "AccessLogsBucket", {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      lifecycleRules: [
+        {
+          expiration: cdk.Duration.days(30),
+        },
+      ],
+    })
+
+    this.loadBalancer.logAccessLogs(this.accessLogsBucket)
   }
 }

@@ -1,15 +1,23 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "@aws-cdk/core"
+import * as cm from "@aws-cdk/aws-certificatemanager"
 import * as ec2 from "@aws-cdk/aws-ec2"
 import * as route53 from "@aws-cdk/aws-route53"
-import * as cm from "@aws-cdk/aws-certificatemanager"
+import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
 import { LoadBalancer } from ".."
 
 test("create load balancer", () => {
   const app = new App()
-  const supportStack = new Stack(app, "SupportStack")
-  const stack = new Stack(app, "Stack")
+  const supportStack = new Stack(app, "SupportStack", {
+    env: {
+      region: "eu-west-1",
+    },
+  })
+  const stack = new Stack(app, "Stack", {
+    env: {
+      region: "eu-west-1",
+    },
+  })
 
   const vpc = new ec2.Vpc(supportStack, "Vpc")
 

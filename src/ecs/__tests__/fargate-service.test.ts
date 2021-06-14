@@ -13,8 +13,16 @@ import { LoadBalancer } from "../../load-balancer"
 
 test("creates fargate service with parameters and listener rule", () => {
   const app = new App()
-  const supportStack = new Stack(app, "SupportStack")
-  const stack = new Stack(app, "Stack")
+  const supportStack = new Stack(app, "SupportStack", {
+    env: {
+      region: "eu-west-1",
+    },
+  })
+  const stack = new Stack(app, "Stack", {
+    env: {
+      region: "eu-west-1",
+    },
+  })
 
   const vpc = new ec2.Vpc(supportStack, "Vpc")
 

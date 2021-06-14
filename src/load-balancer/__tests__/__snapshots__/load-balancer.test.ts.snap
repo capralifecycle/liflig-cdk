@@ -4,11 +4,25 @@ exports[`create load balancer 1`] = `
 Object {
   "Resources": Object {
     "LoadBalancer8E47CE52": Object {
+      "DependsOn": Array [
+        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
+        "LoadBalancerAccessLogsBucketD82011C7",
+      ],
       "Properties": Object {
         "LoadBalancerAttributes": Array [
           Object {
             "Key": "deletion_protection.enabled",
             "Value": "false",
+          },
+          Object {
+            "Key": "access_logs.s3.enabled",
+            "Value": "true",
+          },
+          Object {
+            "Key": "access_logs.s3.bucket",
+            "Value": Object {
+              "Ref": "LoadBalancerAccessLogsBucketD82011C7",
+            },
           },
         ],
         "Scheme": "internet-facing",
@@ -32,6 +46,88 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
+    "LoadBalancerAccessLogsBucketD82011C7": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 30,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LoadBalancerAccessLogsBucketPolicy6B02AF07": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "LoadBalancerAccessLogsBucketD82011C7",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::156460612806:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerAccessLogsBucketD82011C7",
+                        "Arn",
+                      ],
+                    },
+                    "/AWSLogs/",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "LoadBalancerDefaultTargetGroup162BFC2A": Object {
       "Properties": Object {
         "Port": 80,
@@ -44,6 +140,10 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
     "LoadBalancerHttpListener9DD37EAA": Object {
+      "DependsOn": Array [
+        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
+        "LoadBalancerAccessLogsBucketD82011C7",
+      ],
       "Properties": Object {
         "DefaultActions": Array [
           Object {
@@ -64,6 +164,10 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LoadBalancerHttpsListener68D81C94": Object {
+      "DependsOn": Array [
+        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
+        "LoadBalancerAccessLogsBucketD82011C7",
+      ],
       "Properties": Object {
         "Certificates": Array [
           Object {
@@ -90,6 +194,10 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LoadBalancerSecurityGroupC89CA14B": Object {
+      "DependsOn": Array [
+        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
+        "LoadBalancerAccessLogsBucketD82011C7",
+      ],
       "Properties": Object {
         "GroupDescription": "Automatically created Security Group for ELB StackLoadBalancerF0AF61AA",
         "SecurityGroupEgress": Array [
