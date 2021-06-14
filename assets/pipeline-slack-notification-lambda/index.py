@@ -145,15 +145,8 @@ def handler(event, context):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{emoji_prefix}Pipeline <{pipeline_url}|{pipeline_name}> *{state_text}*",
+                "text": f"{emoji_prefix}Pipeline <{pipeline_url}|{pipeline_name}> *{state_text}*\n{region} | {account_text}\n<{execution_url}|Execution details>",
             },
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Execution ID*\n<{execution_url}|{execution_id}>",
-                },
-                {"type": "mrkdwn", "text": f"*Location*\n{region} | {account_text}"},
-            ],
         },
         *blocks_for_failed,
     ]
