@@ -99,6 +99,9 @@ export class FargateService extends cdk.Construct {
         PARAMS_HASH: parameters.hashValue,
         ...(props.environment ?? {}),
       },
+      linuxParameters: new ecs.LinuxParameters(this, "LinuxParameters", {
+        initProcessEnabled: true,
+      }),
       ...props.overrideContainerProps,
     })
 

@@ -312,6 +312,10 @@ Object {
                 ],
               ],
             },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
               "Options": Object {
