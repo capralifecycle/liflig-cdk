@@ -1404,11 +1404,28 @@
             },
             {
               "Action": "sts:AssumeRole",
+              "Condition": {
+                "ForAnyValue:StringEquals": {
+                  "iam:ResourceTag/aws-cdk:bootstrap-role": [
+                    "image-publishing",
+                    "file-publishing",
+                    "deploy"
+                  ]
+                }
+              },
               "Effect": "Allow",
-              "Resource": [
-                "arn:*:iam::*:role/*-deploy-role-*",
-                "arn:*:iam::*:role/*-publishing-role-*"
-              ]
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:*:iam::",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":role/*"
+                  ]
+                ]
+              }
             },
             {
               "Action": "cloudformation:DescribeStacks",
@@ -1761,7 +1778,9 @@
                   [
                     "1",
                     "2",
-                    "3"
+                    "3",
+                    "4",
+                    "5"
                   ],
                   {
                     "Ref": "BootstrapVersion"
@@ -1770,7 +1789,7 @@
               }
             ]
           },
-          "AssertDescription": "CDK bootstrap stack version 4 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
         }
       ]
     }
