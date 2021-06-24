@@ -97,7 +97,7 @@ export class ServiceAlarms extends cdk.Construct {
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
       evaluationPeriods: 1,
       threshold: 1,
-      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+      treatMissingData: cloudwatch.TreatMissingData.BREACHING,
     })
 
     healthAlarm.addAlarmAction(this.action)
