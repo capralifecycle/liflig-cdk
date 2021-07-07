@@ -1,0 +1,202 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`configuration-set-sns-destination 1`] = `
+Object {
+  "Parameters": Any<Object>,
+  "Resources": Object {
+    "SnsDestinationF568367B": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ConfigurationSetName": "exampleconfigurationset",
+        "EventDestinationName": "sns",
+        "MatchingEventTypes": Array [
+          "BOUNCE",
+          "COMPLAINT",
+          "DELIVERY",
+          "DELIVERY_DELAY",
+          "REJECT",
+          "SEND",
+        ],
+        "Serial": 1,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEvent102A5A7F",
+            "Arn",
+          ],
+        },
+        "SnsTopicArn": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "lifligcdkconfigurationsetsnsdestinationFunction24D2C768": Object {
+      "DependsOn": Array [
+        "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDefaultPolicy848780D4",
+        "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDAE79368",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDAE79368",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 300,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDAE79368": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDefaultPolicy848780D4": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ses:CreateConfigurationSetEventDestination",
+                "ses:UpdateConfigurationSetEventDestination",
+                "ses:DeleteConfigurationSetEventDestination",
+                "ses:GetConfigurationSetEventDestinations",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDefaultPolicy848780D4",
+        "Roles": Array [
+          Object {
+            "Ref": "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDAE79368",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEvent102A5A7F": Object {
+      "DependsOn": Array [
+        "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleDefaultPolicyF016E55B",
+        "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleC2624999",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.configuration-set-sns-destination/Provider)",
+        "Environment": Object {
+          "Variables": Object {
+            "USER_ON_EVENT_FUNCTION_ARN": Object {
+              "Fn::GetAtt": Array [
+                "lifligcdkconfigurationsetsnsdestinationFunction24D2C768",
+                "Arn",
+              ],
+            },
+          },
+        },
+        "Handler": "framework.onEvent",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleC2624999",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleC2624999": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleDefaultPolicyF016E55B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "lifligcdkconfigurationsetsnsdestinationFunction24D2C768",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleDefaultPolicyF016E55B",
+        "Roles": Array [
+          Object {
+            "Ref": "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleC2624999",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;
