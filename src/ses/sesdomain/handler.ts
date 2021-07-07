@@ -99,30 +99,20 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
       console.log(`ses.verifyDomainDkim: ${JSON.stringify(response2)}`)
       const dkimTokens = response2["DkimTokens"]
 
-      if (defaultConfigurationSetName) {
-        const response3 = await sesv2
-          .putEmailIdentityConfigurationSetAttributes({
-            EmailIdentity: domainName,
-            ConfigurationSetName: defaultConfigurationSetName,
-          })
-          .promise()
-        console.log(
-          `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
-            response3,
-          )}`,
-        )
-      } else {
-        const response3 = await sesv2
-          .putEmailIdentityConfigurationSetAttributes({
-            EmailIdentity: domainName,
-          })
-          .promise()
-        console.log(
-          `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
-            response3,
-          )}`,
-        )
-      }
+      // Idempotent.
+      const response3 = await sesv2
+        .putEmailIdentityConfigurationSetAttributes({
+          EmailIdentity: domainName,
+          // ConfigurationSetName can be set to undefined to remove
+          // the default configuration set from the identity.
+          ConfigurationSetName: defaultConfigurationSetName,
+        })
+        .promise()
+      console.log(
+        `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
+          response3,
+        )}`,
+      )
 
       return {
         PhysicalResourceId: `SesDomain${domainName}`,
