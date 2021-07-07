@@ -30,10 +30,13 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
   const ttl = "1800"
 
   const ses: AWS.SES = new AWS.SES() as _AWS.SES
+  const sesv2: AWS.SESV2 = new AWS.SESV2() as _AWS.SESV2
 
   const domainName = event.ResourceProperties["DomainName"]
   const includeVerificationRecord =
     event.ResourceProperties["IncludeVerificationRecord"] == "true"
+  const defaultConfigurationSetName =
+    event.ResourceProperties["DefaultConfigurationSetName"]
 
   if (!includeVerificationRecord) {
     console.log("Excluding verification TXT record")
@@ -95,6 +98,32 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
         .promise()
       console.log(`ses.verifyDomainDkim: ${JSON.stringify(response2)}`)
       const dkimTokens = response2["DkimTokens"]
+
+      if (defaultConfigurationSetName) {
+        const response3 = await sesv2
+          .putEmailIdentityConfigurationSetAttributes({
+            EmailIdentity: domainName,
+            ConfigurationSetName: defaultConfigurationSetName,
+          })
+          .promise()
+        console.log(
+          `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
+            response3,
+          )}`,
+        )
+      } else {
+        const response3 = await sesv2
+          .putEmailIdentityConfigurationSetAttributes({
+            EmailIdentity: domainName,
+            ConfigurationSetName: defaultConfigurationSetName,
+          })
+          .promise()
+        console.log(
+          `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
+            response3,
+          )}`,
+        )
+      }
 
       return {
         PhysicalResourceId: `SesDomain${domainName}`,
