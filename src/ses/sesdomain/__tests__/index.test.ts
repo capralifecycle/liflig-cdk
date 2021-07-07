@@ -35,3 +35,17 @@ test("ses-domain without hosted zone", () => {
     ignoreAssets: true,
   })
 })
+
+test("ses-domain with default configuration set", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+
+  new SesDomain(stack, "SesDomain", {
+    domainName: "example.com",
+    defaultConfigurationSetName: "exampleconfigset",
+  })
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+  })
+})
