@@ -115,7 +115,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
         const response3 = await sesv2
           .putEmailIdentityConfigurationSetAttributes({
             EmailIdentity: domainName,
-            ConfigurationSetName: defaultConfigurationSetName,
           })
           .promise()
         console.log(
