@@ -27,6 +27,10 @@ interface Props {
    * @default true
    */
   includeVerificationRecord?: boolean
+  /**
+   * Default configuration set for emails sent from this domain.
+   */
+  defaultConfigurationSetName?: string
 }
 
 export class SesDomain extends cdk.Construct {
@@ -43,6 +47,7 @@ export class SesDomain extends cdk.Construct {
         IncludeVerificationRecord: (
           props.includeVerificationRecord ?? true
         ).toString(),
+        DefaultConfigurationSetName: props.defaultConfigurationSetName,
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,
@@ -99,6 +104,7 @@ class SesDomainProvider extends cdk.Construct {
               "ses:SetIdentityMailFromDomain",
               "ses:VerifyDomainDkim",
               "ses:VerifyDomainIdentity",
+              "ses:PutEmailIdentityConfigurationSetAttributes",
             ],
             resources: ["*"],
           }),
