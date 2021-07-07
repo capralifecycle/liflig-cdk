@@ -47,7 +47,7 @@ export class SesDomain extends cdk.Construct {
         IncludeVerificationRecord: (
           props.includeVerificationRecord ?? true
         ).toString(),
-        defaultConfigurationSetName: props.defaultConfigurationSetName,
+        DefaultConfigurationSetName: props.defaultConfigurationSetName,
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,
