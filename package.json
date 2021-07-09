@@ -61,7 +61,7 @@
     "@aws-cdk/pipelines": "1.110.1",
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
-    "@types/aws-lambda": "8.10.77",
+    "@types/aws-lambda": "8.10.78",
     "@types/jest": "26.0.23",
     "@types/node": "14.17.4",
     "@typescript-eslint/eslint-plugin": "4.28.2",
