@@ -24,6 +24,10 @@ Object {
               "Ref": "LoadBalancerAccessLogsBucketD82011C7",
             },
           },
+          Object {
+            "Key": "access_logs.s3.prefix",
+            "Value": "",
+          },
         ],
         "Scheme": "internet-facing",
         "SecurityGroups": Array [
