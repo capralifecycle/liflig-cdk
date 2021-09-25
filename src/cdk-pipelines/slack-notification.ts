@@ -21,6 +21,10 @@ export interface SlackNotificationProps {
   /**
    * @default no description
    */
+  accountGroupName?: string
+  /**
+   * @default no description
+   */
   accountDescription?: string
   /**
    * @default false
@@ -40,6 +44,10 @@ export class SlackNotification extends cdk.Construct {
       SLACK_URL: props.slackWebhookUrl,
       SLACK_CHANNEL: props.slackChannel,
       ALWAYS_SHOW_SUCCEEDED: String(props.alwaysShowSucceeded ?? false),
+    }
+
+    if (props.accountGroupName != null) {
+      environment.ACCOUNT_GROUP_NAME = props.accountGroupName
     }
 
     if (props.accountDescription != null) {

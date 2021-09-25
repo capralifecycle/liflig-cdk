@@ -9,6 +9,7 @@ import boto3
 client = boto3.client("codepipeline")
 
 ACCOUNT_DESC = os.getenv("ACCOUNT_DESC", None)
+ACCOUNT_GROUP_NAME = os.getenv("ACCOUNT_GROUP_NAME", None)
 SLACK_URL = os.getenv("SLACK_URL", None)
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", None)
 ALWAYS_SHOW_SUCCEEDED = os.getenv("ALWAYS_SHOW_SUCCEEDED", "false") == "true"
@@ -130,6 +131,10 @@ def handler(event, context):
     pipeline_url = f"https://{region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/{quote(pipeline_name, safe='')}/view"
     execution_url = f"https://{region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/{quote(pipeline_name, safe='')}/executions/{execution_id}/timeline"
 
+    account_group_text = ""
+    if ACCOUNT_GROUP_NAME is not None:
+        account_group_text += f" ({ACCOUNT_GROUP_NAME})"
+
     state_text = state
     if previous_failed and state == "SUCCEEDED":
         state_text += " (previously failed)"
@@ -145,7 +150,7 @@ def handler(event, context):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{emoji_prefix}Pipeline <{pipeline_url}|{pipeline_name}> *{state_text}*\n{region} | {account_text}\n<{execution_url}|Execution details>",
+                "text": f"{emoji_prefix}Pipeline <{pipeline_url}|{pipeline_name}>{account_group_text} *{state_text}*\n{region} | {account_text}\n<{execution_url}|Execution details>",
             },
         },
         *blocks_for_failed,
