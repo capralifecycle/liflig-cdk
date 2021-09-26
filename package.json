@@ -86,7 +86,7 @@
     "cpy": "^8.1.0",
     "del": "^6.0.0",
     "execa": "^5.0.0",
-    "glob": "7.1.7",
+    "glob": "7.2.0",
     "source-map-support": "^0.5.19"
   },
   "peerDependencies": {
