@@ -7,6 +7,7 @@ import * as r53t from "@aws-cdk/aws-route53-targets"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
+import { WebappSecurityHeaders } from "./security-headers"
 
 export interface WebappProps {
   /**
@@ -43,6 +44,44 @@ export interface WebappProps {
    * @default - No custom page for 403 errors.
    */
   webAclErrorPagePath?: string
+  /**
+   * Enable adding common security headers to CloudFront responses using a CloudFront Function.
+   *
+   * The headers currently added are:
+   * - Strict-Transport-Security: max-age=63072000
+   * - X-Content-Type-Options: nosniff
+   * - X-XSS-Protection: 1; mode=block
+   *
+   * In addition either a Content-Security-Policy or Content-Security-Policy-Report-Only
+   * header is added depending on the cspOverrides configuration.
+   *
+   * @default - No security headers will be added to responses
+   */
+  enableSecurityHeaders?: boolean
+  /**
+   * Content Security Policy overrides.
+   *
+   * Used to override certain CSP directives to support needed functionality
+   * in the webapp.
+   *
+   * @default - A set of strict default CSP directives will be used
+   */
+  cspOverrides?: WebappCspOverrides
+}
+
+export interface WebappCspOverrides {
+  reportOnly?: boolean
+  overrideBaseUri?: string
+  overrideDefaultSrc?: string
+  overrideFontSrc?: string
+  overrideFrameSrc?: string
+  overrideImgSrc?: string
+  overrideManifestSrc?: string
+  overrideMediaSrc?: string
+  overrideObjectSrc?: string
+  overrideScriptSrc?: string
+  overrideStyleSrc?: string
+  overrideConnectSrc?: string
 }
 
 /**
@@ -117,10 +156,28 @@ export class Webapp extends cdk.Construct {
       })
     }
 
+    let functionAssociations: cloudfront.FunctionAssociation[] | undefined
+    if (props.enableSecurityHeaders) {
+      const securityHeaders = new WebappSecurityHeaders(
+        this,
+        "SecurityHeaders",
+        {
+          cspOverrides: props.cspOverrides,
+        },
+      )
+      functionAssociations = [
+        {
+          function: securityHeaders.securityHeadersFunction,
+          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
+        },
+      ]
+    }
+
     this.distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: this.webappOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        functionAssociations: functionAssociations,
       },
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
