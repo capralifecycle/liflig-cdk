@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
 import type * as _AWS from "aws-sdk"
+import { RegisterTaskDefinitionRequest } from "aws-sdk/clients/ecs"
 
 interface ExpectedInput {
   tag: string
@@ -88,8 +89,7 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
       "taskDefinitionArn",
     ]
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updatedSpec: any = {
+    const updatedSpec: RegisterTaskDefinitionRequest = {
       ...Object.fromEntries(
         Object.entries(prevTaskDefinition).filter(
           ([key]) => !exclude.includes(key),
@@ -101,7 +101,7 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
           image,
         },
       ],
-    }
+    } as RegisterTaskDefinitionRequest
 
     const updatedTaskDefinition = (
       await ecs.registerTaskDefinition(updatedSpec).promise()
