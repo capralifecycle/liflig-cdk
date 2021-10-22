@@ -25,7 +25,7 @@ function removeTrace(data: any): any {
 
   if (data === Object(data)) {
     return Object.fromEntries(
-      Object.entries(data)
+      Object.entries(data as Record<string, unknown>)
         .filter(([key]) => key !== "trace")
         .map(([key, value]) => [key, removeTrace(value)]),
     )
@@ -71,7 +71,7 @@ function removeAssetDetailsFromTemplate(data: any): any {
 
   if (data === Object(data)) {
     return Object.fromEntries(
-      Object.entries(data)
+      Object.entries(data as Record<string, unknown>)
         .map(([key, value]) => {
           const newCurrentVersion = rewriteCurrentVersionIfFound(key)
           if (newCurrentVersion) {
@@ -127,7 +127,7 @@ function removeAssetDetailsFromManifest(data: any): any {
     }
 
     return Object.fromEntries(
-      Object.entries(data)
+      Object.entries(data as Record<string, unknown>)
         .map(([key, value]) => {
           if (key.includes("AssetParameters")) {
             return null
@@ -151,6 +151,7 @@ function removeAssetDetailsFromManifest(data: any): any {
 
   return data
 }
+
 /**
  * Remove the CDKMetadata resources that is part of the synthesized
  * template since CDK 1.63.0.
