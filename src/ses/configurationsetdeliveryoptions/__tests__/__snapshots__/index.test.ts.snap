@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`configuration-set-delivery-options 1`] = `
+Object {
+  "Parameters": Any<Object>,
+  "Resources": Object {
+    "DeliveryOptions3EE66133": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ConfigurationSetName": "exampleconfigurationset",
+        "SendingPoolName": "Test",
+        "Serial": 1,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEvent2A509654",
+            "Arn",
+          ],
+        },
+        "TlsPolicy": "REQUIRE",
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsFunction7BAAFF6E": Object {
+      "DependsOn": Array [
+        "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRoleDefaultPolicyC7AD5113",
+        "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRole86BA52A6",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRole86BA52A6",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 300,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRole86BA52A6": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRoleDefaultPolicyC7AD5113": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ses:PutConfigurationSetDeliveryOptions",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRoleDefaultPolicyC7AD5113",
+        "Roles": Array [
+          Object {
+            "Ref": "lifligcdkconfigurationsetsnsdeliveryoptionsFunctionServiceRole86BA52A6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEvent2A509654": Object {
+      "DependsOn": Array [
+        "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleDefaultPolicy16AEEA99",
+        "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleE5BB0CA1",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.configuration-set-sns-delivery-options/Provider)",
+        "Environment": Object {
+          "Variables": Object {
+            "USER_ON_EVENT_FUNCTION_ARN": Object {
+              "Fn::GetAtt": Array [
+                "lifligcdkconfigurationsetsnsdeliveryoptionsFunction7BAAFF6E",
+                "Arn",
+              ],
+            },
+          },
+        },
+        "Handler": "framework.onEvent",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleE5BB0CA1",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleDefaultPolicy16AEEA99": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "lifligcdkconfigurationsetsnsdeliveryoptionsFunction7BAAFF6E",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleDefaultPolicy16AEEA99",
+        "Roles": Array [
+          Object {
+            "Ref": "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleE5BB0CA1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "lifligcdkconfigurationsetsnsdeliveryoptionsProviderframeworkonEventServiceRoleE5BB0CA1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;
