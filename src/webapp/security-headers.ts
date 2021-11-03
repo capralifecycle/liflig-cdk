@@ -1,10 +1,43 @@
 import * as cloudfront from "@aws-cdk/aws-cloudfront"
 import * as cdk from "@aws-cdk/core"
 
-import { WebappCspOverrides } from "./webapp"
+export interface FrameOptionsHeader {
+  value?: "DENY" | "SAMEORIGIN"
+}
 
-export interface WebappSecurityHeadersProps {
-  cspOverrides?: WebappCspOverrides
+export interface ReferrerPolicyHeader {
+  value?: string
+}
+
+export interface StrictTransportSecurityHeader {
+  maxAge?: number
+  includeSubDomains?: boolean
+  preload?: boolean
+}
+
+export interface ContentSecurityPolicyHeader {
+  reportOnly?: boolean
+  baseUri?: string
+  childSrc?: string
+  defaultSrc?: string
+  fontSrc?: string
+  frameSrc?: string
+  formAction?: string
+  frameAncestors?: string
+  imgSrc?: string
+  manifestSrc?: string
+  mediaSrc?: string
+  objectSrc?: string
+  scriptSrc?: string
+  styleSrc?: string
+  connectSrc?: string
+}
+
+export interface SecurityHeaders {
+  contentSecurityPolicy?: ContentSecurityPolicyHeader
+  strictTransportSecurity?: StrictTransportSecurityHeader
+  referrerPolicy?: ReferrerPolicyHeader
+  frameOptions?: FrameOptionsHeader
 }
 
 function validateCspParam(param: string): string {
@@ -16,97 +49,133 @@ function validateCspParam(param: string): string {
     throw Error("CSP override contains invalid character ;")
   }
 
+  if (param.indexOf("\\") !== -1) {
+    throw Error("CSP override contains invalid character \\")
+  }
+
   return param
 }
 
-function generateCsp(cspOverrides?: WebappCspOverrides) {
-  const defaults = {
-    baseUri: "'self'",
-    defaultSrc: "'self'",
-    fontSrc: "'self'",
-    frameSrc: "'self'",
-    imgSrc: "'self'",
-    manifestSrc: "'self'",
-    mediaSrc: "'self'",
-    objectSrc: "'none'",
-    scriptSrc: "'self'",
-    styleSrc: "'self'",
-    connectSrc: "'self'",
+/* Replace all whitespace in a string with a single space */
+function trim(value: string): string {
+  return value.replace(/\s+/g, " ").trim()
+}
+
+function generateContentSecurityPolicyHeader(
+  headerOptions?: ContentSecurityPolicyHeader,
+) {
+  const defaultValues = {
+    baseUri: "self",
+    childSrc: "none",
+    connectSrc: "self",
+    defaultSrc: "self",
+    fontSrc: "self",
+    formAction: "self",
+    frameAncestors: "none",
+    frameSrc: "self",
+    imgSrc: "self",
+    manifestSrc: "self",
+    mediaSrc: "self",
+    objectSrc: "none",
+    scriptSrc: "self",
+    styleSrc: "self",
   }
 
-  const baseUri = validateCspParam(
-    cspOverrides?.overrideBaseUri || defaults.baseUri,
-  )
-  const defaultSrc = validateCspParam(
-    cspOverrides?.overrideDefaultSrc || defaults.defaultSrc,
-  )
-  const fontSrc = validateCspParam(
-    cspOverrides?.overrideFontSrc || defaults.fontSrc,
-  )
-  const frameSrc = validateCspParam(
-    cspOverrides?.overrideFrameSrc || defaults.frameSrc,
-  )
-  const imgSrc = validateCspParam(
-    cspOverrides?.overrideImgSrc || defaults.imgSrc,
-  )
-  const manifestSrc = validateCspParam(
-    cspOverrides?.overrideManifestSrc || defaults.manifestSrc,
-  )
-  const mediaSrc = validateCspParam(
-    cspOverrides?.overrideMediaSrc || defaults.mediaSrc,
-  )
-  const objectSrc = validateCspParam(
-    cspOverrides?.overrideObjectSrc || defaults.objectSrc,
-  )
-  const scriptSrc = validateCspParam(
-    cspOverrides?.overrideScriptSrc || defaults.scriptSrc,
-  )
-  const styleSrc = validateCspParam(
-    cspOverrides?.overrideStyleSrc || defaults.styleSrc,
-  )
-  const connectSrc = validateCspParam(
-    cspOverrides?.overrideConnectSrc || defaults.connectSrc,
+  const options = {
+    ...defaultValues,
+    ...headerOptions,
+  }
+
+  Object.values(options).forEach(
+    (v) => typeof v === "string" && validateCspParam(v),
   )
 
-  let csp = ""
-  csp += `base-uri ${baseUri};`
-  csp += `default-src ${defaultSrc};`
-  csp += `font-src ${fontSrc};`
-  csp += `frame-src ${frameSrc};`
-  csp += `img-src ${imgSrc};`
-  csp += `manifest-src ${manifestSrc};`
-  csp += `media-src ${mediaSrc};`
-  csp += `object-src ${objectSrc};`
-  csp += `script-src ${scriptSrc};`
-  csp += `style-src ${styleSrc};`
-  csp += `connect-src ${connectSrc};`
+  let headerValue = ""
+  headerValue += `base-uri '${options.baseUri}';`
+  headerValue += `child-src '${options.childSrc}';`
+  headerValue += `connect-src '${options.connectSrc}';`
+  headerValue += `default-src '${options.defaultSrc}';`
+  headerValue += `font-src '${options.fontSrc}';`
+  headerValue += `frame-src '${options.frameSrc}';`
+  headerValue += `img-src '${options.imgSrc}';`
+  headerValue += `manifest-src '${options.manifestSrc}';`
+  headerValue += `media-src '${options.mediaSrc}';`
+  headerValue += `object-src '${options.objectSrc}';`
+  headerValue += `script-src '${options.scriptSrc}';`
+  headerValue += `style-src '${options.styleSrc}';`
 
-  return csp
+  return trim(headerValue)
+}
+
+function generateStrictTransportSecurityHeader(
+  headerOptions?: StrictTransportSecurityHeader,
+) {
+  const defaultValues = {
+    maxAge: 63072000,
+    includeSubDomains: false,
+    preload: false,
+  }
+  const options = {
+    ...defaultValues,
+    ...headerOptions,
+  }
+  let headerValue = ""
+  headerValue += `max-age=${options.maxAge};`
+  headerValue += options.preload ? "preload;" : ""
+  headerValue += options.includeSubDomains ? "includeSubDomains;" : ""
+  return trim(headerValue)
+}
+
+function generateReferrerPolicyHeader(headerOptions?: ReferrerPolicyHeader) {
+  const defaultValues = {
+    value: "strict-origin-when-cross-origin",
+  }
+  const options = {
+    ...defaultValues,
+    ...headerOptions,
+  }
+  return options.value
+}
+
+function generateFrameOptionsHeader(headerOptions?: FrameOptionsHeader) {
+  const defaultValues = {
+    value: "DENY",
+  }
+  const options = {
+    ...defaultValues,
+    ...headerOptions,
+  }
+  return trim(options.value)
 }
 
 export class WebappSecurityHeaders extends cdk.Construct {
   public readonly securityHeadersFunction: cloudfront.Function
 
-  constructor(
-    scope: cdk.Construct,
-    id: string,
-    props: WebappSecurityHeadersProps,
-  ) {
+  constructor(scope: cdk.Construct, id: string, props: SecurityHeaders) {
     super(scope, id)
 
-    const cspHeaderName = props.cspOverrides?.reportOnly
+    const cspHeaderName = props.contentSecurityPolicy?.reportOnly
       ? "content-security-policy-report-only"
       : "content-security-policy"
 
-    const csp = generateCsp(props.cspOverrides)
+    const contentSecurityPolicy = generateContentSecurityPolicyHeader(
+      props.contentSecurityPolicy,
+    )
+    const strictTransportSecurity = generateStrictTransportSecurityHeader(
+      props.strictTransportSecurity,
+    )
+    const referrerPolicy = generateReferrerPolicyHeader(props.referrerPolicy)
+    const frameOptions = generateFrameOptionsHeader(props.frameOptions)
 
     const lambdaCode = `function handler(event) {
       var response = event.response;
       var headers = response.headers;
-      headers['strict-transport-security'] = {value: 'max-age=63072000;'};
+      headers['referrer-policy'] = {value: '${referrerPolicy}'};
+      headers['strict-transport-security'] = {value: '${strictTransportSecurity}'};
       headers['x-content-type-options'] = {value: 'nosniff'};
+      headers['x-frame-options'] = {value: '${frameOptions}'};
       headers['x-xss-protection'] = {value: '1; mode=block'};
-      headers['${cspHeaderName}'] = {value: "${csp}"};
+      headers['${cspHeaderName}'] = {value: "${contentSecurityPolicy}"};
       return response;
     }`
 
