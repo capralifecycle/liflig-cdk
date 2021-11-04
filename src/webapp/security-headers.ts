@@ -91,18 +91,18 @@ function generateContentSecurityPolicyHeader(
   )
 
   let headerValue = ""
-  headerValue += `base-uri '${options.baseUri}';`
-  headerValue += `child-src '${options.childSrc}';`
-  headerValue += `connect-src '${options.connectSrc}';`
-  headerValue += `default-src '${options.defaultSrc}';`
-  headerValue += `font-src '${options.fontSrc}';`
-  headerValue += `frame-src '${options.frameSrc}';`
-  headerValue += `img-src '${options.imgSrc}';`
-  headerValue += `manifest-src '${options.manifestSrc}';`
-  headerValue += `media-src '${options.mediaSrc}';`
-  headerValue += `object-src '${options.objectSrc}';`
-  headerValue += `script-src '${options.scriptSrc}';`
-  headerValue += `style-src '${options.styleSrc}';`
+  headerValue += `base-uri '${trim(trim(options.baseUri))}';`
+  headerValue += `child-src '${trim(options.childSrc)}';`
+  headerValue += `connect-src '${trim(options.connectSrc)}';`
+  headerValue += `default-src '${trim(options.defaultSrc)}';`
+  headerValue += `font-src '${trim(options.fontSrc)}';`
+  headerValue += `frame-src '${trim(options.frameSrc)}';`
+  headerValue += `img-src '${trim(options.imgSrc)}';`
+  headerValue += `manifest-src '${trim(options.manifestSrc)}';`
+  headerValue += `media-src '${trim(options.mediaSrc)}';`
+  headerValue += `object-src '${trim(options.objectSrc)}';`
+  headerValue += `script-src '${trim(options.scriptSrc)}';`
+  headerValue += `style-src '${trim(options.styleSrc)}';`
 
   return trim(headerValue)
 }
