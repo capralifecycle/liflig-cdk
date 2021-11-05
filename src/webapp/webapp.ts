@@ -7,6 +7,7 @@ import * as r53t from "@aws-cdk/aws-route53-targets"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
+import { WebappSecurityHeaders, SecurityHeaders } from "./security-headers"
 
 export interface WebappProps {
   /**
@@ -43,6 +44,28 @@ export interface WebappProps {
    * @default - No custom page for 403 errors.
    */
   webAclErrorPagePath?: string
+  /**
+   * Enable adding common security headers to CloudFront responses using a CloudFront Function.
+   *
+   * If enabled, the default behavior is to add the following headers with fairly strict defaults. Most of the headers can be customized:
+   * - Content-Security-Policy
+   * - Referrer-Policy
+   * - Strict-Transport-Security
+   * - X-Content-Type-Options
+   * - X-Frame-Options
+   * - X-XSS-Protection
+   *
+   * @default - No security headers will be added to responses
+   */
+  enableSecurityHeaders?: boolean
+  /**
+   * Security headers overrides.
+   *
+   * Used to override certain security header values if the webapp requires more lax settings compared to the defaults.
+   *
+   * @default - A set of strict security header values will be used
+   */
+  securityHeadersOverrides?: SecurityHeaders
 }
 
 /**
@@ -117,10 +140,28 @@ export class Webapp extends cdk.Construct {
       })
     }
 
+    let functionAssociations: cloudfront.FunctionAssociation[] | undefined
+    if (props.enableSecurityHeaders) {
+      const securityHeaders = new WebappSecurityHeaders(
+        this,
+        "SecurityHeaders",
+        {
+          ...props.securityHeadersOverrides,
+        },
+      )
+      functionAssociations = [
+        {
+          function: securityHeaders.securityHeadersFunction,
+          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
+        },
+      ]
+    }
+
     this.distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: this.webappOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        functionAssociations: functionAssociations,
       },
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
