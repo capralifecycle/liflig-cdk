@@ -1,7 +1,7 @@
 import "@aws-cdk/assert/jest"
 import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
-import { Webapp } from ".."
+import { Webapp } from "../"
 
 test("create webapp with default parameters", () => {
   const app = new App()

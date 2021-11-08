@@ -65,20 +65,20 @@ function generateContentSecurityPolicyHeader(
   headerOptions?: ContentSecurityPolicyHeader,
 ) {
   const defaultValues = {
-    baseUri: "self",
-    childSrc: "none",
-    connectSrc: "self",
-    defaultSrc: "self",
-    fontSrc: "self",
-    formAction: "self",
-    frameAncestors: "none",
-    frameSrc: "self",
-    imgSrc: "self",
-    manifestSrc: "self",
-    mediaSrc: "self",
-    objectSrc: "none",
-    scriptSrc: "self",
-    styleSrc: "self",
+    baseUri: "'self'",
+    childSrc: "'none'",
+    connectSrc: "'self'",
+    defaultSrc: "'self'",
+    fontSrc: "'self'",
+    formAction: "'self'",
+    frameAncestors: "'none'",
+    frameSrc: "'self'",
+    imgSrc: "'self'",
+    manifestSrc: "'self'",
+    mediaSrc: "'self'",
+    objectSrc: "'none'",
+    scriptSrc: "'self'",
+    styleSrc: "'self'",
   }
 
   const options = {
@@ -91,18 +91,18 @@ function generateContentSecurityPolicyHeader(
   )
 
   let headerValue = ""
-  headerValue += `base-uri '${trim(trim(options.baseUri))}';`
-  headerValue += `child-src '${trim(options.childSrc)}';`
-  headerValue += `connect-src '${trim(options.connectSrc)}';`
-  headerValue += `default-src '${trim(options.defaultSrc)}';`
-  headerValue += `font-src '${trim(options.fontSrc)}';`
-  headerValue += `frame-src '${trim(options.frameSrc)}';`
-  headerValue += `img-src '${trim(options.imgSrc)}';`
-  headerValue += `manifest-src '${trim(options.manifestSrc)}';`
-  headerValue += `media-src '${trim(options.mediaSrc)}';`
-  headerValue += `object-src '${trim(options.objectSrc)}';`
-  headerValue += `script-src '${trim(options.scriptSrc)}';`
-  headerValue += `style-src '${trim(options.styleSrc)}';`
+  headerValue += `base-uri ${trim(options.baseUri)};`
+  headerValue += `child-src ${trim(options.childSrc)};`
+  headerValue += `connect-src ${trim(options.connectSrc)};`
+  headerValue += `default-src ${trim(options.defaultSrc)};`
+  headerValue += `font-src ${trim(options.fontSrc)};`
+  headerValue += `frame-src ${trim(options.frameSrc)};`
+  headerValue += `img-src ${trim(options.imgSrc)};`
+  headerValue += `manifest-src ${trim(options.manifestSrc)};`
+  headerValue += `media-src ${trim(options.mediaSrc)};`
+  headerValue += `object-src ${trim(options.objectSrc)};`
+  headerValue += `script-src ${trim(options.scriptSrc)};`
+  headerValue += `style-src ${trim(options.styleSrc)};`
 
   return trim(headerValue)
 }
@@ -179,7 +179,11 @@ export class WebappSecurityHeaders extends cdk.Construct {
       return response;
     }`
 
-    this.securityHeadersFunction = new cloudfront.Function(this, "Function", {
+    // Hardcoded logical ID due to bug: https://github.com/aws/aws-cdk/issues/15523
+    const functionId = `Function${this.node.addr}`
+
+    this.securityHeadersFunction = new cloudfront.Function(this, functionId, {
+      functionName: functionId,
       code: cloudfront.FunctionCode.fromInline(lambdaCode),
     })
   }
