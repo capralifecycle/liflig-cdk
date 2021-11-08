@@ -179,7 +179,11 @@ export class WebappSecurityHeaders extends cdk.Construct {
       return response;
     }`
 
-    this.securityHeadersFunction = new cloudfront.Function(this, "Function", {
+    // Hardcoded logical ID due to bug: https://github.com/aws/aws-cdk/issues/15523
+    const functionId = `SecurityHeadersFunction${this.node.addr}`
+
+    this.securityHeadersFunction = new cloudfront.Function(this, functionId, {
+      functionName: functionId,
       code: cloudfront.FunctionCode.fromInline(lambdaCode),
     })
   }
