@@ -235,7 +235,7 @@ Object {
                 "EventType": "viewer-response",
                 "FunctionARN": Object {
                   "Fn::GetAtt": Array [
-                    "WebappSecurityHeadersSecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b55767823ADB781",
+                    "WebappSecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b5576786884CD5C",
                     "FunctionARN",
                   ],
                 },
@@ -286,7 +286,7 @@ Object {
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersSecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b55767823ADB781": Object {
+    "WebappSecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b5576786884CD5C": Object {
       "Properties": Object {
         "AutoPublish": true,
         "FunctionCode": "function handler(event) {
@@ -301,10 +301,10 @@ Object {
       return response;
     }",
         "FunctionConfig": Object {
-          "Comment": "SecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b557678",
+          "Comment": "Functionc85c32e0a9f633a8edb409ebc4166047306b557678",
           "Runtime": "cloudfront-js-1.0",
         },
-        "Name": "SecurityHeadersFunctionc85c32e0a9f633a8edb409ebc4166047306b557678",
+        "Name": "Functionc85c32e0a9f633a8edb409ebc4166047306b557678",
       },
       "Type": "AWS::CloudFront::Function",
     },
