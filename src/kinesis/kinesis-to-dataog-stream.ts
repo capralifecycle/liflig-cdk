@@ -11,7 +11,19 @@ export interface KinesisToDatadogStreamProps {
     account: string
     region: string
   }
+  /**
+   *
+   * The name of the SecretsManager secret where your Datadog API key is saved.
+   *
+   * The secret must be a JSON object on the format { "value": "SECRET" }
+   *
+   */
   datadogApiKeySecretName: string
+  /**
+   *
+   * The CloudWatch log groups from you are streaming to Datadog
+   *
+   */
   logGroups: logs.LogGroup[]
 }
 
