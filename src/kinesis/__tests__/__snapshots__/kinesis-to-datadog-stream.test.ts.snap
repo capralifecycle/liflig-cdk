@@ -20,16 +20,6 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "KinesisToDatadogStreamCloudWatchLogsRole8BADDC70",
-                  "Arn",
-                ],
-              },
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -203,15 +193,18 @@ Object {
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:logs:",
+                    "arn:aws:logs:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":log-group:/aws/kinesisfirehose/",
+                    ":log-group:",
+                    Object {
+                      "Ref": "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142",
+                    },
+                    ":log-stream:",
                     Object {
                       "Ref": "KinesisToDatadogStreamDeliveryStreamLogStream32974BF1",
                     },
-                    ":log-stream:*",
                   ],
                 ],
               },

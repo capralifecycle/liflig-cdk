@@ -50,12 +50,6 @@ export class KinesisToDatadogStream extends cdk.Construct {
       },
     )
 
-    const deliveryStreamLogStreamArn = `arn:aws:logs:${
-      cdk.Stack.of(this).account
-    }:log-group:/aws/kinesisfirehose/${
-      deliveryStreamLogStream.logStreamName
-    }:log-stream:*`
-
     const failedDataBucket = new s3.Bucket(this, "FailedDataBucket", {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
     })
@@ -120,10 +114,6 @@ export class KinesisToDatadogStream extends cdk.Construct {
             actions: ["firehose:PutRecord", "firehose:PutRecordBatch"],
             resources: [datadogDeliveryStream.attrArn],
           }),
-          new iam.PolicyStatement({
-            actions: ["iam:PassRole"],
-            resources: [cloudWatchLogsRole.roleArn],
-          }),
         ],
       }),
       roles: [cloudWatchLogsRole],
@@ -148,7 +138,13 @@ export class KinesisToDatadogStream extends cdk.Construct {
           }),
           new iam.PolicyStatement({
             actions: ["logs:PutLogEvents"],
-            resources: [deliveryStreamLogStreamArn],
+            resources: [
+              `arn:aws:logs:${cdk.Stack.of(this).region}:${
+                cdk.Stack.of(this).account
+              }:log-group:${deliveryStreamLogGroup.logGroupName}:log-stream:${
+                deliveryStreamLogStream.logStreamName
+              }`,
+            ],
           }),
           new iam.PolicyStatement({
             actions: [
