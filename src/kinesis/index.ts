@@ -1,4 +1,4 @@
 export {
   KinesisToDatadogStream,
   KinesisToDatadogStreamProps,
-} from "./kinesis-to-dataog-stream"
+} from "./kinesis-to-datadog-stream"

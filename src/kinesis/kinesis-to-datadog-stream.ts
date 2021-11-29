@@ -7,10 +7,6 @@ import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
 import * as cdk from "@aws-cdk/core"
 
 export interface KinesisToDatadogStreamProps {
-  env: {
-    account: string
-    region: string
-  }
   /**
    *
    * The name of the SecretsManager secret where your Datadog API key is saved.
@@ -27,6 +23,12 @@ export interface KinesisToDatadogStreamProps {
   logGroups: logs.LogGroup[]
 }
 
+/**
+ *
+ * Forwards logs from log-groups in CloudWatch to a Datadog account.
+ * The logs are delivered through a Firehose delivery stream, which is being subscribed to the log-groups in CloudWatch.
+ *
+ */
 export class KinesisToDatadogStream extends cdk.Construct {
   constructor(
     scope: cdk.Construct,
@@ -48,7 +50,11 @@ export class KinesisToDatadogStream extends cdk.Construct {
       },
     )
 
-    const deliveryStreamLogStreamArn = `arn:aws:logs:${props.env.account}:log-group:/aws/kinesisfirehose/${deliveryStreamLogStream.logStreamName}:log-stream:*`
+    const deliveryStreamLogStreamArn = `arn:aws:logs:${
+      cdk.Stack.of(this).account
+    }:log-group:/aws/kinesisfirehose/${
+      deliveryStreamLogStream.logStreamName
+    }:log-stream:*`
 
     const failedDataBucket = new s3.Bucket(this, "FailedDataBucket", {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -56,41 +62,13 @@ export class KinesisToDatadogStream extends cdk.Construct {
 
     const cloudWatchLogsRole = new iam.Role(this, "CloudWatchLogsRole", {
       assumedBy: new iam.ServicePrincipal(
-        `logs.${props.env.region}.amazonaws.com`,
+        `logs.${cdk.Stack.of(this).region}.amazonaws.com`,
       ),
-    })
-
-    new iam.Policy(this, "CloudWatchLogsPolicy", {
-      document: new iam.PolicyDocument({
-        statements: [
-          new iam.PolicyStatement({
-            actions: [
-              "firehose:PutRecord",
-              "firehose:PutRecordBatch",
-              "kinesis:PutRecord",
-              "kinesis:PutRecordBatch",
-            ],
-            resources: [
-              `arn:aws:firehose:${props.env.region}:${props.env.account}:*`,
-            ],
-          }),
-          new iam.PolicyStatement({
-            actions: ["iam:PassRole"],
-            resources: [cloudWatchLogsRole.roleArn],
-          }),
-        ],
-      }),
-      roles: [cloudWatchLogsRole],
     })
 
     const firehoseLogsRole = new iam.Role(this, "FirehoseLogsRole", {
       assumedBy: new iam.ServicePrincipal("firehose.amazonaws.com"),
     })
-
-    const cfnFirehoseLogsRole = firehoseLogsRole.node
-      .defaultChild as iam.CfnRole
-    const cfnFailedDataBucket = failedDataBucket.node
-      .defaultChild as iam.CfnRole
 
     const datadogDeliveryStream = new firehose.CfnDeliveryStream(
       this,
@@ -134,8 +112,22 @@ export class KinesisToDatadogStream extends cdk.Construct {
         },
       },
     )
-    datadogDeliveryStream.addDependsOn(cfnFirehoseLogsRole)
-    datadogDeliveryStream.addDependsOn(cfnFailedDataBucket)
+
+    new iam.Policy(this, "CloudWatchLogsPolicy", {
+      document: new iam.PolicyDocument({
+        statements: [
+          new iam.PolicyStatement({
+            actions: ["firehose:PutRecord", "firehose:PutRecordBatch"],
+            resources: [datadogDeliveryStream.attrArn],
+          }),
+          new iam.PolicyStatement({
+            actions: ["iam:PassRole"],
+            resources: [cloudWatchLogsRole.roleArn],
+          }),
+        ],
+      }),
+      roles: [cloudWatchLogsRole],
+    })
 
     new iam.Policy(this, "FirehoseLogsPolicy", {
       document: new iam.PolicyDocument({

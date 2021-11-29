@@ -11,20 +11,12 @@ Object {
               "Action": Array [
                 "firehose:PutRecord",
                 "firehose:PutRecordBatch",
-                "kinesis:PutRecord",
-                "kinesis:PutRecordBatch",
               ],
               "Effect": "Allow",
               "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:aws:firehose:eu-west-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":*",
-                  ],
+                "Fn::GetAtt": Array [
+                  "KinesisToDatadogStreamDeliveryStream83902C8C",
+                  "Arn",
                 ],
               },
             },
@@ -68,10 +60,6 @@ Object {
       "Type": "AWS::IAM::Role",
     },
     "KinesisToDatadogStreamDeliveryStream83902C8C": Object {
-      "DependsOn": Array [
-        "KinesisToDatadogStreamFailedDataBucket95726055",
-        "KinesisToDatadogStreamFirehoseLogsRoleDF723823",
-      ],
       "Properties": Object {
         "DeliveryStreamType": "DirectPut",
         "HttpEndpointDestinationConfiguration": Object {

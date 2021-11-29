@@ -2,7 +2,7 @@ import "@aws-cdk/assert/jest"
 import * as logs from "@aws-cdk/aws-logs"
 import { App, Stack } from "@aws-cdk/core"
 import "jest-cdk-snapshot"
-import { KinesisToDatadogStream } from "../kinesis-to-dataog-stream"
+import { KinesisToDatadogStream } from "../kinesis-to-datadog-stream"
 
 test("create kinesis stream", () => {
   const app = new App()
@@ -20,10 +20,6 @@ test("create kinesis stream", () => {
   const logGroup = new logs.LogGroup(supportStack, "LogGroup")
 
   new KinesisToDatadogStream(stack, "KinesisToDatadogStream", {
-    env: {
-      account: stack.account,
-      region: stack.region,
-    },
     logGroups: [logGroup],
     datadogApiKeySecretName: "DATADOG-SECRET",
   })
