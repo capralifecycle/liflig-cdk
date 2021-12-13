@@ -20,7 +20,7 @@ export interface KinesisToDatadogStreamProps {
    * The CloudWatch log groups from you are streaming to Datadog
    *
    */
-  logGroups: logs.LogGroup[]
+  logGroups: logs.ILogGroup[]
 }
 
 /**
@@ -28,6 +28,7 @@ export interface KinesisToDatadogStreamProps {
  * Forwards logs from log-groups in CloudWatch to a Datadog account.
  * The logs are delivered through a Firehose delivery stream, which is being subscribed to the log-groups in CloudWatch.
  *
+ * @author Stein-Aage
  */
 export class KinesisToDatadogStream extends cdk.Construct {
   constructor(
