@@ -213,6 +213,7 @@
       "Metadata": {
         "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/PrepareCdkSourceFn/Resource",
         "aws:asset:path": "asset.snapshot-value",
+        "aws:asset:is-bundled": false,
         "aws:asset:property": "Code"
       }
     },
@@ -2095,7 +2096,7 @@
     "BootstrapVersion": {
       "Type": "AWS::SSM::Parameter::Value<String>",
       "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store."
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
     }
   },
   "Conditions": {
