@@ -136,6 +136,12 @@ Object {
       "Properties": Object {
         "Port": 80,
         "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
         "TargetType": "instance",
         "VpcId": Object {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",

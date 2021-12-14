@@ -143,6 +143,7 @@
       "Metadata": {
         "aws:cdk:path": "ssm-parameter-reader/AWS679f53fac002430cb0da5b7982bd2287/Resource",
         "aws:asset:path": "asset.snapshot-value",
+        "aws:asset:is-bundled": false,
         "aws:asset:property": "Code"
       }
     }
@@ -151,7 +152,7 @@
     "BootstrapVersion": {
       "Type": "AWS::SSM::Parameter::Value<String>",
       "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store."
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
     }
   },
   "Rules": {
