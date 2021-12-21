@@ -7,7 +7,6 @@ import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
 import * as ecs from "./ecs"
 import * as loadBalancer from "./load-balancer"
-import * as cloudTrailSlackIntegration from "./cloudtrail-slack-integration"
 import * as rds from "./rds"
 import * as platform from "./platform"
 
@@ -38,7 +37,6 @@ export {
   loadBalancer,
   rds,
   platform,
-  cloudTrailSlackIntegration,
 }
 
 /**
