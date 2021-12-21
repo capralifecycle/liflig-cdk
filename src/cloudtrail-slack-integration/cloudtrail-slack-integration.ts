@@ -100,7 +100,7 @@ export class CloudTrailSlackIntegration extends cdk.Construct {
           alarmDescription:
             "Triggers if the Lambda function that transforms CloudTrail API calls received through EventBridge fails (e.g., it fails to process the event)",
           datapointsToAlarm: 1,
-          treatMissingData: cloudwatch.TreatMissingData.MISSING,
+          treatMissingData: cloudwatch.TreatMissingData.IGNORE,
         })
       eventTransformerAlarm.addOkAction(props.infrastructureAlarmAction)
       eventTransformerAlarm.addAlarmAction(props.infrastructureAlarmAction)
@@ -145,7 +145,7 @@ export class CloudTrailSlackIntegration extends cdk.Construct {
               "Triggers if the Lambda function that polls from SQS and posts deduplicated CloudTrail API calls received through EventBridge to Slack fails (e.g., invalid Slack webhook URL)",
             evaluationPeriods: 1,
             datapointsToAlarm: 1,
-            treatMissingData: cloudwatch.TreatMissingData.MISSING,
+            treatMissingData: cloudwatch.TreatMissingData.IGNORE,
           })
         slackForwarderAlarm.addOkAction(props.infrastructureAlarmAction)
         slackForwarderAlarm.addAlarmAction(props.infrastructureAlarmAction)
