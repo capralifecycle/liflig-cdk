@@ -17,15 +17,27 @@ export interface ListenerRuleProps {
 }
 
 export class ListenerRule extends cdk.Construct {
+  /**
+   * The rule created in the ALB Listener.
+   *
+   * Use {@link elb.ApplicationListenerRule.addCondition} to add [other conditions](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#rule-condition-types)
+   * than Host-header.
+   */
+  public readonly applicationListenerRule: elb.ApplicationListenerRule
+
   constructor(scope: cdk.Construct, id: string, props: ListenerRuleProps) {
     super(scope, id)
 
-    new elb.ApplicationListenerRule(this, "ListenerRule", {
-      listener: props.httpsListener,
-      priority: props.listenerPriority,
-      hostHeader: props.domainName,
-      targetGroups: [props.targetGroup],
-    })
+    this.applicationListenerRule = new elb.ApplicationListenerRule(
+      this,
+      "ListenerRule",
+      {
+        listener: props.httpsListener,
+        priority: props.listenerPriority,
+        hostHeader: props.domainName,
+        targetGroups: [props.targetGroup],
+      },
+    )
 
     if (props.hostedZone != null) {
       new route53.ARecord(this, "ARecord", {
