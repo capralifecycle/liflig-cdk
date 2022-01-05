@@ -1,14 +1,12 @@
 # Liflig CDK
 
-More details to come.
+This is a collection of reusable constructs and patterns for
+CDK setups, for use within Liflig.
 
 ## State of repository and package
 
-This is an early experiment of building reusable constructs and patterns for
-CDK setups, for use within Liflig. We do not expect others to depend on this,
-and as such will not be following semantic versioning strictly. There will be
-breaking changes across both minor and patch releases, as we will be
-coordinating changes internally.
+We do not expect others to depend on this, and as such will not be following semantic versioning strictly.
+There will be breaking changes across both minor and patch releases, as we will be coordinating changes internally.
 
 CDK has some major issues for 3rd party library authors which
 are not yet resolved. Some relevant information:
@@ -30,7 +28,7 @@ are not yet resolved. Some relevant information:
    npm run test -- -u
    ```
 
-   Investigate any changes before commiting.
+   Investigate any changes before committing.
 
 ## Testing library changes before releasing
 

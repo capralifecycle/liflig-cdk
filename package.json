@@ -1,7 +1,7 @@
 {
   "name": "@liflig/cdk",
   "version": "0.0.0-development",
-  "description": "Experimental CDK library for Liflig",
+  "description": "CDK library for Liflig",
   "repository": {
     "type": "git",
     "url": "https://github.com/capralifecycle/liflig-cdk"
