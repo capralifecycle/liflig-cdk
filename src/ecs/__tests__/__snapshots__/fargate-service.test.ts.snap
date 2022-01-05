@@ -42,9 +42,11 @@ Object {
         "Conditions": Array [
           Object {
             "Field": "host-header",
-            "Values": Array [
-              "example.com",
-            ],
+            "HostHeaderConfig": Object {
+              "Values": Array [
+                "example.com",
+              ],
+            },
           },
         ],
         "ListenerArn": Object {
