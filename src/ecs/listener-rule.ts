@@ -34,7 +34,7 @@ export class ListenerRule extends cdk.Construct {
       {
         listener: props.httpsListener,
         priority: props.listenerPriority,
-        hostHeader: props.domainName,
+        conditions: [elb.ListenerCondition.hostHeaders([props.domainName])],
         targetGroups: [props.targetGroup],
       },
     )
