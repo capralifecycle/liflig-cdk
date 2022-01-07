@@ -18,7 +18,7 @@ test("setup new cloudtrail to slack integration", () => {
     slackWebhookUrl:
       "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
     rolesToMonitor: ["arn:aws:iam::123456789012:role/example-role"],
-    accountFriendlyNames: {
+    friendlyNames: {
       "123456789012": "example-friendly-name",
     },
   })
