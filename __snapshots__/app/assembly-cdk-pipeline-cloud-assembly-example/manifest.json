@@ -22,6 +22,11 @@
         "additionalDependencies": [
           "cdkpipelinecloudassemblyexample34A10B9D.assets"
         ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
         "stackName": "example-example"
       },
       "dependencies": [

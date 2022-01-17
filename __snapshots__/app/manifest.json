@@ -46,7 +46,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "build-artifacts.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "build-artifacts.assets"
@@ -166,7 +171,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "cdk-deploy-example.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "cdk-deploy-example.assets"
@@ -334,7 +344,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "ecs-update-image-no-artifact.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "ecs-update-image-no-artifact.assets"
@@ -604,7 +619,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "ecs-update-image.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "ecs-update-image.assets"
@@ -916,7 +936,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "ssm-parameter-reader.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "ssm-parameter-reader.assets"
@@ -1012,7 +1037,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "cdk-pipeline-cdk-source.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "cdk-pipeline-cdk-source.assets"
@@ -1246,7 +1276,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "cdk-pipeline-cloud-assembly.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "cdk-pipeline-cloud-assembly.assets"
@@ -1450,7 +1485,12 @@
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "webapp.assets"
-        ]
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-lookup-role-112233445566-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
       },
       "dependencies": [
         "webapp.assets"

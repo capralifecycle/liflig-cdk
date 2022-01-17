@@ -429,6 +429,9 @@
           },
           "Type": "NO_SOURCE"
         },
+        "Cache": {
+          "Type": "NO_CACHE"
+        },
         "EncryptionKey": "alias/aws/s3",
         "Tags": [
           {
