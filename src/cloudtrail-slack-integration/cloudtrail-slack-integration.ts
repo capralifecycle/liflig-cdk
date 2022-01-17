@@ -11,10 +11,13 @@ import * as path from "path"
 
 export interface CloudTrailSlackIntegrationProps extends cdk.StackProps {
   /**
-   * A key-value pair of AWS account IDs and friendly names of these accounts
+   * A key-value pair of values to augment (e.g., AWS account IDs, principal IDs) with friendly names
    * to use when sending messages to Slack.
+   *
+   * NOTE: A simple heuristic is used to avoid replacing values inside of ARNs etc. as this can
+   * lead to unpleasant formatting of various fields in the Slack message.
    */
-  accountFriendlyNames?: {
+  friendlyNames?: {
     [key: string]: string
   }
   slackWebhookUrl: string
@@ -75,9 +78,7 @@ export class CloudTrailSlackIntegration extends cdk.Construct {
         environment: {
           SLACK_CHANNEL: props.slackChannel,
           DEDUPLICATE_EVENTS: JSON.stringify(!!props.deduplicateEvents),
-          ACCOUNT_FRIENDLY_NAMES: JSON.stringify(
-            props.accountFriendlyNames || {},
-          ),
+          FRIENDLY_NAMES: JSON.stringify(props.friendlyNames || {}),
           SLACK_WEBHOOK_URL: props.slackWebhookUrl,
         },
       },

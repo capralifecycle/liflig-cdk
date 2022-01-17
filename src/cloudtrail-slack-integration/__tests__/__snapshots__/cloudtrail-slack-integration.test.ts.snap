@@ -3,16 +3,16 @@
 exports[`setup new cloudtrail to slack integration 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308ArtifactHash6FF3F999": Object {
-      "Description": "Artifact hash for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aArtifactHash418D728B": Object {
+      "Description": "Artifact hash for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA": Object {
-      "Description": "S3 bucket for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892": Object {
+      "Description": "S3 bucket for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE": Object {
-      "Description": "S3 key for asset version \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372": Object {
+      "Description": "S3 key for asset version \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
     "AssetParametersc13434f8f1aa2ea30fa577b2feb208a41368b11787b752e10bfc71fe8eb919d5ArtifactHashE9AE13B7": Object {
@@ -37,7 +37,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA",
+            "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -50,7 +50,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -63,7 +63,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -76,8 +76,8 @@ Object {
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
           "Variables": Object {
-            "ACCOUNT_FRIENDLY_NAMES": "{\\"123456789012\\":\\"example-friendly-name\\"}",
             "DEDUPLICATE_EVENTS": "false",
+            "FRIENDLY_NAMES": "{\\"123456789012\\":\\"example-friendly-name\\"}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
           },
@@ -662,16 +662,16 @@ Object {
 exports[`setup new cloudtrail to slack integration with event deduplication 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308ArtifactHash6FF3F999": Object {
-      "Description": "Artifact hash for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aArtifactHash418D728B": Object {
+      "Description": "Artifact hash for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA": Object {
-      "Description": "S3 bucket for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892": Object {
+      "Description": "S3 bucket for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE": Object {
-      "Description": "S3 key for asset version \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372": Object {
+      "Description": "S3 key for asset version \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
     "AssetParametersc13434f8f1aa2ea30fa577b2feb208a41368b11787b752e10bfc71fe8eb919d5ArtifactHashE9AE13B7": Object {
@@ -696,7 +696,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA",
+            "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -709,7 +709,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -722,7 +722,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -735,8 +735,8 @@ Object {
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
           "Variables": Object {
-            "ACCOUNT_FRIENDLY_NAMES": "{}",
             "DEDUPLICATE_EVENTS": "true",
+            "FRIENDLY_NAMES": "{}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
             "SQS_QUEUE_URL": Object {
@@ -1238,7 +1238,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA",
+            "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -1251,7 +1251,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -1264,7 +1264,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -1504,16 +1504,16 @@ Object {
 exports[`setup new cloudtrail to slack integration with event deduplication and infrastructure slack alarms 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308ArtifactHash6FF3F999": Object {
-      "Description": "Artifact hash for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aArtifactHash418D728B": Object {
+      "Description": "Artifact hash for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA": Object {
-      "Description": "S3 bucket for asset \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892": Object {
+      "Description": "S3 bucket for asset \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
-    "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE": Object {
-      "Description": "S3 key for asset version \\"05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308\\"",
+    "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372": Object {
+      "Description": "S3 key for asset version \\"0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a\\"",
       "Type": "String",
     },
     "AssetParametersc13434f8f1aa2ea30fa577b2feb208a41368b11787b752e10bfc71fe8eb919d5ArtifactHashE9AE13B7": Object {
@@ -1571,7 +1571,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA",
+            "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -1584,7 +1584,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -1597,7 +1597,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -1610,8 +1610,8 @@ Object {
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
           "Variables": Object {
-            "ACCOUNT_FRIENDLY_NAMES": "{}",
             "DEDUPLICATE_EVENTS": "true",
+            "FRIENDLY_NAMES": "{}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
             "SQS_QUEUE_URL": Object {
@@ -2146,7 +2146,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3BucketE1C234EA",
+            "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3Bucket1C532892",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -2159,7 +2159,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },
@@ -2172,7 +2172,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters05fa7fb2b29b6f2b648afca5d3f225019628c19b0b1a36a31509e8805a21a308S3VersionKeyB1FC5BFE",
+                          "Ref": "AssetParameters0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25aS3VersionKey7ABAA372",
                         },
                       ],
                     },

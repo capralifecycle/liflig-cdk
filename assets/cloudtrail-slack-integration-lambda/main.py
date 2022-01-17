@@ -11,17 +11,29 @@ import os
 import logging
 import json
 import urllib.request
+import re
 import boto3
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def augment_strings_with_friendly_names(strings, friendly_names):
+    """A helper method for augmenting various values (e.g., AWS account ID) in
+    a list of strings with a more friendly name"""
+    # We avoid replacing values that are directly prefixed and/or suffixed with ':'
+    # as it is most likely an ARN or similiar. We don't want to replace account IDs
+    # inside ARNs as this would look messy.This is a quite basic heuristic, but it should allow
+    # us to easily replace most relevant values (e.g., principal ID, account ID, etc.) with
+    # friendly names without a complicated regex.
+    pattern = re.compile("|".join([f"(?<!:)({re.escape(key)})(?!:)" for key in friendly_names]))
+    return [pattern.sub(lambda m: m[0] + f" ({friendly_names[m.string[m.start():m.end()]]})", s) for s in strings]
 
-def get_slack_payload_for_assume_role_event(event, account_friendly_names):
+
+def get_slack_payload_for_assume_role_event(event, friendly_names):
     """Parse a CloudTrail event related to the API call sts:AssumeRole,
     and return a Slack-formatted attachment"""
-    event_account_id = event["account"]
     event_detail = event["detail"]
+    recipient_account_id = event_detail["recipientAccountId"]
     request_parameters = event_detail.get("requestParameters", {}) or {}
 
     timestamp = event_detail["eventTime"]
@@ -32,12 +44,14 @@ def get_slack_payload_for_assume_role_event(event, account_friendly_names):
     source_ip = event_detail.get("sourceIPAddress", "")
     role_arn = request_parameters.get("roleArn", "")
 
-    fallback = f"Sensitive role accessed in '{event_account_id}'"
-    pretext_messages = [f":warning: Sensitive role in `{event_account_id}` assumed by"]
+    fallback = f"Sensitive role accessed in '{recipient_account_id}'"
+    pretext_messages = [f":warning: Sensitive role in `{recipient_account_id}` assumed by"]
     if principal_id.startswith("AIDA"):
         pretext_messages.append("IAM user")
     elif principal_id.startswith("AROA"):
-        pretext_messages.append("IAM role")
+        # The other part of the principal ID for a role is the name of the session
+        principal_id = principal_id.split(":")[0]
+        pretext_messages.append(f"IAM role")
     else:
         pretext_messages.append("principal")
     pretext_messages.append(f"in `{principal_account_id}`")
@@ -52,9 +66,11 @@ def get_slack_payload_for_assume_role_event(event, account_friendly_names):
         f"*Timestamp:* `{timestamp}`",
     ]
     text = "\n".join(line for line in text if line)
-    for account_id, friendly_name in account_friendly_names.items():
-        pretext = pretext.replace(account_id, friendly_name)
-        fallback = fallback.replace(account_id, friendly_name)
+
+    try:
+        pretext, fallback, text = augment_strings_with_friendly_names([pretext, fallback, text], friendly_names)
+    except:
+        logger.exception("Failed to augment strings with friendly names")
     return {
         "attachments": [
             {
@@ -69,17 +85,17 @@ def get_slack_payload_for_assume_role_event(event, account_friendly_names):
 
 
 def get_fallback_slack_payload_for_event(
-    event, account_friendly_names, fallback_parse_behavior=""
+    event, friendly_names, fallback_parse_behavior=""
 ):
     """Parse a generic CloudTrail event related to an API call
     and return a Slack-formatted attachment"""
-    event_account_id = event["account"]
     event_detail = event["detail"]
     event_name = event_detail["eventName"]
     event_type = event_detail["eventType"]
     event_time = event_detail["eventTime"]
-    pretext = f":warning: CloudTrail event in account `{event_account_id}`"
-    fallback = f"CloudTrail event in account '{event_account_id}'"
+    recipient_account_id = event_detail["recipientAccountId"]
+    pretext = f":warning: CloudTrail event in account `{recipient_account_id}`"
+    fallback = f"CloudTrail event in account '{recipient_account_id}'"
     if fallback_parse_behavior == "DUMP_EVENT":
         text = "\n".join(
             ["*Event:*", "```", json.dumps(event, sort_keys=True, indent=2), "```"]
@@ -117,9 +133,11 @@ def get_fallback_slack_payload_for_event(
         # Filter out empty strings
         text = "\n".join(line for line in text if line)
 
-    for account_id, friendly_name in account_friendly_names.items():
-        pretext = pretext.replace(account_id, friendly_name)
-        fallback = fallback.replace(account_id, friendly_name)
+    try:
+        pretext, fallback, text = augment_strings_with_friendly_names([pretext, fallback, text], friendly_names)
+    except:
+        logger.exception("Failed to augment strings with friendly names")
+
     return {
         "attachments": [
             {
@@ -133,16 +151,16 @@ def get_fallback_slack_payload_for_event(
     }
 
 
-def get_augmented_account_friendly_names(event, account_friendly_names):
+def get_augmented_friendly_names(event, friendly_names):
     """Return an augmented dictionary containing the alias of the current
-    AWS account if relevant"""
-    augmented_account_friendly_names = {**account_friendly_names}
+    AWS account as a friendly name for the current account ID if relevant"""
+    augmented_friendly_names = {**friendly_names}
     try:
         event_account_id = event["account"]
         event_detail = event["detail"]
         recipient_account_id = event_detail["recipientAccountId"]
         if (
-            not augmented_account_friendly_names.get(event_account_id, "")
+            not friendly_names.get(event_account_id, "")
             and event_account_id == recipient_account_id
         ):
             logger.info(
@@ -152,11 +170,11 @@ def get_augmented_account_friendly_names(event, account_friendly_names):
             iam = boto3.client("iam")
             aliases = iam.list_account_aliases()["AccountAliases"]
             if len(aliases):
-                augmented_account_friendly_names[event_account_id] = aliases[0]
+                augmented_friendly_names[event_account_id] = aliases[0]
     except:
         logger.exception("Failed to look up alias of current AWS account")
 
-    return augmented_account_friendly_names
+    return augmented_friendly_names
 
 
 def post_to_slack(slack_payload, slack_webhook_url):
@@ -178,15 +196,15 @@ def handler_event_transformer(event, context):
     """Lambda handler for the event transformer Lambda"""
     logger.info("Triggered with event: %s", json.dumps(event, indent=2))
 
-    account_friendly_names = json.loads(os.environ["ACCOUNT_FRIENDLY_NAMES"])
+    friendly_names = json.loads(os.environ["FRIENDLY_NAMES"])
     slack_webhook_url = os.environ["SLACK_WEBHOOK_URL"]
     slack_channel = os.environ["SLACK_CHANNEL"]
     sqs_queue_url = os.environ.get("SQS_QUEUE_URL", "")
     fallback_parse_behavior = os.environ.get("FALLBACK_PARSE_BEHAVIOR", "")
     deduplicate_events = os.environ.get("DEDUPLICATE_EVENTS", "false") == "true"
 
-    account_friendly_names = get_augmented_account_friendly_names(
-        event, account_friendly_names
+    friendly_names = get_augmented_friendly_names(
+        event, friendly_names
     )
 
     if not event["detail-type"].endswith("via CloudTrail"):
@@ -197,7 +215,7 @@ def handler_event_transformer(event, context):
     try:
         if event["detail"]["eventName"] == "AssumeRole":
             slack_payload = get_slack_payload_for_assume_role_event(
-                event, account_friendly_names
+                event, friendly_names
             )
     except:
         logger.exception("Failed to parse event using predefined schema")
@@ -205,7 +223,7 @@ def handler_event_transformer(event, context):
         logger.warn("Using a fallback schema to parse event")
         slack_payload = get_fallback_slack_payload_for_event(
             event,
-            account_friendly_names,
+            friendly_names,
             fallback_parse_behavior=fallback_parse_behavior,
         )
     slack_payload = {**slack_payload, "channel": slack_channel}
