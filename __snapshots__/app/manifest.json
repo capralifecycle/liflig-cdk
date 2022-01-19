@@ -1151,34 +1151,34 @@
             "data": "PipelineCodePipelinePrepareCdkSourcepreparecdksourceCodePipelineActionRoleDefaultPolicyC1327038"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CodePipelineActionRole/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRole44331778"
+            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CodePipelineActionRole/DefaultPolicy/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Role/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRoleDefaultPolicyB9E077F7"
+            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRoleDefaultPolicy027A12A1"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Role/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C"
+            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Role/DefaultPolicy/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleDefaultPolicyBBE56835"
+            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B"
+            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRoleDefaultPolicy49026C91"
           }
         ],
         "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource": [
