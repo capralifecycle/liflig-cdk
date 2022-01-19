@@ -812,7 +812,8 @@
                 "Configuration": {
                   "ProjectName": {
                     "Ref": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
-                  }
+                  },
+                  "EnvironmentVariables": "[{\"name\":\"_PROJECT_CONFIG_HASH\",\"type\":\"PLAINTEXT\",\"value\":\"snapshot-value\"}]"
                 },
                 "InputArtifacts": [
                   {
@@ -875,7 +876,7 @@
                     "Name": "Artifact_PrepareCloudAssembly_cloud-assembly-lookup"
                   }
                 ],
-                "Name": "example.Prepare",
+                "Name": "Prepare",
                 "RoleArn": {
                   "Fn::Join": [
                     "",
@@ -913,7 +914,7 @@
                   "ActionMode": "CHANGE_SET_EXECUTE",
                   "ChangeSetName": "PipelineChange"
                 },
-                "Name": "example.Deploy",
+                "Name": "Deploy",
                 "RoleArn": {
                   "Fn::Join": [
                     "",
@@ -1324,21 +1325,7 @@
             }
           ],
           "Version": "2012-10-17"
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "cdk-pipeline-cloud-assembly"
-          }
-        ]
+        }
       },
       "Metadata": {
         "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource"
