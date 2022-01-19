@@ -35,7 +35,7 @@ export class LifligCdkPipelineCdkSourceStack extends Stack {
       sourceType: "cdk-source",
     })
 
-    pipeline.cdkPipeline.addApplicationStage(new ExampleStage(this, "example"))
+    pipeline.cdkPipeline.addStage(new ExampleStage(this, "example"))
   }
 }
 
@@ -48,6 +48,6 @@ export class LifligCdkPipelineCloudAssemblyStack extends Stack {
       sourceType: "cloud-assembly",
     })
 
-    pipeline.cdkPipeline.addApplicationStage(new ExampleStage(this, "example"))
+    pipeline.cdkPipeline.addStage(new ExampleStage(this, "example"))
   }
 }

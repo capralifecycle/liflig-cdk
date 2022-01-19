@@ -328,7 +328,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C",
+                    "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735",
                     "Arn"
                   ]
                 }
@@ -346,7 +346,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C",
+                    "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735",
                     "Arn"
                   ]
                 }
@@ -690,7 +690,7 @@
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRole44331778",
+                  "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91",
                   "Arn"
                 ]
               }
@@ -850,7 +850,7 @@
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B"
+                    "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
                   },
                   "EnvironmentVariables": "[{\"name\":\"_PROJECT_CONFIG_HASH\",\"type\":\"PLAINTEXT\",\"value\":\"snapshot-value\"}]"
                 },
@@ -859,22 +859,22 @@
                     "Name": "Artifact_PrepareCdkSource_prepare-cdk-source"
                   }
                 ],
-                "Name": "Synth",
+                "Name": "GenerateCloudAssembly",
                 "OutputArtifacts": [
                   {
-                    "Name": "Artifact_GenerateCloudAssembly_Synth"
+                    "Name": "GenerateCloudAssembly_Output"
                   }
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRole44331778",
+                    "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91",
                     "Arn"
                   ]
                 },
                 "RunOrder": 1
               }
             ],
-            "Name": "GenerateCloudAssembly"
+            "Name": "Build"
           },
           {
             "Actions": [
@@ -888,11 +888,12 @@
                 "Configuration": {
                   "ProjectName": {
                     "Ref": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
-                  }
+                  },
+                  "EnvironmentVariables": "[{\"name\":\"_PROJECT_CONFIG_HASH\",\"type\":\"PLAINTEXT\",\"value\":\"snapshot-value\"}]"
                 },
                 "InputArtifacts": [
                   {
-                    "Name": "Artifact_GenerateCloudAssembly_Synth"
+                    "Name": "GenerateCloudAssembly_Output"
                   }
                 ],
                 "Name": "SelfMutate",
@@ -944,14 +945,14 @@
                   },
                   "ActionMode": "CHANGE_SET_REPLACE",
                   "ChangeSetName": "PipelineChange",
-                  "TemplatePath": "Artifact_GenerateCloudAssembly_Synth::assembly-cdk-pipeline-cdk-source-example/cdkpipelinecdksourceexample06670C59.template.json"
+                  "TemplatePath": "GenerateCloudAssembly_Output::assembly-cdk-pipeline-cdk-source-example/cdkpipelinecdksourceexample06670C59.template.json"
                 },
                 "InputArtifacts": [
                   {
-                    "Name": "Artifact_GenerateCloudAssembly_Synth"
+                    "Name": "GenerateCloudAssembly_Output"
                   }
                 ],
-                "Name": "example.Prepare",
+                "Name": "Prepare",
                 "RoleArn": {
                   "Fn::Join": [
                     "",
@@ -989,7 +990,7 @@
                   "ActionMode": "CHANGE_SET_EXECUTE",
                   "ChangeSetName": "PipelineChange"
                 },
-                "Name": "example.Deploy",
+                "Name": "Deploy",
                 "RoleArn": {
                   "Fn::Join": [
                     "",
@@ -1371,89 +1372,7 @@
         "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/PrepareCdkSource/prepare-cdk-source/CodePipelineActionRole/DefaultPolicy/Resource"
       }
     },
-    "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRole44331778": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":root"
-                    ]
-                  ]
-                }
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "cdk-pipeline-cdk-source"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CodePipelineActionRole/Resource"
-      }
-    },
-    "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRoleDefaultPolicyB9E077F7": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "codebuild:BatchGetBuilds",
-                "codebuild:StartBuild",
-                "codebuild:StopBuild"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B",
-                  "Arn"
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRoleDefaultPolicyB9E077F7",
-        "Roles": [
-          {
-            "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCodePipelineActionRole44331778"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CodePipelineActionRole/DefaultPolicy/Resource"
-      }
-    },
-    "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C": {
+    "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -1467,27 +1386,13 @@
             }
           ],
           "Version": "2012-10-17"
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "cdk-pipeline-cdk-source"
-          }
-        ]
+        }
       },
       "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Role/Resource"
+        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Role/Resource"
       }
     },
-    "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleDefaultPolicyBBE56835": {
+    "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRoleDefaultPolicy027A12A1": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -1518,7 +1423,7 @@
                       },
                       ":log-group:/aws/codebuild/",
                       {
-                        "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B"
+                        "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
                       }
                     ]
                   ]
@@ -1541,7 +1446,7 @@
                       },
                       ":log-group:/aws/codebuild/",
                       {
-                        "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B"
+                        "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
                       },
                       ":*"
                     ]
@@ -1576,7 +1481,7 @@
                     },
                     ":report-group/",
                     {
-                      "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B"
+                      "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
                     },
                     "-*"
                   ]
@@ -1650,18 +1555,18 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleDefaultPolicyBBE56835",
+        "PolicyName": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRoleDefaultPolicy027A12A1",
         "Roles": [
           {
-            "Ref": "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C"
+            "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Role/DefaultPolicy/Resource"
+        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Role/DefaultPolicy/Resource"
       }
     },
-    "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectCBC06C6B": {
+    "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3": {
       "Type": "AWS::CodeBuild::Project",
       "Properties": {
         "Artifacts": {
@@ -1669,13 +1574,6 @@
         },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "EnvironmentVariables": [
-            {
-              "Name": "NPM_CONFIG_UNSAFE_PERM",
-              "Type": "PLAINTEXT",
-              "Value": "true"
-            }
-          ],
           "Image": "aws/codebuild/standard:5.0",
           "ImagePullCredentialsType": "CODEBUILD",
           "PrivilegedMode": false,
@@ -1683,12 +1581,12 @@
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "PipelineCodePipelineGenerateCloudAssemblySynthCdkBuildProjectRoleAB5F1F3C",
+            "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProjectRole5D5FB735",
             "Arn"
           ]
         },
         "Source": {
-          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"pre_build\": {\n      \"commands\": [\n        \"npm ci\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"npx cdk synth\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"base-directory\": \"cdk.out\",\n    \"files\": \"**/*\"\n  }\n}",
+          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"npm ci\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"npx cdk synth\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"base-directory\": \"cdk.out\",\n    \"files\": \"**/*\"\n  }\n}",
           "Type": "CODEPIPELINE"
         },
         "EncryptionKey": {
@@ -1696,24 +1594,78 @@
             "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
             "Arn"
           ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Resource"
+      }
+    },
+    "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/Resource"
+      }
+    },
+    "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRoleDefaultPolicy49026C91": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
         },
-        "Tags": [
+        "PolicyName": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRoleDefaultPolicy49026C91",
+        "Roles": [
           {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "cdk-pipeline-cdk-source"
+            "Ref": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/GenerateCloudAssembly/Synth/CdkBuildProject/Resource"
+        "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/DefaultPolicy/Resource"
       }
     },
     "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61": {
@@ -1745,21 +1697,7 @@
             }
           ],
           "Version": "2012-10-17"
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "cdk-pipeline-cdk-source"
-          }
-        ]
+        }
       },
       "Metadata": {
         "aws:cdk:path": "cdk-pipeline-cdk-source/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource"

@@ -22,7 +22,7 @@ test("slack-notification", () => {
     sourceType: "cloud-assembly",
   })
 
-  pipeline.cdkPipeline.addApplicationStage(stage)
+  pipeline.cdkPipeline.addStage(stage)
 
   pipeline.addSlackNotification({
     slackWebhookUrl: "https://hooks.slack.com/services/abc",
