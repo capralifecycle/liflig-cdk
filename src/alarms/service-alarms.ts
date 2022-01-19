@@ -87,7 +87,7 @@ export class ServiceAlarms extends cdk.Construct {
       namespace: "AWS/ApplicationELB",
       statistic: "Average",
       period: cdk.Duration.seconds(60),
-      dimensions: {
+      dimensionsMap: {
         TargetGroup: props.targetGroupFullName,
         LoadBalancer: props.loadBalancerFullName,
       },
@@ -108,7 +108,7 @@ export class ServiceAlarms extends cdk.Construct {
       namespace: "AWS/ApplicationELB",
       statistic: "Sum",
       period: cdk.Duration.seconds(60),
-      dimensions: {
+      dimensionsMap: {
         TargetGroup: props.targetGroupFullName,
         LoadBalancer: props.loadBalancerFullName,
       },
