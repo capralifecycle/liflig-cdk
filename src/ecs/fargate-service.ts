@@ -123,7 +123,7 @@ export class FargateService extends cdk.Construct {
       healthCheckGracePeriod: props.healthCheckGracePeriod,
       desiredCount: props.desiredCount,
       assignPublicIp: true,
-      securityGroup: this.securityGroup,
+      securityGroups: [this.securityGroup],
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
       enableExecuteCommand: true,
       ...props.overrideFargateServiceProps,
