@@ -34,7 +34,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.139.0",
+    "@aws-cdk/assert": "2.10.0",
     "@aws-cdk/aws-certificatemanager": "1.139.0",
     "@aws-cdk/aws-cloudfront": "1.139.0",
     "@aws-cdk/aws-cloudfront-origins": "1.139.0",
@@ -67,7 +67,7 @@
     "@types/node": "16.11.21",
     "@typescript-eslint/eslint-plugin": "5.10.1",
     "@typescript-eslint/parser": "5.10.1",
-    "aws-cdk": "1.139.0",
+    "aws-cdk": "2.10.0",
     "eslint": "8.8.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
