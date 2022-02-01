@@ -1,6 +1,7 @@
-import * as ecr from "@aws-cdk/aws-ecr"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ecr from "aws-cdk-lib/aws-ecr"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as cdk from "aws-cdk-lib"
 import {
   EcsUpdateImage,
   EcsUpdateImageArtifactStatus,
@@ -12,7 +13,7 @@ interface Props extends cdk.StackProps {
 }
 
 export class EcsUpdateImageStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id, props)
 
     const cluster = new ecs.Cluster(this, "Cluster")

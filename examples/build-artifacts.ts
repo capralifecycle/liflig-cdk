@@ -1,8 +1,9 @@
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
 import { BuildArtifacts } from "../src"
 
 export class BuildArtifactsStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: constructs.Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props)
 
     new BuildArtifacts(this, "BuildArtifacts", {

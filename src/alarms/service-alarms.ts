@@ -1,6 +1,7 @@
-import * as cloudwatch from "@aws-cdk/aws-cloudwatch"
-import * as logs from "@aws-cdk/aws-logs"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as cdk from "aws-cdk-lib"
 
 export interface ServiceAlarmsProps extends cdk.StackProps {
   action: cloudwatch.IAlarmAction
@@ -15,11 +16,15 @@ export interface ServiceAlarmsProps extends cdk.StackProps {
  *
  * See SlackAlarm construct for SNS Action.
  */
-export class ServiceAlarms extends cdk.Construct {
+export class ServiceAlarms extends constructs.Construct {
   private readonly action: cloudwatch.IAlarmAction
   private readonly serviceName: string
 
-  constructor(scope: cdk.Construct, id: string, props: ServiceAlarmsProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: ServiceAlarmsProps,
+  ) {
     super(scope, id)
 
     this.action = props.action

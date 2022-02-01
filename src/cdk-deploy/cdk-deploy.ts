@@ -1,9 +1,10 @@
-import * as codebuild from "@aws-cdk/aws-codebuild"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
+import * as constructs from "constructs"
+import * as codebuild from "aws-cdk-lib/aws-codebuild"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as cdk from "aws-cdk-lib"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import { startDeployHandler } from "./start-deploy-handler"
 import { statusHandler } from "./status-handler"
 
@@ -65,8 +66,8 @@ interface Props extends cdk.StackProps {
  * The "status" lambda can be used to poll for completion, and will
  * also return logs from the job upon completion.
  */
-export class CdkDeploy extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+export class CdkDeploy extends constructs.Construct {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     const account = cdk.Stack.of(this).account

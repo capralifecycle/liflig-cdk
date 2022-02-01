@@ -1,10 +1,11 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as firehose from "@aws-cdk/aws-kinesisfirehose"
-import * as logs from "@aws-cdk/aws-logs"
-import * as s3 from "@aws-cdk/aws-s3"
-import { BlockPublicAccess } from "@aws-cdk/aws-s3"
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as firehose from "aws-cdk-lib/aws-kinesisfirehose"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import { BlockPublicAccess } from "aws-cdk-lib/aws-s3"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import * as cdk from "aws-cdk-lib"
 
 export interface KinesisToDatadogStreamProps {
   /**
@@ -30,9 +31,9 @@ export interface KinesisToDatadogStreamProps {
  *
  * @author Stein-Aage
  */
-export class KinesisToDatadogStream extends cdk.Construct {
+export class KinesisToDatadogStream extends constructs.Construct {
   constructor(
-    scope: cdk.Construct,
+    scope: constructs.Construct,
     id: string,
     props: KinesisToDatadogStreamProps,
   ) {

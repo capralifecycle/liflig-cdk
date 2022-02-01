@@ -1,9 +1,10 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
-import * as logs from "@aws-cdk/aws-logs"
-import * as cdk from "@aws-cdk/core"
-import { Duration } from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as cdk from "aws-cdk-lib"
+import { Duration } from "aws-cdk-lib"
 import { ConfigureParameters } from "../configure-parameters"
 import { Parameter } from "../configure-parameters/configure-parameters"
 
@@ -50,13 +51,17 @@ export interface FargateServiceProps {
   skipTargetGroup?: boolean
 }
 
-export class FargateService extends cdk.Construct {
+export class FargateService extends constructs.Construct {
   public readonly securityGroup: ec2.SecurityGroup
   public readonly taskDefinition: ecs.TaskDefinition
   public readonly targetGroup: elb.ApplicationTargetGroup | undefined
   public readonly logGroup: logs.LogGroup
 
-  constructor(scope: cdk.Construct, id: string, props: FargateServiceProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: FargateServiceProps,
+  ) {
     super(scope, id)
 
     const parameters = new ConfigureParameters(this, {

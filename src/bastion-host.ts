@@ -1,6 +1,7 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as iam from "@aws-cdk/aws-iam"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as cdk from "aws-cdk-lib"
 
 interface Props {
   vpc: ec2.IVpc
@@ -37,10 +38,10 @@ interface Props {
  * For more internal details, see
  * https://confluence.capraconsulting.no/x/q8UBC
  */
-export class BastionHost extends cdk.Construct {
+export class BastionHost extends constructs.Construct {
   public readonly securityGroup: ec2.ISecurityGroup
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     const region = cdk.Stack.of(this).region

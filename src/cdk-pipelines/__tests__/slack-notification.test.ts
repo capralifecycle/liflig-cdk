@@ -1,5 +1,5 @@
 import "@aws-cdk/assert/jest"
-import { App, CfnOutput, Stack, Stage } from "@aws-cdk/core"
+import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
 
 test("slack-notification", () => {

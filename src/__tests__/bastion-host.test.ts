@@ -1,5 +1,5 @@
-import { SecurityGroup, Vpc } from "@aws-cdk/aws-ec2"
-import { App, Stack } from "@aws-cdk/core"
+import { SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { BastionHost } from ".."
 

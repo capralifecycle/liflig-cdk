@@ -1,10 +1,11 @@
-import * as cloudwatch from "@aws-cdk/aws-cloudwatch"
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as events from "@aws-cdk/aws-events"
-import * as targets from "@aws-cdk/aws-events-targets"
-import * as logs from "@aws-cdk/aws-logs"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as events from "aws-cdk-lib/aws-events"
+import * as targets from "aws-cdk-lib/aws-events-targets"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as cdk from "aws-cdk-lib"
 
 export interface ClusterProps {
   /**
@@ -18,11 +19,11 @@ export interface ClusterProps {
   alarmAction?: cloudwatch.IAlarmAction
 }
 
-export class Cluster extends cdk.Construct {
+export class Cluster extends constructs.Construct {
   public readonly cluster: ecs.Cluster
   public readonly clusterEventLogs: logs.LogGroup
 
-  constructor(scope: cdk.Construct, id: string, props: ClusterProps) {
+  constructor(scope: constructs.Construct, id: string, props: ClusterProps) {
     super(scope, id)
 
     this.cluster = new ecs.Cluster(this, "Resource", {

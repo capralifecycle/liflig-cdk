@@ -1,5 +1,5 @@
-import * as sns from "@aws-cdk/aws-sns"
-import { App, Stack } from "@aws-cdk/core"
+import * as sns from "aws-cdk-lib/aws-sns"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { ConfigurationSetSnsDestination } from "../index"
 

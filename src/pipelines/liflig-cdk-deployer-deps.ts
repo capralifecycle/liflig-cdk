@@ -1,5 +1,6 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as cdk from "aws-cdk-lib"
 import { cdkDeployRoleName } from "./conventions"
 
 export interface LifligCdkDeployerDepsProps {
@@ -12,9 +13,9 @@ export interface LifligCdkDeployerDepsProps {
  * This must exist in each target account that the pipeline should
  * be able to deploy into.
  */
-export class LifligCdkDeployerDeps extends cdk.Construct {
+export class LifligCdkDeployerDeps extends constructs.Construct {
   constructor(
-    scope: cdk.Construct,
+    scope: constructs.Construct,
     id: string,
     props: LifligCdkDeployerDepsProps,
   ) {

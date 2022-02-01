@@ -1,5 +1,5 @@
-import * as cloudfront from "@aws-cdk/aws-cloudfront"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 
 export interface FrameOptionsHeader {
   value?: "DENY" | "SAMEORIGIN"
@@ -148,10 +148,10 @@ function generateFrameOptionsHeader(headerOptions?: FrameOptionsHeader) {
   return trim(options.value)
 }
 
-export class WebappSecurityHeaders extends cdk.Construct {
+export class WebappSecurityHeaders extends constructs.Construct {
   public readonly securityHeadersFunction: cloudfront.Function
 
-  constructor(scope: cdk.Construct, id: string, props: SecurityHeaders) {
+  constructor(scope: constructs.Construct, id: string, props: SecurityHeaders) {
     super(scope, id)
 
     const cspHeaderName = props.contentSecurityPolicy?.reportOnly

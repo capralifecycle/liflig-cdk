@@ -1,9 +1,9 @@
-import * as cloudwatchActions from "@aws-cdk/aws-cloudwatch-actions"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as sns from "@aws-cdk/aws-sns"
-import * as cdk from "@aws-cdk/core"
-import { Duration } from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as sns from "aws-cdk-lib/aws-sns"
+import { Duration } from "aws-cdk-lib"
 import * as path from "path"
 
 export interface SlackAlarmProps {
@@ -17,11 +17,11 @@ export interface SlackAlarmProps {
  * SNS Topic that can be used to action alarms, with a Lambda
  * that will send a message to Slack for the alarm.
  */
-export class SlackAlarm extends cdk.Construct {
+export class SlackAlarm extends constructs.Construct {
   public readonly alarmTopic: sns.Topic
   public readonly snsAction: cloudwatchActions.SnsAction
 
-  constructor(scope: cdk.Construct, id: string, props: SlackAlarmProps) {
+  constructor(scope: constructs.Construct, id: string, props: SlackAlarmProps) {
     super(scope, id)
 
     this.alarmTopic = new sns.Topic(this, "Topic")

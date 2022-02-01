@@ -1,12 +1,13 @@
-import * as cdk from "@aws-cdk/core"
-import * as iam from "@aws-cdk/aws-iam"
-import * as logs from "@aws-cdk/aws-logs"
-import * as cloudwatch from "@aws-cdk/aws-cloudwatch"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as events from "@aws-cdk/aws-events"
-import * as sources from "@aws-cdk/aws-lambda-event-sources"
-import * as sqs from "@aws-cdk/aws-sqs"
-import * as targets from "@aws-cdk/aws-events-targets"
+import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as events from "aws-cdk-lib/aws-events"
+import * as sources from "aws-cdk-lib/aws-lambda-event-sources"
+import * as sqs from "aws-cdk-lib/aws-sqs"
+import * as targets from "aws-cdk-lib/aws-events-targets"
 import * as path from "path"
 
 export interface CloudTrailSlackIntegrationProps extends cdk.StackProps {
@@ -51,9 +52,9 @@ export interface CloudTrailSlackIntegrationProps extends cdk.StackProps {
  *
  * NOTE: The construct needs to be provisioned in us-east-1, and requires an existing CloudTrail set up in that region.
  */
-export class CloudTrailSlackIntegration extends cdk.Construct {
+export class CloudTrailSlackIntegration extends constructs.Construct {
   constructor(
-    scope: cdk.Construct,
+    scope: constructs.Construct,
     id: string,
     props: CloudTrailSlackIntegrationProps,
   ) {

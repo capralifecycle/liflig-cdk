@@ -1,7 +1,7 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "@aws-cdk/core"
-import * as sns from "@aws-cdk/aws-sns"
-import * as cloudwatchActions from "@aws-cdk/aws-cloudwatch-actions"
+import { App, Stack } from "aws-cdk-lib"
+import * as sns from "aws-cdk-lib/aws-sns"
+import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import "jest-cdk-snapshot"
 import { CloudTrailSlackIntegration } from ".."
 
