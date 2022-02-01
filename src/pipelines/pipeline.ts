@@ -1,13 +1,14 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as events from "@aws-cdk/aws-events"
-import * as eventsTargets from "@aws-cdk/aws-events-targets"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as sfn from "@aws-cdk/aws-stepfunctions"
-import { Condition } from "@aws-cdk/aws-stepfunctions"
-import * as tasks from "@aws-cdk/aws-stepfunctions-tasks"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as events from "aws-cdk-lib/aws-events"
+import * as eventsTargets from "aws-cdk-lib/aws-events-targets"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as sfn from "aws-cdk-lib/aws-stepfunctions"
+import { Condition } from "aws-cdk-lib/aws-stepfunctions"
+import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks"
+import * as cdk from "aws-cdk-lib"
 import type { Handler } from "aws-lambda"
 import type * as _AWS from "aws-sdk"
 import { getGriidArtefactBucket } from "../griid"
@@ -87,8 +88,8 @@ export interface PipelineEnvironment {
  * separation of IaC code and application code if they are not
  * colocated in the same repository.
  */
-export class Pipeline extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: PipelineProps) {
+export class Pipeline extends constructs.Construct {
+  constructor(scope: constructs.Construct, id: string, props: PipelineProps) {
     super(scope, id)
 
     const s3Prefix = pipelineS3Prefix(props.pipelineName)

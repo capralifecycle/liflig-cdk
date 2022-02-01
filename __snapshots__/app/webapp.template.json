@@ -156,7 +156,7 @@
           "PriceClass": "PriceClass_100",
           "ViewerCertificate": {
             "AcmCertificateArn": "arn:aws:acm:us-east-1:112233445566:certificate/123456789012-1234-1234-1234-12345678",
-            "MinimumProtocolVersion": "TLSv1.2_2019",
+            "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only"
           }
         },

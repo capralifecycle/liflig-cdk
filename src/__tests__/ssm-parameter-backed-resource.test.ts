@@ -1,5 +1,5 @@
-import { Bucket } from "@aws-cdk/aws-s3"
-import { App, Stack } from "@aws-cdk/core"
+import { Bucket } from "aws-cdk-lib/aws-s3"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { SsmParameterBackedResource } from "../ssm-parameter-backed-resource"
 

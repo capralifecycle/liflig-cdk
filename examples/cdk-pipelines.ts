@@ -1,11 +1,5 @@
-import {
-  CfnOutput,
-  Construct,
-  Stack,
-  StackProps,
-  Stage,
-  StageProps,
-} from "@aws-cdk/core"
+import { Construct } from "constructs"
+import { CfnOutput, Stack, StackProps, Stage, StageProps } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../src/cdk-pipelines"
 
 class ExampleStack extends Stack {

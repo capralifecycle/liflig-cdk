@@ -1,8 +1,9 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as sns from "@aws-cdk/aws-sns"
-import * as cdk from "@aws-cdk/core"
-import * as cr from "@aws-cdk/custom-resources"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as sns from "aws-cdk-lib/aws-sns"
+import * as cdk from "aws-cdk-lib"
+import * as cr from "aws-cdk-lib/custom-resources"
 import { configurationSetSnsDestinationHandler } from "./handler"
 
 export type ConfigurationSetSnsDestinationEventType =
@@ -36,9 +37,9 @@ export interface ConfigurationSetSnsDestinationProps {
   matchingEventTypes: ConfigurationSetSnsDestinationEventType[]
 }
 
-export class ConfigurationSetSnsDestination extends cdk.Construct {
+export class ConfigurationSetSnsDestination extends constructs.Construct {
   constructor(
-    scope: cdk.Construct,
+    scope: constructs.Construct,
     id: string,
     props: ConfigurationSetSnsDestinationProps,
   ) {
@@ -58,11 +59,11 @@ export class ConfigurationSetSnsDestination extends cdk.Construct {
   }
 }
 
-class ConfigurationSetSnsDestinationProvider extends cdk.Construct {
+class ConfigurationSetSnsDestinationProvider extends constructs.Construct {
   /**
    * Returns the singleton provider.
    */
-  public static getOrCreate(scope: cdk.Construct) {
+  public static getOrCreate(scope: constructs.Construct) {
     const stack = cdk.Stack.of(scope)
     const id = "liflig-cdk.configuration-set-sns-destination"
     return (
@@ -74,7 +75,7 @@ class ConfigurationSetSnsDestinationProvider extends cdk.Construct {
   private readonly provider: cr.Provider
   public readonly serviceToken: string
 
-  constructor(scope: cdk.Construct, id: string) {
+  constructor(scope: constructs.Construct, id: string) {
     super(scope, id)
 
     this.provider = new cr.Provider(this, "Provider", {

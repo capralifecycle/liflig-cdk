@@ -2,20 +2,6 @@
 
 exports[`create slack alarm 1`] = `
 Object {
-  "Parameters": Object {
-    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcArtifactHash5CE48134": Object {
-      "Description": "Artifact hash for asset \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
-      "Type": "String",
-    },
-    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3BucketEF5F551E": Object {
-      "Description": "S3 bucket for asset \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
-      "Type": "String",
-    },
-    "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372": Object {
-      "Description": "S3 key for asset version \\"15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc\\"",
-      "Type": "String",
-    },
-  },
   "Resources": Object {
     "SlackAlarmFunction7A980434": Object {
       "DependsOn": Array [
@@ -24,41 +10,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3BucketEF5F551E",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefcS3VersionKeyD4E60372",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "15e8a964cb6662296dc491a81d03a6822f38070737a65bbc66fee43a89cabefc.zip",
         },
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {

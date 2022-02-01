@@ -1,10 +1,11 @@
-import * as codepipeline from "@aws-cdk/aws-codepipeline"
-import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
-import * as pipelines from "@aws-cdk/pipelines"
+import * as constructs from "constructs"
+import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
+import * as codepipelineActions from "aws-cdk-lib/aws-codepipeline-actions"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as cdk from "aws-cdk-lib"
+import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
 import { getGriidArtefactBucket } from "../griid/artefact-bucket"
@@ -99,7 +100,7 @@ export interface LifligCdkPipelineProps {
  * Variables enables separation of IaC code and application code if
  * they are not colocated in the same repository.
  */
-export class LifligCdkPipeline extends cdk.Construct {
+export class LifligCdkPipeline extends constructs.Construct {
   /**
    * Path on S3 for pipeline configuration.
    */
@@ -119,7 +120,11 @@ export class LifligCdkPipeline extends cdk.Construct {
   public readonly cdkPipeline: pipelines.CodePipeline
   public readonly codePipeline: codepipeline.Pipeline
 
-  constructor(scope: cdk.Construct, id: string, props: LifligCdkPipelineProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: LifligCdkPipelineProps,
+  ) {
     super(scope, id)
 
     const artifactsBucket =

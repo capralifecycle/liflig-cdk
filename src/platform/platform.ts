@@ -1,5 +1,5 @@
-import * as ssm from "@aws-cdk/aws-ssm"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ssm from "aws-cdk-lib/aws-ssm"
 
 function paramName(
   platformNamespace: string,
@@ -21,11 +21,15 @@ export interface PlatformProducerProps {
  *
  * Used for producing references to the core resources.
  */
-export abstract class PlatformProducer extends cdk.Construct {
+export abstract class PlatformProducer extends constructs.Construct {
   private platformNamespace: string
   private platformName: string
 
-  constructor(scope: cdk.Construct, id: string, props: PlatformProducerProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: PlatformProducerProps,
+  ) {
     super(scope, id)
 
     this.platformNamespace = props.platformNamespace
@@ -52,11 +56,15 @@ export interface PlatformConsumerProps {
  *
  * Used for consuming the core resources, which PlatformProducer creates references to.
  */
-export abstract class PlatformConsumer extends cdk.Construct {
+export abstract class PlatformConsumer extends constructs.Construct {
   private platformNamespace: string
   private platformName: string
 
-  constructor(scope: cdk.Construct, id: string, props: PlatformConsumerProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: PlatformConsumerProps,
+  ) {
     super(scope, id)
 
     this.platformNamespace = props.platformNamespace

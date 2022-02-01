@@ -1,8 +1,9 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as r53 from "@aws-cdk/aws-route53"
-import * as cdk from "@aws-cdk/core"
-import * as cr from "@aws-cdk/custom-resources"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as r53 from "aws-cdk-lib/aws-route53"
+import * as cdk from "aws-cdk-lib"
+import * as cr from "aws-cdk-lib/custom-resources"
 import { sesDomainHandler } from "./handler"
 
 interface Props {
@@ -33,11 +34,11 @@ interface Props {
   defaultConfigurationSetName?: string
 }
 
-export class SesDomain extends cdk.Construct {
+export class SesDomain extends constructs.Construct {
   public route53RecordSets: cdk.IResolvable
   public verificationToken: string
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     const resource = new cdk.CustomResource(this, "Resource", {
@@ -66,11 +67,11 @@ export class SesDomain extends cdk.Construct {
   }
 }
 
-class SesDomainProvider extends cdk.Construct {
+class SesDomainProvider extends constructs.Construct {
   /**
    * Returns the singleton provider.
    */
-  public static getOrCreate(scope: cdk.Construct) {
+  public static getOrCreate(scope: constructs.Construct) {
     const stack = cdk.Stack.of(scope)
     const id = "liflig-cdk.ses-domain.provider"
     return (
@@ -82,7 +83,7 @@ class SesDomainProvider extends cdk.Construct {
   private readonly provider: cr.Provider
   public readonly serviceToken: string
 
-  constructor(scope: cdk.Construct, id: string) {
+  constructor(scope: constructs.Construct, id: string) {
     super(scope, id)
 
     this.provider = new cr.Provider(this, "Provider", {

@@ -1,11 +1,11 @@
-import * as certificatemanager from "@aws-cdk/aws-certificatemanager"
-import * as cloudfront from "@aws-cdk/aws-cloudfront"
-import * as origins from "@aws-cdk/aws-cloudfront-origins"
-import * as iam from "@aws-cdk/aws-iam"
-import * as r53 from "@aws-cdk/aws-route53"
-import * as r53t from "@aws-cdk/aws-route53-targets"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as r53 from "aws-cdk-lib/aws-route53"
+import * as r53t from "aws-cdk-lib/aws-route53-targets"
+import * as s3 from "aws-cdk-lib/aws-s3"
 import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
 import { WebappSecurityHeaders, SecurityHeaders } from "./security-headers"
 
@@ -75,12 +75,12 @@ export interface WebappProps {
  * serve files. Use the addDeployment method to automatically
  * deploy files as part the the CDK deployment.
  */
-export class Webapp extends cdk.Construct {
+export class Webapp extends constructs.Construct {
   public readonly distribution: cloudfront.Distribution
   public readonly webappBucket: s3.Bucket
   public readonly webappOrigin: origins.S3Origin
 
-  constructor(scope: cdk.Construct, id: string, props: WebappProps) {
+  constructor(scope: constructs.Construct, id: string, props: WebappProps) {
     super(scope, id)
 
     if (props.webAclErrorPagePath != null && props.webAclId == null) {

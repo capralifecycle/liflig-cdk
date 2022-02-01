@@ -1,5 +1,5 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "@aws-cdk/core"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { Webapp } from "../"
 

@@ -1,10 +1,11 @@
-import * as ssm from "@aws-cdk/aws-ssm"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ssm from "aws-cdk-lib/aws-ssm"
+import * as cdk from "aws-cdk-lib"
 import { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
 import { getStageOrApp } from "./utils"
 
 type ReferenceToResource<T> = (
-  scope: cdk.Construct,
+  scope: constructs.Construct,
   id: string,
   reference: string,
 ) => T
@@ -39,14 +40,14 @@ interface Props<T> {
  * If the resource is in the same region, the resource will be returned
  * like normally in CDK, causing an export/import if cross-stack.
  */
-export class SsmParameterBackedResource<T> extends cdk.Construct {
+export class SsmParameterBackedResource<T> extends constructs.Construct {
   private readonly nonce: string
   private readonly parameterName: string
   private readonly resource: T
   private readonly referenceToResource: ReferenceToResource<T>
   private readonly regions: string[]
 
-  constructor(scope: cdk.Construct, id: string, props: Props<T>) {
+  constructor(scope: constructs.Construct, id: string, props: Props<T>) {
     super(scope, id)
     this.nonce = props.nonce ?? Date.now().toString()
     this.parameterName = props.parameterName
@@ -69,7 +70,7 @@ export class SsmParameterBackedResource<T> extends cdk.Construct {
    * Get the resource by resolving the value from SSM Parameter Store
    * in case we are cross-region or cross-stage.
    */
-  public get(scope: cdk.Construct, id: string): T {
+  public get(scope: constructs.Construct, id: string): T {
     const producerRegion = cdk.Stack.of(this).region
     const consumerRegion = cdk.Stack.of(scope).region
 

@@ -1,6 +1,6 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as sfn from "@aws-cdk/aws-stepfunctions"
-import { App, Stack } from "@aws-cdk/core"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as sfn from "aws-cdk-lib/aws-stepfunctions"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { LifligCdkDeployerDeps, Pipeline } from "../"
 

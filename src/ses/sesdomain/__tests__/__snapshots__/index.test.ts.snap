@@ -2,7 +2,6 @@
 
 exports[`ses-domain with default configuration set 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -195,7 +194,6 @@ Object {
 
 exports[`ses-domain with hosted zone 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -399,7 +397,6 @@ Object {
 
 exports[`ses-domain without hosted zone 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",

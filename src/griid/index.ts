@@ -1,9 +1,10 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as cdk from "aws-cdk-lib"
 
 export { getGriidArtefactBucket } from "./artefact-bucket"
 
-export function getGriidCiRole(scope: cdk.Construct): iam.IRole {
+export function getGriidCiRole(scope: constructs.Construct): iam.IRole {
   return iam.Role.fromRoleArn(
     scope,
     "GriidCiRole",

@@ -1,5 +1,6 @@
-import * as cdk from "@aws-cdk/core"
-import * as cr from "@aws-cdk/custom-resources"
+import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
+import * as cr from "aws-cdk-lib/custom-resources"
 
 interface Props {
   parameterName: string
@@ -21,7 +22,7 @@ function removeLeadingSlash(value: string): string {
  * with support to read cross-region.
  */
 export class SsmParameterReader extends cr.AwsCustomResource {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id, {
       onUpdate: {
         service: "SSM",

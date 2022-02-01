@@ -1,7 +1,8 @@
-import * as ecr from "@aws-cdk/aws-ecr"
-import * as iam from "@aws-cdk/aws-iam"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ecr from "aws-cdk-lib/aws-ecr"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as cdk from "aws-cdk-lib"
 import { getGriidCiRole } from "../griid"
 
 interface Props {
@@ -58,12 +59,12 @@ interface Props {
  *
  * @experimental
  */
-export class BuildArtifacts extends cdk.Construct {
+export class BuildArtifacts extends constructs.Construct {
   readonly bucketName: string | undefined
   readonly ecrRepositoryArn: string
   readonly ecrRepositoryName: string
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     this.bucketName = props.bucketName

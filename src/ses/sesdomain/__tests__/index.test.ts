@@ -1,5 +1,5 @@
-import { HostedZone } from "@aws-cdk/aws-route53"
-import { App, Stack } from "@aws-cdk/core"
+import { HostedZone } from "aws-cdk-lib/aws-route53"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { SesDomain } from ".."
 

@@ -1,5 +1,6 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as cdk from "aws-cdk-lib"
 import {
   WebappDeploy,
   WebappDeployProps,
@@ -25,8 +26,8 @@ interface Props {
  * in combination with a separate role to be used to
  * trigger the process.
  */
-export class WebappDeployViaRole extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+export class WebappDeployViaRole extends constructs.Construct {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     const roleToBeAssumedForDeploy = new iam.Role(this, "Role", {

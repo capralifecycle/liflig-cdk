@@ -1,8 +1,8 @@
 import "@aws-cdk/assert/jest"
-import * as cloudwatchActions from "@aws-cdk/aws-cloudwatch-actions"
-import * as logs from "@aws-cdk/aws-logs"
-import * as sns from "@aws-cdk/aws-sns"
-import { App, Stack } from "@aws-cdk/core"
+import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as sns from "aws-cdk-lib/aws-sns"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { ServiceAlarms } from "../service-alarms"
 

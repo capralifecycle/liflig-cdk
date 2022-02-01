@@ -1,7 +1,8 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as rds from "@aws-cdk/aws-rds"
-import * as sm from "@aws-cdk/aws-secretsmanager"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as rds from "aws-cdk-lib/aws-rds"
+import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as cdk from "aws-cdk-lib"
 
 export interface DatabaseProps extends cdk.StackProps {
   vpc: ec2.IVpc
@@ -39,11 +40,11 @@ export interface DatabaseProps extends cdk.StackProps {
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
 }
 
-export class Database extends cdk.Construct {
+export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
 
-  constructor(scope: cdk.Construct, id: string, props: DatabaseProps) {
+  constructor(scope: constructs.Construct, id: string, props: DatabaseProps) {
     super(scope, id)
 
     const masterUsername = props.masterUsername ?? "master"

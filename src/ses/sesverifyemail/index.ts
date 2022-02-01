@@ -1,7 +1,8 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as cdk from "@aws-cdk/core"
-import * as cr from "@aws-cdk/custom-resources"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as cdk from "aws-cdk-lib"
+import * as cr from "aws-cdk-lib/custom-resources"
 import { sesVerifyEmailHandler } from "./handler"
 
 interface Props {
@@ -11,10 +12,10 @@ interface Props {
   emailAddress: string
 }
 
-export class SesVerifyEmail extends cdk.Construct {
+export class SesVerifyEmail extends constructs.Construct {
   public route53RecordSets: cdk.IResolvable
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     new cdk.CustomResource(this, "Resource", {
@@ -26,11 +27,11 @@ export class SesVerifyEmail extends cdk.Construct {
   }
 }
 
-class SesVerifyEmailProvider extends cdk.Construct {
+class SesVerifyEmailProvider extends constructs.Construct {
   /**
    * Returns the singleton provider.
    */
-  public static getOrCreate(scope: cdk.Construct) {
+  public static getOrCreate(scope: constructs.Construct) {
     const stack = cdk.Stack.of(scope)
     const id = "liflig-cdk.ses-verify-email.provider"
     return (
@@ -42,7 +43,7 @@ class SesVerifyEmailProvider extends cdk.Construct {
   private readonly provider: cr.Provider
   public readonly serviceToken: string
 
-  constructor(scope: cdk.Construct, id: string) {
+  constructor(scope: constructs.Construct, id: string) {
     super(scope, id)
 
     this.provider = new cr.Provider(this, "Provider", {

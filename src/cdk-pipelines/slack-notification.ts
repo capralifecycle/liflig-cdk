@@ -1,8 +1,9 @@
-import * as codepipeline from "@aws-cdk/aws-codepipeline"
-import * as eventsTargets from "@aws-cdk/aws-events-targets"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
+import * as eventsTargets from "aws-cdk-lib/aws-events-targets"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as cdk from "aws-cdk-lib"
 import * as path from "path"
 
 export interface SlackNotificationProps {
@@ -36,8 +37,12 @@ export interface SlackNotificationProps {
  * Monitor a CodePipeline and send message to Slack on failure
  * and some succeeded events.
  */
-export class SlackNotification extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: SlackNotificationProps) {
+export class SlackNotification extends constructs.Construct {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: SlackNotificationProps,
+  ) {
     super(scope, id)
 
     const environment: Record<string, string> = {

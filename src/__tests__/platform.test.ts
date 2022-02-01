@@ -1,7 +1,8 @@
+import { Construct } from "constructs"
 import "@aws-cdk/assert/jest"
-import { App, Stack, Construct } from "@aws-cdk/core"
-import * as sns from "@aws-cdk/aws-sns"
-import * as ssm from "@aws-cdk/aws-ssm"
+import { App, Stack } from "aws-cdk-lib"
+import * as sns from "aws-cdk-lib/aws-sns"
+import * as ssm from "aws-cdk-lib/aws-ssm"
 import "jest-cdk-snapshot"
 import {
   PlatformProducer,

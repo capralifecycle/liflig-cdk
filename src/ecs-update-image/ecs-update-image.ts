@@ -1,8 +1,9 @@
-import * as ecr from "@aws-cdk/aws-ecr"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ecr from "aws-cdk-lib/aws-ecr"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as cdk from "aws-cdk-lib"
 import { startDeployHandler } from "./start-deploy-handler"
 import { statusHandler } from "./status-handler"
 import { EcsUpdateImageTag } from "./tag"
@@ -40,8 +41,8 @@ interface Props {
  * templates to avoid infrastructure changes to cause an older/different
  * image to be used.
  */
-export class EcsUpdateImage extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+export class EcsUpdateImage extends constructs.Construct {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     const account = cdk.Stack.of(this).account

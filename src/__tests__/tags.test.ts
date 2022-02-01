@@ -1,9 +1,9 @@
 import { ABSENT } from "@aws-cdk/assert"
 import "@aws-cdk/assert/jest"
-import * as acm from "@aws-cdk/aws-certificatemanager"
-import * as r53 from "@aws-cdk/aws-route53"
-import { Bucket } from "@aws-cdk/aws-s3"
-import { App, Stack } from "@aws-cdk/core"
+import * as acm from "aws-cdk-lib/aws-certificatemanager"
+import * as r53 from "aws-cdk-lib/aws-route53"
+import { Bucket } from "aws-cdk-lib/aws-s3"
+import { App, Stack } from "aws-cdk-lib"
 import { tagResources } from ".."
 
 test("should tag a taggable resource", () => {
