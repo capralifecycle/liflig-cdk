@@ -1,8 +1,8 @@
 import "@aws-cdk/assert/jest"
-import * as cm from "@aws-cdk/aws-certificatemanager"
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as route53 from "@aws-cdk/aws-route53"
-import { App, Stack } from "@aws-cdk/core"
+import * as cm from "aws-cdk-lib/aws-certificatemanager"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { LoadBalancer } from ".."
 

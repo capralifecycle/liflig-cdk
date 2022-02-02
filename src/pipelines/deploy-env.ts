@@ -1,12 +1,13 @@
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as ecr from "@aws-cdk/aws-ecr"
-import * as ecs from "@aws-cdk/aws-ecs"
-import * as iam from "@aws-cdk/aws-iam"
-import * as logs from "@aws-cdk/aws-logs"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as sfn from "@aws-cdk/aws-stepfunctions"
-import * as tasks from "@aws-cdk/aws-stepfunctions-tasks"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as ecr from "aws-cdk-lib/aws-ecr"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as sfn from "aws-cdk-lib/aws-stepfunctions"
+import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks"
+import * as cdk from "aws-cdk-lib"
 import { cdkDeployRoleName } from "./conventions"
 
 interface DeployEnvProps {
@@ -17,10 +18,10 @@ interface DeployEnvProps {
   vpc: ec2.IVpc
 }
 
-export class DeployEnv extends cdk.Construct {
+export class DeployEnv extends constructs.Construct {
   public chain: sfn.Chain
 
-  constructor(scope: cdk.Construct, id: string, props: DeployEnvProps) {
+  constructor(scope: constructs.Construct, id: string, props: DeployEnvProps) {
     super(scope, id)
 
     const cluster = this.getOrCreateCluster(props.vpc)

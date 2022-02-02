@@ -1,4 +1,4 @@
-import { App, CfnOutput, Stack } from "@aws-cdk/core"
+import { App, CfnOutput, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { HostedZoneWithParam } from "../hosted-zone-with-param"
 

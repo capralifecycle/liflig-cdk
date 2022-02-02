@@ -1,10 +1,11 @@
-import * as codepipeline from "@aws-cdk/aws-codepipeline"
-import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions"
-import * as iam from "@aws-cdk/aws-iam"
-import * as lambda from "@aws-cdk/aws-lambda"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
-import * as pipelines from "@aws-cdk/pipelines"
+import * as constructs from "constructs"
+import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
+import * as codepipelineActions from "aws-cdk-lib/aws-codepipeline-actions"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as cdk from "aws-cdk-lib"
+import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
 import { getGriidArtefactBucket } from "../griid/artefact-bucket"
@@ -99,7 +100,7 @@ export interface LifligCdkPipelineProps {
  * Variables enables separation of IaC code and application code if
  * they are not colocated in the same repository.
  */
-export class LifligCdkPipeline extends cdk.Construct {
+export class LifligCdkPipeline extends constructs.Construct {
   /**
    * Path on S3 for pipeline configuration.
    */
@@ -116,10 +117,14 @@ export class LifligCdkPipeline extends cdk.Construct {
     return `pipelines/${pipelineName}/trigger`
   }
 
-  public readonly cdkPipeline: pipelines.CdkPipeline
+  public readonly cdkPipeline: pipelines.CodePipeline
   public readonly codePipeline: codepipeline.Pipeline
 
-  constructor(scope: cdk.Construct, id: string, props: LifligCdkPipelineProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: LifligCdkPipelineProps,
+  ) {
     super(scope, id)
 
     const artifactsBucket =
@@ -127,23 +132,28 @@ export class LifligCdkPipeline extends cdk.Construct {
 
     const cloudAssemblyArtifact = new codepipeline.Artifact()
 
+    let synth: pipelines.IFileSetProducer
     let stages: codepipeline.StageProps[]
 
     switch (props.sourceType) {
       case "cloud-assembly":
-        stages = this.cloudAssemblyStage(
+        const cloudAssembly = this.cloudAssemblyStage(
           cloudAssemblyArtifact,
           artifactsBucket,
           props.pipelineName,
         )
+        synth = cloudAssembly.synth
+        stages = cloudAssembly.stages
         break
       case "cdk-source":
-        stages = this.cdkSourceStage(
+        const cdkSource = this.cdkSourceStage(
           cloudAssemblyArtifact,
           artifactsBucket,
           props.pipelineName,
           props.parametersNamespace ?? "default",
         )
+        synth = cdkSource.synth
+        stages = cdkSource.stages
         break
     }
 
@@ -170,8 +180,8 @@ export class LifligCdkPipeline extends cdk.Construct {
       restartExecutionOnUpdate: true,
     })
 
-    this.cdkPipeline = new pipelines.CdkPipeline(this, "CdkPipeline", {
-      cloudAssemblyArtifact: cloudAssemblyArtifact,
+    this.cdkPipeline = new pipelines.CodePipeline(this, "CdkPipeline", {
+      synth,
       codePipeline: this.codePipeline,
     })
   }
@@ -198,7 +208,7 @@ export class LifligCdkPipeline extends cdk.Construct {
     cloudAssemblyArtifact: codepipeline.Artifact,
     cdkBucket: s3.IBucket,
     pipelineName: string,
-  ): codepipeline.StageProps[] {
+  ): { stages: codepipeline.StageProps[]; synth: pipelines.IFileSetProducer } {
     const cloudAssemblyLookupFn = new lambda.Function(
       this,
       "CloudAssemblyLookupFn",
@@ -220,7 +230,11 @@ export class LifligCdkPipeline extends cdk.Construct {
       objectKey: `pipelines/${pipelineName}/cloud-assembly.json`,
     }
 
-    return [
+    const synth = pipelines.CodePipelineFileSet.fromArtifact(
+      cloudAssemblyArtifact,
+    )
+
+    const stages = [
       {
         stageName: "PrepareCloudAssembly",
         actions: [
@@ -233,6 +247,7 @@ export class LifligCdkPipeline extends cdk.Construct {
         ],
       },
     ]
+    return { stages, synth }
   }
 
   private cdkSourceStage(
@@ -240,7 +255,7 @@ export class LifligCdkPipeline extends cdk.Construct {
     cdkBucket: s3.IBucket,
     pipelineName: string,
     parametersNamespace: string,
-  ): codepipeline.StageProps[] {
+  ): { stages: codepipeline.StageProps[]; synth: pipelines.IFileSetProducer } {
     const prepareCdkSourceFn = new lambda.Function(this, "PrepareCdkSourceFn", {
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../../assets/prepare-cdk-source-lambda"),
@@ -274,7 +289,12 @@ export class LifligCdkPipeline extends cdk.Construct {
       parametersNamespace: parametersNamespace,
     }
 
-    return [
+    const synth = new pipelines.ShellStep("GenerateCloudAssembly", {
+      input: pipelines.CodePipelineFileSet.fromArtifact(cdkSourceArtifact),
+      installCommands: ["npm ci"],
+      commands: ["npx cdk synth"],
+    })
+    const stages = [
       {
         stageName: "PrepareCdkSource",
         actions: [
@@ -286,16 +306,8 @@ export class LifligCdkPipeline extends cdk.Construct {
           }),
         ],
       },
-      {
-        stageName: "GenerateCloudAssembly",
-        actions: [
-          pipelines.SimpleSynthAction.standardNpmSynth({
-            cloudAssemblyArtifact,
-            sourceArtifact: cdkSourceArtifact,
-          }),
-        ],
-      },
     ]
+    return { stages, synth }
   }
 
   addSlackNotification(props: Omit<SlackNotificationProps, "pipeline">): void {

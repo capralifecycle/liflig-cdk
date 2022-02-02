@@ -1,6 +1,9 @@
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
 
-export function getStageOrApp(scope: cdk.Construct): cdk.Construct {
+export function getStageOrApp(
+  scope: constructs.Construct,
+): constructs.Construct {
   const stage = cdk.Stage.of(scope)
   if (stage != null) {
     return stage

@@ -1,6 +1,6 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import { EcsUpdateImageArtifactStatus } from "./artifact-status"
 
 interface Props {
@@ -31,12 +31,12 @@ interface Props {
  *
  *   Could not find a value associated with JSONKey in SecretString
  */
-export class EcsUpdateImageTag extends cdk.Construct {
+export class EcsUpdateImageTag extends constructs.Construct {
   private readonly secret: secretsmanager.Secret
   private readonly artifactStatus: EcsUpdateImageArtifactStatus
   readonly secretArn: string
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     this.artifactStatus = props.artifactStatus

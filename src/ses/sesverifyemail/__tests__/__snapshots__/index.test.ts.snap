@@ -2,7 +2,6 @@
 
 exports[`ses-verify-email 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "SesVerifyEmail41583370": Object {
       "DeletionPolicy": "Delete",

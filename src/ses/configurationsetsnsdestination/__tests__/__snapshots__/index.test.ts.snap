@@ -2,7 +2,6 @@
 
 exports[`configuration-set-sns-destination 1`] = `
 Object {
-  "Parameters": Any<Object>,
   "Resources": Object {
     "SnsDestinationF568367B": Object {
       "DeletionPolicy": "Delete",

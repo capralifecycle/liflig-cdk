@@ -1,6 +1,7 @@
-import * as route53 from "@aws-cdk/aws-route53"
-import * as ssm from "@aws-cdk/aws-ssm"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import * as ssm from "aws-cdk-lib/aws-ssm"
+import * as cdk from "aws-cdk-lib"
 import { SsmParameterReader } from "./ssm-parameter-reader"
 import { getStageOrApp } from "./utils"
 
@@ -19,13 +20,13 @@ interface Props extends route53.HostedZoneProps {
  * A Hosted Zone that writes its ID to SSM Parameter Store and provides
  * a helper to easily retrieve the Hosted Zone cross-region.
  */
-export class HostedZoneWithParam extends cdk.Construct {
+export class HostedZoneWithParam extends constructs.Construct {
   private readonly nonce: string
   private readonly hostedZone: route53.HostedZone
   readonly name: string
   readonly idParamName: string
 
-  constructor(scope: cdk.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
     this.nonce = props.nonce ?? "1"
@@ -57,7 +58,10 @@ export class HostedZoneWithParam extends cdk.Construct {
    * Get the Hosted Zone by resolving the zone id from SSM Parameter Store
    * in case we are cross-region.
    */
-  public getHostedZone(scope: cdk.Construct, id: string): route53.IHostedZone {
+  public getHostedZone(
+    scope: constructs.Construct,
+    id: string,
+  ): route53.IHostedZone {
     const hostedZoneRegion = cdk.Stack.of(this).region
     const consumerRegion = cdk.Stack.of(scope).region
 

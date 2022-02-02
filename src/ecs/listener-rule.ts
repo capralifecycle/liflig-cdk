@@ -1,7 +1,7 @@
-import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
-import * as route53 from "@aws-cdk/aws-route53"
-import * as route53Targets from "@aws-cdk/aws-route53-targets"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import * as route53 from "aws-cdk-lib/aws-route53"
+import * as route53Targets from "aws-cdk-lib/aws-route53-targets"
 
 export interface ListenerRuleProps {
   httpsListener: elb.IApplicationListener
@@ -16,7 +16,7 @@ export interface ListenerRuleProps {
   hostedZone?: route53.IHostedZone
 }
 
-export class ListenerRule extends cdk.Construct {
+export class ListenerRule extends constructs.Construct {
   /**
    * The rule created in the ALB Listener.
    *
@@ -25,7 +25,11 @@ export class ListenerRule extends cdk.Construct {
    */
   public readonly applicationListenerRule: elb.ApplicationListenerRule
 
-  constructor(scope: cdk.Construct, id: string, props: ListenerRuleProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: ListenerRuleProps,
+  ) {
     super(scope, id)
 
     this.applicationListenerRule = new elb.ApplicationListenerRule(

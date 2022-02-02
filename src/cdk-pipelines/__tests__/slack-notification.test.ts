@@ -1,5 +1,5 @@
 import "@aws-cdk/assert/jest"
-import { App, CfnOutput, Stack, Stage } from "@aws-cdk/core"
+import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
 
 test("slack-notification", () => {
@@ -22,7 +22,7 @@ test("slack-notification", () => {
     sourceType: "cloud-assembly",
   })
 
-  pipeline.cdkPipeline.addApplicationStage(stage)
+  pipeline.cdkPipeline.addStage(stage)
 
   pipeline.addSlackNotification({
     slackWebhookUrl: "https://hooks.slack.com/services/abc",

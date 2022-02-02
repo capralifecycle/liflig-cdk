@@ -1,7 +1,8 @@
-import * as iam from "@aws-cdk/aws-iam"
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager"
-import * as ssm from "@aws-cdk/aws-ssm"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import * as ssm from "aws-cdk-lib/aws-ssm"
+import * as cdk from "aws-cdk-lib"
 import * as crypto from "crypto"
 
 /**
@@ -60,7 +61,7 @@ export class ConfigureParameters {
   private configParameters: PlainTextParameter[]
   private secretParameters: SecretParameter[]
 
-  constructor(scope: cdk.Construct, props: ConfigureParametersProps) {
+  constructor(scope: constructs.Construct, props: ConfigureParametersProps) {
     if (!props.ssmPrefix.startsWith("/") || props.ssmPrefix.endsWith("/")) {
       throw new Error("ssmPrefix should start with '/' and end without '/'")
     }
@@ -112,7 +113,7 @@ export class ConfigureParameters {
     this.parameters = result
   }
 
-  grantRead(grantable: iam.IGrantable): void {
+  grantRead(grantable: iam.IGrantable & constructs.IConstruct): void {
     grantable.grantPrincipal.addToPrincipalPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,

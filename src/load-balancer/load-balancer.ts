@@ -1,9 +1,10 @@
-import * as certificatemanager from "@aws-cdk/aws-certificatemanager"
-import * as ec2 from "@aws-cdk/aws-ec2"
-import * as elb from "@aws-cdk/aws-elasticloadbalancingv2"
-import { ListenerAction } from "@aws-cdk/aws-elasticloadbalancingv2"
-import * as s3 from "@aws-cdk/aws-s3"
-import * as cdk from "@aws-cdk/core"
+import * as constructs from "constructs"
+import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import { ListenerAction } from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import * as s3 from "aws-cdk-lib/aws-s3"
+import * as cdk from "aws-cdk-lib"
 
 export interface LoadBalancerProps {
   certificates: certificatemanager.ICertificate[]
@@ -11,12 +12,16 @@ export interface LoadBalancerProps {
   overrideLoadBalancerProps?: Partial<elb.ApplicationLoadBalancerProps>
 }
 
-export class LoadBalancer extends cdk.Construct {
+export class LoadBalancer extends constructs.Construct {
   public readonly loadBalancer: elb.ApplicationLoadBalancer
   public readonly httpsListener: elb.ApplicationListener
   public readonly accessLogsBucket: s3.Bucket
 
-  constructor(scope: cdk.Construct, id: string, props: LoadBalancerProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: LoadBalancerProps,
+  ) {
     super(scope, id)
 
     this.loadBalancer = new elb.ApplicationLoadBalancer(this, "LoadBalancer", {

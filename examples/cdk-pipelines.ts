@@ -1,11 +1,5 @@
-import {
-  CfnOutput,
-  Construct,
-  Stack,
-  StackProps,
-  Stage,
-  StageProps,
-} from "@aws-cdk/core"
+import { Construct } from "constructs"
+import { CfnOutput, Stack, StackProps, Stage, StageProps } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../src/cdk-pipelines"
 
 class ExampleStack extends Stack {
@@ -35,7 +29,7 @@ export class LifligCdkPipelineCdkSourceStack extends Stack {
       sourceType: "cdk-source",
     })
 
-    pipeline.cdkPipeline.addApplicationStage(new ExampleStage(this, "example"))
+    pipeline.cdkPipeline.addStage(new ExampleStage(this, "example"))
   }
 }
 
@@ -48,6 +42,6 @@ export class LifligCdkPipelineCloudAssemblyStack extends Stack {
       sourceType: "cloud-assembly",
     })
 
-    pipeline.cdkPipeline.addApplicationStage(new ExampleStage(this, "example"))
+    pipeline.cdkPipeline.addStage(new ExampleStage(this, "example"))
   }
 }
