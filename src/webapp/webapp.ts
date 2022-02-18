@@ -55,6 +55,7 @@ export interface WebappProps {
    * - X-Frame-Options
    * - X-XSS-Protection
    *
+   * @deprecated - Use responseHeadersPolicy instead
    * @default - No security headers will be added to responses
    */
   enableSecurityHeaders?: boolean
@@ -63,9 +64,17 @@ export interface WebappProps {
    *
    * Used to override certain security header values if the webapp requires more lax settings compared to the defaults.
    *
+   * @deprecated - Use responseHeadersPolicy instead
    * @default - A set of strict security header values will be used
    */
   securityHeadersOverrides?: SecurityHeaders
+
+  /**
+   * Response headers policy to use
+   *
+   * @default - No response headers policy will be appplied
+   */
+  responseHeadersPolicy?: cloudfront.ResponseHeadersPolicyProps
 }
 
 /**
@@ -157,11 +166,21 @@ export class Webapp extends constructs.Construct {
       ]
     }
 
+    let responseHeadersPolicy: cloudfront.ResponseHeadersPolicy | undefined
+    if (props.responseHeadersPolicy) {
+      responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+        this,
+        "ResponseHeadersPolicy",
+        props.responseHeadersPolicy,
+      )
+    }
+
     this.distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: this.webappOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         functionAssociations: functionAssociations,
+        responseHeadersPolicy: responseHeadersPolicy,
       },
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,

@@ -1,5 +1,5 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "aws-cdk-lib"
+import { App, Duration, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { Webapp } from "../"
 
@@ -53,4 +53,25 @@ test("create webapp with invalid custom security headers", () => {
       },
     })
   }).toThrow()
+})
+
+test("create webapp with domain and response header policy", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new Webapp(stack, "Webapp", {
+    domainNames: ["example.com"],
+    responseHeadersPolicy: {
+      securityHeadersBehavior: {
+        strictTransportSecurity: {
+          accessControlMaxAge: Duration.days(180),
+          override: true,
+        },
+        contentSecurityPolicy: {
+          override: true,
+          contentSecurityPolicy: "default-src 'self';",
+        },
+      },
+    },
+  })
+  expect(stack).toMatchCdkSnapshot()
 })
