@@ -7,7 +7,10 @@ import * as r53 from "aws-cdk-lib/aws-route53"
 import * as r53t from "aws-cdk-lib/aws-route53-targets"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
-import { WebappSecurityHeaders, SecurityHeaders } from "./security-headers"
+import {
+  WebappSecurityHeaders,
+  WebappSecurityHeadersProps,
+} from "./security-headers"
 
 export interface WebappProps {
   /**
@@ -45,27 +48,44 @@ export interface WebappProps {
    */
   webAclErrorPagePath?: string
   /**
-   * Enable adding common security headers to CloudFront responses using a CloudFront Function.
-   *
-   * If enabled, the default behavior is to add the following headers with fairly strict defaults. Most of the headers can be customized:
-   * - Content-Security-Policy
-   * - Referrer-Policy
-   * - Strict-Transport-Security
-   * - X-Content-Type-Options
-   * - X-Frame-Options
-   * - X-XSS-Protection
-   *
-   * @default - No security headers will be added to responses
+   *  Enable, disable or configure security headers for the web application
+   * @default - a set of strict security headers are configured by default
    */
-  enableSecurityHeaders?: boolean
+  securityHeaders?: {
+    /**
+     * Enable adding common security headers to CloudFront responses
+     *
+     * If enabled, the default behavior is to add the following headers with fairly strict defaults. Most of the headers can be customized:
+     * - Content-Security-Policy
+     * - Referrer-Policy
+     * - Strict-Transport-Security
+     * - X-Content-Type-Options
+     * - X-Frame-Options
+     * - X-XSS-Protection
+     *
+     *
+     * @default true
+     */
+    enabled?: boolean
+    /**
+     * Security headers overrides.
+     *
+     * Used to override certain default security header values if the webapp requires different settings than the defaults.
+     *
+     * NOTE: If you need to disable certain headers, you must explicitly set them to undefined
+     *
+     * @default - A set of strict security header values will be used
+     */
+    behaviorOverrides?: WebappSecurityHeadersProps
+  }
   /**
-   * Security headers overrides.
+   * Cloudfront behavior overrides.
    *
-   * Used to override certain security header values if the webapp requires more lax settings compared to the defaults.
+   * Used to override cloudfront behavior
    *
-   * @default - A set of strict security header values will be used
+   * NOTE: ResponseHeadersPolicy defined here will overwrite BOTH the default security headers policy and
+   * any values specified in securityHeaders.behaviorOverrides.
    */
-  securityHeadersOverrides?: SecurityHeaders
   overrideCloudFrontBehaviourOptions?: Partial<cloudfront.BehaviorOptions>
 }
 
@@ -141,28 +161,24 @@ export class Webapp extends constructs.Construct {
       })
     }
 
-    let functionAssociations: cloudfront.FunctionAssociation[] | undefined
-    if (props.enableSecurityHeaders) {
+    let responseHeadersPolicy: cloudfront.IResponseHeadersPolicy | undefined
+
+    if (props.securityHeaders?.enabled ?? true) {
       const securityHeaders = new WebappSecurityHeaders(
         this,
         "SecurityHeaders",
         {
-          ...props.securityHeadersOverrides,
+          ...props.securityHeaders?.behaviorOverrides,
         },
       )
-      functionAssociations = [
-        {
-          function: securityHeaders.securityHeadersFunction,
-          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
-        },
-      ]
+      responseHeadersPolicy = securityHeaders.responseHeadersPolicy
     }
 
     this.distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: this.webappOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        functionAssociations: functionAssociations,
+        responseHeadersPolicy: responseHeadersPolicy,
         ...props.overrideCloudFrontBehaviourOptions,
       },
       defaultRootObject: "index.html",

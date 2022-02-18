@@ -1,22 +1,20 @@
+import * as cdk from "aws-cdk-lib"
 import * as constructs from "constructs"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 
-export interface FrameOptionsHeader {
-  value?: "DENY" | "SAMEORIGIN"
-}
-
-export interface ReferrerPolicyHeader {
-  value?: string
-}
-
-export interface StrictTransportSecurityHeader {
-  maxAge?: number
-  includeSubDomains?: boolean
-  preload?: boolean
-}
+export type WebappSecurityHeadersProps = Partial<
+  cloudfront.ResponseSecurityHeadersBehavior & {
+    contentSecurityPolicy?: cloudfront.ResponseSecurityHeadersBehavior["contentSecurityPolicy"] & {
+      /**
+       * Whether to only monitor the effects of the content security policy without actually blocking anything.
+       * @default false
+       */
+      reportOnly?: boolean
+    }
+  }
+>
 
 export interface ContentSecurityPolicyHeader {
-  reportOnly?: boolean
   baseUri?: string
   childSrc?: string
   defaultSrc?: string
@@ -31,13 +29,6 @@ export interface ContentSecurityPolicyHeader {
   scriptSrc?: string
   styleSrc?: string
   connectSrc?: string
-}
-
-export interface SecurityHeaders {
-  contentSecurityPolicy?: ContentSecurityPolicyHeader
-  strictTransportSecurity?: StrictTransportSecurityHeader
-  referrerPolicy?: ReferrerPolicyHeader
-  frameOptions?: FrameOptionsHeader
 }
 
 function validateCspParam(param: string): string {
@@ -61,19 +52,25 @@ function trim(value: string): string {
   return value.replace(/\s+/g, " ").trim()
 }
 
-function generateContentSecurityPolicyHeader(
+/**
+ * Helper function that generates a string containing a Content Security Policy that can be
+ * used in a security header.
+ *
+ * NOTE: The string can be further extended using string concatenation for directives that aren't currently supported by the function.
+ */
+export function generateContentSecurityPolicyHeader(
   headerOptions?: ContentSecurityPolicyHeader,
 ) {
   const defaultValues = {
     baseUri: "'self'",
-    childSrc: "'none'",
-    connectSrc: "'self'",
-    defaultSrc: "'self'",
+    childSrc: "'self'",
+    connectSrc: "'self' https:",
+    defaultSrc: "'none'",
     fontSrc: "'self'",
-    formAction: "'self'",
+    formAction: "'none'",
     frameAncestors: "'none'",
     frameSrc: "'self'",
-    imgSrc: "'self'",
+    imgSrc: "'self' data:",
     manifestSrc: "'self'",
     mediaSrc: "'self'",
     objectSrc: "'none'",
@@ -102,89 +99,87 @@ function generateContentSecurityPolicyHeader(
   headerValue += `media-src ${trim(options.mediaSrc)};`
   headerValue += `object-src ${trim(options.objectSrc)};`
   headerValue += `script-src ${trim(options.scriptSrc)};`
-  headerValue += `style-src ${trim(options.styleSrc)};`
+  headerValue += `style-src ${trim(options.styleSrc)}`
 
   return trim(headerValue)
 }
-
-function generateStrictTransportSecurityHeader(
-  headerOptions?: StrictTransportSecurityHeader,
-) {
-  const defaultValues = {
-    maxAge: 63072000,
-    includeSubDomains: false,
-    preload: false,
-  }
-  const options = {
-    ...defaultValues,
-    ...headerOptions,
-  }
-  let headerValue = ""
-  headerValue += `max-age=${options.maxAge};`
-  headerValue += options.preload ? "preload;" : ""
-  headerValue += options.includeSubDomains ? "includeSubDomains;" : ""
-  return trim(headerValue)
-}
-
-function generateReferrerPolicyHeader(headerOptions?: ReferrerPolicyHeader) {
-  const defaultValues = {
-    value: "strict-origin-when-cross-origin",
-  }
-  const options = {
-    ...defaultValues,
-    ...headerOptions,
-  }
-  return options.value
-}
-
-function generateFrameOptionsHeader(headerOptions?: FrameOptionsHeader) {
-  const defaultValues = {
-    value: "DENY",
-  }
-  const options = {
-    ...defaultValues,
-    ...headerOptions,
-  }
-  return trim(options.value)
-}
-
 export class WebappSecurityHeaders extends constructs.Construct {
-  public readonly securityHeadersFunction: cloudfront.Function
+  public readonly responseHeadersPolicy: cloudfront.ResponseHeadersPolicy
 
-  constructor(scope: constructs.Construct, id: string, props: SecurityHeaders) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: WebappSecurityHeadersProps,
+  ) {
     super(scope, id)
 
-    const cspHeaderName = props.contentSecurityPolicy?.reportOnly
-      ? "content-security-policy-report-only"
-      : "content-security-policy"
+    const {
+      contentSecurityPolicy: contentSecurityPolicyOverride,
+      ...overrides
+    } = props
 
-    const contentSecurityPolicy = generateContentSecurityPolicyHeader(
-      props.contentSecurityPolicy,
+    const contentSecurityPolicyCustomHeader = contentSecurityPolicyOverride || {
+      reportOnly: false,
+      contentSecurityPolicy: generateContentSecurityPolicyHeader(),
+      override: true,
+    }
+
+    const defaultValues: Omit<
+      cloudfront.ResponseSecurityHeadersBehavior,
+      "contentSecurityPolicy"
+    > = {
+      contentTypeOptions: {
+        override: true,
+      },
+      referrerPolicy: {
+        override: true,
+        referrerPolicy: cloudfront.HeadersReferrerPolicy.SAME_ORIGIN,
+      },
+      frameOptions: {
+        frameOption: cloudfront.HeadersFrameOption.DENY,
+        override: true,
+      },
+      strictTransportSecurity: {
+        override: true,
+        accessControlMaxAge: cdk.Duration.days(182.5),
+        includeSubdomains: false,
+        preload: false,
+      },
+      xssProtection: {
+        override: true,
+        protection: true,
+        modeBlock: true,
+      },
+    }
+
+    this.responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+      this,
+      "ResponseHeadersPolicy",
+      {
+        securityHeadersBehavior: {
+          ...defaultValues,
+          ...overrides,
+          ...(!contentSecurityPolicyCustomHeader.reportOnly && {
+            contentSecurityPolicy: {
+              contentSecurityPolicy:
+                contentSecurityPolicyCustomHeader.contentSecurityPolicy,
+              override: contentSecurityPolicyCustomHeader.override,
+            },
+          }),
+        },
+        ...(contentSecurityPolicyCustomHeader.reportOnly && {
+          customHeadersBehavior: {
+            // Report only is not supported by securityHeadersBehavior in AWS and must be defined as custom header
+            customHeaders: [
+              {
+                header: "Content-Security-Policy-Report-Only",
+                value: contentSecurityPolicyCustomHeader.contentSecurityPolicy,
+                override: contentSecurityPolicyCustomHeader.override,
+              },
+            ],
+          },
+        }),
+      },
     )
-    const strictTransportSecurity = generateStrictTransportSecurityHeader(
-      props.strictTransportSecurity,
-    )
-    const referrerPolicy = generateReferrerPolicyHeader(props.referrerPolicy)
-    const frameOptions = generateFrameOptionsHeader(props.frameOptions)
-
-    const lambdaCode = `function handler(event) {
-      var response = event.response;
-      var headers = response.headers;
-      headers['referrer-policy'] = {value: '${referrerPolicy}'};
-      headers['strict-transport-security'] = {value: '${strictTransportSecurity}'};
-      headers['x-content-type-options'] = {value: 'nosniff'};
-      headers['x-frame-options'] = {value: '${frameOptions}'};
-      headers['x-xss-protection'] = {value: '1; mode=block'};
-      headers['${cspHeaderName}'] = {value: "${contentSecurityPolicy}"};
-      return response;
-    }`
-
-    // Hardcoded logical ID due to bug: https://github.com/aws/aws-cdk/issues/15523
-    const functionId = `Function${this.node.addr}`
-
-    this.securityHeadersFunction = new cloudfront.Function(this, functionId, {
-      functionName: functionId,
-      code: cloudfront.FunctionCode.fromInline(lambdaCode),
-    })
   }
 }

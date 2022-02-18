@@ -1515,6 +1515,12 @@
             "data": "WebappOriginAccessIdentityA216A4CF"
           }
         ],
+        "/webapp/Webapp/SecurityHeaders/ResponseHeadersPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WebappSecurityHeadersResponseHeadersPolicyF5614597"
+          }
+        ],
         "/webapp/Webapp/Distribution/Resource": [
           {
             "type": "aws:cdk:logicalId",
