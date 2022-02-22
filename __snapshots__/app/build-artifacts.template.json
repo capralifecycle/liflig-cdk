@@ -244,6 +244,9 @@
     "BuildArtifactsEcrRepository58C90D9A": {
       "Type": "AWS::ECR::Repository",
       "Properties": {
+        "LifecyclePolicy": {
+          "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"selection\":{\"tagStatus\":\"any\",\"countType\":\"sinceImagePushed\",\"countNumber\":180,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}}]}"
+        },
         "RepositoryName": "some-ecr-repo-name",
         "RepositoryPolicyText": {
           "Statement": [

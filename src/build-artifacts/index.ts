@@ -18,6 +18,12 @@ interface Props {
    */
   ecrRepositoryName: string
   /**
+   * The lifecycle rules to apply to images stored in the ECR repository.
+   *
+   * @default - Expire images after 180 days
+   */
+  ecrRepositoryLifecycleRules?: ecr.LifecycleRule[]
+  /**
    * Reference to the IAM Role that will be granted permission to
    * assume the CI role. This role must have permission to assume
    * the CI role.
@@ -121,6 +127,12 @@ export class BuildArtifacts extends constructs.Construct {
 
     const ecrRepo = new ecr.Repository(this, "EcrRepository", {
       repositoryName: ecrRepositoryName,
+      lifecycleRules: props.ecrRepositoryLifecycleRules || [
+        {
+          maxImageAge: cdk.Duration.days(180),
+          tagStatus: ecr.TagStatus.ANY,
+        },
+      ],
     })
 
     if (ciRole) {
