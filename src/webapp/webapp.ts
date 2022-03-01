@@ -66,6 +66,7 @@ export interface WebappProps {
    * @default - A set of strict security header values will be used
    */
   securityHeadersOverrides?: SecurityHeaders
+  overrideCloudFrontBehaviourOptions?: Partial<cloudfront.BehaviorOptions>
 }
 
 /**
@@ -162,6 +163,7 @@ export class Webapp extends constructs.Construct {
         origin: this.webappOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         functionAssociations: functionAssociations,
+        ...props.overrideCloudFrontBehaviourOptions,
       },
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
