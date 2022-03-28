@@ -1,2 +1,6 @@
 export { ServiceAlarms, ServiceAlarmsProps } from "./service-alarms"
-export { SlackAlarm, SlackAlarmProps } from "./slack-alarm"
+export {
+  SlackAlarm,
+  SlackAlarmWithUrlProps,
+  SlackAlarmWithAuthTokenProps,
+} from "./slack-alarm"

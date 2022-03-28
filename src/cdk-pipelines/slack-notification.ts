@@ -6,15 +6,11 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as cdk from "aws-cdk-lib"
 import * as path from "path"
 
-export interface SlackNotificationProps {
+interface SlackNotificationPropsBase {
   /**
    * CodePipeline to monitor.
    */
   pipeline: codepipeline.IPipeline
-  /**
-   * Slack webhook URL.
-   */
-  slackWebhookUrl: string
   /**
    * Channel name including leading #.
    */
@@ -33,6 +29,27 @@ export interface SlackNotificationProps {
   alwaysShowSucceeded?: boolean
 }
 
+export interface SlackNotificationPropsWithAuthToken
+  extends SlackNotificationPropsBase {
+  /**
+   * Slack application authorization token
+   */
+  slackAuthToken: string
+}
+
+export interface SlackNotificationPropsWithWebhookUrl
+  extends SlackNotificationPropsBase {
+  /**
+   * Slack webhook URL.
+   * @deprecated use slackAuthorizationToken instead
+   */
+  slackWebhookUrl: string
+}
+
+export type SlackNotificationProps =
+  | SlackNotificationPropsWithAuthToken
+  | SlackNotificationPropsWithWebhookUrl
+
 /**
  * Monitor a CodePipeline and send message to Slack on failure
  * and some succeeded events.
@@ -45,8 +62,13 @@ export class SlackNotification extends constructs.Construct {
   ) {
     super(scope, id)
 
+    const slackUrl =
+      "slackWebhookUrl" in props
+        ? props.slackWebhookUrl
+        : "https://slack.com/api/chat.postMessage"
+
     const environment: Record<string, string> = {
-      SLACK_URL: props.slackWebhookUrl,
+      SLACK_URL: slackUrl,
       SLACK_CHANNEL: props.slackChannel,
       ALWAYS_SHOW_SUCCEEDED: String(props.alwaysShowSucceeded ?? false),
     }
@@ -57,6 +79,10 @@ export class SlackNotification extends constructs.Construct {
 
     if (props.accountDescription != null) {
       environment.ACCOUNT_DESC = props.accountDescription
+    }
+
+    if ("slackAuthToken" in props) {
+      environment.SLACK_AUTH_TOKEN = props.slackAuthToken
     }
 
     const reportFunction = new lambda.SingletonFunction(this, "Function", {

@@ -6,6 +6,7 @@ from urllib.error import URLError, HTTPError
 
 SLACK_URL = os.getenv('SLACK_URL', None)
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL', None)
+SLACK_AUTH_TOKEN = os.getenv("SLACK_AUTH_TOKEN", None)
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'undefined')
 ENVIRONMENT_NAME = os.getenv('ENVIRONMENT_NAME', 'undefined')
 
@@ -52,7 +53,11 @@ def send_slack_notification(message, region):
         'icon_emoji': ':traffic_light:'
     }
 
-    req = Request(SLACK_URL, json.dumps(slackMessage).encode('utf-8'))
+    headers = {"Content-Type": "application/json"}
+    if SLACK_AUTH_TOKEN is not None:
+        headers["Authorization"] = "Bearer " + SLACK_AUTH_TOKEN
+
+    req = Request(SLACK_URL, data = json.dumps(slackMessage).encode('utf-8'), headers = headers)
     try:
         response = urlopen(req)
         response.read()

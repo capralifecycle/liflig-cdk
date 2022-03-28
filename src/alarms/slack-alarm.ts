@@ -6,11 +6,19 @@ import * as sns from "aws-cdk-lib/aws-sns"
 import { Duration } from "aws-cdk-lib"
 import * as path from "path"
 
-export interface SlackAlarmProps {
+interface SlackAlarmProps {
   projectName: string
   envName: string
   slackChannel: string
   slackUrl: string
+}
+
+export interface SlackAlarmWithUrlProps extends SlackAlarmProps {
+  slackUrl: string
+}
+
+export interface SlackAlarmWithAuthTokenProps extends SlackAlarmProps {
+  slackAuthToken: string
 }
 
 /**
@@ -21,12 +29,32 @@ export class SlackAlarm extends constructs.Construct {
   public readonly alarmTopic: sns.Topic
   public readonly snsAction: cloudwatchActions.SnsAction
 
-  constructor(scope: constructs.Construct, id: string, props: SlackAlarmProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: SlackAlarmWithUrlProps | SlackAlarmWithAuthTokenProps,
+  ) {
     super(scope, id)
 
     this.alarmTopic = new sns.Topic(this, "Topic")
 
     this.snsAction = new cloudwatchActions.SnsAction(this.alarmTopic)
+
+    const slackUrl =
+      "slackUrl" in props
+        ? props.slackUrl
+        : "https://slack.com/api/chat.postMessage"
+
+    const environment: Record<string, string> = {
+      SLACK_URL: slackUrl,
+      SLACK_CHANNEL: props.slackChannel,
+      PROJECT_NAME: props.projectName,
+      ENVIRONMENT_NAME: props.envName,
+    }
+
+    if ("slackAuthToken" in props) {
+      environment.SLACK_AUTH_TOKEN = props.slackAuthToken
+    }
 
     const slackLambda = new lambda.Function(this, "Function", {
       code: lambda.Code.fromAsset(
@@ -38,12 +66,7 @@ export class SlackAlarm extends constructs.Construct {
       memorySize: 128,
       runtime: lambda.Runtime.PYTHON_3_8,
       timeout: Duration.seconds(6),
-      environment: {
-        SLACK_URL: props.slackUrl,
-        SLACK_CHANNEL: props.slackChannel,
-        PROJECT_NAME: props.projectName,
-        ENVIRONMENT_NAME: props.envName,
-      },
+      environment: environment,
     })
 
     slackLambda.addPermission("InvokePermission", {

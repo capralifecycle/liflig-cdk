@@ -12,6 +12,7 @@ ACCOUNT_DESC = os.getenv("ACCOUNT_DESC", None)
 ACCOUNT_GROUP_NAME = os.getenv("ACCOUNT_GROUP_NAME", None)
 SLACK_URL = os.getenv("SLACK_URL", None)
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", None)
+SLACK_AUTH_TOKEN = os.getenv("SLACK_AUTH_TOKEN", None)
 ALWAYS_SHOW_SUCCEEDED = os.getenv("ALWAYS_SHOW_SUCCEEDED", "false") == "true"
 
 # Example event:
@@ -163,7 +164,11 @@ def handler(event, context):
         "icon_emoji": ":traffic_light:",
     }
 
-    req = Request(SLACK_URL, json.dumps(slack_message).encode("utf-8"))
+    headers = {"Content-Type": "application/json"}
+    if SLACK_AUTH_TOKEN is not None:
+        headers["Authorization"] = "Bearer " + SLACK_AUTH_TOKEN
+
+    req = Request(url = SLACK_URL, data = json.dumps(slack_message).encode("utf-8"), headers = headers)
     try:
         response = urlopen(req)
         response.read()
