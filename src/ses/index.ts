@@ -5,3 +5,4 @@ export {
   ConfigurationSetSnsDestinationEventType,
   ConfigurationSetSnsDestination,
 } from "./configurationsetsnsdestination"
+export { ConfigurationSetDeliveryOptions } from "./configurationsetdeliveryoptions"
