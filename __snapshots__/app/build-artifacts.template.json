@@ -271,6 +271,23 @@
                   ]
                 }
               }
+            },
+            {
+              "Action": [
+                "ecr:BatchGetImage",
+                "ecr:GetDownloadUrlForLayer"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "aws:sourceArn": [
+                    "arn:aws:lambda:*:112233445566:function:*"
+                  ]
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
             }
           ],
           "Version": "2012-10-17"

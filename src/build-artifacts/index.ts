@@ -153,6 +153,25 @@ export class BuildArtifacts extends constructs.Construct {
       ecrRepo.grantPull(new iam.AccountPrincipal(targetAccountId))
     }
 
+    // Allow lambda functions in target account to pull from ECR as well
+    // Needed to support using Docker images as lambda functions
+    // https://aws.amazon.com/blogs/compute/introducing-cross-account-amazon-ecr-access-for-aws-lambda/
+    const lambdaSourceArns = props.targetAccountIds.map(
+      (targetAccountId) => `arn:aws:lambda:*:${targetAccountId}:function:*`,
+    )
+    ecrRepo.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ["ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer"],
+        principals: [new iam.ServicePrincipal("lambda.amazonaws.com")],
+        conditions: {
+          StringLike: {
+            "aws:sourceArn": lambdaSourceArns,
+          },
+        },
+      }),
+    )
+
     // Grant permissions to write pipeline variables.
     if (ciRole || griidCiRole) {
       const account = cdk.Stack.of(this).account
