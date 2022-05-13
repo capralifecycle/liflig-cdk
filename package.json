@@ -63,7 +63,7 @@
     "cpy": "8.1.2",
     "del": "6.0.0",
     "execa": "5.1.1",
-    "glob": "7.2.0",
+    "glob": "8.0.3",
     "source-map-support": "0.5.21"
   },
   "peerDependencies": {
