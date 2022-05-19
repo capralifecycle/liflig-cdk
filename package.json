@@ -61,7 +61,7 @@
     "@capraconsulting/webapp-deploy-lambda": "2.0.0",
     "aws-sdk": "2.1058.0",
     "cpy": "8.1.2",
-    "del": "6.0.0",
+    "del": "6.1.0",
     "execa": "5.1.1",
     "glob": "8.0.3",
     "source-map-support": "0.5.21"
