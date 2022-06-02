@@ -55,11 +55,11 @@
     "ClusterVpcPublicSubnet1SubnetA9F7E0A5": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.0.0/18",
         "VpcId": {
           "Ref": "ClusterVpcFAA3CEDF"
         },
         "AvailabilityZone": "eu-west-1a",
+        "CidrBlock": "10.0.0.0/18",
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
@@ -218,11 +218,11 @@
     "ClusterVpcPublicSubnet2Subnet059113C4": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.64.0/18",
         "VpcId": {
           "Ref": "ClusterVpcFAA3CEDF"
         },
         "AvailabilityZone": "eu-west-1b",
+        "CidrBlock": "10.0.64.0/18",
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {
@@ -381,11 +381,11 @@
     "ClusterVpcPrivateSubnet1SubnetA4EB481A": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.128.0/18",
         "VpcId": {
           "Ref": "ClusterVpcFAA3CEDF"
         },
         "AvailabilityZone": "eu-west-1a",
+        "CidrBlock": "10.0.128.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -479,11 +479,11 @@
     "ClusterVpcPrivateSubnet2SubnetBD1ECB6E": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.192.0/18",
         "VpcId": {
           "Ref": "ClusterVpcFAA3CEDF"
         },
         "AvailabilityZone": "eu-west-1b",
+        "CidrBlock": "10.0.192.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -985,22 +985,54 @@
             {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "EcsUpdateImageStartDeployFunctionA53A6A7B",
-                  "Arn"
-                ]
-              }
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "EcsUpdateImageStartDeployFunctionA53A6A7B",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "EcsUpdateImageStartDeployFunctionA53A6A7B",
+                          "Arn"
+                        ]
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
             },
             {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "EcsUpdateImageStatusFunction5A0B47E5",
-                  "Arn"
-                ]
-              }
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "EcsUpdateImageStatusFunction5A0B47E5",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "EcsUpdateImageStatusFunction5A0B47E5",
+                          "Arn"
+                        ]
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
             }
           ],
           "Version": "2012-10-17"
