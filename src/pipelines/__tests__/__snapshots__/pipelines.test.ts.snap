@@ -331,22 +331,54 @@ Object {
             Object {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
-                  "Arn",
-                ],
-              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
             },
             Object {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
-                  "Arn",
-                ],
-              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
             },
             Object {
               "Action": "ecs:RunTask",
@@ -1295,22 +1327,54 @@ Object {
             Object {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
-                  "Arn",
-                ],
-              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "SingletonLambda30ad3abbf7744804a6ef2c2f4a2473624B500B6F",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
             },
             Object {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
-                  "Arn",
-                ],
-              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "SingletonLambdac49cbfe150e047218964fb20f4e5a7ad32DEE37F",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
             },
             Object {
               "Action": "ecs:RunTask",
