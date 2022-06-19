@@ -44,7 +44,7 @@
     "@typescript-eslint/parser": "5.28.0",
     "aws-cdk": "2.24.1",
     "aws-cdk-lib": "2.24.1",
-    "constructs": "10.1.7",
+    "constructs": "10.1.42",
     "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
