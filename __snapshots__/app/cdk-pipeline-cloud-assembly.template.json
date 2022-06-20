@@ -564,7 +564,7 @@
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61",
+                  "PipelineCdkPipelineCodeBuildActionRole1C961342",
                   "Arn"
                 ]
               }
@@ -726,7 +726,7 @@
                 "Name": "SelfMutate",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61",
+                    "PipelineCdkPipelineCodeBuildActionRole1C961342",
                     "Arn"
                   ]
                 },
@@ -1223,74 +1223,6 @@
         "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/PrepareCloudAssembly/cloud-assembly-lookup/CodePipelineActionRole/DefaultPolicy/Resource"
       }
     },
-    "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":root"
-                    ]
-                  ]
-                }
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource"
-      }
-    },
-    "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyAA04AE0A": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "codebuild:BatchGetBuilds",
-                "codebuild:StartBuild",
-                "codebuild:StopBuild"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E",
-                  "Arn"
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyAA04AE0A",
-        "Roles": [
-          {
-            "Ref": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource"
-      }
-    },
     "PipelineCdkPipelineUpdatePipelineSelfMutationRole91D6CBA8": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -1578,6 +1510,93 @@
       },
       "Metadata": {
         "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/UpdatePipeline/SelfMutation/Resource"
+      }
+    },
+    "PipelineCdkPipelineCodeBuildActionRole1C961342": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "Bool": {
+                  "aws:ViaAWSService": "codepipeline.amazonaws.com"
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "my-project"
+          },
+          {
+            "Key": "SourceRepo",
+            "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-pipeline-cloud-assembly"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/CodeBuildActionRole/Resource"
+      }
+    },
+    "PipelineCdkPipelineCodeBuildActionRoleDefaultPolicy0A4D4386": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PipelineCdkPipelineCodeBuildActionRoleDefaultPolicy0A4D4386",
+        "Roles": [
+          {
+            "Ref": "PipelineCdkPipelineCodeBuildActionRole1C961342"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/CodeBuildActionRole/DefaultPolicy/Resource"
       }
     }
   },
