@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import * as cpy from "cpy"
 import * as del from "del"
 import * as fs from "fs"
 import * as glob from "glob"
@@ -229,10 +228,9 @@ export async function createCloudAssemblySnapshot(
 ): Promise<void> {
   const base = path.join(process.cwd(), dst)
 
-  await cpy(".", base, {
-    parents: true,
-    cwd: path.join(process.cwd(), src),
-  })
+  const cpy = (await import("cpy")).default
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await cpy(src + "/**", base)
 
   // Don't keep track of manifest version.
   await del(path.join(dst, "**/cdk.out"))
