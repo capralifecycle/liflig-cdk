@@ -93,7 +93,7 @@ export class SlackNotification extends constructs.Construct {
       }),
     )
 
-    props.pipeline.onStateChange("Event", {
+    props.pipeline.onStateChange("Event" + (props.singletonLambdaUuid ?? ""), {
       eventPattern: {
         detail: {
           // Available states: https://docs.aws.amazon.com/codepipeline/latest/userguide/detect-state-changes-cloudwatch-events.html

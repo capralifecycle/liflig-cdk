@@ -1,6 +1,7 @@
 import "@aws-cdk/assert/jest"
 import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
+import { SlackNotification } from "../slack-notification"
 
 test("slack-notification", () => {
   const app = new App({
@@ -27,6 +28,13 @@ test("slack-notification", () => {
   pipeline.addSlackNotification({
     slackWebhookUrl: "https://hooks.slack.com/services/abc",
     slackChannel: "#test",
+  })
+
+  new SlackNotification(pipelineStack, "ExtraSlackNotification", {
+    pipeline: pipeline.codePipeline,
+    slackWebhookUrl: "https://hooks.slack.com/services/abc",
+    slackChannel: "#test-other",
+    singletonLambdaUuid: "f0d7e25c-8247-48bb-beb4-5b1d8ff91f30",
   })
 
   expect(pipelineStack).toHaveResourceLike("AWS::Events::Rule", {
