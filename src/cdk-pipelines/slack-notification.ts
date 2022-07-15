@@ -31,6 +31,17 @@ export interface SlackNotificationProps {
    * @default false
    */
   alwaysShowSucceeded?: boolean
+
+  /**
+   * Used to control that only one lambda is created in the account.
+   *
+   * Specify a value here when you manually create a {@link SlackNotification} for a pipeline
+   * without using {@link LifligCdkPipeline.addSlackNotification}.
+   * For example: `"65f7a9e0-d0a4-4ba7-ad1f-6dec853bbdb8"`.
+   *
+   * @default "55954fc8-182e-497e-bd60-7af1496dc222"
+   */
+  singletonLambdaUuid?: string
 }
 
 /**
@@ -60,7 +71,7 @@ export class SlackNotification extends constructs.Construct {
     }
 
     const reportFunction = new lambda.SingletonFunction(this, "Function", {
-      uuid: "55954fc8-182e-497e-bd60-7af1496dc222",
+      uuid: props.singletonLambdaUuid ?? "55954fc8-182e-497e-bd60-7af1496dc222",
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../../assets/pipeline-slack-notification-lambda"),
       ),
