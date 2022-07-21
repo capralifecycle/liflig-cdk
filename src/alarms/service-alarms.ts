@@ -39,6 +39,9 @@ export class ServiceAlarms extends constructs.Construct {
   addJsonErrorAlarm(props: {
     logGroup: logs.ILogGroup
     alarmDescription?: string
+    /** Set to `false` to stop the alarm from sending OK events.
+     * @default true */
+    enableOkAction?: boolean
   }): void {
     const errorMetricFilter = props.logGroup.addMetricFilter(
       "ErrorMetricFilter",
@@ -77,7 +80,9 @@ export class ServiceAlarms extends constructs.Construct {
       })
 
     errorAlarm.addAlarmAction(this.action)
-    errorAlarm.addOkAction(this.action)
+    if (props.enableOkAction ?? true) {
+      errorAlarm.addOkAction(this.action)
+    }
   }
 
   /**
