@@ -16,7 +16,9 @@
         "LifecycleConfiguration": {
           "Rules": [
             {
-              "NoncurrentVersionExpirationInDays": 10,
+              "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 10
+              },
               "Status": "Enabled"
             }
           ]

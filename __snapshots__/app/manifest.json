@@ -1169,28 +1169,16 @@
             "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CdkPipeline/CodeBuildActionRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRole3EB0ED91"
+            "data": "PipelineCdkPipelineCodeBuildActionRole1C961342"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CodePipelineActionRole/DefaultPolicy/Resource": [
+        "/cdk-pipeline-cdk-source/Pipeline/CdkPipeline/CodeBuildActionRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCodePipelineActionRoleDefaultPolicy49026C91"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyAA04AE0A"
+            "data": "PipelineCdkPipelineCodeBuildActionRoleDefaultPolicy0A4D4386"
           }
         ],
         "/cdk-pipeline-cdk-source/Pipeline/CdkPipeline/UpdatePipeline/SelfMutation/Role/Resource": [
@@ -1390,18 +1378,6 @@
             "data": "PipelineCodePipelinePrepareCloudAssemblycloudassemblylookupCodePipelineActionRoleDefaultPolicy901A0F32"
           }
         ],
-        "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRole16D29A61"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineCodePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyAA04AE0A"
-          }
-        ],
         "/cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/UpdatePipeline/SelfMutation/Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -1418,6 +1394,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/CodeBuildActionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCdkPipelineCodeBuildActionRole1C961342"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/CodeBuildActionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCdkPipelineCodeBuildActionRoleDefaultPolicy0A4D4386"
           }
         ],
         "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
