@@ -37,7 +37,7 @@
     "@aws-cdk/assert": "2.35.0",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
-    "@types/aws-lambda": "8.10.101",
+    "@types/aws-lambda": "8.10.102",
     "@types/jest": "27.5.2",
     "@types/node": "16.11.47",
     "@typescript-eslint/eslint-plugin": "5.33.0",
