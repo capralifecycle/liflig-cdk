@@ -1,10 +1,11 @@
-import * as constructs from "constructs"
-import * as ec2 from "aws-cdk-lib/aws-ec2"
-import * as ecs from "aws-cdk-lib/aws-ecs"
-import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
-import * as logs from "aws-cdk-lib/aws-logs"
 import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as ecs from "aws-cdk-lib/aws-ecs"
+import { CfnService } from "aws-cdk-lib/aws-ecs"
+import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as constructs from "constructs"
 import { ConfigureParameters } from "../configure-parameters"
 import { Parameter } from "../configure-parameters/configure-parameters"
 
@@ -38,6 +39,11 @@ export interface FargateServiceProps {
    * @default 60 seconds
    */
   healthCheckGracePeriod?: cdk.Duration
+  /**
+   * Use this as workaround when adding the service to a load balancer after
+   * it has been created. For avoiding 'Health check grace period is only valid for services configured to use load balancers'
+   */
+  skipHealthCheckGracePeriod?: boolean
   parameters?: Parameter[]
   overrideFargateServiceProps?: Partial<ecs.FargateServiceProps>
   overrideHealthCheck?: Partial<elb.HealthCheck>
@@ -133,6 +139,11 @@ export class FargateService extends constructs.Construct {
       enableExecuteCommand: true,
       ...props.overrideFargateServiceProps,
     })
+
+    if (props.skipHealthCheckGracePeriod) {
+      ;(service.node.defaultChild as CfnService).healthCheckGracePeriodSeconds =
+        undefined
+    }
 
     for (const param of parameters.parameters) {
       service.node.addDependency(param)
