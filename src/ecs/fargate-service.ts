@@ -42,6 +42,7 @@ export interface FargateServiceProps {
   /**
    * Use this as workaround when adding the service to a load balancer after
    * it has been created. For avoiding 'Health check grace period is only valid for services configured to use load balancers'
+   * Link to GitHub issue: https://github.com/aws/aws-cdk/issues/19842
    */
   skipHealthCheckGracePeriod?: boolean
   parameters?: Parameter[]
