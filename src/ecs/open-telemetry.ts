@@ -91,6 +91,10 @@ export class OpenTelemetryCollectors extends constructs.Construct {
 export interface SidecarOptions {
   /** @default 6 months **/
   logRetention?: RetentionDays
+  /** @default "amazon/aws-otel-collector" */
+  dockerImage?: string
+  /** @default "0.21.0" */
+  dockerImageVersion?: string
 }
 
 /**
@@ -125,12 +129,14 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
+    const sidecarImage = this.props?.dockerImage ?? "amazon/aws-otel-collector"
+    const sidecarVersion = this.props?.dockerImageVersion ?? "0.21.0" // FIXME let renovate detect this
     const sidecar = taskDefinition.addContainer("aws-opentelemetry-collector", {
       cpu: 32,
       memoryReservationMiB: 24,
       memoryLimitMiB: 256,
       image: ecs.ContainerImage.fromRegistry(
-        "amazon/aws-otel-collector:latest",
+        `${sidecarImage}:${sidecarVersion}`,
       ),
       command: [commands.metricsAndTracesAndContainerResources], // This is not used when the AOT_CONFIG_CONTENT is set!
       environment: {
@@ -283,28 +289,28 @@ processors:
           - container.duration
   metricstransform:
     transforms:
-      - metric_name: ecs.task.memory.utilized
+      - include: ecs.task.memory.utilized
         action: update
         new_name: MemoryUtilized
-      - metric_name: ecs.task.memory.reserved
+      - include: ecs.task.memory.reserved
         action: update
         new_name: MemoryReserved
-      - metric_name: ecs.task.cpu.utilized
+      - include: ecs.task.cpu.utilized
         action: update
         new_name: CpuUtilized
-      - metric_name: ecs.task.cpu.reserved
+      - include: ecs.task.cpu.reserved
         action: update
         new_name: CpuReserved
-      - metric_name: ecs.task.network.rate.rx
+      - include: ecs.task.network.rate.rx
         action: update
         new_name: NetworkRxBytes
-      - metric_name: ecs.task.network.rate.tx
+      - include: ecs.task.network.rate.tx
         action: update
         new_name: NetworkTxBytes
-      - metric_name: ecs.task.storage.read_bytes
+      - include: ecs.task.storage.read_bytes
         action: update
         new_name: StorageReadBytes
-      - metric_name: ecs.task.storage.write_bytes
+      - include: ecs.task.storage.write_bytes
         action: update
         new_name: StorageWriteBytes
 
