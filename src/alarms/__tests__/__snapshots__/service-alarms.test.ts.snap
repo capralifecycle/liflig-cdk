@@ -190,6 +190,41 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
+    "ServiceAlarmsTargetResponseTimeAlarmA0DC0898": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Requests are on average taking more than 500ms over a period of 300s.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "app/my-load-balancer/50dc6c495c0c9188",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": "targetgroup/my-target-group/cbf133c568e0d028",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "TargetResponseTime",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "Period": 300,
+        "Statistic": "Average",
+        "Threshold": 500,
+        "TreatMissingData": "ignore",
+        "Unit": "Milliseconds",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
   },
 }
 `;

@@ -1,5 +1,6 @@
 import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
+import { Unit } from "aws-cdk-lib/aws-cloudwatch"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as constructs from "constructs"
 
@@ -96,6 +97,11 @@ export class ServiceAlarms extends constructs.Construct {
       evaluationPeriods: number
       threshold: number
     }
+    targetResponseTimeAlarmOverride?: {
+      period: cdk.Duration
+      evaluationPeriods: number
+      limitInMs: number
+    }
   }): void {
     const healthAlarm = new cloudwatch.Metric({
       metricName: "HealthyHostCount",
@@ -163,6 +169,31 @@ export class ServiceAlarms extends constructs.Construct {
 
     tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(this.action)
     tooMany5xxResponsesFromTargetsAlarm.addOkAction(this.action)
+
+    const period =
+      props.targetResponseTimeAlarmOverride?.period ?? cdk.Duration.seconds(300)
+    const limitInMs = props.targetResponseTimeAlarmOverride?.limitInMs ?? 500
+    const targetResponseTimeAlarm = new cloudwatch.Metric({
+      metricName: "TargetResponseTime",
+      namespace: "AWS/ApplicationELB",
+      statistic: "Average",
+      period: period,
+      unit: Unit.MILLISECONDS,
+      dimensionsMap: {
+        LoadBalancer: props.loadBalancerFullName,
+        TargetGroup: props.targetGroupFullName,
+      },
+    }).createAlarm(this, "TargetResponseTimeAlarm", {
+      alarmDescription: `Requests are on average taking more than ${limitInMs}ms over a period of ${period.toSeconds()}s.`,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      evaluationPeriods:
+        props.targetResponseTimeAlarmOverride?.evaluationPeriods ?? 1,
+      threshold: limitInMs,
+      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    })
+
+    targetResponseTimeAlarm.addAlarmAction(this.action)
+    targetResponseTimeAlarm.addOkAction(this.action)
   }
 
   /**
