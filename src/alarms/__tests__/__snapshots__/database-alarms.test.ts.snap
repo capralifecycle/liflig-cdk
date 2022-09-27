@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create alarms 1`] = `
+Object {
+  "Resources": Object {
+    "DatabaseAlarmsCpuUtilizationAlarmA27F08F4": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "database-name has utilized more than 80% for over 240 seconds.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "DBInstanceIdentifier",
+            "Value": "database-name",
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/RDS",
+        "Period": 120,
+        "Statistic": "Average",
+        "Threshold": 80,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "DatabaseAlarmsCreditsAlarm9AA09CB7": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Less than 5 CPU credits remaining for database-name",
+        "ComparisonOperator": "LessThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "DBInstanceIdentifier",
+            "Value": "database-name",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "CPUCreditBalance",
+        "Namespace": "AWS/RDS",
+        "Period": 300,
+        "Statistic": "Minimum",
+        "Threshold": 5,
+        "TreatMissingData": "ignore",
+        "Unit": "Count",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "DatabaseAlarmsSpaceAlarm12F77A74": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Less than 2147483648 GB of space left for database-name.",
+        "ComparisonOperator": "LessThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "DBInstanceIdentifier",
+            "Value": "database-name",
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "FreeStorageSpace",
+        "Namespace": "AWS/RDS",
+        "Period": 300,
+        "Statistic": "Minimum",
+        "Threshold": 2147483648,
+        "TreatMissingData": "ignore",
+        "Unit": "Bytes",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+  },
+}
+`;
