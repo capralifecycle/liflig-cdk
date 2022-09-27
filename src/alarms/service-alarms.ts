@@ -1,7 +1,7 @@
-import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as logs from "aws-cdk-lib/aws-logs"
-import * as cdk from "aws-cdk-lib"
+import * as constructs from "constructs"
 
 export interface ServiceAlarmsProps extends cdk.StackProps {
   action: cloudwatch.IAlarmAction
@@ -91,6 +91,16 @@ export class ServiceAlarms extends constructs.Construct {
   addTargetGroupAlarm(props: {
     targetGroupFullName: string
     loadBalancerFullName: string
+    tooMany5xxResponsesFromTargetsAlarmOverride?: {
+      period: cdk.Duration
+      evaluationPeriods: number
+      threshold: number
+    }
+    tooMany5xxResponsesFromAlbAlarmOverride?: {
+      period: cdk.Duration
+      evaluationPeriods: number
+      threshold: number
+    }
   }): void {
     const healthAlarm = new cloudwatch.Metric({
       metricName: "HealthyHostCount",
@@ -132,5 +142,54 @@ export class ServiceAlarms extends constructs.Construct {
 
     connectionAlarm.addAlarmAction(this.action)
     connectionAlarm.addOkAction(this.action)
+
+    const tooMany5xxResponsesFromTargetsAlarm = new cloudwatch.Metric({
+      metricName: "HTTPCode_Target_5XX_Count",
+      namespace: "AWS/ApplicationELB",
+      statistic: "Sum",
+      period:
+        props.tooMany5xxResponsesFromTargetsAlarmOverride?.period ??
+        cdk.Duration.seconds(60),
+      dimensionsMap: {
+        TargetGroup: props.targetGroupFullName,
+        LoadBalancer: props.loadBalancerFullName,
+      },
+    }).createAlarm(this, "AlbTargets5xxAlarm", {
+      actionsEnabled: true,
+      alarmDescription:
+        "Load balancer received too many 5XX response codes from its targets.",
+      evaluationPeriods:
+        props.tooMany5xxResponsesFromTargetsAlarmOverride?.evaluationPeriods ??
+        1,
+      threshold:
+        props.tooMany5xxResponsesFromTargetsAlarmOverride?.threshold ?? 10,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    })
+
+    tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(this.action)
+    tooMany5xxResponsesFromTargetsAlarm.addOkAction(this.action)
+
+    const tooMany5xxResponsesFromAlbAlarm = new cloudwatch.Metric({
+      metricName: "HTTPCode_ELB_5XX_Count",
+      namespace: "AWS/ApplicationELB",
+      statistic: "Sum",
+      period:
+        props.tooMany5xxResponsesFromAlbAlarmOverride?.period ??
+        cdk.Duration.seconds(60),
+      dimensionsMap: {
+        TargetGroup: props.targetGroupFullName,
+        LoadBalancer: props.loadBalancerFullName,
+      },
+    }).createAlarm(this, "Alb5xxAlarm", {
+      actionsEnabled: true,
+      alarmDescription: "Load balancer returns too many 5XX response codes.",
+      evaluationPeriods:
+        props.tooMany5xxResponsesFromAlbAlarmOverride?.evaluationPeriods ?? 1,
+      threshold: props.tooMany5xxResponsesFromAlbAlarmOverride?.threshold ?? 1,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    })
+
+    tooMany5xxResponsesFromAlbAlarm.addAlarmAction(this.action)
+    tooMany5xxResponsesFromAlbAlarm.addOkAction(this.action)
   }
 }
