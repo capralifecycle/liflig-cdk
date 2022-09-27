@@ -86,17 +86,12 @@ export class ServiceAlarms extends constructs.Construct {
   }
 
   /**
-   * Monitor healthy host count and connection errors from load balancer.
+   * Monitor healthy host count, 5xx status codes and connection errors from load balancer.
    */
   addTargetGroupAlarm(props: {
     targetGroupFullName: string
     loadBalancerFullName: string
     tooMany5xxResponsesFromTargetsAlarmOverride?: {
-      period: cdk.Duration
-      evaluationPeriods: number
-      threshold: number
-    }
-    tooMany5xxResponsesFromAlbAlarmOverride?: {
       period: cdk.Duration
       evaluationPeriods: number
       threshold: number
@@ -168,7 +163,20 @@ export class ServiceAlarms extends constructs.Construct {
 
     tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(this.action)
     tooMany5xxResponsesFromTargetsAlarm.addOkAction(this.action)
+  }
 
+  /**
+   * Monitor 5xx status codes produced by load balancer.
+   */
+  addAlbAlarms(props: {
+    targetGroupFullName: string
+    loadBalancerFullName: string
+    tooMany5xxResponsesFromAlbAlarmOverride?: {
+      period: cdk.Duration
+      evaluationPeriods: number
+      threshold: number
+    }
+  }): void {
     const tooMany5xxResponsesFromAlbAlarm = new cloudwatch.Metric({
       metricName: "HTTPCode_ELB_5XX_Count",
       namespace: "AWS/ApplicationELB",
