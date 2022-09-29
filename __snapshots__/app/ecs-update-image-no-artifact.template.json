@@ -211,6 +211,10 @@
           }
         ]
       },
+      "DependsOn": [
+        "ClusterVpcPublicSubnet1DefaultRoute62DA4B4B",
+        "ClusterVpcPublicSubnet1RouteTableAssociation0FBEF1F4"
+      ],
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1/NATGateway"
       }
@@ -374,6 +378,10 @@
           }
         ]
       },
+      "DependsOn": [
+        "ClusterVpcPublicSubnet2DefaultRoute97446C8A",
+        "ClusterVpcPublicSubnet2RouteTableAssociation8446B27D"
+      ],
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2/NATGateway"
       }

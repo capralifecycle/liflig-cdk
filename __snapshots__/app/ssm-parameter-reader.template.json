@@ -1,5 +1,28 @@
 {
   "Resources": {
+    "ParamReaderDE9769DB": {
+      "Type": "Custom::AWS",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn"
+          ]
+        },
+        "Create": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
+        "Update": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
+        "InstallLatestAwsSdk": true
+      },
+      "DependsOn": [
+        "ParamReaderCustomResourcePolicy6D6224AD"
+      ],
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "ssm-parameter-reader/ParamReader/Resource/Default",
+        "Nonce": "123"
+      }
+    },
     "ParamReaderCustomResourcePolicy6D6224AD": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -33,29 +56,6 @@
       },
       "Metadata": {
         "aws:cdk:path": "ssm-parameter-reader/ParamReader/CustomResourcePolicy/Resource"
-      }
-    },
-    "ParamReaderDE9769DB": {
-      "Type": "Custom::AWS",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "Arn"
-          ]
-        },
-        "Create": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
-        "Update": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
-        "InstallLatestAwsSdk": true
-      },
-      "DependsOn": [
-        "ParamReaderCustomResourcePolicy6D6224AD"
-      ],
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "ssm-parameter-reader/ParamReader/Resource/Default",
-        "Nonce": "123"
       }
     },
     "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
