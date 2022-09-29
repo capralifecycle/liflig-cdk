@@ -861,7 +861,7 @@
         "FunctionName": "my-service-deploy-start",
         "Handler": "index.handler",
         "ReservedConcurrentExecutions": 1,
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs16.x",
         "Tags": [
           {
             "Key": "Project",
@@ -987,7 +987,7 @@
         },
         "FunctionName": "my-service-deploy-status",
         "Handler": "index.handler",
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs16.x",
         "Tags": [
           {
             "Key": "Project",

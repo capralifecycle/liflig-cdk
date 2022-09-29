@@ -112,8 +112,8 @@ export class CdkDeploy extends constructs.Construct {
       environment: {
         buildImage:
           props.dockerCredentialsSecretName == null
-            ? codebuild.LinuxBuildImage.fromDockerRegistry("node:12")
-            : codebuild.LinuxBuildImage.fromDockerRegistry("node:12", {
+            ? codebuild.LinuxBuildImage.fromDockerRegistry("node:16")
+            : codebuild.LinuxBuildImage.fromDockerRegistry("node:16", {
                 secretsManagerCredentials:
                   secretsmanager.Secret.fromSecretNameV2(
                     this,
@@ -188,7 +188,7 @@ export class CdkDeploy extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${startDeployHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: "index.handler",
       functionName: props.startDeployFunctionName,
       environment: {
@@ -213,7 +213,7 @@ export class CdkDeploy extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${statusHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: "index.handler",
       functionName: props.statusFunctionName,
       environment: {

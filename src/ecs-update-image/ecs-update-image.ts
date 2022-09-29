@@ -58,7 +58,7 @@ export class EcsUpdateImage extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${startDeployHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: "index.handler",
       timeout: cdk.Duration.seconds(60),
       environment: {
@@ -112,7 +112,7 @@ export class EcsUpdateImage extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${statusHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: "index.handler",
       timeout: cdk.Duration.seconds(60),
       environment: {
