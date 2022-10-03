@@ -436,7 +436,7 @@
         },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "Image": "node:12",
+          "Image": "node:16",
           "ImagePullCredentialsType": "SERVICE_ROLE",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
@@ -631,7 +631,7 @@
         },
         "FunctionName": "start-deploy",
         "Handler": "index.handler",
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs16.x",
         "Tags": [
           {
             "Key": "Project",
@@ -770,7 +770,7 @@
         },
         "FunctionName": "status",
         "Handler": "index.handler",
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs16.x",
         "Tags": [
           {
             "Key": "Project",

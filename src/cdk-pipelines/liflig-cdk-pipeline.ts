@@ -217,7 +217,7 @@ export class LifligCdkPipeline extends constructs.Construct {
           `exports.handler = ${cloudAssemblyLookupHandler.toString()};`,
         ),
         handler: "index.handler",
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: lambda.Runtime.NODEJS_16_X,
         timeout: cdk.Duration.minutes(1),
         memorySize: 512,
       },

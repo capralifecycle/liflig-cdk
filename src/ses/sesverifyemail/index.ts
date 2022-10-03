@@ -52,7 +52,7 @@ class SesVerifyEmailProvider extends constructs.Construct {
           `exports.handler = ${sesVerifyEmailHandler.toString()};`,
         ),
         handler: "index.handler",
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: lambda.Runtime.NODEJS_16_X,
         timeout: cdk.Duration.minutes(5),
         initialPolicy: [
           new iam.PolicyStatement({

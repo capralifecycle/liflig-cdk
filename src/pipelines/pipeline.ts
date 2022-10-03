@@ -103,7 +103,7 @@ export class Pipeline extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${checkCanRunHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: "index.handler",
       timeout: cdk.Duration.seconds(10),
     })
@@ -135,7 +135,7 @@ export class Pipeline extends constructs.Construct {
         code: new lambda.InlineCode(
           `exports.handler = ${collectFilesHandler.toString()};`,
         ),
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: lambda.Runtime.NODEJS_16_X,
         handler: "index.handler",
         timeout: cdk.Duration.seconds(30),
       },
