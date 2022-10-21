@@ -43,6 +43,9 @@ export interface DatabaseProps extends cdk.StackProps {
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
+  public readonly databaseInstance: rds.IDatabaseInstance
+  public readonly instanceType: ec2.InstanceType
+  public readonly allocatedStorage: cdk.Size
 
   constructor(scope: constructs.Construct, id: string, props: DatabaseProps) {
     super(scope, id)
@@ -73,6 +76,8 @@ export class Database extends constructs.Construct {
       backupRetention: cdk.Duration.days(35),
       ...props.overrideDbOptions,
     }
+    this.allocatedStorage = cdk.Size.gibibytes(options.allocatedStorage!)
+    this.instanceType = options.instanceType!
 
     const db = props.snapshotIdentifier
       ? new rds.DatabaseInstanceFromSnapshot(this, "Resource", {
@@ -86,6 +91,8 @@ export class Database extends constructs.Construct {
           credentials: rds.Credentials.fromSecret(secret),
           storageEncrypted: true,
         })
+
+    this.databaseInstance = db
 
     this.secret = db.secret!
     this.connections = db.connections
