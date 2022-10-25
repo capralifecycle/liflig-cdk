@@ -293,7 +293,7 @@ export class ServiceAlarms extends constructs.Construct {
     const targetResponseTimeAlarm = new cloudwatch.Metric({
       metricName: "TargetResponseTime",
       namespace: "AWS/ApplicationELB",
-      statistic: "p(95)",
+      statistic: "p95",
       period: props.targetResponseTimeAlarm?.period ?? cdk.Duration.minutes(5),
       unit: cloudwatch.Unit.MILLISECONDS,
       dimensionsMap: {

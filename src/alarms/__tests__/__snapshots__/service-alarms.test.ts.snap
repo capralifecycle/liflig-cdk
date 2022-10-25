@@ -195,7 +195,7 @@ Object {
           },
         ],
         "EvaluationPeriods": 1,
-        "ExtendedStatistic": "p(95)",
+        "ExtendedStatistic": "p95",
         "MetricName": "TargetResponseTime",
         "Namespace": "AWS/ApplicationELB",
         "OKActions": Array [
