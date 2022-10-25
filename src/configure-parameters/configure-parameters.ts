@@ -92,7 +92,6 @@ export class ConfigureParameters {
 
     this.configParameters.forEach((it) => {
       const param = new ssm.StringParameter(scope, `Config${it.key}`, {
-        type: ssm.ParameterType.STRING,
         stringValue: it.value,
         parameterName: `${this.ssmPrefix}/config/${it.key}`,
       })
@@ -101,7 +100,6 @@ export class ConfigureParameters {
 
     this.secretParameters.forEach((it) => {
       const param = new ssm.StringParameter(scope, `Secret${it.key}`, {
-        type: ssm.ParameterType.STRING,
         stringValue: it.secret.secretArn,
         parameterName: `${this.ssmPrefix}/secrets/${it.key}`,
       })
