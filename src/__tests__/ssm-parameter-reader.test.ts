@@ -1,4 +1,4 @@
-import { CfnParameter, ParameterType } from "aws-cdk-lib/aws-ssm"
+import { CfnParameter } from "aws-cdk-lib/aws-ssm"
 import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { SsmParameterReader } from "../ssm-parameter-reader"
@@ -9,7 +9,7 @@ test("ssm-parameter-reader", () => {
   const parameterName = "/my/param"
 
   new CfnParameter(stack1, "Param", {
-    type: ParameterType.STRING,
+    type: "String",
     name: parameterName,
     value: "test",
   })

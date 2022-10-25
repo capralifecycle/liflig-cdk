@@ -38,7 +38,7 @@ export class HostedZoneWithParam extends constructs.Construct {
     this.hostedZone = new route53.HostedZone(this, "Resource", props)
 
     new ssm.CfnParameter(this, "IdParam", {
-      type: ssm.ParameterType.STRING,
+      type: "String",
       name: this.idParamName,
       value: this.hostedZone.hostedZoneId,
     })
