@@ -6,7 +6,7 @@ Object {
     "WebappDeployFunctionArnOutputDA242124": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "WebappDeployE55C1FFB",
+          "WebappDeployWebappDeployResourceD148398D",
           "Arn",
         ],
       },
@@ -26,17 +26,185 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappDeployE55C1FFB": Object {
+    "WebappDeployProviderframeworkonEvent93982F31": Object {
       "DependsOn": Array [
-        "WebappDeployServiceRoleDefaultPolicy978A1F0C",
-        "WebappDeployServiceRole7CA36DE0",
+        "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2",
+        "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "92a9729ddc0d8f311e1b66f1d5811ff2d5f57ace5368c906a0929813cf79e86f.zip",
+          "S3Key": "e7c95e1a12d903d913ebdd526c735f1ac58b2024882a5562110221fe685ebe85.zip",
+        },
+        "Description": "AWS CDK resource provider framework - onEvent (Stack1/WebappDeploy/Resource/Provider)",
+        "Environment": Object {
+          "Variables": Object {
+            "USER_ON_EVENT_FUNCTION_ARN": Object {
+              "Fn::GetAtt": Array [
+                "WebappDeployWebappDeployResourceD148398D",
+                "Arn",
+              ],
+            },
+          },
+        },
+        "Handler": "framework.onEvent",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "WebappDeployWebappDeployResourceD148398D",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "WebappDeployWebappDeployResourceD148398D",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2",
+        "Roles": Array [
+          Object {
+            "Ref": "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebappDeployProviderframeworkonEventServiceRoleF0B4B311": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WebappDeployRole6BC5D130": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": "arn:aws:iam::112233445566:role/some-role",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "RoleName": "my-role",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WebappDeployRoleDefaultPolicy4A1D7118": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "WebappDeployWebappDeployResourceD148398D",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "WebappDeployWebappDeployResourceD148398D",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WebappDeployRoleDefaultPolicy4A1D7118",
+        "Roles": Array [
+          Object {
+            "Ref": "WebappDeployRole6BC5D130",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WebappDeployWebappDeployResourceD148398D": Object {
+      "DependsOn": Array [
+        "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A",
+        "WebappDeployWebappDeployResourceServiceRoleE152E052",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "04d04d3e5f2133139b32c63f4c1a89b8f505d7fe7917cccadbda1c02098f0f45.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -72,7 +240,7 @@ Object {
         "ReservedConcurrentExecutions": 1,
         "Role": Object {
           "Fn::GetAtt": Array [
-            "WebappDeployServiceRole7CA36DE0",
+            "WebappDeployWebappDeployResourceServiceRoleE152E052",
             "Arn",
           ],
         },
@@ -81,98 +249,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "WebappDeployRole6BC5D130": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": "arn:aws:iam::112233445566:role/some-role",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "RoleName": "my-role",
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "WebappDeployRoleDefaultPolicy4A1D7118": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "WebappDeployE55C1FFB",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "WebappDeployE55C1FFB",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "WebappDeployRoleDefaultPolicy4A1D7118",
-        "Roles": Array [
-          Object {
-            "Ref": "WebappDeployRole6BC5D130",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "WebappDeployServiceRole7CA36DE0": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "WebappDeployServiceRoleDefaultPolicy978A1F0C": Object {
+    "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -255,14 +332,45 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "WebappDeployServiceRoleDefaultPolicy978A1F0C",
+        "PolicyName": "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A",
         "Roles": Array [
           Object {
-            "Ref": "WebappDeployServiceRole7CA36DE0",
+            "Ref": "WebappDeployWebappDeployResourceServiceRoleE152E052",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "WebappDeployWebappDeployResourceServiceRoleE152E052": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
   },
 }
