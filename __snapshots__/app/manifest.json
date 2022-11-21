@@ -966,16 +966,16 @@
             ]
           }
         ],
-        "/ssm-parameter-reader/ParamReader/CustomResourcePolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ParamReaderCustomResourcePolicy6D6224AD"
-          }
-        ],
         "/ssm-parameter-reader/ParamReader/Resource/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ParamReaderDE9769DB"
+          }
+        ],
+        "/ssm-parameter-reader/ParamReader/CustomResourcePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ParamReaderCustomResourcePolicy6D6224AD"
           }
         ],
         "/ssm-parameter-reader/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
