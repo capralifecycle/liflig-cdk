@@ -45,7 +45,7 @@
     "aws-cdk": "2.43.1",
     "aws-cdk-lib": "2.43.1",
     "constructs": "10.1.163",
-    "eslint": "8.27.0",
+    "eslint": "8.28.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "husky": "8.0.2",
