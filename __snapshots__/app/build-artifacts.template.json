@@ -142,7 +142,7 @@
       "Type": "AWS::ECR::Repository",
       "Properties": {
         "LifecyclePolicy": {
-          "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"selection\":{\"tagStatus\":\"any\",\"countType\":\"sinceImagePushed\",\"countNumber\":180,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}}]}"
+          "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"selection\":{\"tagStatus\":\"tagged\",\"tagPrefixList\":[\"ci-cache-\"],\"countType\":\"sinceImagePushed\",\"countNumber\":10,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":2,\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countNumber\":10,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}}]}"
         },
         "RepositoryName": "some-ecr-repo-name",
         "RepositoryPolicyText": {
