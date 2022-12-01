@@ -32,6 +32,12 @@ interface Props {
    * Default configuration set for emails sent from this domain.
    */
   defaultConfigurationSetName?: string
+  /**
+   * Values to be included in SPF TXT record
+   *
+   * @default "v=spf1 include:amazonses.com ~all"
+   */
+  spfRecordValue?: string
 }
 
 export class SesDomain extends constructs.Construct {
@@ -49,6 +55,9 @@ export class SesDomain extends constructs.Construct {
           props.includeVerificationRecord ?? true
         ).toString(),
         DefaultConfigurationSetName: props.defaultConfigurationSetName,
+        SpfRecordValue: props.spfRecordValue
+          ? `"${props.spfRecordValue}"`
+          : `"v=spf1 include:amazonses.com ~all"`,
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,
