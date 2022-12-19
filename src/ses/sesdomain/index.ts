@@ -33,15 +33,30 @@ interface Props {
    */
   defaultConfigurationSetName?: string
   /**
-   * Values to be included in SPF TXT record
+   * Configuration for an SPF record.
    *
-   * @default "v=spf1 include:amazonses.com ~all"
+   * @default - an SPF record with a default value is created.
    */
-  spfRecordValue?: string
+  spfRecord?: {
+    /**
+     * Whether to create the record or not.
+     *
+     * @default true
+     */
+    include?: boolean
+    /**
+     * The value of the SPF record.
+     *
+     * NOTE: The value will be enclosed in double quotes for you.
+     *
+     * @default "v=spf1 include:amazonses.com ~all"
+     */
+    value?: string
+  }
 }
 
 export class SesDomain extends constructs.Construct {
-  public route53RecordSets: cdk.IResolvable
+  public route53RecordSets: r53.CfnRecordSetGroupProps["recordSets"]
   public verificationToken: string
 
   constructor(scope: constructs.Construct, id: string, props: Props) {
@@ -55,16 +70,31 @@ export class SesDomain extends constructs.Construct {
           props.includeVerificationRecord ?? true
         ).toString(),
         DefaultConfigurationSetName: props.defaultConfigurationSetName,
-        SpfRecordValue: props.spfRecordValue
-          ? `"${props.spfRecordValue}"`
-          : `"v=spf1 include:amazonses.com ~all"`,
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,
       },
     })
 
-    this.route53RecordSets = resource.getAtt("Route53RecordSets")
+    const staticRecordSets: r53.CfnRecordSetGroup.RecordSetProperty[] =
+      props.spfRecord?.include ?? true
+        ? [
+            {
+              name: props.domainName,
+              type: r53.RecordType.TXT,
+              resourceRecords: [
+                JSON.stringify(
+                  props.spfRecord?.value || "v=spf1 include:amazonses.com ~all",
+                ),
+              ],
+            },
+          ]
+        : []
+
+    this.route53RecordSets = [
+      resource.getAtt("Route53RecordSets"),
+      ...staticRecordSets,
+    ]
     this.verificationToken = resource.getAttString("VerificationToken")
 
     if (props.hostedZone) {

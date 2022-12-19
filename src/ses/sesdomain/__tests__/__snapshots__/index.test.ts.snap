@@ -15,7 +15,6 @@ Object {
             "Arn",
           ],
         },
-        "SpfRecordValue": "\\"v=spf1 include:spf.protection.outlook.com include:_spf.intility.com -all\\"",
       },
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
@@ -224,7 +223,6 @@ Object {
             "Arn",
           ],
         },
-        "SpfRecordValue": "\\"v=spf1 include:amazonses.com ~all\\"",
       },
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
@@ -432,7 +430,6 @@ Object {
             "Arn",
           ],
         },
-        "SpfRecordValue": "\\"v=spf1 include:amazonses.com ~all\\"",
       },
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
@@ -440,12 +437,21 @@ Object {
     "SesDomainRecordSetGroupF83CCA2C": Object {
       "Properties": Object {
         "HostedZoneId": "ABCDEF12345678",
-        "RecordSets": Object {
-          "Fn::GetAtt": Array [
-            "SesDomain0A5DC5B8",
-            "Route53RecordSets",
-          ],
-        },
+        "RecordSets": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "SesDomain0A5DC5B8",
+              "Route53RecordSets",
+            ],
+          },
+          Object {
+            "Name": "example.com",
+            "ResourceRecords": Array [
+              "\\"v=spf1 include:amazonses.com ~all\\"",
+            ],
+            "Type": "TXT",
+          },
+        ],
       },
       "Type": "AWS::Route53::RecordSetGroup",
     },
@@ -652,7 +658,6 @@ Object {
             "Arn",
           ],
         },
-        "SpfRecordValue": "\\"v=spf1 include:amazonses.com ~all\\"",
       },
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
