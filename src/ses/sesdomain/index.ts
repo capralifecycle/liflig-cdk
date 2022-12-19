@@ -38,6 +38,13 @@ interface Props {
    * @default "v=spf1 include:amazonses.com ~all"
    */
   spfRecordValue?: string
+  /**
+   * Whether the SPF TXT record will be created.
+   * Should be set to false if another SPF record exists
+   *
+   * @default true
+   */
+  spfRecordEnabled?: boolean
 }
 
 export class SesDomain extends constructs.Construct {
@@ -47,6 +54,13 @@ export class SesDomain extends constructs.Construct {
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
+    const spfRecordEnabled =
+      props.spfRecordEnabled == null || props.spfRecordEnabled
+
+    const spfRecordValue = props.spfRecordValue
+      ? `"${props.spfRecordValue}"`
+      : `"v=spf1 include:amazonses.com ~all"`
+
     const resource = new cdk.CustomResource(this, "Resource", {
       serviceToken: SesDomainProvider.getOrCreate(this).serviceToken,
       properties: {
@@ -55,9 +69,7 @@ export class SesDomain extends constructs.Construct {
           props.includeVerificationRecord ?? true
         ).toString(),
         DefaultConfigurationSetName: props.defaultConfigurationSetName,
-        SpfRecordValue: props.spfRecordValue
-          ? `"${props.spfRecordValue}"`
-          : `"v=spf1 include:amazonses.com ~all"`,
+        SpfRecordValue: spfRecordEnabled ? spfRecordValue : "",
         // Bump this if changing logic in the lambda that should be
         // re-evaluated.
         Serial: 1,

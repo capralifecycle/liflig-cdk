@@ -69,13 +69,14 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
       })
     }
 
-    records.push({
-      Name: domainName,
-      Type: "TXT",
-      ResourceRecords: [spfRecordValue],
-      TTL: ttl,
-    })
-
+    if (spfRecordValue) {
+      records.push({
+        Name: domainName,
+        Type: "TXT",
+        ResourceRecords: [spfRecordValue],
+        TTL: ttl,
+      })
+    }
     return records
   }
 
