@@ -1,125 +1,103 @@
 import * as constructs from "constructs"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as r53 from "aws-cdk-lib/aws-route53"
+import * as sns from "aws-cdk-lib/aws-sns"
 import * as cdk from "aws-cdk-lib"
 import * as cr from "aws-cdk-lib/custom-resources"
-import { sesDomainHandler } from "./handler"
+import { configurationSetSnsDestinationHandler } from "./handler"
+import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import * as snsSubscriptions from "aws-cdk-lib/aws-sns-subscriptions"
+import { SNSHandler } from "aws-lambda"
 
-interface Props {
+export type ConfigurationSetSnsDestinationEventType =
+  | "SEND"
+  | "REJECT"
+  | "BOUNCE"
+  | "COMPLAINT"
+  | "DELIVERY"
+  | "OPEN"
+  | "CLICK"
+  | "RENDERING_FAILURE"
+  | "DELIVERY_DELAY"
+  | "SUBSCRIPTION"
+
+export interface ConfigurationSetSnsDestinationProps {
   /**
-   * The domain name to register in SES.
-   */
-  domainName: string
-  /**
-   * Hosted Zone to attach DNS records. If not given it must
-   * be performed manually.
-   */
-  hostedZone?: r53.IHostedZone
-  /**
-   * Include or exclude verification TXT record.
-   *
-   * CNAME records for DKIM tokens will still be created.
-   *
-   * Route 53 will not allow multiple TXT records with the same name.
-   * This option allows to "opt-out" of the records and leaving
-   * the caller responsible of handling it.
-   *
+   * Whether SES events will be logged to SNS
    * @default true
    */
-  includeVerificationRecord?: boolean
+  logEvents?: boolean
   /**
-   * Default configuration set for emails sent from this domain.
+   * The SES configuration set name
    */
-  defaultConfigurationSetName?: string
+  configurationSetName: string
   /**
-   * Configuration for an SPF record.
-   *
-   * @default - an SPF record with a default value is created.
+   * The SES configuration set event destination name
    */
-  spfRecord?: {
-    /**
-     * Whether to create the record or not.
-     *
-     * @default true
-     */
-    include?: boolean
-    /**
-     * The value of the SPF record.
-     *
-     * NOTE: The value will be enclosed in double quotes for you.
-     *
-     * @default "v=spf1 include:amazonses.com ~all"
-     */
-    value?: string
-  }
+  eventDestinationName: string
+  /**
+   * SNS topic to send bounces to
+   */
+  snsTopic: sns.ITopic
+  /**
+   * Event types to match
+   */
+  matchingEventTypes: ConfigurationSetSnsDestinationEventType[]
 }
 
-export class SesDomain extends constructs.Construct {
-  public route53RecordSets: cdk.IResolvable
-  public verificationToken: string
-
-  constructor(scope: constructs.Construct, id: string, props: Props) {
+export class ConfigurationSetSnsDestination extends constructs.Construct {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: ConfigurationSetSnsDestinationProps,
+  ) {
     super(scope, id)
 
-    const resource = new cdk.CustomResource(this, "Resource", {
-      serviceToken: SesDomainProvider.getOrCreate(this).serviceToken,
+    new cdk.CustomResource(this, "Resource", {
+      serviceToken:
+        ConfigurationSetSnsDestinationProvider.getOrCreate(this).serviceToken,
       properties: {
-        DomainName: props.domainName,
-        IncludeVerificationRecord: (
-          props.includeVerificationRecord ?? true
-        ).toString(),
-        DefaultConfigurationSetName: props.defaultConfigurationSetName,
-        // Bump this if changing logic in the lambda that should be
-        // re-evaluated.
+        ConfigurationSetName: props.configurationSetName,
+        EventDestinationName: props.eventDestinationName,
+        SnsTopicArn: props.snsTopic.topicArn,
+        MatchingEventTypes: props.matchingEventTypes,
         Serial: 1,
       },
     })
 
-    const staticRecordSets: r53.CfnRecordSetGroup.RecordSetProperty[] =
-      props.spfRecord?.include ?? true
-        ? [
-            {
-              name: props.domainName,
-              type: r53.RecordType.TXT,
-              ttl: "60",
-              resourceRecords: [
-                JSON.stringify(
-                  props.spfRecord?.value || "v=spf1 include:amazonses.com ~all",
-                ),
-              ],
-            },
-          ]
-        : []
+    const sesEventLoggerFunction = new lambda.Function(this, "EventsHandler", {
+      code: new lambda.InlineCode(
+        `exports.handler = ${sesEventLoggerHandler.toString()};`,
+      ),
+      handler: "index.handler",
+      runtime: lambda.Runtime.NODEJS_16_X,
+      logRetention: RetentionDays.THREE_MONTHS,
+    })
 
-    this.route53RecordSets = resource.getAtt("Route53RecordSets")
-    this.verificationToken = resource.getAttString("VerificationToken")
-
-    if (props.hostedZone) {
-      new r53.CfnRecordSetGroup(this, "RecordSetGroup", {
-        hostedZoneId: props.hostedZone.hostedZoneId,
-        recordSets: this.route53RecordSets,
-      })
-      if (staticRecordSets.length) {
-        new r53.CfnRecordSetGroup(this, "StaticRecordSetGroup", {
-          hostedZoneId: props.hostedZone.hostedZoneId,
-          recordSets: staticRecordSets,
-        })
-      }
+    if (props.logEvents ?? true) {
+      props.snsTopic.addSubscription(
+        new snsSubscriptions.LambdaSubscription(sesEventLoggerFunction),
+      )
     }
   }
 }
 
-class SesDomainProvider extends constructs.Construct {
+const sesEventLoggerHandler: SNSHandler = (event) => {
+  event.Records.forEach((record) =>
+    console.log(`SES event message from SNS: ${record.Sns.Message}`),
+  )
+}
+
+class ConfigurationSetSnsDestinationProvider extends constructs.Construct {
   /**
    * Returns the singleton provider.
    */
   public static getOrCreate(scope: constructs.Construct) {
     const stack = cdk.Stack.of(scope)
-    const id = "liflig-cdk.ses-domain.provider"
+    const id = "liflig-cdk.configuration-set-sns-destination"
     return (
-      (stack.node.tryFindChild(id) as SesDomainProvider) ||
-      new SesDomainProvider(stack, id)
+      (stack.node.tryFindChild(id) as ConfigurationSetSnsDestinationProvider) ||
+      new ConfigurationSetSnsDestinationProvider(stack, id)
     )
   }
 
@@ -132,7 +110,7 @@ class SesDomainProvider extends constructs.Construct {
     this.provider = new cr.Provider(this, "Provider", {
       onEventHandler: new lambda.Function(this, "Function", {
         code: new lambda.InlineCode(
-          `exports.handler = ${sesDomainHandler.toString()};`,
+          `exports.handler = ${configurationSetSnsDestinationHandler.toString()};`,
         ),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_16_X,
@@ -140,15 +118,10 @@ class SesDomainProvider extends constructs.Construct {
         initialPolicy: [
           new iam.PolicyStatement({
             actions: [
-              "ses:DeleteIdentity",
-              "ses:GetIdentityDkimAttributes",
-              "ses:GetIdentityMailFromDomainAttributes",
-              "ses:GetIdentityVerificationAttributes",
-              "ses:SetIdentityDkimEnabled",
-              "ses:SetIdentityMailFromDomain",
-              "ses:VerifyDomainDkim",
-              "ses:VerifyDomainIdentity",
-              "ses:PutEmailIdentityConfigurationSetAttributes",
+              "ses:CreateConfigurationSetEventDestination",
+              "ses:UpdateConfigurationSetEventDestination",
+              "ses:DeleteConfigurationSetEventDestination",
+              "ses:GetConfigurationSetEventDestinations",
             ],
             resources: ["*"],
           }),
