@@ -437,13 +437,19 @@ Object {
     "SesDomainRecordSetGroupF83CCA2C": Object {
       "Properties": Object {
         "HostedZoneId": "ABCDEF12345678",
+        "RecordSets": Object {
+          "Fn::GetAtt": Array [
+            "SesDomain0A5DC5B8",
+            "Route53RecordSets",
+          ],
+        },
+      },
+      "Type": "AWS::Route53::RecordSetGroup",
+    },
+    "SesDomainStaticRecordSetGroup5A3938AB": Object {
+      "Properties": Object {
+        "HostedZoneId": "ABCDEF12345678",
         "RecordSets": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "SesDomain0A5DC5B8",
-              "Route53RecordSets",
-            ],
-          },
           Object {
             "Name": "example.com",
             "ResourceRecords": Array [

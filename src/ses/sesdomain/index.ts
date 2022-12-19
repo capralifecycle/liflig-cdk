@@ -56,7 +56,7 @@ interface Props {
 }
 
 export class SesDomain extends constructs.Construct {
-  public route53RecordSets: r53.CfnRecordSetGroupProps["recordSets"]
+  public route53RecordSets: cdk.IResolvable
   public verificationToken: string
 
   constructor(scope: constructs.Construct, id: string, props: Props) {
@@ -91,10 +91,7 @@ export class SesDomain extends constructs.Construct {
           ]
         : []
 
-    this.route53RecordSets = [
-      resource.getAtt("Route53RecordSets"),
-      ...staticRecordSets,
-    ]
+    this.route53RecordSets = resource.getAtt("Route53RecordSets")
     this.verificationToken = resource.getAttString("VerificationToken")
 
     if (props.hostedZone) {
@@ -102,6 +99,12 @@ export class SesDomain extends constructs.Construct {
         hostedZoneId: props.hostedZone.hostedZoneId,
         recordSets: this.route53RecordSets,
       })
+      if (staticRecordSets.length) {
+        new r53.CfnRecordSetGroup(this, "StaticRecordSetGroup", {
+          hostedZoneId: props.hostedZone.hostedZoneId,
+          recordSets: staticRecordSets,
+        })
+      }
     }
   }
 }
