@@ -55,7 +55,7 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
 
     new cdk.CustomResource(this, "Resource", {
       serviceToken:
-        ConfigurationSetSnsDestinationProvider.getOrCreate(this).serviceToken,
+      ConfigurationSetSnsDestinationProvider.getOrCreate(this).serviceToken,
       properties: {
         ConfigurationSetName: props.configurationSetName,
         EventDestinationName: props.eventDestinationName,
