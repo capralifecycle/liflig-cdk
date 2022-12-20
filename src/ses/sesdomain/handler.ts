@@ -66,7 +66,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
         TTL: ttl,
       })
     }
-
     return records
   }
 

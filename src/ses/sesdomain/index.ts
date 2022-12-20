@@ -62,6 +62,13 @@ export class SesDomain extends constructs.Construct {
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
+    const spfRecordEnabled =
+      props.spfRecordEnabled == null || props.spfRecordEnabled
+
+    const spfRecordValue = props.spfRecordValue
+      ? `"${props.spfRecordValue}"`
+      : `"v=spf1 include:amazonses.com ~all"`
+
     const resource = new cdk.CustomResource(this, "Resource", {
       serviceToken: SesDomainProvider.getOrCreate(this).serviceToken,
       properties: {
