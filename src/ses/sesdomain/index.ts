@@ -82,6 +82,7 @@ export class SesDomain extends constructs.Construct {
             {
               name: props.domainName,
               type: r53.RecordType.TXT,
+              ttl: "60",
               resourceRecords: [
                 JSON.stringify(
                   props.spfRecord?.value || "v=spf1 include:amazonses.com ~all",
