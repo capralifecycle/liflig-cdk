@@ -39,8 +39,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
   const defaultConfigurationSetName =
     event.ResourceProperties["DefaultConfigurationSetName"]
 
-  const spfRecordValue = event.ResourceProperties["SpfRecordValue"]
-
   if (!includeVerificationRecord) {
     console.log("Excluding verification TXT record")
   }
@@ -65,15 +63,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
         Name: `${token}._domainkey.${domainName}.`,
         Type: "CNAME",
         ResourceRecords: [`${token}.dkim.amazonses.com.`],
-        TTL: ttl,
-      })
-    }
-
-    if (spfRecordValue) {
-      records.push({
-        Name: domainName,
-        Type: "TXT",
-        ResourceRecords: [spfRecordValue],
         TTL: ttl,
       })
     }

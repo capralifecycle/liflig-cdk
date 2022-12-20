@@ -56,8 +56,10 @@ test("ses-domain with custom SPF values", () => {
 
   new SesDomain(stack, "SesDomain", {
     domainName: "example.com",
-    spfRecordValue:
-      "v=spf1 include:spf.protection.outlook.com include:_spf.intility.com -all",
+    spfRecord: {
+      value:
+        "v=spf1 include:spf.protection.outlook.com include:_spf.intility.com -all",
+    },
   })
 
   expect(stack).toMatchCdkSnapshot({
