@@ -455,6 +455,7 @@ Object {
             "ResourceRecords": Array [
               "\\"v=spf1 include:amazonses.com ~all\\"",
             ],
+            "TTL": "60",
             "Type": "TXT",
           },
         ],
