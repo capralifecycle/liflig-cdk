@@ -35,6 +35,7 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
   const domainName = event.ResourceProperties["DomainName"]
   const includeVerificationRecord =
     event.ResourceProperties["IncludeVerificationRecord"] == "true"
+
   const defaultConfigurationSetName =
     event.ResourceProperties["DefaultConfigurationSetName"]
 
@@ -65,7 +66,6 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
         TTL: ttl,
       })
     }
-
     return records
   }
 

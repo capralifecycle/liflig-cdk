@@ -49,3 +49,20 @@ test("ses-domain with default configuration set", () => {
     ignoreAssets: true,
   })
 })
+
+test("ses-domain with custom SPF values", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+
+  new SesDomain(stack, "SesDomain", {
+    domainName: "example.com",
+    spfRecord: {
+      value:
+        "v=spf1 include:spf.protection.outlook.com include:_spf.intility.com -all",
+    },
+  })
+
+  expect(stack).toMatchCdkSnapshot({
+    ignoreAssets: true,
+  })
+})

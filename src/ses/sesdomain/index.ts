@@ -32,6 +32,27 @@ interface Props {
    * Default configuration set for emails sent from this domain.
    */
   defaultConfigurationSetName?: string
+  /**
+   * Configuration for an SPF record.
+   *
+   * @default - an SPF record with a default value is created.
+   */
+  spfRecord?: {
+    /**
+     * Whether to create the record or not.
+     *
+     * @default true
+     */
+    include?: boolean
+    /**
+     * The value of the SPF record.
+     *
+     * NOTE: The value will be enclosed in double quotes for you.
+     *
+     * @default "v=spf1 include:amazonses.com ~all"
+     */
+    value?: string
+  }
 }
 
 export class SesDomain extends constructs.Construct {
@@ -55,6 +76,22 @@ export class SesDomain extends constructs.Construct {
       },
     })
 
+    const staticRecordSets: r53.CfnRecordSetGroup.RecordSetProperty[] =
+      props.spfRecord?.include ?? true
+        ? [
+            {
+              name: props.domainName,
+              type: r53.RecordType.TXT,
+              ttl: "60",
+              resourceRecords: [
+                JSON.stringify(
+                  props.spfRecord?.value || "v=spf1 include:amazonses.com ~all",
+                ),
+              ],
+            },
+          ]
+        : []
+
     this.route53RecordSets = resource.getAtt("Route53RecordSets")
     this.verificationToken = resource.getAttString("VerificationToken")
 
@@ -63,6 +100,12 @@ export class SesDomain extends constructs.Construct {
         hostedZoneId: props.hostedZone.hostedZoneId,
         recordSets: this.route53RecordSets,
       })
+      if (staticRecordSets.length) {
+        new r53.CfnRecordSetGroup(this, "StaticRecordSetGroup", {
+          hostedZoneId: props.hostedZone.hostedZoneId,
+          recordSets: staticRecordSets,
+        })
+      }
     }
   }
 }
