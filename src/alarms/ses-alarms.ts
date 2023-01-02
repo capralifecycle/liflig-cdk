@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as constructs from "constructs"
-import { Unit } from "aws-cdk-lib/aws-cloudwatch"
 
 export interface SesAlarmsProps extends cdk.StackProps {
   /**
@@ -11,7 +10,7 @@ export interface SesAlarmsProps extends cdk.StackProps {
   /**
    * Configuration for an alarm for high rate bounced messages.
    *
-   * @default Configured with sane defaults.
+   * @default Configured with reasonable defaults.
    */
   bouncedMessagesAlarm?: {
     /**
@@ -23,7 +22,12 @@ export interface SesAlarmsProps extends cdk.StackProps {
      */
     action?: cloudwatch.IAlarmAction
     /**
-     * @default 4(%)
+     * @default 10 minutes
+     */
+    period?: cdk.Duration
+    /**
+     * Threshold value for alarm as a percent
+     * @default 2.5(%)
      * 5% is the threshold at which AWS considers putting an account under review
      */
     threshold?: number
@@ -43,7 +47,12 @@ export interface SesAlarmsProps extends cdk.StackProps {
      */
     action?: cloudwatch.IAlarmAction
     /**
-     * @default 0.07(%)
+     * @default 10 minutes
+     */
+    period?: cdk.Duration
+    /**
+     * Threshold value for alarm as a percent
+     * @default 0.05(%)
      * 0.10% is the threshold at which AWS considers putting an account under review
      */
     threshold?: number
@@ -52,7 +61,7 @@ export interface SesAlarmsProps extends cdk.StackProps {
 
 /**
  *
- * See SlackAlarm construct for SNS Action.
+ * Construct that configures various sensible CloudWatch alarms for AWS SES
  */
 export class SesAlarms extends constructs.Construct {
   private readonly action: cloudwatch.IAlarmAction
@@ -66,16 +75,15 @@ export class SesAlarms extends constructs.Construct {
       metricName: "Reputation.BounceRate",
       namespace: "AWS/SES",
       statistic: "Maximum",
-      unit: Unit.PERCENT,
-      period: cdk.Duration.days(1),
+      period: props?.bouncedMessagesAlarm?.period ?? cdk.Duration.minutes(10),
     }).createAlarm(this, "BouncedMessagesAlarm", {
       alarmDescription: `The SES bounce rate is over ${
-        props?.bouncedMessagesAlarm?.threshold ?? 4
-      }/%`,
+        props?.bouncedMessagesAlarm?.threshold ?? 2.5
+      }%`,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       evaluationPeriods: 1,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-      threshold: props?.bouncedMessagesAlarm?.threshold ?? 4,
+      threshold: (props?.bouncedMessagesAlarm?.threshold ?? 2.5) / 100,
     })
 
     if (props?.bouncedMessagesAlarm?.enabled ?? true) {
@@ -88,15 +96,14 @@ export class SesAlarms extends constructs.Construct {
       metricName: "Reputation.ComplaintRate",
       namespace: "AWS/SES",
       statistic: "Maximum",
-      unit: Unit.PERCENT,
-      period: cdk.Duration.days(1),
+      period: props?.complaintRateAlarm?.period ?? cdk.Duration.minutes(10),
     }).createAlarm(this, "ComplaintMessagesAlarm", {
       alarmDescription: `The SES complaint rate is over ${
-        props?.complaintRateAlarm?.threshold ?? 0.07
-      }/%`,
+        props?.complaintRateAlarm?.threshold ?? 0.05
+      }%`,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       evaluationPeriods: 1,
-      threshold: props?.complaintRateAlarm?.threshold ?? 0.07,
+      threshold: (props?.complaintRateAlarm?.threshold ?? 0.05) / 100,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
 
