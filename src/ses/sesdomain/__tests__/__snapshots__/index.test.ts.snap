@@ -462,22 +462,6 @@ Object {
       },
       "Type": "AWS::Route53::RecordSetGroup",
     },
-    "SesDomainStaticRecordSetGroup5A3938AB": Object {
-      "Properties": Object {
-        "HostedZoneId": "ABCDEF12345678",
-        "RecordSets": Array [
-          Object {
-            "Name": "example.com",
-            "ResourceRecords": Array [
-              "\\"v=spf1 include:amazonses.com ~all\\"",
-            ],
-            "TTL": "60",
-            "Type": "TXT",
-          },
-        ],
-      },
-      "Type": "AWS::Route53::RecordSetGroup",
-    },
     "lifligcdksesdomainproviderFunctionB62280C6": Object {
       "DependsOn": Array [
         "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
