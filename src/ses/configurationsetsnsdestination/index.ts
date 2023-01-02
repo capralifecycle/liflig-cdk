@@ -23,6 +23,11 @@ export type ConfigurationSetSnsDestinationEventType =
 
 export interface ConfigurationSetSnsDestinationProps {
   /**
+   * Whether SES events will be logged to SNS
+   * @default true
+   */
+  logEvents?: boolean
+  /**
    * The SES configuration set name
    */
   configurationSetName: string
@@ -69,9 +74,11 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
       logRetention: RetentionDays.THREE_MONTHS,
     })
 
-    props.snsTopic.addSubscription(
-      new snsSubscriptions.LambdaSubscription(sesEventLoggerFunction),
-    )
+    if (props.logEvents ?? true) {
+      props.snsTopic.addSubscription(
+        new snsSubscriptions.LambdaSubscription(sesEventLoggerFunction),
+      )
+    }
   }
 }
 
