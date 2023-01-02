@@ -23,7 +23,7 @@ export type ConfigurationSetSnsDestinationEventType =
 
 export interface ConfigurationSetSnsDestinationProps {
   /**
-   * Whether SES events will be logged to SNS
+   * Whether SES events will be logged to CloudWatch
    * @default true
    */
   logEvents?: boolean
