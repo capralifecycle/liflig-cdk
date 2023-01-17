@@ -14,12 +14,6 @@
         "displayName": "cdk-pipeline-cloud-assembly/example"
       }
     },
-    "Tree": {
-      "type": "cdk:tree",
-      "properties": {
-        "file": "tree.json"
-      }
-    },
     "build-artifacts.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
@@ -1547,6 +1541,12 @@
         ]
       },
       "displayName": "webapp"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
     }
   }
 }

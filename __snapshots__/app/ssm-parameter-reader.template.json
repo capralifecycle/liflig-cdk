@@ -11,7 +11,7 @@
         },
         "Create": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
         "Update": "{\"service\":\"SSM\",\"action\":\"getParameter\",\"parameters\":{\"Name\":\"/some/parameter\"},\"region\":\"eu-west-1\",\"physicalResourceId\":{\"id\":\"/some/parameter\"}}",
-        "InstallLatestAwsSdk": true
+        "InstallLatestAwsSdk": false
       },
       "DependsOn": [
         "ParamReaderCustomResourcePolicy6D6224AD"

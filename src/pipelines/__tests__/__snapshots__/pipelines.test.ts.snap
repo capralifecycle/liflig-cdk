@@ -631,6 +631,12 @@ Object {
           ],
           "Version": "2012-10-17",
         },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:id",
+            "Value": "Stack_c8ce3833a4ef23fd9d20ec9fe5e254ba3d0e8fcff3",
+          },
+        ],
       },
       "Type": "AWS::IAM::Role",
     },
@@ -1627,6 +1633,12 @@ Object {
           ],
           "Version": "2012-10-17",
         },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:id",
+            "Value": "Stack_c8ce3833a4ef23fd9d20ec9fe5e254ba3d0e8fcff3",
+          },
+        ],
       },
       "Type": "AWS::IAM::Role",
     },

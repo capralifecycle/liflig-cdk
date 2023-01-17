@@ -1,3 +1,6 @@
 {
-  "app": "ts-node examples/app.ts"
+  "app": "ts-node examples/app.ts",
+  "context": {
+    "@aws-cdk/customresources:installLatestAwsSdkDefault": false
+  }
 }
