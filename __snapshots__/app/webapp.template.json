@@ -111,7 +111,7 @@
           "Name": "webappWebappSecurityHeadersResponseHeadersPolicyB14BCA0D",
           "SecurityHeadersConfig": {
             "ContentSecurityPolicy": {
-              "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self' https:;default-src 'none';font-src 'self';frame-src 'self';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
+              "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self' https:;default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
               "Override": true
             },
             "ContentTypeOptions": {
