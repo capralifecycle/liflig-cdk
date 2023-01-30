@@ -94,6 +94,8 @@ export function generateContentSecurityPolicyHeader(
   headerValue += `default-src ${trim(options.defaultSrc)};`
   headerValue += `font-src ${trim(options.fontSrc)};`
   headerValue += `frame-src ${trim(options.frameSrc)};`
+  headerValue += `form-action ${trim(options.formAction)};`
+  headerValue += `frame-ancestors ${trim(options.frameAncestors)};`
   headerValue += `img-src ${trim(options.imgSrc)};`
   headerValue += `manifest-src ${trim(options.manifestSrc)};`
   headerValue += `media-src ${trim(options.mediaSrc)};`
