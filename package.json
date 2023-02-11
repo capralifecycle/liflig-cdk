@@ -51,7 +51,7 @@
     "husky": "8.0.3",
     "jest": "27.5.1",
     "jest-cdk-snapshot": "2.0.1",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
     "semantic-release": "20.1.0",
     "ts-jest": "27.1.5",
     "ts-node": "10.9.1",
