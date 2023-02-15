@@ -23,15 +23,16 @@ def send_slack_notification(message, region):
         color = "danger"
     else:
         color = "good"
-
+    alarm_description = message["AlarmDescription"] or "Alarm is missing description"
     attachments = [{
         'color': color,
         'title_link': "https://console.aws.amazon.com/cloudwatch/home?region=" + region + "#alarm:alarmFilter=ANY;name=" + message['AlarmName'],
+        'fallback': f"{message['AlarmName']}: {alarm_description}",
         'fields': [
             {'title': 'Alarm Name',
              'value': message['AlarmName'], 'short': False},
             {'title': 'Alarm Description',
-             'value': message['AlarmDescription'], 'short': False},
+             'value': alarm_description, 'short': False},
             {'title': 'Account',
              'value': message['AWSAccountId'], 'short': True},
             {'title': 'Region', 'value': region, 'short': True},
