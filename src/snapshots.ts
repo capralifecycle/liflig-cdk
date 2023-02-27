@@ -247,6 +247,9 @@ export async function createCloudAssemblySnapshot(
   // snapshots for asset changes.
   await del(path.join(dst, "**/*.assets.json"))
 
+  // Remove graphviz files generated when using CDK Pipelines
+  await del(path.join(dst, "**/*.dot"))
+
   // Transform the manifest to be more snapshot friendly.
   for (const file of glob.sync("**/manifest.json", { cwd: base })) {
     await prepareManifestFileForSnapshot(path.join(base, file))
