@@ -3,6 +3,7 @@ import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
 import * as codepipelineActions from "aws-cdk-lib/aws-codepipeline-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as codebuild from "aws-cdk-lib/aws-codebuild"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as cdk from "aws-cdk-lib"
 import * as pipelines from "aws-cdk-lib/pipelines"
@@ -182,6 +183,11 @@ export class LifligCdkPipeline extends constructs.Construct {
 
     this.cdkPipeline = new pipelines.CodePipeline(this, "CdkPipeline", {
       synth,
+      codeBuildDefaults: {
+        buildEnvironment: {
+          buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        },
+      },
       codePipeline: this.codePipeline,
     })
   }
