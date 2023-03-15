@@ -12,7 +12,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "515f8dcedb1a6f58fcd2b3599e9d6a52a70f656bcb76d304e18c16af76655075.zip",
+          "S3Key": "77a1d62331a545dcff501bf383c1f745a35eef631f23af376d355fa60fd84b98.zip",
         },
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {

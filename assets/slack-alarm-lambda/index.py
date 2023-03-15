@@ -19,6 +19,11 @@ def handler(event, context):
 
 
 def send_slack_notification(message, region):
+    alarm_emojis = {
+        "ALARM": ":rotating_light:",
+        "INSUFFICIENT_DATA": ":warning:",
+        "OK": ":white_check_mark:"
+    }
     if (message['NewStateValue'] == "ALARM"):
         color = "danger"
     else:
@@ -27,7 +32,7 @@ def send_slack_notification(message, region):
     attachments = [{
         'color': color,
         'title_link': "https://console.aws.amazon.com/cloudwatch/home?region=" + region + "#alarm:alarmFilter=ANY;name=" + message['AlarmName'],
-        'fallback': f"{message['AlarmName']}: {alarm_description}",
+        'fallback': f"{alarm_emojis.get(message['NewStateValue'], '')} {message['AlarmName']}: {alarm_description}",
         'fields': [
             {'title': 'Alarm Name',
              'value': message['AlarmName'], 'short': False},
