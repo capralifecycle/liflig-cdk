@@ -34,7 +34,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.5.0",
+    "@commitlint/cli": "17.5.1",
     "@commitlint/config-conventional": "17.4.4",
     "@aws-cdk/assert": "2.62.0",
     "@types/aws-lambda": "8.10.114",
