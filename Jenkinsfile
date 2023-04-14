@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 // See https://github.com/capralifecycle/jenkins-pipeline-library
-@Library('cals') _
+@Library('cals@github-packages-npm-authentication') _
 
 buildConfig([
   slack: [
