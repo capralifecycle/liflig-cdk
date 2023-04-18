@@ -96,6 +96,7 @@ export class BuildArtifacts extends constructs.Construct {
       bucket = new s3.Bucket(this, "S3Bucket", {
         bucketName: props.bucketName,
         encryption: s3.BucketEncryption.S3_MANAGED,
+        eventBridgeEnabled: true,
         blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         versioned: true,
         lifecycleRules: [
