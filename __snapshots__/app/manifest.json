@@ -76,6 +76,12 @@
             "data": "BuildArtifactsS3BucketF34A0F91"
           }
         ],
+        "/build-artifacts/BuildArtifacts/S3Bucket/Notifications/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsS3BucketNotifications8F606582"
+          }
+        ],
         "/build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -116,6 +122,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "BuildArtifactsCiRoleArn6A5A560C"
+          }
+        ],
+        "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+          }
+        ],
+        "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+          }
+        ],
+        "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
           }
         ],
         "/build-artifacts/CDKMetadata/Default": [
