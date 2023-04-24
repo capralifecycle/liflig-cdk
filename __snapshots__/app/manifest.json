@@ -1169,6 +1169,18 @@
             "data": "PipelineCodePipelinePrepareCdkSourcepreparecdksourceCodePipelineActionRoleDefaultPolicyC1327038"
           }
         ],
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/EventsRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCodePipelineEventsRole6E48CF6D"
+          }
+        ],
+        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/EventsRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCodePipelineEventsRoleDefaultPolicy87D65CBE"
+          }
+        ],
         "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/Build/GenerateCloudAssembly/CdkBuildProject/Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -1185,6 +1197,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineCodePipelineBuildGenerateCloudAssemblyCdkBuildProject45DF9DF3"
+          }
+        ],
+        "/cdk-pipeline-cdk-source/Pipeline/PipelineTrigger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelinePipelineTriggerDBF83560"
           }
         ],
         "/cdk-pipeline-cdk-source/Pipeline/CdkPipeline/CodeBuildActionRole/Resource": [
@@ -1394,6 +1412,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineCodePipelinePrepareCloudAssemblycloudassemblylookupCodePipelineActionRoleDefaultPolicy901A0F32"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/EventsRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCodePipelineEventsRole6E48CF6D"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/EventsRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelineCodePipelineEventsRoleDefaultPolicy87D65CBE"
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/Pipeline/PipelineTrigger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PipelinePipelineTriggerDBF83560"
           }
         ],
         "/cdk-pipeline-cloud-assembly/Pipeline/CdkPipeline/UpdatePipeline/SelfMutation/Role/Resource": [

@@ -641,7 +641,8 @@
                       ]
                     ]
                   },
-                  "S3ObjectKey": "pipelines/test-pipeline/trigger"
+                  "S3ObjectKey": "pipelines/test-pipeline/trigger",
+                  "PollForSourceChanges": false
                 },
                 "Name": "source",
                 "OutputArtifacts": [
@@ -770,8 +771,7 @@
                       ]
                     ]
                   },
-                  "ActionMode": "CHANGE_SET_REPLACE",
-                  "ChangeSetName": "PipelineChange",
+                  "ActionMode": "CREATE_UPDATE",
                   "TemplatePath": "Artifact_PrepareCloudAssembly_cloud-assembly-lookup::assembly-cdk-pipeline-cloud-assembly-example/cdkpipelinecloudassemblyexample34A10B9D.template.json"
                 },
                 "InputArtifacts": [
@@ -779,44 +779,6 @@
                     "Name": "Artifact_PrepareCloudAssembly_cloud-assembly-lookup"
                   }
                 ],
-                "Name": "Prepare",
-                "RoleArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":role/cdk-hnb659fds-deploy-role-",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      "-",
-                      {
-                        "Ref": "AWS::Region"
-                      }
-                    ]
-                  ]
-                },
-                "RunOrder": 1
-              },
-              {
-                "ActionTypeId": {
-                  "Category": "Deploy",
-                  "Owner": "AWS",
-                  "Provider": "CloudFormation",
-                  "Version": "1"
-                },
-                "Configuration": {
-                  "StackName": "example-example",
-                  "ActionMode": "CHANGE_SET_EXECUTE",
-                  "ChangeSetName": "PipelineChange"
-                },
                 "Name": "Deploy",
                 "RoleArn": {
                   "Fn::Join": [
@@ -841,7 +803,7 @@
                     ]
                   ]
                 },
-                "RunOrder": 2
+                "RunOrder": 1
               }
             ],
             "Name": "example"
@@ -1221,6 +1183,159 @@
       },
       "Metadata": {
         "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/PrepareCloudAssembly/cloud-assembly-lookup/CodePipelineActionRole/DefaultPolicy/Resource"
+      }
+    },
+    "PipelineCodePipelineEventsRole6E48CF6D": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "my-project"
+          },
+          {
+            "Key": "SourceRepo",
+            "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "cdk-pipeline-cloud-assembly"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/EventsRole/Resource"
+      }
+    },
+    "PipelineCodePipelineEventsRoleDefaultPolicy87D65CBE": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "codepipeline:StartPipelineExecution",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":codepipeline:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "PipelineCodePipeline4FC0E9B7"
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PipelineCodePipelineEventsRoleDefaultPolicy87D65CBE",
+        "Roles": [
+          {
+            "Ref": "PipelineCodePipelineEventsRole6E48CF6D"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/EventsRole/DefaultPolicy/Resource"
+      }
+    },
+    "PipelinePipelineTriggerDBF83560": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "source": [
+            "aws.s3"
+          ],
+          "detail-type": [
+            "Object Created"
+          ],
+          "detail": {
+            "bucket": {
+              "name": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "artefact.eu-west-1.",
+                      {
+                        "Ref": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            "object": {
+              "key": [
+                "pipelines/test-pipeline/trigger"
+              ]
+            }
+          }
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":codepipeline:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "PipelineCodePipeline4FC0E9B7"
+                  }
+                ]
+              ]
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "PipelineCodePipelineEventsRole6E48CF6D",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "cdk-pipeline-cloud-assembly/Pipeline/PipelineTrigger/Resource"
       }
     },
     "PipelineCdkPipelineUpdatePipelineSelfMutationRole91D6CBA8": {
