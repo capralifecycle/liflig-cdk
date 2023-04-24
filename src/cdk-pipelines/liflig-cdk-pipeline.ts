@@ -16,10 +16,6 @@ import {
   CloudAssemblyLookupUserParameters,
 } from "./cloud-assembly-lookup-handler"
 import { SlackNotification, SlackNotificationProps } from "./slack-notification"
-import {
-  FeatureFlags,
-  FEATURE_FLAG_CDK_PIPELINES_SPEED_UP,
-} from "../feature-flags"
 
 export interface LifligCdkPipelineProps {
   /**
@@ -174,11 +170,7 @@ export class LifligCdkPipeline extends constructs.Construct {
             new codepipelineActions.S3SourceAction({
               actionName: "source",
               bucket: artifactsBucket,
-              trigger: FeatureFlags.of(scope).isEnabled(
-                FEATURE_FLAG_CDK_PIPELINES_SPEED_UP,
-              )
-                ? codepipelineActions.S3Trigger.NONE
-                : undefined,
+              trigger: codepipelineActions.S3Trigger.NONE,
               bucketKey: LifligCdkPipeline.pipelineS3TriggerKey(
                 props.pipelineName,
               ),
@@ -191,29 +183,25 @@ export class LifligCdkPipeline extends constructs.Construct {
       restartExecutionOnUpdate: true,
     })
 
-    if (FeatureFlags.of(scope).isEnabled(FEATURE_FLAG_CDK_PIPELINES_SPEED_UP)) {
-      new events.Rule(this, "PipelineTrigger", {
-        eventPattern: {
-          source: ["aws.s3"],
-          detailType: ["Object Created"],
-          detail: {
-            bucket: {
-              name: [artifactsBucket.bucketName],
-            },
-            object: {
-              key: [LifligCdkPipeline.pipelineS3TriggerKey(props.pipelineName)],
-            },
+    new events.Rule(this, "PipelineTrigger", {
+      eventPattern: {
+        source: ["aws.s3"],
+        detailType: ["Object Created"],
+        detail: {
+          bucket: {
+            name: [artifactsBucket.bucketName],
+          },
+          object: {
+            key: [LifligCdkPipeline.pipelineS3TriggerKey(props.pipelineName)],
           },
         },
-        targets: [new targets.CodePipeline(this.codePipeline)],
-      })
-    }
+      },
+      targets: [new targets.CodePipeline(this.codePipeline)],
+    })
 
     this.cdkPipeline = new pipelines.CodePipeline(this, "CdkPipeline", {
       synth,
-      useChangeSets: !FeatureFlags.of(scope).isEnabled(
-        FEATURE_FLAG_CDK_PIPELINES_SPEED_UP,
-      ),
+      useChangeSets: false,
       codePipeline: this.codePipeline,
     })
   }
