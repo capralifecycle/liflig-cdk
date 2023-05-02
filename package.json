@@ -60,7 +60,7 @@
   "dependencies": {
     "@capraconsulting/webapp-deploy-lambda": "2.1.1",
     "aws-sdk": "2.1358.0",
-    "cpy": "8.1.2",
+    "cpy": "9.0.1",
     "del": "6.1.1",
     "execa": "5.1.1",
     "glob": "8.1.0",
