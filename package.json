@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest --runInBand",
+    "test": "jest --maxWorkers 2",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "npm run build && husky install",
