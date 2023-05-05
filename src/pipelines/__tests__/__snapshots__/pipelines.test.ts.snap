@@ -193,7 +193,6 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
     "PipelineStateMachine1814BD05": Object {
-      "DeletionPolicy": "Delete",
       "DependsOn": Array [
         "PipelineStateMachineRoleDefaultPolicy24D0EC77",
         "PipelineStateMachineRole61BEBDFF",
@@ -267,7 +266,6 @@ Object {
         },
       },
       "Type": "AWS::StepFunctions::StateMachine",
-      "UpdateReplacePolicy": "Delete",
     },
     "PipelineStateMachineEventsRole5EB2FA4B": Object {
       "Properties": Object {
@@ -1197,7 +1195,6 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
     "PipelineStateMachine1814BD05": Object {
-      "DeletionPolicy": "Delete",
       "DependsOn": Array [
         "PipelineStateMachineRoleDefaultPolicy24D0EC77",
         "PipelineStateMachineRole61BEBDFF",
@@ -1271,7 +1268,6 @@ Object {
         },
       },
       "Type": "AWS::StepFunctions::StateMachine",
-      "UpdateReplacePolicy": "Delete",
     },
     "PipelineStateMachineEventsRole5EB2FA4B": Object {
       "Properties": Object {
