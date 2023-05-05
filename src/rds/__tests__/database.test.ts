@@ -1,8 +1,7 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { Database } from ".."
 
 test("create database", () => {
@@ -36,7 +35,7 @@ test("create database", () => {
 
   database.allowConnectionFrom(otherSecurityGroup)
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("should set publiclyAccessible also when in private subnets", () => {
@@ -61,7 +60,10 @@ test("should set publiclyAccessible also when in private subnets", () => {
     usePublicSubnets: false,
   })
 
-  expect(stack).toHaveResourceLike("AWS::RDS::DBInstance", {
-    PubliclyAccessible: false,
-  })
+  assertions.Template.fromStack(stack).hasResourceProperties(
+    "AWS::RDS::DBInstance",
+    {
+      PubliclyAccessible: false,
+    },
+  )
 })

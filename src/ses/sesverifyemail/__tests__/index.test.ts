@@ -1,5 +1,5 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SesVerifyEmail } from ".."
 
 test("ses-verify-email", () => {
@@ -10,7 +10,5 @@ test("ses-verify-email", () => {
     emailAddress: "example@example.com",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

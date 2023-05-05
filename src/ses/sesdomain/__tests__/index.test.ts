@@ -1,6 +1,6 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { HostedZone } from "aws-cdk-lib/aws-route53"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SesDomain } from ".."
 
 test("ses-domain with hosted zone", () => {
@@ -18,9 +18,7 @@ test("ses-domain with hosted zone", () => {
     hostedZone: hostedZone,
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("ses-domain without hosted zone", () => {
@@ -31,9 +29,7 @@ test("ses-domain without hosted zone", () => {
     domainName: "example.com",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("ses-domain with default configuration set", () => {
@@ -45,9 +41,7 @@ test("ses-domain with default configuration set", () => {
     defaultConfigurationSetName: "exampleconfigset",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("ses-domain with custom SPF values", () => {
@@ -62,7 +56,5 @@ test("ses-domain with custom SPF values", () => {
     },
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

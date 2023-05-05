@@ -1,6 +1,6 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { BastionHost } from ".."
 
 test("minimal bastion-host", () => {
@@ -14,7 +14,7 @@ test("minimal bastion-host", () => {
     vpc,
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack2).toJSON()).toMatchSnapshot()
 })
 
 test("bastion-host with custom security group", () => {
@@ -32,5 +32,5 @@ test("bastion-host with custom security group", () => {
     vpc,
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack2).toJSON()).toMatchSnapshot()
 })

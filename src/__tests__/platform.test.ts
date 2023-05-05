@@ -1,9 +1,8 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { Construct } from "constructs"
-import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as sns from "aws-cdk-lib/aws-sns"
 import * as ssm from "aws-cdk-lib/aws-ssm"
-import "jest-cdk-snapshot"
 import {
   PlatformProducer,
   PlatformConsumer,
@@ -52,7 +51,7 @@ test("produce example plaform", () => {
     alarmTopic: alarmTopic,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("consume example platform", () => {
@@ -69,5 +68,5 @@ test("consume example platform", () => {
     stringValue: platform.alarmTopic.topicArn,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

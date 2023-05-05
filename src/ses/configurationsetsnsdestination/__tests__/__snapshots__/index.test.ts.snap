@@ -105,6 +105,13 @@ Object {
       },
     },
   },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
       "DependsOn": Array [
@@ -112,7 +119,12 @@ Object {
         "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "f5b6a6d08a8206e67d0b54e2a29abd7e0472d835abc71037de3a93545b5edacc.zip",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -192,7 +204,11 @@ Object {
         "SnsDestinationEventsHandlerServiceRole94495B0D",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = (event) => {
+    event.Records.forEach((record) => console.log(\`SES event message from SNS: \${record.Sns.Message}\`));
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -325,7 +341,76 @@ Object {
         "lifligcdkconfigurationsetsnsdestinationFunctionServiceRoleDAE79368",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = async (event) => {
+    const AWS = require(\\"aws-sdk\\");
+    const ses = new AWS.SESV2();
+    const configurationSetName = event.ResourceProperties.ConfigurationSetName;
+    const eventDestinationName = event.ResourceProperties.EventDestinationName;
+    const snsTopicArn = event.ResourceProperties.SnsTopicArn;
+    const matchingEventTypes = event.ResourceProperties.MatchingEventTypes;
+    const eventDestination = {
+        MatchingEventTypes: matchingEventTypes,
+        Enabled: true,
+        SnsDestination: {
+            TopicArn: snsTopicArn,
+        },
+    };
+    console.log(\`EventDestination \${JSON.stringify(eventDestination)}\`);
+    switch (event.RequestType) {
+        case \\"Delete\\":
+            const deleteResponse = await ses
+                .deleteConfigurationSetEventDestination({
+                ConfigurationSetName: configurationSetName,
+                EventDestinationName: eventDestinationName,
+            })
+                .promise();
+            console.log(\`ses.deleteConfigurationSetEventDestination: \${JSON.stringify(deleteResponse)}\`);
+            return {
+                PhysicalResourceId: event.PhysicalResourceId,
+            };
+        case \\"Create\\":
+            const createResponse = await ses
+                .createConfigurationSetEventDestination({
+                ConfigurationSetName: configurationSetName,
+                EventDestinationName: eventDestinationName,
+                EventDestination: eventDestination,
+            })
+                .promise();
+            console.log(\`ses.createConfigurationSetEventDestination: \${JSON.stringify(createResponse)}\`);
+            return {
+                PhysicalResourceId: \`ConfigurationSetSnsDestination-\${configurationSetName}-\${eventDestinationName}\`,
+            };
+        case \\"Update\\":
+            const previousEventDestinationName = event.OldResourceProperties.EventDestinationName;
+            const previousConfigurationSetName = event.OldResourceProperties.ConfigurationSetName;
+            if (configurationSetName !== previousConfigurationSetName ||
+                eventDestinationName !== previousEventDestinationName) {
+                const createResponse = await ses
+                    .createConfigurationSetEventDestination({
+                    ConfigurationSetName: configurationSetName,
+                    EventDestinationName: eventDestinationName,
+                    EventDestination: eventDestination,
+                })
+                    .promise();
+                console.log(\`ses.createConfigurationSetEventDestination: \${JSON.stringify(createResponse)}\`);
+            }
+            else {
+                const updateResponse = await ses
+                    .updateConfigurationSetEventDestination({
+                    ConfigurationSetName: configurationSetName,
+                    EventDestinationName: eventDestinationName,
+                    EventDestination: eventDestination,
+                })
+                    .promise();
+                console.log(\`ses.UpdateConfigurationSetEventDestination: \${JSON.stringify(updateResponse)}\`);
+            }
+            return {
+                PhysicalResourceId: \`ConfigurationSetSnsDestination-\${configurationSetName}-\${eventDestinationName}\`,
+            };
+    }
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -401,7 +486,12 @@ Object {
         "lifligcdkconfigurationsetsnsdestinationProviderframeworkonEventServiceRoleC2624999",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "45017ac1fb5b50dac36a255c328b0fe125f18a8e6d3689e188eab5e3a1bf8146.zip",
+        },
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.configuration-set-sns-destination/Provider)",
         "Environment": Object {
           "Variables": Object {
@@ -497,6 +587,33 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
     },
   },
 }

@@ -2,6 +2,13 @@
 
 exports[`ses-domain with custom SPF values 1`] = `
 Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -25,7 +32,83 @@ Object {
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = async (event) => {
+    const AWS = require(\\"aws-sdk\\");
+    const ttl = \\"1800\\";
+    const ses = new AWS.SES();
+    const sesv2 = new AWS.SESV2();
+    const domainName = event.ResourceProperties[\\"DomainName\\"];
+    const includeVerificationRecord = event.ResourceProperties[\\"IncludeVerificationRecord\\"] == \\"true\\";
+    const defaultConfigurationSetName = event.ResourceProperties[\\"DefaultConfigurationSetName\\"];
+    if (!includeVerificationRecord) {
+        console.log(\\"Excluding verification TXT record\\");
+    }
+    function createRoute53RecordSets(verificationToken, dkimTokens) {
+        const records = [];
+        if (includeVerificationRecord) {
+            records.push({
+                Name: \`_amazonses.\${domainName}.\`,
+                Type: \\"TXT\\",
+                ResourceRecords: [\`\\"\${verificationToken}\\"\`],
+                TTL: ttl,
+            });
+        }
+        for (const token of dkimTokens) {
+            records.push({
+                Name: \`\${token}._domainkey.\${domainName}.\`,
+                Type: \\"CNAME\\",
+                ResourceRecords: [\`\${token}.dkim.amazonses.com.\`],
+                TTL: ttl,
+            });
+        }
+        return records;
+    }
+    switch (event.RequestType) {
+        case \\"Delete\\":
+            const response = await ses
+                .deleteIdentity({ Identity: domainName })
+                .promise();
+            console.log(\`ses.deleteIdentity: \${JSON.stringify(response)}\`);
+            return {
+                PhysicalResourceId: event.PhysicalResourceId,
+            };
+        case \\"Create\\":
+        case \\"Update\\":
+            // Idempotent.
+            const response1 = await ses
+                .verifyDomainIdentity({
+                Domain: domainName,
+            })
+                .promise();
+            console.log(\`ses.verifyDomainIdentity: \${JSON.stringify(response1)}\`);
+            const verificationToken = response1[\\"VerificationToken\\"];
+            // Idempotent.
+            const response2 = await ses
+                .verifyDomainDkim({ Domain: domainName })
+                .promise();
+            console.log(\`ses.verifyDomainDkim: \${JSON.stringify(response2)}\`);
+            const dkimTokens = response2[\\"DkimTokens\\"];
+            // Idempotent.
+            const response3 = await sesv2
+                .putEmailIdentityConfigurationSetAttributes({
+                EmailIdentity: domainName,
+                // ConfigurationSetName can be set to undefined to remove
+                // the default configuration set from the identity.
+                ConfigurationSetName: defaultConfigurationSetName,
+            })
+                .promise();
+            console.log(\`sesv2.putEmailIdentityConfigurationSetAttributes \${JSON.stringify(response3)}\`);
+            return {
+                PhysicalResourceId: \`SesDomain\${domainName}\`,
+                Data: {
+                    Route53RecordSets: createRoute53RecordSets(verificationToken, dkimTokens),
+                    VerificationToken: verificationToken,
+                },
+            };
+    }
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -106,7 +189,12 @@ Object {
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "45017ac1fb5b50dac36a255c328b0fe125f18a8e6d3689e188eab5e3a1bf8146.zip",
+        },
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
         "Environment": Object {
           "Variables": Object {
@@ -204,11 +292,45 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
   },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
 }
 `;
 
 exports[`ses-domain with default configuration set 1`] = `
 Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -233,7 +355,83 @@ Object {
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = async (event) => {
+    const AWS = require(\\"aws-sdk\\");
+    const ttl = \\"1800\\";
+    const ses = new AWS.SES();
+    const sesv2 = new AWS.SESV2();
+    const domainName = event.ResourceProperties[\\"DomainName\\"];
+    const includeVerificationRecord = event.ResourceProperties[\\"IncludeVerificationRecord\\"] == \\"true\\";
+    const defaultConfigurationSetName = event.ResourceProperties[\\"DefaultConfigurationSetName\\"];
+    if (!includeVerificationRecord) {
+        console.log(\\"Excluding verification TXT record\\");
+    }
+    function createRoute53RecordSets(verificationToken, dkimTokens) {
+        const records = [];
+        if (includeVerificationRecord) {
+            records.push({
+                Name: \`_amazonses.\${domainName}.\`,
+                Type: \\"TXT\\",
+                ResourceRecords: [\`\\"\${verificationToken}\\"\`],
+                TTL: ttl,
+            });
+        }
+        for (const token of dkimTokens) {
+            records.push({
+                Name: \`\${token}._domainkey.\${domainName}.\`,
+                Type: \\"CNAME\\",
+                ResourceRecords: [\`\${token}.dkim.amazonses.com.\`],
+                TTL: ttl,
+            });
+        }
+        return records;
+    }
+    switch (event.RequestType) {
+        case \\"Delete\\":
+            const response = await ses
+                .deleteIdentity({ Identity: domainName })
+                .promise();
+            console.log(\`ses.deleteIdentity: \${JSON.stringify(response)}\`);
+            return {
+                PhysicalResourceId: event.PhysicalResourceId,
+            };
+        case \\"Create\\":
+        case \\"Update\\":
+            // Idempotent.
+            const response1 = await ses
+                .verifyDomainIdentity({
+                Domain: domainName,
+            })
+                .promise();
+            console.log(\`ses.verifyDomainIdentity: \${JSON.stringify(response1)}\`);
+            const verificationToken = response1[\\"VerificationToken\\"];
+            // Idempotent.
+            const response2 = await ses
+                .verifyDomainDkim({ Domain: domainName })
+                .promise();
+            console.log(\`ses.verifyDomainDkim: \${JSON.stringify(response2)}\`);
+            const dkimTokens = response2[\\"DkimTokens\\"];
+            // Idempotent.
+            const response3 = await sesv2
+                .putEmailIdentityConfigurationSetAttributes({
+                EmailIdentity: domainName,
+                // ConfigurationSetName can be set to undefined to remove
+                // the default configuration set from the identity.
+                ConfigurationSetName: defaultConfigurationSetName,
+            })
+                .promise();
+            console.log(\`sesv2.putEmailIdentityConfigurationSetAttributes \${JSON.stringify(response3)}\`);
+            return {
+                PhysicalResourceId: \`SesDomain\${domainName}\`,
+                Data: {
+                    Route53RecordSets: createRoute53RecordSets(verificationToken, dkimTokens),
+                    VerificationToken: verificationToken,
+                },
+            };
+    }
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -314,7 +512,12 @@ Object {
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "45017ac1fb5b50dac36a255c328b0fe125f18a8e6d3689e188eab5e3a1bf8146.zip",
+        },
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
         "Environment": Object {
           "Variables": Object {
@@ -412,11 +615,45 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
   },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
 }
 `;
 
 exports[`ses-domain with hosted zone 1`] = `
 Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -468,7 +705,83 @@ Object {
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = async (event) => {
+    const AWS = require(\\"aws-sdk\\");
+    const ttl = \\"1800\\";
+    const ses = new AWS.SES();
+    const sesv2 = new AWS.SESV2();
+    const domainName = event.ResourceProperties[\\"DomainName\\"];
+    const includeVerificationRecord = event.ResourceProperties[\\"IncludeVerificationRecord\\"] == \\"true\\";
+    const defaultConfigurationSetName = event.ResourceProperties[\\"DefaultConfigurationSetName\\"];
+    if (!includeVerificationRecord) {
+        console.log(\\"Excluding verification TXT record\\");
+    }
+    function createRoute53RecordSets(verificationToken, dkimTokens) {
+        const records = [];
+        if (includeVerificationRecord) {
+            records.push({
+                Name: \`_amazonses.\${domainName}.\`,
+                Type: \\"TXT\\",
+                ResourceRecords: [\`\\"\${verificationToken}\\"\`],
+                TTL: ttl,
+            });
+        }
+        for (const token of dkimTokens) {
+            records.push({
+                Name: \`\${token}._domainkey.\${domainName}.\`,
+                Type: \\"CNAME\\",
+                ResourceRecords: [\`\${token}.dkim.amazonses.com.\`],
+                TTL: ttl,
+            });
+        }
+        return records;
+    }
+    switch (event.RequestType) {
+        case \\"Delete\\":
+            const response = await ses
+                .deleteIdentity({ Identity: domainName })
+                .promise();
+            console.log(\`ses.deleteIdentity: \${JSON.stringify(response)}\`);
+            return {
+                PhysicalResourceId: event.PhysicalResourceId,
+            };
+        case \\"Create\\":
+        case \\"Update\\":
+            // Idempotent.
+            const response1 = await ses
+                .verifyDomainIdentity({
+                Domain: domainName,
+            })
+                .promise();
+            console.log(\`ses.verifyDomainIdentity: \${JSON.stringify(response1)}\`);
+            const verificationToken = response1[\\"VerificationToken\\"];
+            // Idempotent.
+            const response2 = await ses
+                .verifyDomainDkim({ Domain: domainName })
+                .promise();
+            console.log(\`ses.verifyDomainDkim: \${JSON.stringify(response2)}\`);
+            const dkimTokens = response2[\\"DkimTokens\\"];
+            // Idempotent.
+            const response3 = await sesv2
+                .putEmailIdentityConfigurationSetAttributes({
+                EmailIdentity: domainName,
+                // ConfigurationSetName can be set to undefined to remove
+                // the default configuration set from the identity.
+                ConfigurationSetName: defaultConfigurationSetName,
+            })
+                .promise();
+            console.log(\`sesv2.putEmailIdentityConfigurationSetAttributes \${JSON.stringify(response3)}\`);
+            return {
+                PhysicalResourceId: \`SesDomain\${domainName}\`,
+                Data: {
+                    Route53RecordSets: createRoute53RecordSets(verificationToken, dkimTokens),
+                    VerificationToken: verificationToken,
+                },
+            };
+    }
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -549,7 +862,12 @@ Object {
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "45017ac1fb5b50dac36a255c328b0fe125f18a8e6d3689e188eab5e3a1bf8146.zip",
+        },
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
         "Environment": Object {
           "Variables": Object {
@@ -647,11 +965,45 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
   },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
 }
 `;
 
 exports[`ses-domain without hosted zone 1`] = `
 Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -675,7 +1027,83 @@ Object {
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "ZipFile": "exports.handler = async (event) => {
+    const AWS = require(\\"aws-sdk\\");
+    const ttl = \\"1800\\";
+    const ses = new AWS.SES();
+    const sesv2 = new AWS.SESV2();
+    const domainName = event.ResourceProperties[\\"DomainName\\"];
+    const includeVerificationRecord = event.ResourceProperties[\\"IncludeVerificationRecord\\"] == \\"true\\";
+    const defaultConfigurationSetName = event.ResourceProperties[\\"DefaultConfigurationSetName\\"];
+    if (!includeVerificationRecord) {
+        console.log(\\"Excluding verification TXT record\\");
+    }
+    function createRoute53RecordSets(verificationToken, dkimTokens) {
+        const records = [];
+        if (includeVerificationRecord) {
+            records.push({
+                Name: \`_amazonses.\${domainName}.\`,
+                Type: \\"TXT\\",
+                ResourceRecords: [\`\\"\${verificationToken}\\"\`],
+                TTL: ttl,
+            });
+        }
+        for (const token of dkimTokens) {
+            records.push({
+                Name: \`\${token}._domainkey.\${domainName}.\`,
+                Type: \\"CNAME\\",
+                ResourceRecords: [\`\${token}.dkim.amazonses.com.\`],
+                TTL: ttl,
+            });
+        }
+        return records;
+    }
+    switch (event.RequestType) {
+        case \\"Delete\\":
+            const response = await ses
+                .deleteIdentity({ Identity: domainName })
+                .promise();
+            console.log(\`ses.deleteIdentity: \${JSON.stringify(response)}\`);
+            return {
+                PhysicalResourceId: event.PhysicalResourceId,
+            };
+        case \\"Create\\":
+        case \\"Update\\":
+            // Idempotent.
+            const response1 = await ses
+                .verifyDomainIdentity({
+                Domain: domainName,
+            })
+                .promise();
+            console.log(\`ses.verifyDomainIdentity: \${JSON.stringify(response1)}\`);
+            const verificationToken = response1[\\"VerificationToken\\"];
+            // Idempotent.
+            const response2 = await ses
+                .verifyDomainDkim({ Domain: domainName })
+                .promise();
+            console.log(\`ses.verifyDomainDkim: \${JSON.stringify(response2)}\`);
+            const dkimTokens = response2[\\"DkimTokens\\"];
+            // Idempotent.
+            const response3 = await sesv2
+                .putEmailIdentityConfigurationSetAttributes({
+                EmailIdentity: domainName,
+                // ConfigurationSetName can be set to undefined to remove
+                // the default configuration set from the identity.
+                ConfigurationSetName: defaultConfigurationSetName,
+            })
+                .promise();
+            console.log(\`sesv2.putEmailIdentityConfigurationSetAttributes \${JSON.stringify(response3)}\`);
+            return {
+                PhysicalResourceId: \`SesDomain\${domainName}\`,
+                Data: {
+                    Route53RecordSets: createRoute53RecordSets(verificationToken, dkimTokens),
+                    VerificationToken: verificationToken,
+                },
+            };
+    }
+};",
+        },
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -756,7 +1184,12 @@ Object {
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
       "Properties": Object {
-        "Code": Any<Object>,
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "45017ac1fb5b50dac36a255c328b0fe125f18a8e6d3689e188eab5e3a1bf8146.zip",
+        },
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
         "Environment": Object {
           "Variables": Object {
@@ -852,6 +1285,33 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
     },
   },
 }

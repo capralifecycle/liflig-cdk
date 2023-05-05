@@ -1,4 +1,4 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
@@ -6,7 +6,6 @@ import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { FargateService, ListenerRule } from ".."
 import { Parameter } from "../../configure-parameters/configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
@@ -89,5 +88,5 @@ test("creates fargate service with parameters and listener rule", () => {
     targetGroup: service.targetGroup!,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

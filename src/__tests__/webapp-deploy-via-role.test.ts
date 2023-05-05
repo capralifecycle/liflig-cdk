@@ -1,7 +1,7 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { Distribution } from "aws-cdk-lib/aws-cloudfront"
 import { Bucket } from "aws-cdk-lib/aws-s3"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { WebappDeployViaRole } from "../webapp-deploy-via-role"
 
 test("webapp-deploy-via-role", () => {
@@ -35,5 +35,5 @@ test("webapp-deploy-via-role", () => {
     },
   })
 
-  expect(stack1).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack1).toJSON()).toMatchSnapshot()
 })

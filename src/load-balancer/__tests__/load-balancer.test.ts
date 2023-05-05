@@ -1,9 +1,8 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { LoadBalancer } from ".."
 
 test("create load balancer", () => {
@@ -36,5 +35,5 @@ test("create load balancer", () => {
     vpc: vpc,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

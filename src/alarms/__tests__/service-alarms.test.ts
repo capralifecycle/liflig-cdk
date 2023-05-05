@@ -1,9 +1,8 @@
-import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
+import * as assertions from "aws-cdk-lib/assertions"
 import { ServiceAlarms } from "../service-alarms"
 
 test("create alarms", () => {
@@ -30,5 +29,5 @@ test("create alarms", () => {
     targetGroupFullName: "targetgroup/my-target-group/cbf133c568e0d028",
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

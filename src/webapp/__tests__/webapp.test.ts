@@ -1,13 +1,12 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Duration, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { Webapp } from "../"
 import { generateContentSecurityPolicyHeader } from "../security-headers"
 test("create webapp with default parameters", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new Webapp(stack, "Webapp", {})
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("create webapp with domain and security headers", () => {
@@ -16,7 +15,7 @@ test("create webapp with domain and security headers", () => {
   new Webapp(stack, "Webapp", {
     domainNames: ["example.com"],
   })
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("create webapp with domain and custom response header policy with CSP", () => {
@@ -40,7 +39,7 @@ test("create webapp with domain and custom response header policy with CSP", () 
       },
     },
   })
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("create webapp with domain and custom response header policy with report-only CSP", () => {
@@ -66,5 +65,5 @@ test("create webapp with domain and custom response header policy with report-on
       },
     },
   })
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

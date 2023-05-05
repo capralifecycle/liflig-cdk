@@ -1,6 +1,6 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { CfnParameter } from "aws-cdk-lib/aws-ssm"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SsmParameterReader } from "../ssm-parameter-reader"
 
 test("ssm-parameter-reader", () => {
@@ -21,5 +21,5 @@ test("ssm-parameter-reader", () => {
     nonce: "123",
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack2).toJSON()).toMatchSnapshot()
 })

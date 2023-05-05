@@ -1,5 +1,5 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { ConfigurationSetDeliveryOptions } from "../index"
 
 test("configuration-set-delivery-options", () => {
@@ -11,7 +11,5 @@ test("configuration-set-delivery-options", () => {
     tlsPolicy: "Require",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

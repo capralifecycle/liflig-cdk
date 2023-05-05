@@ -1,5 +1,5 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 
 test("cross-region-ssm-parameter", () => {
   const app = new App()
@@ -8,6 +8,5 @@ test("cross-region-ssm-parameter", () => {
       region: "us-east-1",
     },
   })
-
-  expect(stack1).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack1).toJSON()).toMatchSnapshot()
 })

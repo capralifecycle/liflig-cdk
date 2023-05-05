@@ -1,14 +1,10 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
 import { SlackNotification } from "../slack-notification"
 
 test("slack-notification", () => {
-  const app = new App({
-    context: {
-      "@aws-cdk/core:newStyleStackSynthesis": true,
-    },
-  })
+  const app = new App()
 
   const stage = new Stage(app, "Stage")
   const stack = new Stack(stage, "Stack")
@@ -36,10 +32,12 @@ test("slack-notification", () => {
     slackChannel: "#test-other",
     singletonLambdaUuid: "f0d7e25c-8247-48bb-beb4-5b1d8ff91f30",
   })
-
-  expect(pipelineStack).toHaveResourceLike("AWS::Events::Rule", {
-    EventPattern: {
-      source: ["aws.codepipeline"],
+  assertions.Template.fromStack(pipelineStack).hasResourceProperties(
+    "AWS::Events::Rule",
+    {
+      EventPattern: assertions.Match.objectLike({
+        source: assertions.Match.arrayEquals(["aws.codepipeline"]),
+      }),
     },
-  })
+  )
 })

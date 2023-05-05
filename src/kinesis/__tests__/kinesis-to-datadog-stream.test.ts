@@ -1,7 +1,6 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import * as logs from "aws-cdk-lib/aws-logs"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { KinesisToDatadogStream } from "../kinesis-to-datadog-stream"
 
 test("create kinesis stream", () => {
@@ -23,6 +22,5 @@ test("create kinesis stream", () => {
     logGroups: [logGroup],
     datadogApiKeySecretName: "DATADOG-SECRET",
   })
-
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

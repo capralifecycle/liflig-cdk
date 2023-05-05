@@ -3,4 +3,8 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },
+  snapshotFormat: {
+    printBasicPrototype: true,
+    escapeString: true,
+  },
 }

@@ -1,7 +1,7 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as sfn from "aws-cdk-lib/aws-stepfunctions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { LifligCdkDeployerDeps, Pipeline } from "../"
 
 test("LifligCdkDeployerDeps", () => {
@@ -15,8 +15,7 @@ test("LifligCdkDeployerDeps", () => {
   new LifligCdkDeployerDeps(stack, "LifligCdkDeployerDeps", {
     trustedAccountIds: ["112233445566"],
   })
-
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("Pipeline", () => {
@@ -47,7 +46,7 @@ test("Pipeline", () => {
     vpc,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })
 
 test("Pipeline with after deploy task", () => {
@@ -81,5 +80,5 @@ test("Pipeline with after deploy task", () => {
     vpc,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

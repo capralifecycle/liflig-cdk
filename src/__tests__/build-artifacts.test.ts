@@ -1,7 +1,5 @@
-import { arrayWith, objectLike } from "@aws-cdk/assert"
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { BuildArtifacts } from "../build-artifacts"
 
 test("add policy to Griid role", () => {
@@ -14,14 +12,17 @@ test("add policy to Griid role", () => {
     targetAccountIds: ["112233445566"],
   })
 
-  expect(stack).toHaveResourceLike("AWS::IAM::Policy", {
-    PolicyDocument: {
-      Statement: arrayWith(
-        objectLike({
-          Action: "ssm:PutParameter",
-        }),
-      ),
+  assertions.Template.fromStack(stack).hasResourceProperties(
+    "AWS::IAM::Policy",
+    {
+      Roles: assertions.Match.arrayWith(["CIExternalAccessRole"]),
+      PolicyDocument: assertions.Match.objectLike({
+        Statement: assertions.Match.arrayWith([
+          assertions.Match.objectLike({
+            Action: "ssm:PutParameter",
+          }),
+        ]),
+      }),
     },
-    Roles: ["CIExternalAccessRole"],
-  })
+  )
 })

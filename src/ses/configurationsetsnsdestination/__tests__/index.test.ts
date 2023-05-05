@@ -1,6 +1,6 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import * as sns from "aws-cdk-lib/aws-sns"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { ConfigurationSetSnsDestination } from "../index"
 
 test("configuration-set-sns-destination", () => {
@@ -22,8 +22,5 @@ test("configuration-set-sns-destination", () => {
       "SEND",
     ],
   })
-
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

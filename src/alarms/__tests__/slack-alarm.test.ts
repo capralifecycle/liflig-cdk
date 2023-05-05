@@ -1,6 +1,5 @@
-import "@aws-cdk/assert/jest"
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SlackAlarm } from "../slack-alarm"
 
 test("create slack alarm", () => {
@@ -14,5 +13,5 @@ test("create slack alarm", () => {
     slackUrl: "https://hooks.slack.com/services/ABC/DEF/123",
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack).toJSON()).toMatchSnapshot()
 })

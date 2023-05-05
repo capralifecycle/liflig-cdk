@@ -1,5 +1,5 @@
+import * as assertions from "aws-cdk-lib/assertions"
 import { App, CfnOutput, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { HostedZoneWithParam } from "../hosted-zone-with-param"
 
 test("hosted-zone-with-param for same region", () => {
@@ -25,8 +25,8 @@ test("hosted-zone-with-param for same region", () => {
     value: hostedZone2.hostedZoneId,
   })
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack1).toJSON()).toMatchSnapshot()
+  expect(assertions.Template.fromStack(stack2).toJSON()).toMatchSnapshot()
 })
 
 test("hosted-zone-with-param for different region", () => {
@@ -52,6 +52,6 @@ test("hosted-zone-with-param for different region", () => {
     value: hostedZone2.hostedZoneId,
   })
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  expect(assertions.Template.fromStack(stack1).toJSON()).toMatchSnapshot()
+  expect(assertions.Template.fromStack(stack2).toJSON()).toMatchSnapshot()
 })
