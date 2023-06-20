@@ -192,7 +192,7 @@ export class DatabaseAlarms extends constructs.Construct {
       metricName: "FreeStorageSpace",
       namespace: "AWS/RDS",
       statistic: "Minimum",
-      unit: Unit.GIGABYTES,
+      unit: Unit.BYTES,
       period: cdk.Duration.minutes(5),
       dimensionsMap: {
         DBInstanceIdentifier: this.databaseInstanceIdentifier,
@@ -202,8 +202,8 @@ export class DatabaseAlarms extends constructs.Construct {
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
       evaluationPeriods: 1,
       threshold:
-        props?.lowStorageSpaceAlarm?.threshold?.toGibibytes() ??
-        this.allocatedStorage.toGibibytes() * 0.25,
+        props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
+        this.allocatedStorage.toBytes() * 0.25,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props?.lowStorageSpaceAlarm?.enabled ?? true) {
@@ -219,7 +219,7 @@ export class DatabaseAlarms extends constructs.Construct {
       metricName: "FreeStorageSpace",
       namespace: "AWS/RDS",
       statistic: "Minimum",
-      unit: Unit.GIGABYTES,
+      unit: Unit.BYTES,
       period: cdk.Duration.minutes(5),
       dimensionsMap: {
         DBInstanceIdentifier: this.databaseInstanceIdentifier,
@@ -229,8 +229,8 @@ export class DatabaseAlarms extends constructs.Construct {
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
       evaluationPeriods: 1,
       threshold:
-        props?.criticallyLowStorageSpaceAlarm?.threshold?.toGibibytes() ??
-        this.allocatedStorage.toGibibytes() * 0.05,
+        props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
+        this.allocatedStorage.toBytes() * 0.05,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props?.criticallyLowStorageSpaceAlarm?.enabled ?? true) {
