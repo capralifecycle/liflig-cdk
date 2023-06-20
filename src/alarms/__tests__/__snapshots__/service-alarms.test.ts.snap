@@ -206,7 +206,6 @@ Object {
         "Period": 300,
         "Threshold": 0.5,
         "TreatMissingData": "ignore",
-        "Unit": "Seconds",
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
