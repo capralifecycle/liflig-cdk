@@ -295,7 +295,7 @@ export class ServiceAlarms extends constructs.Construct {
       namespace: "AWS/ApplicationELB",
       statistic: "p95",
       period: props.targetResponseTimeAlarm?.period ?? cdk.Duration.minutes(5),
-      unit: cloudwatch.Unit.MILLISECONDS,
+      unit: cloudwatch.Unit.SECONDS,
       dimensionsMap: {
         LoadBalancer: props.loadBalancerFullName,
         TargetGroup: props.targetGroupFullName,
@@ -308,7 +308,7 @@ export class ServiceAlarms extends constructs.Construct {
       evaluationPeriods: props.targetResponseTimeAlarm?.evaluationPeriods ?? 1,
       threshold: (
         props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.millis(500)
-      ).toMilliseconds(),
+      ).toSeconds({ integral: false }),
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props.targetResponseTimeAlarm?.enabled ?? true) {
