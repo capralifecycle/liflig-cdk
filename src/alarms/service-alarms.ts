@@ -302,7 +302,11 @@ export class ServiceAlarms extends constructs.Construct {
     }).createAlarm(this, "TargetResponseTimeAlarm", {
       alarmDescription:
         props.targetResponseTimeAlarm?.description ??
-        `5% of responses from ECS service '${this.serviceName}' are taking longer than expected.`,
+        `5% of responses from ECS service '${
+          this.serviceName
+        }' are taking longer than the expected duration of ${(
+          props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.millis(500)
+        ).toMilliseconds()} ms.`,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       evaluationPeriods: props.targetResponseTimeAlarm?.evaluationPeriods ?? 1,
       threshold: (
