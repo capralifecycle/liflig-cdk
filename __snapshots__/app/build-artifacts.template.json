@@ -215,7 +215,11 @@
               "Action": [
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage"
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage"
               ],
               "Effect": "Allow",
               "Resource": {
@@ -229,21 +233,6 @@
               "Action": "ecr:GetAuthorizationToken",
               "Effect": "Allow",
               "Resource": "*"
-            },
-            {
-              "Action": [
-                "ecr:PutImage",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "BuildArtifactsEcrRepository58C90D9A",
-                  "Arn"
-                ]
-              }
             },
             {
               "Action": "ssm:PutParameter",
