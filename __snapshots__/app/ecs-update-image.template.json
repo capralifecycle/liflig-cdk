@@ -913,6 +913,9 @@
           "Ref": "TaskDefinitionB36D86D9"
         }
       },
+      "DependsOn": [
+        "TaskDefinitionTaskRoleFD40A61D"
+      ],
       "Metadata": {
         "aws:cdk:path": "ecs-update-image/Service/Service"
       }
@@ -946,6 +949,9 @@
           "Ref": "ClusterVpcFAA3CEDF"
         }
       },
+      "DependsOn": [
+        "TaskDefinitionTaskRoleFD40A61D"
+      ],
       "Metadata": {
         "aws:cdk:path": "ecs-update-image/Service/SecurityGroup/Resource"
       }
