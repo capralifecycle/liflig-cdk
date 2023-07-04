@@ -62,6 +62,8 @@ Object {
         "ServiceConfigExamplePlainTextParameterC948638B",
         "ServiceSecretExampleSecretByNameParameterB153ADD4",
         "ServiceSecretExampleSecretParameter2147C87C",
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
       ],
       "Properties": Object {
         "Cluster": Object {
