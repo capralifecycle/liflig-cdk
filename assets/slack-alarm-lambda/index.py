@@ -64,7 +64,6 @@ def send_slack_notification(message, region):
         response.read()
         return "Message posted to: " + slackMessage['channel']
     except HTTPError as e:
-        raise Exception("Request to slack failed: " +
-                        e.code + " " + e.reason)
+        raise Exception(f"Request to slack failed: {e.code} {e.reason}")
     except URLError as e:
-        raise Exception("Server connection to slack failed: " + e.reason)
+        raise Exception(f"Server connection to slack failed: {e.reason}")
