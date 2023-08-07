@@ -44,7 +44,7 @@ def send_slack_notification(message, region):
             {'title': 'Project', 'value': PROJECT_NAME, 'short': True},
             {'title': 'Environment', 'value': ENVIRONMENT_NAME, 'short': True},
             {'title': 'State Transition',
-             'value': message['OldStateValue'] + ' -> ' + message['NewStateValue'], 'short': False},
+             'value': message.get('OldStateValue', 'Unknown') + ' -> ' + message['NewStateValue'], 'short': False},
             {'title': 'Link to Alarm', 'value': "https://console.aws.amazon.com/cloudwatch/home?region=" +
              region + "#alarm:alarmFilter=ANY;name=" + message['AlarmName'], "short": False},
         ]
