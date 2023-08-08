@@ -44,7 +44,7 @@ def send_slack_notification(message, region):
             {'title': 'Project', 'value': PROJECT_NAME, 'short': True},
             {'title': 'Environment', 'value': ENVIRONMENT_NAME, 'short': True},
             {'title': 'State Transition',
-             'value': message['OldStateValue'] + ' -> ' + message['NewStateValue'], 'short': False},
+             'value': message.get('OldStateValue', 'Unknown') + ' -> ' + message['NewStateValue'], 'short': False},
             {'title': 'Link to Alarm', 'value': "https://console.aws.amazon.com/cloudwatch/home?region=" +
              region + "#alarm:alarmFilter=ANY;name=" + message['AlarmName'], "short": False},
         ]
@@ -64,7 +64,6 @@ def send_slack_notification(message, region):
         response.read()
         return "Message posted to: " + slackMessage['channel']
     except HTTPError as e:
-        raise Exception("Request to slack failed: " +
-                        e.code + " " + e.reason)
+        raise Exception(f"Request to slack failed: {e.code} {e.reason}")
     except URLError as e:
-        raise Exception("Server connection to slack failed: " + e.reason)
+        raise Exception(f"Server connection to slack failed: {e.reason}")
