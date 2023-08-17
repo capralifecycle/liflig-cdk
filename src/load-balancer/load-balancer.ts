@@ -10,6 +10,7 @@ export interface LoadBalancerProps {
   certificates: certificatemanager.ICertificate[]
   vpc: ec2.IVpc
   overrideLoadBalancerProps?: Partial<elb.ApplicationLoadBalancerProps>
+  overrideHttpsListenerProps?: Partial<elb.BaseApplicationListenerProps>
 }
 
 export class LoadBalancer extends constructs.Construct {
@@ -64,6 +65,7 @@ export class LoadBalancer extends constructs.Construct {
       port: 443,
       certificates: props.certificates,
       defaultTargetGroups: [defaultTargetGroup],
+      ...props.overrideHttpsListenerProps,
     })
 
     this.accessLogsBucket = new s3.Bucket(this, "AccessLogsBucket", {
