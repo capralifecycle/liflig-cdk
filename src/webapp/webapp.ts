@@ -87,6 +87,12 @@ export interface WebappProps {
    * any values specified in securityHeaders.behaviorOverrides.
    */
   overrideCloudFrontBehaviourOptions?: Partial<cloudfront.BehaviorOptions>
+  /**
+   * Distribution props overrides.
+   *
+   * Used to override default (AWS or Liflig) configuration
+   */
+  overrideDistributionProps?: Partial<cloudfront.DistributionProps>
 }
 
 /**
@@ -191,6 +197,7 @@ export class Webapp extends constructs.Construct {
       domainNames: props.domainNames,
       errorResponses,
       webAclId: props.webAclId,
+      ...props.overrideDistributionProps,
     })
   }
 

@@ -3,6 +3,7 @@ import { App, Duration, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { Webapp } from "../"
 import { generateContentSecurityPolicyHeader } from "../security-headers"
+import { SecurityPolicyProtocol } from "aws-cdk-lib/aws-cloudfront"
 test("create webapp with default parameters", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
@@ -64,6 +65,17 @@ test("create webapp with domain and custom response header policy with report-on
           reportOnly: true,
         },
       },
+    },
+  })
+  expect(stack).toMatchCdkSnapshot()
+})
+
+test("create webapp with domain and override TLS configuration", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new Webapp(stack, "Webapp", {
+    overrideDistributionProps: {
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
     },
   })
   expect(stack).toMatchCdkSnapshot()
