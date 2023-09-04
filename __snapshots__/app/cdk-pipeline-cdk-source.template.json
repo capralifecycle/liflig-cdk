@@ -185,14 +185,14 @@
           },
           "S3Key": "snapshot-value.zip"
         },
+        "Handler": "index.handler",
+        "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
             "PipelinePrepareCdkSourceFnServiceRole4C7FA4DB",
             "Arn"
           ]
         },
-        "Handler": "index.handler",
-        "MemorySize": 512,
         "Runtime": "python3.8",
         "Tags": [
           {
@@ -639,6 +639,23 @@
     "PipelineCodePipeline4FC0E9B7": {
       "Type": "AWS::CodePipeline::Pipeline",
       "Properties": {
+        "ArtifactStore": {
+          "EncryptionKey": {
+            "Id": {
+              "Fn::GetAtt": [
+                "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
+                "Arn"
+              ]
+            },
+            "Type": "KMS"
+          },
+          "Location": {
+            "Ref": "PipelineCodePipelineArtifactsBucket9E5E7047"
+          },
+          "Type": "S3"
+        },
+        "Name": "test-pipeline",
+        "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
             "PipelineCodePipelineRoleEE058E60",
@@ -872,23 +889,6 @@
             "Name": "example"
           }
         ],
-        "ArtifactStore": {
-          "EncryptionKey": {
-            "Id": {
-              "Fn::GetAtt": [
-                "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
-                "Arn"
-              ]
-            },
-            "Type": "KMS"
-          },
-          "Location": {
-            "Ref": "PipelineCodePipelineArtifactsBucket9E5E7047"
-          },
-          "Type": "S3"
-        },
-        "Name": "test-pipeline",
-        "RestartExecutionOnUpdate": true,
         "Tags": [
           {
             "Key": "Project",
@@ -1532,9 +1532,19 @@
         "Artifacts": {
           "Type": "CODEPIPELINE"
         },
+        "Cache": {
+          "Type": "NO_CACHE"
+        },
+        "Description": "Pipeline step cdk-pipeline-cdk-source/CodePipeline/Build/GenerateCloudAssembly",
+        "EncryptionKey": {
+          "Fn::GetAtt": [
+            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
+            "Arn"
+          ]
+        },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "Image": "aws/codebuild/standard:6.0",
+          "Image": "aws/codebuild/standard:7.0",
           "ImagePullCredentialsType": "CODEBUILD",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
@@ -1548,16 +1558,6 @@
         "Source": {
           "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"npm ci\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"npx cdk synth\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"base-directory\": \"cdk.out\",\n    \"files\": \"**/*\"\n  }\n}",
           "Type": "CODEPIPELINE"
-        },
-        "Cache": {
-          "Type": "NO_CACHE"
-        },
-        "Description": "Pipeline step cdk-pipeline-cdk-source/CodePipeline/Build/GenerateCloudAssembly",
-        "EncryptionKey": {
-          "Fn::GetAtt": [
-            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
-            "Arn"
-          ]
         }
       },
       "Metadata": {
@@ -1966,9 +1966,19 @@
         "Artifacts": {
           "Type": "CODEPIPELINE"
         },
+        "Cache": {
+          "Type": "NO_CACHE"
+        },
+        "Description": "Pipeline step cdk-pipeline-cdk-source/CodePipeline/UpdatePipeline/SelfMutate",
+        "EncryptionKey": {
+          "Fn::GetAtt": [
+            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
+            "Arn"
+          ]
+        },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "Image": "aws/codebuild/standard:6.0",
+          "Image": "aws/codebuild/standard:7.0",
           "ImagePullCredentialsType": "CODEBUILD",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
@@ -1982,16 +1992,6 @@
         "Source": {
           "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"npm install -g aws-cdk@2\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"cdk -a . deploy cdk-pipeline-cdk-source --require-approval=never --verbose\"\n      ]\n    }\n  }\n}",
           "Type": "CODEPIPELINE"
-        },
-        "Cache": {
-          "Type": "NO_CACHE"
-        },
-        "Description": "Pipeline step cdk-pipeline-cdk-source/CodePipeline/UpdatePipeline/SelfMutate",
-        "EncryptionKey": {
-          "Fn::GetAtt": [
-            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
-            "Arn"
-          ]
         },
         "Tags": [
           {
