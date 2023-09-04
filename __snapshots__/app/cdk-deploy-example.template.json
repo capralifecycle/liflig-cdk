@@ -434,6 +434,10 @@
         "Artifacts": {
           "Type": "NO_ARTIFACTS"
         },
+        "Cache": {
+          "Type": "NO_CACHE"
+        },
+        "EncryptionKey": "alias/aws/s3",
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
           "Image": "node:16",
@@ -465,10 +469,6 @@
           },
           "Type": "NO_SOURCE"
         },
-        "Cache": {
-          "Type": "NO_CACHE"
-        },
-        "EncryptionKey": "alias/aws/s3",
         "Tags": [
           {
             "Key": "Project",
@@ -612,12 +612,6 @@
         "Code": {
           "ZipFile": "exports.handler = async (event, context) => {\n    var _a;\n    const AWS = require(\"aws-sdk\");\n    const codebuild = new AWS.CodeBuild();\n    const s3 = new AWS.S3();\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    const projectName = requireEnv(\"PROJECT_NAME\");\n    const bucketName = requireEnv(\"BUCKET_NAME\");\n    const cdkContext = JSON.parse(requireEnv(\"CDK_CONTEXT\"));\n    // Since we pass the stack names as strings to the shell,\n    // be a bit restrictive of the valid values we can use.\n    const validStackName = /^[a-z0-9_][a-z0-9\\-_]*$/i;\n    const s3KeyPrefix = `${context.awsRequestId}/`;\n    // Validate the input.\n    if (typeof event.bucketName !== \"string\" ||\n        typeof event.bucketKey !== \"string\" ||\n        !Array.isArray(event.stackNames) ||\n        !event.stackNames.every((it) => typeof it === \"string\" && validStackName.test(it))) {\n        throw new Error(\"Input invalid: \" + JSON.stringify(event, undefined, \"  \"));\n    }\n    async function put(name, data) {\n        await s3\n            .putObject({\n            Bucket: bucketName,\n            Key: `${s3KeyPrefix}${name}`,\n            Body: data,\n        })\n            .promise();\n    }\n    await put(\"stack-names.txt\", event.stackNames.join(\" \"));\n    // Ensure that we run the script using same feature flags.\n    await put(\"cdk.json\", JSON.stringify({\n        context: cdkContext,\n    }));\n    const build = await codebuild\n        .startBuild({\n        projectName,\n        sourceTypeOverride: \"S3\",\n        sourceLocationOverride: `${bucketName}/${s3KeyPrefix}`,\n        secondarySourcesOverride: [\n            {\n                type: \"S3\",\n                location: `${event.bucketName}/${event.bucketKey}`,\n                sourceIdentifier: \"CLOUDASSEMBLY\",\n            },\n        ],\n    })\n        .promise();\n    const buildId = (_a = build.build) === null || _a === void 0 ? void 0 : _a.id;\n    if (buildId == null) {\n        throw new Error(\"Unknown build ID\");\n    }\n    return {\n        // This is the value the caller will use to fetch updated status.\n        // Avoid exposing what kind of ID this is, because we should be free\n        // to change implementation details.\n        jobId: buildId,\n    };\n};"
         },
-        "Role": {
-          "Fn::GetAtt": [
-            "CdkDeployStartDeployFunctionServiceRole191AEEB8",
-            "Arn"
-          ]
-        },
         "Environment": {
           "Variables": {
             "PROJECT_NAME": {
@@ -631,6 +625,12 @@
         },
         "FunctionName": "start-deploy",
         "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "CdkDeployStartDeployFunctionServiceRole191AEEB8",
+            "Arn"
+          ]
+        },
         "Runtime": "nodejs16.x",
         "Tags": [
           {
@@ -755,12 +755,6 @@
         "Code": {
           "ZipFile": "exports.handler = async (event) => {\n    const AWS = require(\"aws-sdk\");\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    /**\n     * Get success status.\n     *\n     * A value of true means the job has completed successfully, while\n     * a value of false means the job did complete but not successfully.\n     *\n     * A null value means the job is still in progress and the\n     * completion status is not yet known.\n     */\n    function getSuccess(status) {\n        if (status == \"SUCCEEDED\") {\n            return true;\n        }\n        if (status == \"IN_PROGRESS\") {\n            return null;\n        }\n        return false;\n    }\n    async function getBuild(buildId) {\n        var _a, _b, _c;\n        const codebuild = new AWS.CodeBuild();\n        const result = await codebuild.batchGetBuilds({ ids: [buildId] }).promise();\n        if (((_a = result.builds) === null || _a === void 0 ? void 0 : _a.length) !== 1) {\n            throw new Error(`Expected 1 item, found ${(_c = (_b = result.builds) === null || _b === void 0 ? void 0 : _b.length) !== null && _c !== void 0 ? _c : \"unknown\"}`);\n        }\n        return result.builds[0];\n    }\n    async function getLogs(build) {\n        if (build.logs == null) {\n            throw new Error(\"Missing logs attribute on build\");\n        }\n        if (build.logs.groupName == null) {\n            throw new Error(\"Missing log groupName\");\n        }\n        if (build.logs.streamName == null) {\n            throw new Error(\"Missing log streamName\");\n        }\n        const cloudwatchlogs = new AWS.CloudWatchLogs();\n        const data = await cloudwatchlogs\n            .getLogEvents({\n            logGroupName: build.logs.groupName,\n            logStreamName: build.logs.streamName,\n            startFromHead: true,\n        })\n            .promise();\n        if (data.events == null) {\n            throw new Error(\"Failed to fetch log events\");\n        }\n        // The logs contain newlines, so no need to add more.\n        return data.events.map((it) => it.message).join(\"\");\n    }\n    const projectName = requireEnv(\"PROJECT_NAME\");\n    // Validate the input.\n    if (typeof event.jobId !== \"string\" ||\n        !event.jobId.startsWith(`${projectName}:`)) {\n        throw new Error(\"Input invalid: \" + JSON.stringify(event, undefined, \"  \"));\n    }\n    const build = await getBuild(event.jobId);\n    const success = build.buildStatus == null ? null : getSuccess(build.buildStatus);\n    // Read logs from CloudWatch if completed.\n    const logs = success != null ? await getLogs(build) : null;\n    return {\n        jobId: event.jobId,\n        success,\n        logs,\n    };\n};"
         },
-        "Role": {
-          "Fn::GetAtt": [
-            "CdkDeployStatusFunctionServiceRole38060AFB",
-            "Arn"
-          ]
-        },
         "Environment": {
           "Variables": {
             "PROJECT_NAME": {
@@ -770,6 +764,12 @@
         },
         "FunctionName": "status",
         "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "CdkDeployStatusFunctionServiceRole38060AFB",
+            "Arn"
+          ]
+        },
         "Runtime": "nodejs16.x",
         "Tags": [
           {
