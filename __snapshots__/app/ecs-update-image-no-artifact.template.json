@@ -55,6 +55,9 @@
     "ClusterVpcPublicSubnet1SubnetA9F7E0A5": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "AvailabilityZone": "eu-west-1a",
         "CidrBlock": "10.0.0.0/18",
         "MapPublicIpOnLaunch": true,
@@ -83,10 +86,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1/Subnet"
@@ -95,6 +95,9 @@
     "ClusterVpcPublicSubnet1RouteTable5594A636": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -112,10 +115,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet1/RouteTable"
@@ -138,12 +138,12 @@
     "ClusterVpcPublicSubnet1DefaultRoute62DA4B4B": {
       "Type": "AWS::EC2::Route",
       "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet1RouteTable5594A636"
+        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "GatewayId": {
           "Ref": "ClusterVpcIGW1E358A6E"
-        },
-        "RouteTableId": {
-          "Ref": "ClusterVpcPublicSubnet1RouteTable5594A636"
         }
       },
       "DependsOn": [
@@ -183,14 +183,14 @@
     "ClusterVpcPublicSubnet1NATGateway0693C346": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5"
+        },
         "AllocationId": {
           "Fn::GetAtt": [
             "ClusterVpcPublicSubnet1EIP433C56EE",
             "AllocationId"
           ]
-        },
-        "SubnetId": {
-          "Ref": "ClusterVpcPublicSubnet1SubnetA9F7E0A5"
         },
         "Tags": [
           {
@@ -222,6 +222,9 @@
     "ClusterVpcPublicSubnet2Subnet059113C4": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "AvailabilityZone": "eu-west-1b",
         "CidrBlock": "10.0.64.0/18",
         "MapPublicIpOnLaunch": true,
@@ -250,10 +253,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2/Subnet"
@@ -262,6 +262,9 @@
     "ClusterVpcPublicSubnet2RouteTable7B43F18C": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -279,10 +282,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PublicSubnet2/RouteTable"
@@ -305,12 +305,12 @@
     "ClusterVpcPublicSubnet2DefaultRoute97446C8A": {
       "Type": "AWS::EC2::Route",
       "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPublicSubnet2RouteTable7B43F18C"
+        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "GatewayId": {
           "Ref": "ClusterVpcIGW1E358A6E"
-        },
-        "RouteTableId": {
-          "Ref": "ClusterVpcPublicSubnet2RouteTable7B43F18C"
         }
       },
       "DependsOn": [
@@ -350,14 +350,14 @@
     "ClusterVpcPublicSubnet2NATGateway00B24686": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
+        "SubnetId": {
+          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4"
+        },
         "AllocationId": {
           "Fn::GetAtt": [
             "ClusterVpcPublicSubnet2EIP203DF3E5",
             "AllocationId"
           ]
-        },
-        "SubnetId": {
-          "Ref": "ClusterVpcPublicSubnet2Subnet059113C4"
         },
         "Tags": [
           {
@@ -389,6 +389,9 @@
     "ClusterVpcPrivateSubnet1SubnetA4EB481A": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "AvailabilityZone": "eu-west-1a",
         "CidrBlock": "10.0.128.0/18",
         "MapPublicIpOnLaunch": false,
@@ -417,10 +420,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1/Subnet"
@@ -429,6 +429,9 @@
     "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -446,10 +449,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet1/RouteTable"
@@ -472,12 +472,12 @@
     "ClusterVpcPrivateSubnet1DefaultRoute3B4D40DD": {
       "Type": "AWS::EC2::Route",
       "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F"
+        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "NatGatewayId": {
           "Ref": "ClusterVpcPublicSubnet1NATGateway0693C346"
-        },
-        "RouteTableId": {
-          "Ref": "ClusterVpcPrivateSubnet1RouteTable5AAEDA3F"
         }
       },
       "Metadata": {
@@ -487,6 +487,9 @@
     "ClusterVpcPrivateSubnet2SubnetBD1ECB6E": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "AvailabilityZone": "eu-west-1b",
         "CidrBlock": "10.0.192.0/18",
         "MapPublicIpOnLaunch": false,
@@ -515,10 +518,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2/Subnet"
@@ -527,6 +527,9 @@
     "ClusterVpcPrivateSubnet2RouteTable73064A66": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
+        "VpcId": {
+          "Ref": "ClusterVpcFAA3CEDF"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -544,10 +547,7 @@
             "Key": "StackName",
             "Value": "ecs-update-image-no-artifact"
           }
-        ],
-        "VpcId": {
-          "Ref": "ClusterVpcFAA3CEDF"
-        }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "ecs-update-image-no-artifact/Cluster/Vpc/PrivateSubnet2/RouteTable"
@@ -570,12 +570,12 @@
     "ClusterVpcPrivateSubnet2DefaultRoute011666AF": {
       "Type": "AWS::EC2::Route",
       "Properties": {
+        "RouteTableId": {
+          "Ref": "ClusterVpcPrivateSubnet2RouteTable73064A66"
+        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "NatGatewayId": {
           "Ref": "ClusterVpcPublicSubnet2NATGateway00B24686"
-        },
-        "RouteTableId": {
-          "Ref": "ClusterVpcPrivateSubnet2RouteTable73064A66"
         }
       },
       "Metadata": {
@@ -611,11 +611,11 @@
     "ClusterVpcVPCGW47AC17E9": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
-        "InternetGatewayId": {
-          "Ref": "ClusterVpcIGW1E358A6E"
-        },
         "VpcId": {
           "Ref": "ClusterVpcFAA3CEDF"
+        },
+        "InternetGatewayId": {
+          "Ref": "ClusterVpcIGW1E358A6E"
         }
       },
       "Metadata": {
@@ -837,6 +837,12 @@
         "Code": {
           "ZipFile": "exports.handler = async (event) => {\n    const AWS = require(\"aws-sdk\");\n    const ecs = new AWS.ECS();\n    const sm = new AWS.SecretsManager();\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    async function getService(clusterName, serviceName) {\n        var _a;\n        const services = await ecs\n            .describeServices({\n            cluster: clusterName,\n            services: [serviceName],\n        })\n            .promise();\n        if (((_a = services.services) === null || _a === void 0 ? void 0 : _a.length) !== 1) {\n            throw new Error(`Service not found: ${clusterName}/${serviceName}`);\n        }\n        return services.services[0];\n    }\n    async function getTaskDefinition(taskDefinition) {\n        return (await ecs\n            .describeTaskDefinition({\n            taskDefinition: taskDefinition,\n        })\n            .promise()).taskDefinition;\n    }\n    async function updateServiceToImage(clusterName, serviceName, image) {\n        console.log(`Cluster name: ${clusterName}`);\n        console.log(`Service name: ${serviceName}`);\n        const service = await getService(clusterName, serviceName);\n        const prevTaskDefinition = await getTaskDefinition(service.taskDefinition);\n        // Don't bother updating the service if the image is already the latest.\n        const prevImage = prevTaskDefinition.containerDefinitions[0].image;\n        if (prevImage === image) {\n            return;\n        }\n        console.log(`Updating image for service '${serviceName}' from '${prevImage}' to '${image}'`);\n        const exclude = [\n            \"registeredAt\",\n            \"registeredBy\",\n            \"compatibilities\",\n            \"requiresAttributes\",\n            \"revision\",\n            \"status\",\n            \"taskDefinitionArn\",\n        ];\n        const updatedSpec = {\n            ...Object.fromEntries(Object.entries(prevTaskDefinition).filter(([key]) => !exclude.includes(key))),\n            containerDefinitions: [\n                {\n                    ...prevTaskDefinition.containerDefinitions[0],\n                    image,\n                },\n            ],\n        };\n        const updatedTaskDefinition = (await ecs.registerTaskDefinition(updatedSpec).promise()).taskDefinition;\n        await ecs\n            .updateService({\n            cluster: clusterName,\n            service: serviceName,\n            taskDefinition: updatedTaskDefinition.taskDefinitionArn,\n        })\n            .promise();\n        console.log(\"Service is updated\");\n    }\n    const clusterName = requireEnv(\"CLUSTER_NAME\");\n    const serviceName = requireEnv(\"SERVICE_NAME\");\n    const repositoryUrl = requireEnv(\"REPOSITORY_URL\");\n    const ecrTagSecretArn = requireEnv(\"ECR_TAG_SECRET_ARN\");\n    // Validate the input.\n    if (typeof event.tag !== \"string\") {\n        throw new Error(\"Input invalid: \" + JSON.stringify(event, undefined, \"  \"));\n    }\n    // Register tag as current target.\n    // This is needed so that CloudFormation deployments, e.g.\n    // updates to the Task Definition, will use the same image.\n    await sm\n        .updateSecret({\n        SecretId: ecrTagSecretArn,\n        SecretString: JSON.stringify({\n            tag: event.tag,\n        }),\n    })\n        .promise();\n    // Update the service if we know the service name. This is unknown\n    // during initial deployment of the stack.\n    if (serviceName !== \"\") {\n        const image = `${repositoryUrl}:${event.tag}`;\n        await updateServiceToImage(clusterName, serviceName, image);\n    }\n    return {};\n};"
         },
+        "Role": {
+          "Fn::GetAtt": [
+            "EcsUpdateImageStartDeployFunctionServiceRole56BE1A47",
+            "Arn"
+          ]
+        },
         "Environment": {
           "Variables": {
             "CLUSTER_NAME": {
@@ -863,12 +869,6 @@
         "FunctionName": "my-service-deploy-start",
         "Handler": "index.handler",
         "ReservedConcurrentExecutions": 1,
-        "Role": {
-          "Fn::GetAtt": [
-            "EcsUpdateImageStartDeployFunctionServiceRole56BE1A47",
-            "Arn"
-          ]
-        },
         "Runtime": "nodejs16.x",
         "Tags": [
           {
@@ -979,6 +979,12 @@
         "Code": {
           "ZipFile": "exports.handler = async () => {\n    var _a;\n    const AWS = require(\"aws-sdk\");\n    const ecs = new AWS.ECS();\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    async function getService(clusterName, serviceName) {\n        var _a;\n        const services = await ecs\n            .describeServices({\n            cluster: clusterName,\n            services: [serviceName],\n        })\n            .promise();\n        if (((_a = services.services) === null || _a === void 0 ? void 0 : _a.length) !== 1) {\n            throw new Error(`Service not found: ${clusterName}/${serviceName}`);\n        }\n        return services.services[0];\n    }\n    async function getTaskDefinition(taskDefinition) {\n        return (await ecs\n            .describeTaskDefinition({\n            taskDefinition: taskDefinition,\n        })\n            .promise()).taskDefinition;\n    }\n    /**\n     * Check if the service is considered to be stabilized.\n     *\n     * Uses the logic described at\n     * https://docs.aws.amazon.com/cli/latest/reference/ecs/wait/services-stable.html\n     */\n    function isStabilized(service) {\n        var _a;\n        return (((_a = service.deployments) === null || _a === void 0 ? void 0 : _a.length) == 1 &&\n            service.runningCount == service.desiredCount);\n    }\n    function extractTag(image) {\n        if (!image.includes(\":\")) {\n            return null;\n        }\n        return image.replace(/.*:/, \"\");\n    }\n    const clusterName = requireEnv(\"CLUSTER_NAME\");\n    const serviceName = requireEnv(\"SERVICE_NAME\");\n    // The service name is unknown during initial deployment of the stack.\n    // In this case we return stabilized status as true.\n    if (serviceName === \"\") {\n        return {\n            currentTag: null,\n            stabilized: true,\n        };\n    }\n    const service = await getService(clusterName, serviceName);\n    const mainDeployment = (_a = service.deployments) === null || _a === void 0 ? void 0 : _a.find((it) => it.status === \"PRIMARY\");\n    const taskDefinition = await getTaskDefinition(mainDeployment.taskDefinition);\n    // Only one container is supported for the task definition.\n    return {\n        currentTag: extractTag(taskDefinition.containerDefinitions[0].image),\n        stabilized: isStabilized(service),\n    };\n};"
         },
+        "Role": {
+          "Fn::GetAtt": [
+            "EcsUpdateImageStatusFunctionServiceRole8022AE8F",
+            "Arn"
+          ]
+        },
         "Environment": {
           "Variables": {
             "CLUSTER_NAME": {
@@ -989,12 +995,6 @@
         },
         "FunctionName": "my-service-deploy-status",
         "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "EcsUpdateImageStatusFunctionServiceRole8022AE8F",
-            "Arn"
-          ]
-        },
         "Runtime": "nodejs16.x",
         "Tags": [
           {

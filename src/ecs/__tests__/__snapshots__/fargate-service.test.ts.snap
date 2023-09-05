@@ -70,11 +70,6 @@ Object {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
         },
         "DeploymentConfiguration": Object {
-          "Alarms": Object {
-            "AlarmNames": Array [],
-            "Enable": false,
-            "Rollback": false,
-          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 100,
         },
