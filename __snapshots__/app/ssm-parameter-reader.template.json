@@ -113,14 +113,14 @@
           "S3Bucket": "cdk-hnb659fds-assets-112233445566-eu-west-1",
           "S3Key": "snapshot-value.zip"
         },
-        "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": [
             "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Handler": "index.handler",
+        "Runtime": "nodejs16.x",
         "Tags": [
           {
             "Key": "Project",

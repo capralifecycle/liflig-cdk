@@ -162,14 +162,14 @@
         "Code": {
           "ZipFile": "exports.handler = async (event, context) => {\n    const AWS = require(\"aws-sdk\");\n    const s3 = new AWS.S3();\n    const codepipeline = new AWS.CodePipeline();\n    const jobId = event[\"CodePipeline.job\"].id;\n    try {\n        const userParametersRaw = event[\"CodePipeline.job\"].data.actionConfiguration.configuration\n            .UserParameters;\n        console.log(\"User parameters\", userParametersRaw);\n        const userParameters = JSON.parse(userParametersRaw);\n        const referenceData = await s3\n            .getObject({\n            Bucket: userParameters.bucketName,\n            Key: userParameters.objectKey,\n        })\n            .promise()\n            .then((it) => it.Body.toString());\n        const cloudAssemblyReference = JSON.parse(referenceData);\n        const outputArtifact = event[\"CodePipeline.job\"].data.outputArtifacts[0];\n        const s3Loc = outputArtifact.location.s3Location;\n        const cloudAssemblyZipData = await s3\n            .getObject({\n            Bucket: cloudAssemblyReference.cloudAssemblyBucketName,\n            Key: cloudAssemblyReference.cloudAssemblyBucketKey,\n        })\n            .promise();\n        console.log(\"Size of Cloud Assembly\", cloudAssemblyZipData.ContentLength);\n        await new AWS.S3({\n            credentials: event[\"CodePipeline.job\"].data.artifactCredentials,\n        })\n            .putObject({\n            Bucket: s3Loc.bucketName,\n            Key: s3Loc.objectKey,\n            Body: cloudAssemblyZipData.Body,\n        })\n            .promise();\n        await codepipeline\n            .putJobSuccessResult({\n            jobId,\n        })\n            .promise();\n        console.log(\"Success\");\n    }\n    catch (e) {\n        await codepipeline\n            .putJobFailureResult({\n            failureDetails: {\n                message: JSON.stringify(e),\n                type: \"JobFailed\",\n                externalExecutionId: context.awsRequestId,\n            },\n            jobId,\n        })\n            .promise();\n        console.error(\"Failed\", e);\n    }\n};"
         },
-        "Handler": "index.handler",
-        "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
             "PipelineCloudAssemblyLookupFnServiceRole2FDEF095",
             "Arn"
           ]
         },
+        "Handler": "index.handler",
+        "MemorySize": 512,
         "Runtime": "nodejs16.x",
         "Tags": [
           {
@@ -613,23 +613,6 @@
     "PipelineCodePipeline4FC0E9B7": {
       "Type": "AWS::CodePipeline::Pipeline",
       "Properties": {
-        "ArtifactStore": {
-          "EncryptionKey": {
-            "Id": {
-              "Fn::GetAtt": [
-                "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
-                "Arn"
-              ]
-            },
-            "Type": "KMS"
-          },
-          "Location": {
-            "Ref": "PipelineCodePipelineArtifactsBucket9E5E7047"
-          },
-          "Type": "S3"
-        },
-        "Name": "test-pipeline",
-        "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
             "PipelineCodePipelineRoleEE058E60",
@@ -826,6 +809,23 @@
             "Name": "example"
           }
         ],
+        "ArtifactStore": {
+          "EncryptionKey": {
+            "Id": {
+              "Fn::GetAtt": [
+                "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
+                "Arn"
+              ]
+            },
+            "Type": "KMS"
+          },
+          "Location": {
+            "Ref": "PipelineCodePipelineArtifactsBucket9E5E7047"
+          },
+          "Type": "S3"
+        },
+        "Name": "test-pipeline",
+        "RestartExecutionOnUpdate": true,
         "Tags": [
           {
             "Key": "Project",
@@ -1581,19 +1581,9 @@
         "Artifacts": {
           "Type": "CODEPIPELINE"
         },
-        "Cache": {
-          "Type": "NO_CACHE"
-        },
-        "Description": "Pipeline step cdk-pipeline-cloud-assembly/CodePipeline/UpdatePipeline/SelfMutate",
-        "EncryptionKey": {
-          "Fn::GetAtt": [
-            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
-            "Arn"
-          ]
-        },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "Image": "aws/codebuild/standard:7.0",
+          "Image": "aws/codebuild/standard:6.0",
           "ImagePullCredentialsType": "CODEBUILD",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
@@ -1607,6 +1597,16 @@
         "Source": {
           "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"npm install -g aws-cdk@2\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"cdk -a . deploy cdk-pipeline-cloud-assembly --require-approval=never --verbose\"\n      ]\n    }\n  }\n}",
           "Type": "CODEPIPELINE"
+        },
+        "Cache": {
+          "Type": "NO_CACHE"
+        },
+        "Description": "Pipeline step cdk-pipeline-cloud-assembly/CodePipeline/UpdatePipeline/SelfMutate",
+        "EncryptionKey": {
+          "Fn::GetAtt": [
+            "PipelineCodePipelineArtifactsBucketEncryptionKey0E77C3AE",
+            "Arn"
+          ]
         },
         "Tags": [
           {
@@ -1781,14 +1781,6 @@
                 {
                   "Ref": "AWS::Region"
                 },
-                "ap-southeast-4"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
                 "ca-central-1"
               ]
             },
@@ -1799,11 +1791,7 @@
                 },
                 "cn-north-1"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {
@@ -1811,7 +1799,11 @@
                 },
                 "cn-northwest-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -1865,14 +1857,6 @@
                 {
                   "Ref": "AWS::Region"
                 },
-                "il-central-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
                 "me-south-1"
               ]
             },
@@ -1883,11 +1867,7 @@
                 },
                 "sa-east-1"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {
@@ -1903,7 +1883,11 @@
                 },
                 "us-east-2"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
