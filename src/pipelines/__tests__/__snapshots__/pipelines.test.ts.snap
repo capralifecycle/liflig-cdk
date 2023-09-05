@@ -203,7 +203,7 @@ Object {
           "Fn::Join": Array [
             "",
             Array [
-              "{\\"StartAt\\":\\"Check if the process can run\\",\\"States\\":{\\"Check if the process can run\\":{\\"Next\\":\\"Can run?\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
+              "{\\"StartAt\\":\\"Check if the process can run\\",\\"States\\":{\\"Check if the process can run\\":{\\"Next\\":\\"Can run?\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ClientExecutionTimeoutException\\",\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -214,7 +214,7 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"Payload\\":{\\"stateMachineId.$\\":\\"$$.StateMachine.Id\\",\\"executionId.$\\":\\"$$.Execution.Id\\"}}},\\"Wait before rechecking status\\":{\\"Type\\":\\"Wait\\",\\"Seconds\\":15,\\"Next\\":\\"Check if the process can run\\"},\\"Can run?\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"CONTINUE\\",\\"Next\\":\\"Collect files from S3\\"},{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"SKIP\\",\\"Next\\":\\"Skip\\"}],\\"Default\\":\\"Wait before rechecking status\\"},\\"Collect files from S3\\":{\\"Next\\":\\"Check if dev has stacks\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
+              "\\",\\"Payload\\":{\\"stateMachineId.$\\":\\"$$.StateMachine.Id\\",\\"executionId.$\\":\\"$$.Execution.Id\\"}}},\\"Wait before rechecking status\\":{\\"Type\\":\\"Wait\\",\\"Seconds\\":15,\\"Next\\":\\"Check if the process can run\\"},\\"Can run?\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"CONTINUE\\",\\"Next\\":\\"Collect files from S3\\"},{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"SKIP\\",\\"Next\\":\\"Skip\\"}],\\"Default\\":\\"Wait before rechecking status\\"},\\"Collect files from S3\\":{\\"Next\\":\\"Check if dev has stacks\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ClientExecutionTimeoutException\\",\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -1207,7 +1207,7 @@ Object {
           "Fn::Join": Array [
             "",
             Array [
-              "{\\"StartAt\\":\\"Check if the process can run\\",\\"States\\":{\\"Check if the process can run\\":{\\"Next\\":\\"Can run?\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
+              "{\\"StartAt\\":\\"Check if the process can run\\",\\"States\\":{\\"Check if the process can run\\":{\\"Next\\":\\"Can run?\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ClientExecutionTimeoutException\\",\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -1218,7 +1218,7 @@ Object {
                   "Arn",
                 ],
               },
-              "\\",\\"Payload\\":{\\"stateMachineId.$\\":\\"$$.StateMachine.Id\\",\\"executionId.$\\":\\"$$.Execution.Id\\"}}},\\"Wait before rechecking status\\":{\\"Type\\":\\"Wait\\",\\"Seconds\\":15,\\"Next\\":\\"Check if the process can run\\"},\\"Can run?\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"CONTINUE\\",\\"Next\\":\\"Collect files from S3\\"},{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"SKIP\\",\\"Next\\":\\"Skip\\"}],\\"Default\\":\\"Wait before rechecking status\\"},\\"Collect files from S3\\":{\\"Next\\":\\"Check if dev has stacks\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
+              "\\",\\"Payload\\":{\\"stateMachineId.$\\":\\"$$.StateMachine.Id\\",\\"executionId.$\\":\\"$$.Execution.Id\\"}}},\\"Wait before rechecking status\\":{\\"Type\\":\\"Wait\\",\\"Seconds\\":15,\\"Next\\":\\"Check if the process can run\\"},\\"Can run?\\":{\\"Type\\":\\"Choice\\",\\"Choices\\":[{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"CONTINUE\\",\\"Next\\":\\"Collect files from S3\\"},{\\"Variable\\":\\"$.CanRunState\\",\\"StringEquals\\":\\"SKIP\\",\\"Next\\":\\"Skip\\"}],\\"Default\\":\\"Wait before rechecking status\\"},\\"Collect files from S3\\":{\\"Next\\":\\"Check if dev has stacks\\",\\"Retry\\":[{\\"ErrorEquals\\":[\\"Lambda.ClientExecutionTimeoutException\\",\\"Lambda.ServiceException\\",\\"Lambda.AWSLambdaException\\",\\"Lambda.SdkClientException\\"],\\"IntervalSeconds\\":2,\\"MaxAttempts\\":6,\\"BackoffRate\\":2}],\\"Type\\":\\"Task\\",\\"OutputPath\\":\\"$.Payload\\",\\"Resource\\":\\"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
