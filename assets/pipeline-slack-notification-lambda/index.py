@@ -1,5 +1,7 @@
 import json
+import logging
 import os
+import typing as t
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
@@ -7,12 +9,12 @@ from urllib.request import Request, urlopen
 import boto3
 
 client = boto3.client("codepipeline")
+s3 = boto3.client("s3")
 
-ACCOUNT_DESC = os.getenv("ACCOUNT_DESC", None)
-ACCOUNT_GROUP_NAME = os.getenv("ACCOUNT_GROUP_NAME", None)
+ACCOUNT_FRIENDLY_NAME = os.getenv("ACCOUNT_FRIENDLY_NAME", None)
 SLACK_URL = os.getenv("SLACK_URL", None)
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", None)
-ALWAYS_SHOW_SUCCEEDED = os.getenv("ALWAYS_SHOW_SUCCEEDED", "false") == "true"
+NOTIFICATION_LEVEL = os.getenv("NOTIFICATION_LEVEL", "WARN")
 
 # Example event:
 #
@@ -35,10 +37,38 @@ ALWAYS_SHOW_SUCCEEDED = os.getenv("ALWAYS_SHOW_SUCCEEDED", "false") == "true"
 #   }
 # }
 
+STYLES = {
+    "FAILED": {"emoji_prefix": ":x:", "message_color": "#ff0000"},
+    "SUCCEEDED": {"emoji_prefix": ":white_check_mark:", "message_color": "#008000"},
+    "STARTED": {"emoji_prefix": ":rocket:", "message_color": "#00bfff"},
+    "SUPERSEDED": {"emoji_prefix": ":arrow_heading_down:", "message_color": "#373737"},
+}
 
-def get_previous_pipeline_execution(pipeline_name, execution_id):
-    # Retrieves executions based on their start timestamp, so
-    # the previous execution will be next in list.
+
+class TriggerMetadataVcs(t.TypedDict):
+    branchName: str
+    commitAuthor: str
+    commitHash: str
+    repositoryName: str
+    repositoryOwner: str
+
+
+class TriggerMetadataCi(t.TypedDict):
+    type: t.Literal["JENKINS", "GITHUB_ACTIONS"]
+    triggeredBy: str
+
+
+class TriggerMetadata(t.TypedDict):
+    version: t.Literal["0.1"]
+    ci: TriggerMetadataCi
+    vcs: TriggerMetadataVcs
+
+
+def get_previous_pipeline_execution(
+    pipeline_name: str, execution_id: str
+) -> dict | None:
+    """Return the newest past execution that either succeeded or failed"""
+
     pipeline_executions = client.list_pipeline_executions(
         pipelineName=pipeline_name,
     )["pipelineExecutionSummaries"]
@@ -57,12 +87,15 @@ def get_previous_pipeline_execution(pipeline_name, execution_id):
     return None
 
 
-def get_blocks_for_failed(pipeline_name, execution_id, state):
+def get_text_for_failed(pipeline_name: str, execution_id: str, state: str) -> str:
+    """Return a Slack-formatted string that describes failed pipeline execution actions,
+    if any, in a failed execution"""
+
     # We only show details if the pipeline has completed with failed state.
     # If we were to process this for other events such as started events,
     # we would include details from after the event took place.
     if state != "FAILED":
-        return []
+        return ""
 
     action_executions = client.list_action_executions(
         pipelineName=pipeline_name,
@@ -71,7 +104,7 @@ def get_blocks_for_failed(pipeline_name, execution_id, state):
         },
     )["actionExecutionDetails"]
 
-    result = []
+    failures = []
 
     for action_execution in action_executions:
         if action_execution["status"] == "Failed":
@@ -80,31 +113,94 @@ def get_blocks_for_failed(pipeline_name, execution_id, state):
             summary = action_execution["output"]["executionResult"][
                 "externalExecutionSummary"
             ]
-            result.append(
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"{stage}.{action} failed:\n```\n{summary}\n```",
-                    },
-                }
-            )
+            failures.append(f"{stage}.{action} failed:\n{summary}")
+
+    result = ""
+
+    if len(failures):
+        result = "```\n" + "\n\n".join(failures) + "\n```"
 
     return result
 
 
+def get_metadata_from_trigger(
+    pipeline_name: str, execution_id: str
+) -> TriggerMetadata | None:
+    """Returns a dictionary containing the metadata, if any, stored in the trigger file"""
+
+    action_response = client.list_action_executions(
+        pipelineName=pipeline_name, filter={"pipelineExecutionId": execution_id}
+    )
+
+    action = next(
+        (
+            action
+            for action in action_response["actionExecutionDetails"]
+            if action["input"]["actionTypeId"]["category"] == "Source"
+            and action["input"]["actionTypeId"]["provider"] == "S3"
+        ),
+        None,
+    )
+    if action:
+        s3_version_id = action["output"]["outputVariables"]["VersionId"]
+        artifacts_bucket = action["input"]["configuration"]["S3Bucket"]
+        trigger_file = action["input"]["configuration"]["S3ObjectKey"]
+
+    try:
+        response = s3.get_object(
+            Bucket=artifacts_bucket, Key=trigger_file, VersionId=s3_version_id
+        )
+        file_content = response["Body"].read().decode("utf-8")
+        ci_metadata = json.loads(file_content)
+        return ci_metadata
+    except Exception as e:
+        print(f"Could not obtain metadata from trigger file: {e}")
+
+    return None
+
+
+def get_footer_text(ci_metadata: TriggerMetadata) -> str:
+    """Returns the footer text for the Slack message if the metadata contains the required fields"""
+
+    footer_text = ""
+    if ci_metadata and ci_metadata.get("version", "") == "0.1":
+        ci = ci_metadata.get("ci", {})
+        vcs = ci_metadata.get("vcs", {})
+        triggering_actor = ci.get("triggeredBy", "")
+        repository_owner = vcs.get("repositoryOwner", "")
+        repository_name = vcs.get("repositoryName", "")
+        short_commit_hash = vcs.get("commitHash", "")[:8]
+        branch_name = vcs.get("branchName", "")
+        if (
+            triggering_actor
+            and repository_owner
+            and repository_name
+            and short_commit_hash
+            and branch_name
+        ):
+            commit_link_text = f"{repository_owner}/{repository_name} @ {branch_name} ({short_commit_hash})"
+            github_commit_link = f"https://github.com/{repository_owner}/{repository_name}/commit/{short_commit_hash}"
+            footer_text = f"Triggered by {triggering_actor} in <{github_commit_link}|{commit_link_text}>"
+
+    return footer_text
+
+
 def handler(event, context):
+
     print("Event: " + json.dumps(event))
+
+    region = event["region"]
+    account_id = event["account"]
+    pipeline_name = event["detail"]["pipeline"]
+    state = event["detail"]["state"]
+    execution_id = event["detail"]["execution-id"]
+
+    if state in ("STARTED", "SUPERSEDED") and NOTIFICATION_LEVEL != "DEBUG":
+        return
 
     if event["detail-type"] != "CodePipeline Pipeline Execution State Change":
         print("Ignoring unknown event")
         return
-
-    account = event["account"]
-    region = event["region"]
-    pipeline_name = event["detail"]["pipeline"]
-    state = event["detail"]["state"]
-    execution_id = event["detail"]["execution-id"]
 
     previous_pipeline_execution = get_previous_pipeline_execution(
         pipeline_name, execution_id
@@ -117,49 +213,63 @@ def handler(event, context):
 
     # We still show succeeded for the first event or when
     # the previous execution was not success.
-    if state == "SUCCEEDED" and not ALWAYS_SHOW_SUCCEEDED:
+    if state == "SUCCEEDED" and (NOTIFICATION_LEVEL == "WARN"):
         if previous_pipeline_execution is not None and not previous_failed:
             print("Ignoring succeeded event")
             return
 
-    emoji_prefix = ""
-    if state == "FAILED":
-        emoji_prefix = ":x: "
-    if state == "SUCCEEDED":
-        emoji_prefix = ":white_check_mark: "
-
     pipeline_url = f"https://{region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/{quote(pipeline_name, safe='')}/view"
     execution_url = f"https://{region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/{quote(pipeline_name, safe='')}/executions/{execution_id}/timeline"
 
-    account_group_text = ""
-    if ACCOUNT_GROUP_NAME is not None:
-        account_group_text += f" ({ACCOUNT_GROUP_NAME})"
+    account_friendly_name = f"in {ACCOUNT_FRIENDLY_NAME or account_id}"
 
     state_text = state
     if previous_failed and state == "SUCCEEDED":
         state_text += " (previously failed)"
 
-    blocks_for_failed = get_blocks_for_failed(pipeline_name, execution_id, state)
+    ci_metadata = get_metadata_from_trigger(pipeline_name, execution_id)
 
-    account_text = account
-    if ACCOUNT_DESC is not None:
-        account_text += f" ({ACCOUNT_DESC})"
+    footer_text = get_footer_text(ci_metadata)
 
-    blocks = [
+    style = STYLES.get(
+        state, {"emoji_prefix": ":question:", "message_color": "#ffdf00"}
+    )
+
+    emoji_prefix = style["emoji_prefix"]
+    message_color = style["message_color"]
+
+    text_for_failed = get_text_for_failed(pipeline_name, execution_id, state)
+
+    text = "\n".join(
+        s
+        for s in [f"*Execution:* <{execution_url}|{execution_id}>", text_for_failed]
+        if s
+    )
+    pretext = " ".join(
+        s
+        for s in [
+            f"{emoji_prefix} Pipeline *<{pipeline_url}|{pipeline_name}>*",
+            f"*{state_text}*",
+            account_friendly_name,
+        ]
+        if s
+    )
+    fallback = f"Pipeline {pipeline_name} {state}"
+    attachments = [
         {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"{emoji_prefix}Pipeline <{pipeline_url}|{pipeline_name}>{account_group_text} *{state_text}*\n{region} | {account_text}\n<{execution_url}|Execution details>",
-            },
+            "footer": footer_text,
+            "color": message_color,
+            "text": text,
+            "mrkdwn_in": ["text", "pretext"],
+            "pretext": pretext,
+            "fallback": fallback,
         },
-        *blocks_for_failed,
     ]
 
     slack_message = {
         "channel": SLACK_CHANNEL,
-        "blocks": blocks,
-        "username": "Pipeline Status",
+        "attachments": attachments,
+        "username": "Liflig CDK Pipelines",
         "icon_emoji": ":traffic_light:",
     }
 
