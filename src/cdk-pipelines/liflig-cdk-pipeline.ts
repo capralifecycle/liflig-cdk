@@ -121,6 +121,8 @@ export class LifligCdkPipeline extends constructs.Construct {
 
   public readonly cdkPipeline: pipelines.CodePipeline
   public readonly codePipeline: codepipeline.Pipeline
+  public readonly artifactsBucket: s3.IBucket
+  public readonly triggerObjectKey: string
 
   constructor(
     scope: constructs.Construct,
@@ -129,8 +131,7 @@ export class LifligCdkPipeline extends constructs.Construct {
   ) {
     super(scope, id)
 
-    const artifactsBucket =
-      props.artifactsBucket ?? getGriidArtefactBucket(this)
+    this.artifactsBucket = props.artifactsBucket ?? getGriidArtefactBucket(this)
 
     const cloudAssemblyArtifact = new codepipeline.Artifact()
 
@@ -141,7 +142,7 @@ export class LifligCdkPipeline extends constructs.Construct {
       case "cloud-assembly":
         const cloudAssembly = this.cloudAssemblyStage(
           cloudAssemblyArtifact,
-          artifactsBucket,
+          this.artifactsBucket,
           props.pipelineName,
         )
         synth = cloudAssembly.synth
@@ -150,7 +151,7 @@ export class LifligCdkPipeline extends constructs.Construct {
       case "cdk-source":
         const cdkSource = this.cdkSourceStage(
           cloudAssemblyArtifact,
-          artifactsBucket,
+          this.artifactsBucket,
           props.pipelineName,
           props.parametersNamespace ?? "default",
         )
@@ -161,6 +162,10 @@ export class LifligCdkPipeline extends constructs.Construct {
 
     const dummyArtifact = new codepipeline.Artifact()
 
+    this.triggerObjectKey = LifligCdkPipeline.pipelineS3TriggerKey(
+      props.pipelineName,
+    )
+
     this.codePipeline = new codepipeline.Pipeline(this, "CodePipeline", {
       pipelineName: props.pipelineName,
       stages: [
@@ -169,11 +174,9 @@ export class LifligCdkPipeline extends constructs.Construct {
           actions: [
             new codepipelineActions.S3SourceAction({
               actionName: "source",
-              bucket: artifactsBucket,
+              bucket: this.artifactsBucket,
               trigger: codepipelineActions.S3Trigger.NONE,
-              bucketKey: LifligCdkPipeline.pipelineS3TriggerKey(
-                props.pipelineName,
-              ),
+              bucketKey: this.triggerObjectKey,
               output: dummyArtifact,
             }),
           ],
@@ -189,10 +192,10 @@ export class LifligCdkPipeline extends constructs.Construct {
         detailType: ["Object Created"],
         detail: {
           bucket: {
-            name: [artifactsBucket.bucketName],
+            name: [this.artifactsBucket.bucketName],
           },
           object: {
-            key: [LifligCdkPipeline.pipelineS3TriggerKey(props.pipelineName)],
+            key: [this.triggerObjectKey],
           },
         },
       },
@@ -330,9 +333,16 @@ export class LifligCdkPipeline extends constructs.Construct {
     return { stages, synth }
   }
 
-  addSlackNotification(props: Omit<SlackNotificationProps, "pipeline">): void {
+  addSlackNotification(
+    props: Omit<
+      SlackNotificationProps,
+      "pipeline" | "artifactsBucket" | "triggerObjectKey"
+    >,
+  ): void {
     new SlackNotification(this, "Slack", {
       pipeline: this.codePipeline,
+      artifactsBucket: this.artifactsBucket,
+      triggerObjectKey: this.triggerObjectKey,
       ...props,
     })
   }

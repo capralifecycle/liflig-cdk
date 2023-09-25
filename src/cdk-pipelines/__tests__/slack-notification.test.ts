@@ -34,6 +34,7 @@ test("slack-notification", () => {
     pipeline: pipeline.codePipeline,
     slackWebhookUrl: "https://hooks.slack.com/services/abc",
     slackChannel: "#test-other",
+    artifactsBucket: pipeline.artifactsBucket,
     singletonLambdaUuid: "f0d7e25c-8247-48bb-beb4-5b1d8ff91f30",
   })
 
