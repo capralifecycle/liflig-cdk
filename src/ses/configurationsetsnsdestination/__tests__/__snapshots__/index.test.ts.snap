@@ -18,6 +18,7 @@ Object {
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
