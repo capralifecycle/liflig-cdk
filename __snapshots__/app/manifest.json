@@ -27,6 +27,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "build-artifacts.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -176,6 +177,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "cdk-deploy-example.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -349,6 +351,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "ecs-update-image-no-artifact.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -624,6 +627,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "ecs-update-image.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -941,6 +945,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "ssm-parameter-reader.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -1042,6 +1047,7 @@
       "environment": "aws://unknown-account/unknown-region",
       "properties": {
         "templateFile": "cdk-pipeline-cdk-source.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -1287,6 +1293,7 @@
       "environment": "aws://unknown-account/unknown-region",
       "properties": {
         "templateFile": "cdk-pipeline-cloud-assembly.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
@@ -1514,6 +1521,7 @@
       "environment": "aws://112233445566/eu-west-1",
       "properties": {
         "templateFile": "webapp.template.json",
+        "terminationProtection": false,
         "tags": {
           "Project": "my-project",
           "SourceRepo": "github/capralifecycle/liflig-cdk",
