@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App monitor default vaules snapshot test 1`] = `
+Object {
+  "Resources": Object {
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "WebappMonitorAppMonitor3AFF5E53": Object {
+      "Properties": Object {
+        "AppMonitorConfiguration": Object {
+          "AllowCookies": true,
+          "EnableXRay": false,
+          "GuestRoleArn": Object {
+            "Fn::GetAtt": Array [
+              "WebappMonitorRumRoleE2A6B583",
+              "Arn",
+            ],
+          },
+          "IdentityPoolId": Object {
+            "Ref": "WebappMonitorRumIdentityPool14A4031C",
+          },
+          "SessionSampleRate": 1,
+          "Telemetries": Array [
+            "errors",
+            "http",
+            "performance",
+          ],
+        },
+        "CustomEvents": Object {
+          "Status": "DISABLED",
+        },
+        "CwLogEnabled": false,
+        "Domain": "webappdomain.example",
+        "Name": "local",
+      },
+      "Type": "AWS::RUM::AppMonitor",
+    },
+    "WebappMonitorEventsAlarmFB4FE35F": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "TopicBFC7AF6E",
+          },
+        ],
+        "AlarmDescription": "A high number of events are being sent to CloudWatch RUM for app monitor 'local'. This may lead to high costs, so you'll likely want to investigate this.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "application_name",
+            "Value": "local",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "RumEventPayloadSize",
+        "Namespace": "AWS/RUM",
+        "Period": 60,
+        "Statistic": "SampleCount",
+        "Threshold": 1000,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "WebappMonitorRoleAttachment003A8509": Object {
+      "Properties": Object {
+        "IdentityPoolId": Object {
+          "Ref": "WebappMonitorRumIdentityPool14A4031C",
+        },
+        "Roles": Object {
+          "unauthenticated": Object {
+            "Fn::GetAtt": Array [
+              "WebappMonitorRumRoleE2A6B583",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+    },
+    "WebappMonitorRumIdentityPool14A4031C": Object {
+      "Properties": Object {
+        "AllowUnauthenticatedIdentities": true,
+      },
+      "Type": "AWS::Cognito::IdentityPool",
+    },
+    "WebappMonitorRumRoleE2A6B583": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "ForAnyValue:StringEquals": Object {
+                  "cognito-identity.amazonaws.com:amr": "unauthenticated",
+                },
+                "StringEquals": Object {
+                  "cognito-identity.amazonaws.com:aud": Object {
+                    "Ref": "WebappMonitorRumIdentityPool14A4031C",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": "cognito-identity.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": "rum:PutRumEvents",
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":rum:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":appmonitor/local",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "allow-rum",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;
