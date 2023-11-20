@@ -226,6 +226,7 @@ interface CloudAssembly {
   }[]
   parameters: {
     name: string
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     value: unknown | { type: "variable"; variable: string }
   }[]
 }
@@ -264,7 +265,7 @@ const collectFilesHandler: Handler = async (event: Record<string, any>) => {
         Key: key,
       })
       .promise()
-    return result.Body!.toString()
+    return JSON.stringify(result.Body!)
   }
 
   let cloudAssembly: CloudAssembly | null = null
