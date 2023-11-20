@@ -897,7 +897,7 @@ Object {
             Key: key,
         })
             .promise();
-        return result.Body.toString();
+        return JSON.stringify(result.Body);
     }
     let cloudAssembly = null;
     let variables = {};
@@ -1901,7 +1901,7 @@ Object {
             Key: key,
         })
             .promise();
-        return result.Body.toString();
+        return JSON.stringify(result.Body);
     }
     let cloudAssembly = null;
     let variables = {};
