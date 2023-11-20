@@ -6,7 +6,6 @@ Object {
     "LoadBalancer8E47CE52": Object {
       "DependsOn": Array [
         "LoadBalancerAccessLogsBucketPolicy6B02AF07",
-        "LoadBalancerAccessLogsBucketD82011C7",
       ],
       "Properties": Object {
         "LoadBalancerAttributes": Array [
@@ -190,10 +189,6 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
     "LoadBalancerHttpListener9DD37EAA": Object {
-      "DependsOn": Array [
-        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
-        "LoadBalancerAccessLogsBucketD82011C7",
-      ],
       "Properties": Object {
         "DefaultActions": Array [
           Object {
@@ -214,10 +209,6 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LoadBalancerHttpsListener68D81C94": Object {
-      "DependsOn": Array [
-        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
-        "LoadBalancerAccessLogsBucketD82011C7",
-      ],
       "Properties": Object {
         "Certificates": Array [
           Object {
@@ -244,10 +235,6 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LoadBalancerSecurityGroupC89CA14B": Object {
-      "DependsOn": Array [
-        "LoadBalancerAccessLogsBucketPolicy6B02AF07",
-        "LoadBalancerAccessLogsBucketD82011C7",
-      ],
       "Properties": Object {
         "GroupDescription": "Automatically created Security Group for ELB StackLoadBalancerF0AF61AA",
         "SecurityGroupEgress": Array [
