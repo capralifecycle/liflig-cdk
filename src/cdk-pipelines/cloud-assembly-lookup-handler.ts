@@ -69,7 +69,7 @@ export const cloudAssemblyLookupHandler: Handler = async (
         Key: userParameters.objectKey,
       })
       .promise()
-      .then((it) => JSON.stringify(it.Body!))
+      .then((it) => it.Body!.toString())
 
     const cloudAssemblyReference = JSON.parse(
       referenceData,
