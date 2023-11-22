@@ -10,10 +10,10 @@ import boto3
 
 client = boto3.client("codepipeline")
 s3 = boto3.client("s3")
+secrets_manager = boto3.client("secretsmanager")
 
 ACCOUNT_FRIENDLY_NAME = os.getenv("ACCOUNT_FRIENDLY_NAME", None)
-SLACK_URL = os.getenv("SLACK_URL", None)
-SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", None)
+SLACK_URL_SECRET_NAME = os.getenv("SLACK_URL_SECRET_NAME", None)
 NOTIFICATION_LEVEL = os.getenv("NOTIFICATION_LEVEL", "WARN")
 
 # Example event:
@@ -62,6 +62,16 @@ class TriggerMetadata(t.TypedDict):
     version: t.Literal["0.1"]
     ci: TriggerMetadataCi
     vcs: TriggerMetadataVcs
+
+
+def get_masked_slack_webhook_url(slack_webhook_url: str):
+    """
+    Return a string that masks the final path segment of a Slack webhook URL.
+    The URL is typically formatted as such: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+    """
+    trimmed_url = slack_webhook_url.rstrip("/")
+    [*url, final_path_segment] = trimmed_url.split("/")
+    return "/".join(url + [len(final_path_segment) * "*"])
 
 
 def get_previous_pipeline_execution(
@@ -185,6 +195,13 @@ def get_footer_text(ci_metadata: TriggerMetadata) -> str:
     return footer_text
 
 
+def get_secret(secret):
+    try:
+        return secrets_manager.get_secret_value(SecretId=secret)["SecretString"]
+    except Exception as e:
+        raise Exception(f"Error retrieving secret: {e}")
+
+
 def handler(event, context):
 
     print("Event: " + json.dumps(event))
@@ -267,17 +284,16 @@ def handler(event, context):
     ]
 
     slack_message = {
-        "channel": SLACK_CHANNEL,
         "attachments": attachments,
-        "username": "Liflig CDK Pipelines",
-        "icon_emoji": ":traffic_light:",
     }
 
-    req = Request(SLACK_URL, json.dumps(slack_message).encode("utf-8"))
+    slack_url = get_secret(SLACK_URL_SECRET_NAME)
+
+    req = Request(slack_url, json.dumps(slack_message).encode("utf-8"))
+    print(f"Posting message to Slack URL {get_masked_slack_webhook_url(slack_url)}")
     try:
         response = urlopen(req)
         response.read()
-        print(f"Message posted to: {slack_message['channel']}")
     except HTTPError as e:
         raise Exception(f"Request to slack failed: {e.code} {e.reason}")
     except URLError as e:
