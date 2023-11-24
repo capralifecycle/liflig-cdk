@@ -35,8 +35,8 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "2.68.0",
-    "@commitlint/cli": "18.4.2",
-    "@commitlint/config-conventional": "18.4.2",
+    "@commitlint/cli": "18.4.3",
+    "@commitlint/config-conventional": "18.4.3",
     "@types/aws-lambda": "8.10.126",
     "@types/jest": "29.5.8",
     "@types/node": "18.18.10",
