@@ -5,6 +5,7 @@ Object {
   "Resources": Object {
     "SlackAlarmFunction7A980434": Object {
       "DependsOn": Array [
+        "SlackAlarmFunctionServiceRoleDefaultPolicy7AE6CA86",
         "SlackAlarmFunctionServiceRoleC8F1C44C",
       ],
       "Properties": Object {
@@ -12,15 +13,36 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "70ce0c12add85e704fccf538920602b149182000218c82db5e7d9d9e60afa3e1.zip",
+          "S3Key": "c0d25018481918152e92fa9c210f22d56dbfa1e1ebc8bb1852b4482555f64368.zip",
         },
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {
           "Variables": Object {
             "ENVIRONMENT_NAME": "dev",
             "PROJECT_NAME": "my-project",
-            "SLACK_CHANNEL": "#my-channel",
-            "SLACK_URL": "https://hooks.slack.com/services/ABC/DEF/123",
+            "SLACK_URL_SECRET_NAME": Object {
+              "Fn::Select": Array [
+                0,
+                Object {
+                  "Fn::Split": Array [
+                    "-",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "TestSecret16AF87B1",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
           },
         },
         "Handler": "index.handler",
@@ -31,7 +53,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.8",
+        "Runtime": "python3.11",
         "Timeout": 6,
       },
       "Type": "AWS::Lambda::Function",
@@ -83,6 +105,32 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
+    "SlackAlarmFunctionServiceRoleDefaultPolicy7AE6CA86": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "TestSecret16AF87B1",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SlackAlarmFunctionServiceRoleDefaultPolicy7AE6CA86",
+        "Roles": Array [
+          Object {
+            "Ref": "SlackAlarmFunctionServiceRoleC8F1C44C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "SlackAlarmSubscriptionD0659B5B": Object {
       "Properties": Object {
         "Endpoint": Object {
@@ -100,6 +148,15 @@ Object {
     },
     "SlackAlarmTopicA880F65C": Object {
       "Type": "AWS::SNS::Topic",
+    },
+    "TestSecret16AF87B1": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "GenerateSecretString": Object {},
+        "Name": "TestSecret",
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
     },
   },
 }

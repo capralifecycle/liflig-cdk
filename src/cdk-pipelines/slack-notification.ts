@@ -6,6 +6,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as cdk from "aws-cdk-lib"
 import * as path from "path"
 import * as s3 from "aws-cdk-lib/aws-s3"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 
 export interface SlackNotificationProps {
   /**
@@ -17,13 +18,13 @@ export interface SlackNotificationProps {
    */
   artifactsBucket: s3.IBucket
   /**
-   * Slack webhook URL.
+   * A plaintext secret containing the URL of a Slack incoming webhook.
+   * The webhook should be created through a Slack app, and only allows posting to one specific Slack channel.
+   * See Slack's official documentation (e.g., https://api.slack.com/messaging/webhooks) for more details.
+   *
+   * NOTE: Incoming webhooks created through legacy custom integrations in Slack are not supported.
    */
-  slackWebhookUrl: string
-  /**
-   * Channel name including leading #.
-   */
-  slackChannel: string
+  slackWebhookUrlSecret: secretsmanager.ISecret
   /**
    * An optional friendly name that will be used in the Slack notifications instead of the AWS account ID
    */
@@ -46,16 +47,6 @@ export interface SlackNotificationProps {
    * @default - the Lambda function can read all objects in the artifacts bucket.
    */
   triggerObjectKey?: string
-  /**
-   * Used to control that only one lambda is created in the account.
-   *
-   * Specify a value here when you manually create a {@link SlackNotification} for a pipeline
-   * without using {@link LifligCdkPipeline.addSlackNotification}.
-   * For example: `"65f7a9e0-d0a4-4ba7-ad1f-6dec853bbdb8"`.
-   *
-   * @default "55954fc8-182e-497e-bd60-7af1496dc222"
-   */
-  singletonLambdaUuid?: string
 }
 
 /**
@@ -71,8 +62,7 @@ export class SlackNotification extends constructs.Construct {
     super(scope, id)
 
     const environment: Record<string, string> = {
-      SLACK_URL: props.slackWebhookUrl,
-      SLACK_CHANNEL: props.slackChannel,
+      SLACK_URL_SECRET_NAME: props.slackWebhookUrlSecret.secretName,
       NOTIFICATION_LEVEL: props.notificationLevel ?? "WARN",
     }
 
@@ -80,8 +70,7 @@ export class SlackNotification extends constructs.Construct {
       environment.ACCOUNT_FRIENDLY_NAME = props.accountFriendlyName
     }
 
-    const reportFunction = new lambda.SingletonFunction(this, "Function", {
-      uuid: props.singletonLambdaUuid ?? "55954fc8-182e-497e-bd60-7af1496dc222",
+    const reportFunction = new lambda.Function(this, "Function", {
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../../assets/pipeline-slack-notification-lambda"),
       ),
@@ -103,9 +92,11 @@ export class SlackNotification extends constructs.Construct {
       }),
     )
 
+    props.slackWebhookUrlSecret.grantRead(reportFunction)
+
     props.artifactsBucket.grantRead(reportFunction, props.triggerObjectKey)
 
-    props.pipeline.onStateChange("Event" + (props.singletonLambdaUuid ?? ""), {
+    props.pipeline.onStateChange(`Event${id}`, {
       eventPattern: {
         detail: {
           // Available states: https://docs.aws.amazon.com/codepipeline/latest/userguide/detect-state-changes-cloudwatch-events.html
