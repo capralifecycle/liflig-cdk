@@ -59,6 +59,7 @@ export interface FargateServiceProps {
 }
 
 export class FargateService extends constructs.Construct {
+  public readonly fargateService: ecs.FargateService
   public readonly securityGroup: ec2.SecurityGroup
   public readonly taskDefinition: ecs.TaskDefinition
   public readonly targetGroup: elb.ApplicationTargetGroup | undefined
@@ -124,7 +125,7 @@ export class FargateService extends constructs.Construct {
       hostPort: port,
     })
 
-    const service = new ecs.FargateService(this, "Service", {
+    this.fargateService = new ecs.FargateService(this, "Service", {
       serviceName: props.serviceName,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PUBLIC,
@@ -142,12 +143,13 @@ export class FargateService extends constructs.Construct {
     })
 
     if (props.skipHealthCheckGracePeriod) {
-      ;(service.node.defaultChild as CfnService).healthCheckGracePeriodSeconds =
-        undefined
+      ;(
+        this.fargateService.node.defaultChild as CfnService
+      ).healthCheckGracePeriodSeconds = undefined
     }
 
     for (const param of parameters.parameters) {
-      service.node.addDependency(param)
+      this.fargateService.node.addDependency(param)
     }
 
     if (!props.skipTargetGroup) {
@@ -156,7 +158,7 @@ export class FargateService extends constructs.Construct {
         port: port,
         vpc: props.vpc,
         targetType: elb.TargetType.IP,
-        targets: [service],
+        targets: [this.fargateService],
         deregistrationDelay:
           props.deregistrationDelay ?? cdk.Duration.seconds(15),
         ...props.overrideTargetGroupProps,
