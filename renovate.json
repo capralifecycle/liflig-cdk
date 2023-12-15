@@ -6,7 +6,7 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["^semantic-release$", "^@semantic-release/"],
-      "automerge": "false"
+      "automerge": false
     }
   ]
 }
