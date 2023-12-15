@@ -2,5 +2,11 @@
   "extends": [
     "github>capraconsulting/renovate-config:library",
     "github>capraconsulting/renovate-config:aggressive"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^semantic-release$", "^@semantic-release/"],
+      "automerge": "false"
+    }
   ]
 }
