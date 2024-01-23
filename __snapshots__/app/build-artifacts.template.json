@@ -134,125 +134,6 @@
         "aws:cdk:path": "build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource"
       }
     },
-    "BuildArtifactsCiRole8A88D092": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": "role-arn"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "RoleName": "some-ci-role-name",
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "my-project"
-          },
-          {
-            "Key": "SourceRepo",
-            "Value": "github/capralifecycle/liflig-cdk"
-          },
-          {
-            "Key": "StackName",
-            "Value": "build-artifacts"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "build-artifacts/BuildArtifacts/CiRole/Resource"
-      }
-    },
-    "BuildArtifactsCiRoleDefaultPolicy02A0C8B2": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject",
-                "s3:PutObjectLegalHold",
-                "s3:PutObjectRetention",
-                "s3:PutObjectTagging",
-                "s3:PutObjectVersionTagging",
-                "s3:Abort*"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "BuildArtifactsS3BucketF34A0F91",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "BuildArtifactsS3BucketF34A0F91",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": [
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:CompleteLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:InitiateLayerUpload",
-                "ecr:PutImage"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "BuildArtifactsEcrRepository58C90D9A",
-                  "Arn"
-                ]
-              }
-            },
-            {
-              "Action": "ecr:GetAuthorizationToken",
-              "Effect": "Allow",
-              "Resource": "*"
-            },
-            {
-              "Action": "ssm:PutParameter",
-              "Effect": "Allow",
-              "Resource": "arn:aws:ssm:eu-west-1:112233445566:parameter/liflig-cdk/*/pipeline-variables/*"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "BuildArtifactsCiRoleDefaultPolicy02A0C8B2",
-        "Roles": [
-          {
-            "Ref": "BuildArtifactsCiRole8A88D092"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "build-artifacts/BuildArtifacts/CiRole/DefaultPolicy/Resource"
-      }
-    },
     "BuildArtifactsEcrRepository58C90D9A": {
       "Type": "AWS::ECR::Repository",
       "Properties": {
@@ -306,6 +187,301 @@
       "DeletionPolicy": "Retain",
       "Metadata": {
         "aws:cdk:path": "build-artifacts/BuildArtifacts/EcrRepository/Resource"
+      }
+    },
+    "BuildArtifactsOpenIdConnectProviderD0DD3330": {
+      "Type": "AWS::IAM::OIDCProvider",
+      "Properties": {
+        "ClientIdList": [
+          "sts.amazonaws.com"
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "my-project"
+          },
+          {
+            "Key": "SourceRepo",
+            "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "build-artifacts"
+          }
+        ],
+        "ThumbprintList": [
+          "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
+        ],
+        "Url": "https://token.actions.githubusercontent.com"
+      },
+      "Metadata": {
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/OpenIdConnectProvider"
+      }
+    },
+    "BuildArtifactsGithubActionsRole57AE9876": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": {
+                "StringEquals": {
+                  "token.actions.githubusercontent.com:sub": [
+                    "repo:capralifecycle/my-repository:ref:refs/heads/master"
+                  ]
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": {
+                  "Ref": "BuildArtifactsOpenIdConnectProviderD0DD3330"
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "RoleName": "github-actions-role",
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "my-project"
+          },
+          {
+            "Key": "SourceRepo",
+            "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "build-artifacts"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/GithubActionsRole/Role/Resource"
+      }
+    },
+    "BuildArtifactsGithubActionsRoleDefaultPolicyBFBC12F6": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "arn:aws:ssm:eu-west-1:112233445566:parameter/liflig-cdk/*/pipeline-variables/*"
+            },
+            {
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "BuildArtifactsS3BucketF34A0F91",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "BuildArtifactsEcrRepository58C90D9A",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "BuildArtifactsGithubActionsRoleDefaultPolicyBFBC12F6",
+        "Roles": [
+          {
+            "Ref": "BuildArtifactsGithubActionsRole57AE9876"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/GithubActionsRole/Role/DefaultPolicy/Resource"
+      }
+    },
+    "BuildArtifactsGithubActionsLimitedRole15AAC240": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": {
+                "StringLike": {
+                  "token.actions.githubusercontent.com:sub": [
+                    "repo:capralifecycle/my-repository:ref:refs/heads/*"
+                  ]
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": {
+                  "Ref": "BuildArtifactsOpenIdConnectProviderD0DD3330"
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "RoleName": "github-actions-limited-role",
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "my-project"
+          },
+          {
+            "Key": "SourceRepo",
+            "Value": "github/capralifecycle/liflig-cdk"
+          },
+          {
+            "Key": "StackName",
+            "Value": "build-artifacts"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/Resource"
+      }
+    },
+    "BuildArtifactsGithubActionsLimitedRoleDefaultPolicyE701FA68": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:PutParameter",
+              "Effect": "Allow",
+              "Resource": "arn:aws:ssm:eu-west-1:112233445566:parameter/liflig-cdk/*/pipeline-variables/dev*"
+            },
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "BuildArtifactsS3BucketF34A0F91",
+                          "Arn"
+                        ]
+                      },
+                      "/pipelines/*-prod/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "BuildArtifactsS3BucketF34A0F91",
+                          "Arn"
+                        ]
+                      },
+                      "/pipelines/*-prod-*/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "BuildArtifactsS3BucketF34A0F91",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "BuildArtifactsEcrRepository58C90D9A",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "BuildArtifactsGithubActionsLimitedRoleDefaultPolicyE701FA68",
+        "Roles": [
+          {
+            "Ref": "BuildArtifactsGithubActionsLimitedRole15AAC240"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/DefaultPolicy/Resource"
       }
     },
     "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC": {
@@ -476,10 +652,18 @@
         "Ref": "BuildArtifactsS3BucketF34A0F91"
       }
     },
-    "BuildArtifactsCiRoleArn6A5A560C": {
+    "BuildArtifactsRoleArn13F92F8C": {
       "Value": {
         "Fn::GetAtt": [
-          "BuildArtifactsCiRole8A88D092",
+          "BuildArtifactsGithubActionsRole57AE9876",
+          "Arn"
+        ]
+      }
+    },
+    "BuildArtifactsLimitedRoleArnBDBFBD73": {
+      "Value": {
+        "Fn::GetAtt": [
+          "BuildArtifactsGithubActionsLimitedRole15AAC240",
           "Arn"
         ]
       }
