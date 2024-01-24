@@ -1,4 +1,4 @@
-import { Template } from "aws-cdk-lib/assertions"
+import { Template, Match } from "aws-cdk-lib/assertions"
 import * as iam from "aws-cdk-lib/aws-iam"
 import { App, Stack } from "aws-cdk-lib"
 import {
@@ -143,6 +143,30 @@ test("should support creation of only 1 role", () => {
               ],
             },
           },
+        },
+      ],
+    },
+  })
+})
+
+test("should support creation of role for Liflig Jenkins", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    ecrRepositoryName: "some-ecr-repo-name",
+    bucketName: "bucket-name",
+    ciRoleName: "my-role",
+  })
+  const template = Template.fromStack(stack)
+  template.hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "my-role",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Principal: {
+            AWS: Match.stringLikeRegexp("arn:aws:iam::923402097046:.*"),
+          },
+          Action: "sts:AssumeRole",
         },
       ],
     },

@@ -21,6 +21,13 @@ interface Props {
    */
   ecrRepositoryName: string
   /**
+   * Create a role that can be assumed by Liflig Jenkins.
+   *
+   * @deprecated
+   * @default - no role will be created
+   */
+  ciRoleName?: string
+  /**
    * The lifecycle rules to apply to images stored in the ECR repository.
    *
    * @default - Expire images after 180 days
@@ -272,6 +279,19 @@ export class BuildArtifacts extends constructs.Construct {
         bucket.grantPut(this.limitedRole)
         ecrRepo.grantPullPush(this.limitedRole)
       }
+    }
+    if (props.ciRoleName) {
+      const legacyRoleForJenkins = new iam.Role(this, "CiRole", {
+        roleName: props.ciRoleName,
+        assumedBy: new iam.ArnPrincipal(
+          "arn:aws:iam::923402097046:role/buildtools-jenkins-RoleJenkinsSlave-JQGYHR5WE6C5",
+        ),
+      })
+      legacyRoleForJenkins.addToPolicy(
+        policyStatements.allowPipelineVariables(this),
+      )
+      bucket.grantPut(legacyRoleForJenkins)
+      ecrRepo.grantPullPush(legacyRoleForJenkins)
     }
 
     new cdk.CfnOutput(this, "EcrRepoUri", {
