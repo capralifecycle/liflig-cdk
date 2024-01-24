@@ -8,10 +8,16 @@ export class BuildArtifactsStack extends cdk.Stack {
 
     new BuildArtifacts(this, "BuildArtifacts", {
       bucketName: "some-bucket-name",
-      ciRoleName: "some-ci-role-name",
-      ecrRepositoryName: "some-ecr-repo-name",
-      externalRoleArn: "role-arn",
       targetAccountIds: ["112233445566"],
+      ecrRepositoryName: "some-ecr-repo-name",
+      githubActions: {
+        repositories: [
+          {
+            name: "my-repository",
+            owner: "capralifecycle",
+          },
+        ],
+      },
     })
   }
 }

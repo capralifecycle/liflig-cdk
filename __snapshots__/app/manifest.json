@@ -89,22 +89,40 @@
             "data": "BuildArtifactsS3BucketPolicy963F6593"
           }
         ],
-        "/build-artifacts/BuildArtifacts/CiRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "BuildArtifactsCiRole8A88D092"
-          }
-        ],
-        "/build-artifacts/BuildArtifacts/CiRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "BuildArtifactsCiRoleDefaultPolicy02A0C8B2"
-          }
-        ],
         "/build-artifacts/BuildArtifacts/EcrRepository/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BuildArtifactsEcrRepository58C90D9A"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/OpenIdConnectProvider": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsOpenIdConnectProviderD0DD3330"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/GithubActionsRole/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsGithubActionsRole57AE9876"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/GithubActionsRole/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsGithubActionsRoleDefaultPolicyBFBC12F6"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsGithubActionsLimitedRole15AAC240"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsGithubActionsLimitedRoleDefaultPolicyE701FA68"
           }
         ],
         "/build-artifacts/BuildArtifacts/EcrRepoUri": [
@@ -119,10 +137,16 @@
             "data": "BuildArtifactsBucketNameFFDA2A82"
           }
         ],
-        "/build-artifacts/BuildArtifacts/CiRoleArn": [
+        "/build-artifacts/BuildArtifacts/RoleArn": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BuildArtifactsCiRoleArn6A5A560C"
+            "data": "BuildArtifactsRoleArn13F92F8C"
+          }
+        ],
+        "/build-artifacts/BuildArtifacts/LimitedRoleArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BuildArtifactsLimitedRoleArnBDBFBD73"
           }
         ],
         "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
