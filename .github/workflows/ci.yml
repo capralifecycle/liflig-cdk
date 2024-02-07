@@ -1,0 +1,52 @@
+name: ci
+on:
+  push:
+    branches:
+      - "**"
+
+defaults:
+  run:
+    # NOTE: A bit stricter than the default bash options used by GitHub Actions
+    # (bash --noprofile --norc -e -o pipefail {0})
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+# NOTE: Set concurrency for the current workflow to 1
+concurrency: ci-${{ github.ref }}-${{ github.workflow }}
+
+jobs:
+  build-and-release:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - uses: capralifecycle/actions-lib/check-runtime-dependencies@42cbe330ccc0282f04edbf0a6ee8928b5b2c4df0 # v1.1.0
+
+      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 18.19.0
+
+      - uses: capralifecycle/actions-lib/configure-npm@42cbe330ccc0282f04edbf0a6ee8928b5b2c4df0 # v1.1.0
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: lint
+        run: npm run lint
+
+      - name: prepare
+        run: npm run test
+
+      - name: verify cdk snapshots
+        run: npm run snapshots && git status && git add -N && git diff --exit-code
+
+      - name: conditionally semantic release
+        if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.SHARED_NPMJS_TOKEN }}
+        run: npm run semantic-release
