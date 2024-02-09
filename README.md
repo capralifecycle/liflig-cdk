@@ -11,7 +11,7 @@ There will be breaking changes across both minor and patch releases, as we will 
 CDK has some major issues for 3rd party library authors which
 are not yet resolved. Some relevant information:
 
-* https://github.com/aws/aws-cdk-rfcs/blob/master/text/0006-monolothic-packaging.md
+- <https://github.com/aws/aws-cdk-rfcs/blob/master/text/0006-monolothic-packaging.md>
 
 ## Pre-commit checklist
 
