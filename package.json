@@ -63,7 +63,7 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@capraconsulting/webapp-deploy-lambda": "2.1.6",
+    "@capraconsulting/webapp-deploy-lambda": "2.2.0",
     "aws-sdk": "2.1549.0",
     "cpy": "8.1.2",
     "del": "6.1.1",
