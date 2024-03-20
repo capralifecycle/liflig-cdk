@@ -69,6 +69,7 @@ export const cloudAssemblyLookupHandler: Handler = async (
         Key: userParameters.objectKey,
       })
       .promise()
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       .then((it) => it.Body!.toString())
 
     const cloudAssemblyReference = JSON.parse(
