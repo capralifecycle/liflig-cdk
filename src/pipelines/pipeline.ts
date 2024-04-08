@@ -301,7 +301,7 @@ const collectFilesHandler: Handler = async (event: Record<string, any>) => {
     StackCountPerEnv: Object.fromEntries(
       envNames.map((name) => [
         name,
-        cloudAssembly!.environments.find((it) => it.name === name)?.stackNames
+        cloudAssembly.environments.find((it) => it.name === name)?.stackNames
           .length ?? 0,
       ]),
     ),
