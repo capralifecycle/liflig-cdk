@@ -17,12 +17,15 @@ interface FeatureFlagInfo {
 }
 
 // Custom feature flags for liflig-cdk
+/**
+ * @deprecated No longer in use, this is now the default behaviour.
+ */
 export const FEATURE_FLAG_CDK_PIPELINES_SPEED_UP =
   "@liflig-cdk/cdk-pipelines:enableExperimentalSpeedUp"
 
 const FLAGS: { [key: string]: FeatureFlagInfo } = {
   [FEATURE_FLAG_CDK_PIPELINES_SPEED_UP]: {
-    default: false,
+    default: true,
     description:
       "Reduce execution time of CDK Pipelines by making various tweaks (e.g., skip creation of CloudFormation changesets, disable CodePipeline S3 polling).",
   },
