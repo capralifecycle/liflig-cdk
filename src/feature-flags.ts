@@ -10,10 +10,20 @@ interface FeatureFlagInfo {
    * to any breaking behavior.
    */
   default: boolean
+
   /**
    * A short description of the feature flag.
    */
   description: string
+
+  /**
+   * An optional deprecation message for the feature flag, explaining
+   * the reason for the deprecation.
+   *
+   * NB: The message will only be logged when it is both set by the consumer
+   * and used by the library, as the flags are parsed lazily when accessed.
+   */
+  deprecationReason?: string
 }
 
 // Custom feature flags for liflig-cdk
@@ -28,6 +38,8 @@ const FLAGS: { [key: string]: FeatureFlagInfo } = {
     default: true,
     description:
       "Reduce execution time of CDK Pipelines by making various tweaks (e.g., skip creation of CloudFormation changesets, disable CodePipeline S3 polling).",
+    deprecationReason:
+      "This feature flag is no longer in use, this is now the default behaviour.",
   },
 }
 
@@ -35,6 +47,7 @@ const getFeatureFlagDefault = (flagName: string) => {
   return FLAGS[flagName]?.default ?? false
 }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Exposes feature flags we can use in liflig-cdk to allow consumers to opt-in
  * to experimental functionality without affecting current consumers and having
@@ -54,6 +67,14 @@ export class FeatureFlags {
     if (!Object.keys(FLAGS).includes(flagName)) {
       throw new Error(`Unsupported feature flag ${flagName}`)
     }
+
+    const deprecationReason = FLAGS[flagName]?.deprecationReason
+    if (deprecationReason) {
+      console.warn(
+        `Warning: Feature flag '${flagName}' is deprecated: ${deprecationReason}`,
+      )
+    }
+
     const contextValue = this.scope.node.tryGetContext(flagName) as unknown
     if (contextValue === undefined) {
       return getFeatureFlagDefault(flagName)
