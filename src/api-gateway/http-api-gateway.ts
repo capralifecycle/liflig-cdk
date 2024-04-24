@@ -850,7 +850,7 @@ class BasicAuthLambda extends constructs.Construct {
     this.basicAuthLambda = new lambda.Function(this, "BasicAuthLambda", {
       description:
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       handler: "index.handler",
       environment: {
         credentialsSecretId: props.secret.secretName,
@@ -859,54 +859,57 @@ class BasicAuthLambda extends constructs.Construct {
       // For code secretsmanager, see https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/javascript/example_code/secrets/secrets_getsecretvalue.js
       code: new lambda.InlineCode(
         `"use strict"
-const AWS = require('aws-sdk');
-const secretsManager = new AWS.SecretsManager({ region: process.env.secretRegion || "eu-west-1" });
+const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager")
+const secretsManagerClient = new SecretsManagerClient({ region: process.env.secretRegion || "eu-west-1" })
 
 // Returns a string of json object. The object has a key credentials of type string,
 // containing a stringified json array of base64 strings.
-// E.g.: '{ "credentials": "[\\"dXNlcm5hbWU6cGFzc3dvcmQ=\\", \\"YWRtaW46aHVudGVyMg==\\"]" }'
+// E.g.: '{ "credentials": "[\"dXNlcm5hbWU6cGFzc3dvcmQ=\", \"YWRtaW46aHVudGVyMg==\"]" }'
 async function getSecret() {
-  return new Promise((resolve, reject) => {
-    secretsManager.getSecretValue({ SecretId: process.env.credentialsSecretId }, (err, data) => {
-      if (err) { return reject(err.code); }
-      if ("SecretString" in data) {
-        return resolve(data.SecretString);
-      } else {
-        const buffer = Buffer.from(data.SecretBinary, "base64");
-        return resolve(buffer.toString("ascii"));
-      }
-    });
-  });
-};
-
-exports.handler = async(event) => {
-  let response = {
-    "isAuthorized": false
-  };
-
-  const auth = event.headers.authorization || "";
   try {
-    const validCredentials = JSON.parse(JSON.parse(await getSecret()).credentials);
+    const data = await secretsManagerClient.send(new GetSecretValueCommand({ SecretId: process.env.credentialsSecretId }))
+
+    if ("SecretString" in data) {
+      return data.SecretString
+    } else {
+      const buffer = Buffer.from(data.SecretBinary, "base64")
+      return buffer.toString("ascii")
+    }
+  } catch (err) {
+    console.log("Failed to get secret from SecretsManager", err)
+    throw err
+  }
+}
+
+exports.handler = async (event) => {
+  let response = {
+    "isAuthorized": false,
+  }
+
+  const auth = event.headers.authorization || ""
+  try {
+    const validCredentials = JSON.parse(JSON.parse(await getSecret()).credentials)
     if (auth.startsWith("Basic ")) {
       for (const cred of validCredentials) {
         if (auth === "Basic " + cred && cred !== "") {
           response = {
             "isAuthorized": true,
-             "context": {
-               "user" : Buffer.from(cred, "base64").toString("utf-8").split(":")[0]
-             }
-          };
-          break;
+            "context": {
+              "user": Buffer.from(cred, "base64").toString("utf-8").split(":")[0],
+            },
+          }
+          break
         }
       }
     }
   } catch (err) {
-    console.error("Failure during authentication. Verify that the secret is correct.", err);
-    throw err; // Makes API-GW return 500 instead of 401
+    console.error("Failure during authentication. Verify that the secret is correct.", err)
+    throw err // Makes API-GW return 500 instead of 401
   }
 
-  return response;
-};`,
+  return response
+}
+`,
       ),
     })
     props.secret.grantRead(this.basicAuthLambda)
