@@ -1,6 +1,7 @@
 import * as constructs from "constructs"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as sns from "aws-cdk-lib/aws-sns"
 import { Duration } from "aws-cdk-lib"
@@ -59,6 +60,13 @@ export class SlackAlarm extends constructs.Construct {
       principal: new iam.ServicePrincipal("sns.amazonaws.com"),
       sourceArn: this.alarmTopic.topicArn,
     })
+    slackLambda.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["cloudwatch:DescribeAlarms"],
+        effect: Effect.ALLOW,
+        resources: ["*"],
+      }),
+    )
 
     new sns.Subscription(this, "Subscription", {
       endpoint: slackLambda.functionArn,
