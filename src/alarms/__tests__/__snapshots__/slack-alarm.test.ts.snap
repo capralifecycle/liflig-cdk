@@ -13,7 +13,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "c0d25018481918152e92fa9c210f22d56dbfa1e1ebc8bb1852b4482555f64368.zip",
+          "S3Key": "d9fa0c922ce4bc8129ffc5b4336a9215994c76b4b61b0364801d607df00d774b.zip",
         },
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {
@@ -118,6 +118,11 @@ Object {
               "Resource": Object {
                 "Ref": "TestSecret16AF87B1",
               },
+            },
+            Object {
+              "Action": "cloudwatch:DescribeAlarms",
+              "Effect": "Allow",
+              "Resource": "*",
             },
           ],
           "Version": "2012-10-17",
