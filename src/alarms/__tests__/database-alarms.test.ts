@@ -25,7 +25,9 @@ test("create alarms", () => {
     action,
   })
 
-  alarms.addCpuCreditsAlarm()
+  alarms.addCpuCreditsAlarm({
+    appendToAlarmDescription: "Runbook at https://liflig.no",
+  })
   alarms.addCpuUtilizationAlarm({
     threshold: 75,
   })

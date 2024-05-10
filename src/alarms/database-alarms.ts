@@ -93,6 +93,11 @@ export class DatabaseAlarms extends constructs.Construct {
        * @default 10% of the maximum earned CPU credits for the instance type.
        */
       threshold?: number
+
+      /**
+       * Add extra information to the alarm description, like Runbook URL or steps to triage.
+       */
+      appendToAlarmDescription?: string
     },
   ): void {
     if (!this.instanceType.isBurstable()) {
@@ -125,7 +130,7 @@ export class DatabaseAlarms extends constructs.Construct {
           this.instanceType.toString().startsWith("t2.")
             ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
             : "If the balance is depleted, AWS adds additional charges."
-        }.`,
+        } ${props?.appendToAlarmDescription ?? ""}`,
         comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
         evaluationPeriods: 1,
         threshold: threshold,

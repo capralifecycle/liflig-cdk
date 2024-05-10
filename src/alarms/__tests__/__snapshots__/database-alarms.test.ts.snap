@@ -40,7 +40,7 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "Less than 28.8 CPU credits remaining for RDS database 'database-name'. If the balance is depleted, AWS adds additional charges..",
+        "AlarmDescription": "Less than 28.8 CPU credits remaining for RDS database 'database-name'. If the balance is depleted, AWS adds additional charges. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
         "Dimensions": Array [
           Object {
