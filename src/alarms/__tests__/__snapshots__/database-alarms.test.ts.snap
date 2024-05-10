@@ -10,7 +10,7 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "RDS database 'database-name' has a higher than expected CPU utilization.",
+        "AlarmDescription": "RDS database 'database-name' has a higher than expected CPU utilization. Runbook at https://liflig.no",
         "ComparisonOperator": "GreaterThanThreshold",
         "Dimensions": Array [
           Object {

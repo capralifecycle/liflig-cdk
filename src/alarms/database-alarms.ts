@@ -93,7 +93,6 @@ export class DatabaseAlarms extends constructs.Construct {
        * @default 10% of the maximum earned CPU credits for the instance type.
        */
       threshold?: number
-
       /**
        * Add extra information to the alarm description, like Runbook URL or steps to triage.
        */
@@ -186,7 +185,6 @@ export class DatabaseAlarms extends constructs.Construct {
        */
       threshold?: cdk.Size
     }
-
     /**
      * Add extra information to the alarm description, like Runbook URL or steps to triage.
      */
@@ -273,6 +271,10 @@ export class DatabaseAlarms extends constructs.Construct {
        * @default 2 minutes
        */
       period?: cdk.Duration
+      /**
+       * Add extra information to the alarm description, like Runbook URL or steps to triage.
+       */
+      appendToAlarmDescription?: string
     },
   ): void {
     const alarm = new cloudwatch.Metric({
@@ -284,7 +286,7 @@ export class DatabaseAlarms extends constructs.Construct {
         DBInstanceIdentifier: this.databaseInstanceIdentifier,
       },
     }).createAlarm(this, "CpuUtilizationAlarm", {
-      alarmDescription: `RDS database '${this.databaseInstanceIdentifier}' has a higher than expected CPU utilization.`,
+      alarmDescription: `RDS database '${this.databaseInstanceIdentifier}' has a higher than expected CPU utilization. ${props?.appendToAlarmDescription ?? ""}`,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       evaluationPeriods: props?.evaluationPeriods ?? 5,
       threshold: props?.threshold ?? 80,

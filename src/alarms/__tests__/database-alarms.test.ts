@@ -30,6 +30,7 @@ test("create alarms", () => {
   })
   alarms.addCpuUtilizationAlarm({
     threshold: 75,
+    appendToAlarmDescription: "Runbook at https://liflig.no",
   })
 
   alarms.addStorageSpaceAlarms({
