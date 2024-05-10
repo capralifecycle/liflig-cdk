@@ -32,7 +32,9 @@ test("create alarms", () => {
     threshold: 75,
   })
 
-  alarms.addStorageSpaceAlarms()
+  alarms.addStorageSpaceAlarms({
+    appendToAlarmDescription: "Runbook at https://liflig.no",
+  })
 
   expect(stack).toMatchCdkSnapshot()
 })

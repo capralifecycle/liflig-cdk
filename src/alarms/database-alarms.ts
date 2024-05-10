@@ -186,6 +186,11 @@ export class DatabaseAlarms extends constructs.Construct {
        */
       threshold?: cdk.Size
     }
+
+    /**
+     * Add extra information to the alarm description, like Runbook URL or steps to triage.
+     */
+    appendToAlarmDescription?: string
   }): void {
     const lowStorageSpaceAlarm = new cloudwatch.Metric({
       metricName: "FreeStorageSpace",
@@ -196,7 +201,7 @@ export class DatabaseAlarms extends constructs.Construct {
         DBInstanceIdentifier: this.databaseInstanceIdentifier,
       },
     }).createAlarm(this, "LowStorageSpaceAlarm", {
-      alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'.`,
+      alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
       evaluationPeriods: 1,
       threshold:
@@ -222,7 +227,7 @@ export class DatabaseAlarms extends constructs.Construct {
         DBInstanceIdentifier: this.databaseInstanceIdentifier,
       },
     }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
-      alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'.`,
+      alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
       comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
       evaluationPeriods: 1,
       threshold:

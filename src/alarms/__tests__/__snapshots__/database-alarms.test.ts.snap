@@ -65,7 +65,7 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "Critically low storage space available on RDS database 'database-name'.",
+        "AlarmDescription": "Critically low storage space available on RDS database 'database-name'. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
         "Dimensions": Array [
           Object {
@@ -95,7 +95,7 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "Low storage space available on RDS database 'database-name'.",
+        "AlarmDescription": "Low storage space available on RDS database 'database-name'. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
         "Dimensions": Array [
           Object {
