@@ -1,6 +1,8 @@
 export { DatabaseAlarms } from "./database-alarms"
+export { LambdaAlarms } from "./lambda-alarms"
 export { ServiceAlarms } from "./service-alarms"
 export { SlackAlarm } from "./slack-alarm"
 export type { DatabaseAlarmsProps } from "./database-alarms"
+export type { LambdaAlarmsProps } from "./lambda-alarms"
 export type { ServiceAlarmsProps } from "./service-alarms"
 export type { SlackAlarmProps } from "./slack-alarm"
