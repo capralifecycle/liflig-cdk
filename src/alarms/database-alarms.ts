@@ -95,11 +95,7 @@ export class DatabaseAlarms extends constructs.Construct {
       threshold?: number
     },
   ): void {
-    if (
-      !["t2.", "t3.", "t4g."].some((s) =>
-        this.instanceType.toString().startsWith(s),
-      )
-    ) {
+    if (!this.instanceType.isBurstable()) {
       throw new Error(
         "CPU credits are only relevant for burstable instance types.",
       )
