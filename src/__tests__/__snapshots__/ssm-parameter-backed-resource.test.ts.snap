@@ -12,7 +12,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
           },
-          "S3Key": "cb92a348b5b60bcbbe3888108f15e75877121eb402b4a74526927300fcc54975.zip",
+          "S3Key": "97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -76,11 +76,11 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },
-        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -96,7 +96,7 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },
@@ -161,7 +161,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
           },
-          "S3Key": "cb92a348b5b60bcbbe3888108f15e75877121eb402b4a74526927300fcc54975.zip",
+          "S3Key": "97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -225,11 +225,11 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },
-        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -245,7 +245,7 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"eu-central-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },
@@ -319,11 +319,11 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },
-        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+        "Delete": "{\\"service\\":\\"SSM\\",\\"action\\":\\"deleteParameter\\",\\"parameters\\":{\\"Name\\":\\"/my-param\\"},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -339,7 +339,7 @@ Object {
               Object {
                 "Ref": "Bucket83908E77",
               },
-              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"}}",
+              "\\",\\"Type\\":\\"String\\",\\"Overwrite\\":true},\\"region\\":\\"us-east-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my-param\\"},\\"logApiResponseData\\":true}",
             ],
           ],
         },

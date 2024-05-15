@@ -79,8 +79,8 @@ Object {
         "DeliveryOptionsCustomResourcePolicyBEF2DFD1",
       ],
       "Properties": Object {
-        "Create": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\",\\"DeliveryOptions\\":{\\"TlsPolicy\\":\\"Require\\"}},\\"physicalResourceId\\":{\\"id\\":\\"exampleconfigurationset\\"}}",
-        "Delete": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\"}}",
+        "Create": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\",\\"DeliveryOptions\\":{\\"TlsPolicy\\":\\"Require\\"}},\\"physicalResourceId\\":{\\"id\\":\\"exampleconfigurationset\\"},\\"logApiResponseData\\":true}",
+        "Delete": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\"},\\"logApiResponseData\\":true}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -88,7 +88,7 @@ Object {
             "Arn",
           ],
         },
-        "Update": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\",\\"DeliveryOptions\\":{\\"TlsPolicy\\":\\"Require\\"}},\\"physicalResourceId\\":{\\"id\\":\\"exampleconfigurationset\\"}}",
+        "Update": "{\\"service\\":\\"SES\\",\\"action\\":\\"putConfigurationSetDeliveryOptions\\",\\"parameters\\":{\\"ConfigurationSetName\\":\\"exampleconfigurationset\\",\\"DeliveryOptions\\":{\\"TlsPolicy\\":\\"Require\\"}},\\"physicalResourceId\\":{\\"id\\":\\"exampleconfigurationset\\"},\\"logApiResponseData\\":true}",
       },
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",

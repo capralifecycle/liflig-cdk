@@ -12,7 +12,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "cb92a348b5b60bcbbe3888108f15e75877121eb402b4a74526927300fcc54975.zip",
+          "S3Key": "97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -102,7 +102,7 @@ Object {
         "Nonce": "123",
       },
       "Properties": Object {
-        "Create": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/my/param\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my/param\\"}}",
+        "Create": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/my/param\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my/param\\"},\\"logApiResponseData\\":true}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -110,7 +110,7 @@ Object {
             "Arn",
           ],
         },
-        "Update": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/my/param\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my/param\\"}}",
+        "Update": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/my/param\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/my/param\\"},\\"logApiResponseData\\":true}",
       },
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",
