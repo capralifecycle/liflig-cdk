@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
-import type * as _AWS from "aws-sdk"
 
 interface StartDeployExpectedInput {
   bucketName: string
@@ -16,10 +15,13 @@ interface StartDeployExpectedInput {
 export const startDeployHandler: Handler<
   Partial<StartDeployExpectedInput>
 > = async (event, context) => {
-  const AWS = require("aws-sdk")
+  const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3")
+  const { CodeBuildClient, StartBuildCommand, SourceType } = await import(
+    "@aws-sdk/client-codebuild"
+  )
 
-  const codebuild = new AWS.CodeBuild() as _AWS.CodeBuild
-  const s3 = new AWS.S3() as _AWS.S3
+  const codeBuildClient = new CodeBuildClient()
+  const s3Client = new S3Client()
 
   function requireEnv(name: string): string {
     const value = process.env[name]
@@ -36,7 +38,6 @@ export const startDeployHandler: Handler<
   // Since we pass the stack names as strings to the shell,
   // be a bit restrictive of the valid values we can use.
   const validStackName = /^[a-z0-9_][a-z0-9\-_]*$/i
-
   const s3KeyPrefix = `${context.awsRequestId}/`
 
   // Validate the input.
@@ -51,41 +52,36 @@ export const startDeployHandler: Handler<
     throw new Error("Input invalid: " + JSON.stringify(event, undefined, "  "))
   }
 
-  async function put(name: string, data: AWS.S3.Body) {
-    await s3
-      .putObject({
+  async function putObject(name: string, data: string) {
+    await s3Client.send(
+      new PutObjectCommand({
         Bucket: bucketName,
         Key: `${s3KeyPrefix}${name}`,
         Body: data,
-      })
-      .promise()
+      }),
+    )
   }
 
-  await put("stack-names.txt", event.stackNames.join(" "))
+  await putObject("stack-names.txt", event.stackNames.join(" "))
   // Ensure that we run the script using same feature flags.
-  await put(
-    "cdk.json",
-    JSON.stringify({
-      context: cdkContext,
-    }),
-  )
+  await putObject("cdk.json", JSON.stringify({ context: cdkContext }))
 
-  const build = await codebuild
-    .startBuild({
+  const { build } = await codeBuildClient.send(
+    new StartBuildCommand({
       projectName,
-      sourceTypeOverride: "S3",
+      sourceTypeOverride: SourceType.S3,
       sourceLocationOverride: `${bucketName}/${s3KeyPrefix}`,
       secondarySourcesOverride: [
         {
-          type: "S3",
+          type: SourceType.S3,
           location: `${event.bucketName}/${event.bucketKey}`,
           sourceIdentifier: "CLOUDASSEMBLY",
         },
       ],
-    })
-    .promise()
+    }),
+  )
+  const buildId = build?.id
 
-  const buildId = build.build?.id
   if (buildId == null) {
     throw new Error("Unknown build ID")
   }

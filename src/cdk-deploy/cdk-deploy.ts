@@ -188,7 +188,7 @@ export class CdkDeploy extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${startDeployHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       functionName: props.startDeployFunctionName,
       environment: {
