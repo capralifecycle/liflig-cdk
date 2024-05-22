@@ -135,7 +135,7 @@ export class Pipeline extends constructs.Construct {
         code: new lambda.InlineCode(
           `exports.handler = ${collectFilesHandler.toString()};`,
         ),
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         handler: "index.handler",
         timeout: cdk.Duration.seconds(30),
       },
@@ -234,9 +234,12 @@ interface CloudAssembly {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const collectFilesHandler: Handler = async (event: Record<string, any>) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-  const AWS = require("aws-sdk")
+  const { S3Client, ListObjectsV2Command, GetObjectCommand } = await import(
+    "@aws-sdk/client-s3"
+  )
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-  const s3 = new AWS.S3() as _AWS.S3
+
+  const s3Client = new S3Client()
 
   console.log("Event received: ", event)
 
@@ -250,27 +253,31 @@ const collectFilesHandler: Handler = async (event: Record<string, any>) => {
     )
   }
 
-  const files = await s3
-    .listObjectsV2({
-      Bucket: bucketName,
-      Prefix: bucketPrefix,
-    })
-    .promise()
+  async function listObjects() {
+    const { Contents } = await s3Client.send(
+      new ListObjectsV2Command({
+        Bucket: bucketName,
+        Prefix: bucketPrefix,
+      }),
+    )
+    return Contents
+  }
 
-  async function getData(key: string): Promise<string> {
-    const result = await s3
-      .getObject({
+  async function getObject(key: string): Promise<string> {
+    const { Body } = await s3Client.send(
+      new GetObjectCommand({
         Bucket: bucketName,
         Key: key,
-      })
-      .promise()
-    return result.Body!.toString()
+      }),
+    )
+    return Body!.toString()
   }
 
   let cloudAssembly: CloudAssembly | null = null
   let variables: Record<string, string> = {}
 
-  for (const file of files.Contents ?? []) {
+  const files = await listObjects()
+  for (const file of files ?? []) {
     const key = file.Key!
     const filename = key.slice(bucketPrefix.length)
 
@@ -279,12 +286,12 @@ const collectFilesHandler: Handler = async (event: Record<string, any>) => {
     if (filename === "cloud-assembly.json") {
       console.log("Found Cloud Assembly")
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      cloudAssembly = JSON.parse(await getData(key))
+      cloudAssembly = JSON.parse(await getObject(key))
     } else if (/^variables.*\.json$/.test(filename)) {
       console.log("Found variables file")
       variables = {
         ...variables,
-        ...(JSON.parse(await getData(key)) as Record<string, string>),
+        ...(JSON.parse(await getObject(key)) as Record<string, string>),
       }
     } else {
       console.log("Ignoring unknown file")
