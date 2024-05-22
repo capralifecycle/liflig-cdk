@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
-import type * as _AWS from "aws-sdk"
 
 interface StatusExpectedInput {
   jobId: string
@@ -14,7 +13,19 @@ interface StatusExpectedInput {
 export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
   event,
 ) => {
-  const AWS = require("aws-sdk")
+  const { CodeBuildClient, BatchGetBuildsCommand } = await import(
+    "@aws-sdk/client-codebuild"
+  )
+
+  const { CloudWatchLogsClient, GetLogEventsCommand } = await import(
+    "@aws-sdk/client-cloudwatch-logs"
+  )
+
+  type Build = import("@aws-sdk/client-codebuild").Build
+  type StatusType = import("@aws-sdk/client-codebuild").StatusType
+
+  const codeBuildClient = new CodeBuildClient()
+  const cloudWatchLogsClient = new CloudWatchLogsClient()
 
   function requireEnv(name: string): string {
     const value = process.env[name]
@@ -33,7 +44,7 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
    * A null value means the job is still in progress and the
    * completion status is not yet known.
    */
-  function getSuccess(status: AWS.CodeBuild.StatusType): boolean | null {
+  function getSuccess(status: StatusType): boolean | null {
     if (status == "SUCCEEDED") {
       return true
     }
@@ -45,20 +56,19 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
     return false
   }
 
-  async function getBuild(buildId: string): Promise<AWS.CodeBuild.Build> {
-    const codebuild: AWS.CodeBuild = new AWS.CodeBuild() as _AWS.CodeBuild
-    const result = await codebuild.batchGetBuilds({ ids: [buildId] }).promise()
+  async function getBuild(buildId: string): Promise<Build> {
+    const { builds } = await codeBuildClient.send(
+      new BatchGetBuildsCommand({ ids: [buildId] }),
+    )
 
-    if (result.builds?.length !== 1) {
-      throw new Error(
-        `Expected 1 item, found ${result.builds?.length ?? "unknown"}`,
-      )
+    if (builds?.length !== 1) {
+      throw new Error(`Expected 1 item, found ${builds?.length ?? "unknown"}`)
     }
 
-    return result.builds[0]
+    return builds[0]
   }
 
-  async function getLogs(build: AWS.CodeBuild.Build) {
+  async function getLogs(build: Build): Promise<string> {
     if (build.logs == null) {
       throw new Error("Missing logs attribute on build")
     }
@@ -71,22 +81,20 @@ export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
       throw new Error("Missing log streamName")
     }
 
-    const cloudwatchlogs: AWS.CloudWatchLogs =
-      new AWS.CloudWatchLogs() as _AWS.CloudWatchLogs
-    const data = await cloudwatchlogs
-      .getLogEvents({
+    const { events } = await cloudWatchLogsClient.send(
+      new GetLogEventsCommand({
         logGroupName: build.logs.groupName,
         logStreamName: build.logs.streamName,
         startFromHead: true,
-      })
-      .promise()
+      }),
+    )
 
-    if (data.events == null) {
+    if (events == null) {
       throw new Error("Failed to fetch log events")
     }
 
     // The logs contain newlines, so no need to add more.
-    return data.events.map((it) => it.message).join("")
+    return events.map((it) => it.message).join("")
   }
 
   const projectName = requireEnv("PROJECT_NAME")

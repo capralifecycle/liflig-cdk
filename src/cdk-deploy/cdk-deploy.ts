@@ -213,7 +213,7 @@ export class CdkDeploy extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${statusHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       functionName: props.statusFunctionName,
       environment: {
