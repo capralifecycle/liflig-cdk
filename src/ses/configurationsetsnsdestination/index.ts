@@ -113,7 +113,7 @@ class ConfigurationSetSnsDestinationProvider extends constructs.Construct {
           `exports.handler = ${configurationSetSnsDestinationHandler.toString()};`,
         ),
         handler: "index.handler",
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         timeout: cdk.Duration.minutes(5),
         initialPolicy: [
           new iam.PolicyStatement({

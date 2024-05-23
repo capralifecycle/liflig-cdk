@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import type * as _AWS from "aws-sdk"
 
 interface ResourceProps {
   ConfigurationSetName: string
@@ -27,16 +26,26 @@ type OnEventHandler = (event: {
 export const configurationSetSnsDestinationHandler: OnEventHandler = async (
   event,
 ) => {
-  const AWS = require("aws-sdk")
+  const {
+    SESv2Client,
+    CreateConfigurationSetEventDestinationCommand,
+    UpdateConfigurationSetEventDestinationCommand,
+    DeleteConfigurationSetEventDestinationCommand,
+  } = await import("@aws-sdk/client-sesv2")
+  const sesv2Client = new SESv2Client()
 
-  const ses: AWS.SESV2 = new AWS.SESV2() as _AWS.SESV2
+  type EventDestinationDefinition =
+    import("@aws-sdk/client-sesv2").EventDestinationDefinition
+  type EventType = import("@aws-sdk/client-sesv2").EventType
 
   const configurationSetName = event.ResourceProperties.ConfigurationSetName
   const eventDestinationName = event.ResourceProperties.EventDestinationName
   const snsTopicArn = event.ResourceProperties.SnsTopicArn
-  const matchingEventTypes = event.ResourceProperties.MatchingEventTypes
+  const matchingEventTypes = event.ResourceProperties.MatchingEventTypes.map(
+    (eventType) => eventType as EventType,
+  )
 
-  const eventDestination: _AWS.SESV2.Types.EventDestinationDefinition = {
+  const eventDestination: EventDestinationDefinition = {
     MatchingEventTypes: matchingEventTypes,
     Enabled: true,
     SnsDestination: {
@@ -48,12 +57,12 @@ export const configurationSetSnsDestinationHandler: OnEventHandler = async (
 
   switch (event.RequestType) {
     case "Delete":
-      const deleteResponse = await ses
-        .deleteConfigurationSetEventDestination({
+      const deleteResponse = await sesv2Client.send(
+        new DeleteConfigurationSetEventDestinationCommand({
           ConfigurationSetName: configurationSetName,
           EventDestinationName: eventDestinationName,
-        })
-        .promise()
+        }),
+      )
       console.log(
         `ses.deleteConfigurationSetEventDestination: ${JSON.stringify(
           deleteResponse,
@@ -65,13 +74,13 @@ export const configurationSetSnsDestinationHandler: OnEventHandler = async (
       }
 
     case "Create":
-      const createResponse = await ses
-        .createConfigurationSetEventDestination({
+      const createResponse = await sesv2Client.send(
+        new CreateConfigurationSetEventDestinationCommand({
           ConfigurationSetName: configurationSetName,
           EventDestinationName: eventDestinationName,
           EventDestination: eventDestination,
-        })
-        .promise()
+        }),
+      )
       console.log(
         `ses.createConfigurationSetEventDestination: ${JSON.stringify(
           createResponse,
@@ -91,26 +100,26 @@ export const configurationSetSnsDestinationHandler: OnEventHandler = async (
         configurationSetName !== previousConfigurationSetName ||
         eventDestinationName !== previousEventDestinationName
       ) {
-        const createResponse = await ses
-          .createConfigurationSetEventDestination({
+        const createResponse = await sesv2Client.send(
+          new CreateConfigurationSetEventDestinationCommand({
             ConfigurationSetName: configurationSetName,
             EventDestinationName: eventDestinationName,
             EventDestination: eventDestination,
-          })
-          .promise()
+          }),
+        )
         console.log(
           `ses.createConfigurationSetEventDestination: ${JSON.stringify(
             createResponse,
           )}`,
         )
       } else {
-        const updateResponse = await ses
-          .updateConfigurationSetEventDestination({
+        const updateResponse = await sesv2Client.send(
+          new UpdateConfigurationSetEventDestinationCommand({
             ConfigurationSetName: configurationSetName,
             EventDestinationName: eventDestinationName,
             EventDestination: eventDestination,
-          })
-          .promise()
+          }),
+        )
         console.log(
           `ses.UpdateConfigurationSetEventDestination: ${JSON.stringify(
             updateResponse,
