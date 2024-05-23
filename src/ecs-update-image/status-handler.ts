@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
-import type * as _AWS from "aws-sdk"
 
 interface Response {
   /**
@@ -17,8 +16,13 @@ interface Response {
 // This function is inline-compiled for the lambda.
 // It must be self-contained.
 export const statusHandler: Handler<unknown, Response> = async () => {
-  const AWS = require("aws-sdk")
-  const ecs = new AWS.ECS() as _AWS.ECS
+  const { ECSClient, DescribeServicesCommand, DescribeTaskDefinitionCommand } =
+    await import("@aws-sdk/client-ecs")
+
+  const ecsClient = new ECSClient()
+
+  type Service = import("@aws-sdk/client-ecs").Service
+  type TaskDefinition = import("@aws-sdk/client-ecs").TaskDefinition
 
   function requireEnv(name: string): string {
     const value = process.env[name]
@@ -31,13 +35,13 @@ export const statusHandler: Handler<unknown, Response> = async () => {
   async function getService(
     clusterName: string,
     serviceName: string,
-  ): Promise<AWS.ECS.Service> {
-    const services = await ecs
-      .describeServices({
+  ): Promise<Service> {
+    const services = await ecsClient.send(
+      new DescribeServicesCommand({
         cluster: clusterName,
         services: [serviceName],
-      })
-      .promise()
+      }),
+    )
 
     if (services.services?.length !== 1) {
       throw new Error(`Service not found: ${clusterName}/${serviceName}`)
@@ -48,14 +52,11 @@ export const statusHandler: Handler<unknown, Response> = async () => {
 
   async function getTaskDefinition(
     taskDefinition: string,
-  ): Promise<AWS.ECS.TaskDefinition> {
-    return (
-      await ecs
-        .describeTaskDefinition({
-          taskDefinition: taskDefinition,
-        })
-        .promise()
-    ).taskDefinition!
+  ): Promise<TaskDefinition> {
+    const resp = await ecsClient.send(
+      new DescribeTaskDefinitionCommand({ taskDefinition }),
+    )
+    return resp.taskDefinition!
   }
 
   /**
@@ -64,7 +65,7 @@ export const statusHandler: Handler<unknown, Response> = async () => {
    * Uses the logic described at
    * https://docs.aws.amazon.com/cli/latest/reference/ecs/wait/services-stable.html
    */
-  function isStabilized(service: AWS.ECS.Service): boolean {
+  function isStabilized(service: Service): boolean {
     return (
       service.deployments?.length == 1 &&
       service.runningCount == service.desiredCount
