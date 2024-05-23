@@ -46,9 +46,17 @@ export const cloudAssemblyLookupHandler: Handler = async (
   event: CodePipelineEvent,
   context,
 ) => {
-  const AWS = require("aws-sdk") as typeof import("aws-sdk")
-  const s3 = new AWS.S3()
-  const codepipeline = new AWS.CodePipeline()
+  const { S3Client, GetObjectCommand, PutObjectCommand } = await import(
+    "@aws-sdk/client-s3"
+  )
+  const {
+    CodePipelineClient,
+    PutJobFailureResultCommand,
+    PutJobSuccessResultCommand,
+  } = await import("@aws-sdk/client-codepipeline")
+
+  const s3Client = new S3Client()
+  const codepipelineClient = new CodePipelineClient()
 
   const jobId = event["CodePipeline.job"].id
 
@@ -63,13 +71,13 @@ export const cloudAssemblyLookupHandler: Handler = async (
       userParametersRaw,
     ) as CloudAssemblyLookupUserParameters
 
-    const referenceData = await s3
-      .getObject({
+    const getReferenceDataResp = await s3Client.send(
+      new GetObjectCommand({
         Bucket: userParameters.bucketName,
         Key: userParameters.objectKey,
-      })
-      .promise()
-      .then((it) => it.Body!.toString())
+      }),
+    )
+    const referenceData = getReferenceDataResp.Body!.toString()
 
     const cloudAssemblyReference = JSON.parse(
       referenceData,
@@ -78,44 +86,43 @@ export const cloudAssemblyLookupHandler: Handler = async (
     const outputArtifact = event["CodePipeline.job"].data.outputArtifacts[0]
     const s3Loc = outputArtifact.location.s3Location
 
-    const cloudAssemblyZipData = await s3
-      .getObject({
+    const cloudAssemblyZipData = await s3Client.send(
+      new GetObjectCommand({
         Bucket: cloudAssemblyReference.cloudAssemblyBucketName,
         Key: cloudAssemblyReference.cloudAssemblyBucketKey,
-      })
-      .promise()
-
+      }),
+    )
     console.log("Size of Cloud Assembly", cloudAssemblyZipData.ContentLength)
 
-    await new AWS.S3({
+    const authedS3Client = new S3Client({
       credentials: event["CodePipeline.job"].data.artifactCredentials,
     })
-      .putObject({
+
+    await authedS3Client.send(
+      new PutObjectCommand({
         Bucket: s3Loc.bucketName,
         Key: s3Loc.objectKey,
         Body: cloudAssemblyZipData.Body,
-      })
-      .promise()
+      }),
+    )
 
-    await codepipeline
-      .putJobSuccessResult({
+    await codepipelineClient.send(
+      new PutJobSuccessResultCommand({
         jobId,
-      })
-      .promise()
-
+      }),
+    )
     console.log("Success")
   } catch (e) {
-    await codepipeline
-      .putJobFailureResult({
+    await codepipelineClient.send(
+      new PutJobFailureResultCommand({
         failureDetails: {
           message: JSON.stringify(e),
           type: "JobFailed",
           externalExecutionId: context.awsRequestId,
         },
         jobId,
-      })
-      .promise()
-
+      }),
+    )
     console.error("Failed", e)
   }
 }
