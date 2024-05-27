@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
+
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
+import {
+  CodeBuildClient,
+  StartBuildCommand,
+  SourceType,
+} from "@aws-sdk/client-codebuild"
 
 interface StartDeployExpectedInput {
   bucketName: string
@@ -10,16 +14,11 @@ interface StartDeployExpectedInput {
   stackNames: string[]
 }
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const startDeployHandler: Handler<
-  Partial<StartDeployExpectedInput>
-> = async (event, context) => {
-  const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3")
-  const { CodeBuildClient, StartBuildCommand, SourceType } = await import(
-    "@aws-sdk/client-codebuild"
-  )
-
+// noinspection JSUnusedGlobalSymbols
+export const handler: Handler<Partial<StartDeployExpectedInput>> = async (
+  event,
+  context,
+) => {
   const codeBuildClient = new CodeBuildClient()
   const s3Client = new S3Client()
 

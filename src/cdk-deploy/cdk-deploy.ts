@@ -5,7 +5,6 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as cdk from "aws-cdk-lib"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import { startDeployHandler } from "./start-deploy-handler"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 
 interface Props extends cdk.StackProps {
@@ -184,13 +183,11 @@ export class CdkDeploy extends constructs.Construct {
 
     codebuildBucket.grantReadWrite(codebuildProject)
 
-    const startDeployFn = new lambda.Function(this, "StartDeployFunction", {
-      code: new lambda.InlineCode(
-        `exports.handler = ${startDeployHandler.toString()};`,
-      ),
+    const startDeployFn = new NodejsFunction(this, "StartDeployFunction", {
+      entry: require.resolve("./start-deploy-handler"),
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: "index.handler",
       functionName: props.startDeployFunctionName,
+      awsSdkConnectionReuse: false,
       environment: {
         PROJECT_NAME: codebuildProject.projectName,
         BUCKET_NAME: codebuildBucket.bucketName,

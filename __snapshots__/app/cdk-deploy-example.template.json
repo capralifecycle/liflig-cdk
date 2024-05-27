@@ -610,7 +610,8 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "exports.handler = async (event, context) => {\n    const { S3Client, PutObjectCommand } = await Promise.resolve().then(() => require(\"@aws-sdk/client-s3\"));\n    const { CodeBuildClient, StartBuildCommand, SourceType } = await Promise.resolve().then(() => require(\"@aws-sdk/client-codebuild\"));\n    const codeBuildClient = new CodeBuildClient();\n    const s3Client = new S3Client();\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    const projectName = requireEnv(\"PROJECT_NAME\");\n    const bucketName = requireEnv(\"BUCKET_NAME\");\n    const cdkContext = JSON.parse(requireEnv(\"CDK_CONTEXT\"));\n    // Since we pass the stack names as strings to the shell,\n    // be a bit restrictive of the valid values we can use.\n    const validStackName = /^[a-z0-9_][a-z0-9\\-_]*$/i;\n    const s3KeyPrefix = `${context.awsRequestId}/`;\n    // Validate the input.\n    if (typeof event.bucketName !== \"string\" ||\n        typeof event.bucketKey !== \"string\" ||\n        !Array.isArray(event.stackNames) ||\n        !event.stackNames.every((it) => typeof it === \"string\" && validStackName.test(it))) {\n        throw new Error(\"Input invalid: \" + JSON.stringify(event, undefined, \"  \"));\n    }\n    async function putObject(name, data) {\n        await s3Client.send(new PutObjectCommand({\n            Bucket: bucketName,\n            Key: `${s3KeyPrefix}${name}`,\n            Body: data,\n        }));\n    }\n    await putObject(\"stack-names.txt\", event.stackNames.join(\" \"));\n    // Ensure that we run the script using same feature flags.\n    await putObject(\"cdk.json\", JSON.stringify({ context: cdkContext }));\n    const { build } = await codeBuildClient.send(new StartBuildCommand({\n        projectName,\n        sourceTypeOverride: SourceType.S3,\n        sourceLocationOverride: `${bucketName}/${s3KeyPrefix}`,\n        secondarySourcesOverride: [\n            {\n                type: SourceType.S3,\n                location: `${event.bucketName}/${event.bucketKey}`,\n                sourceIdentifier: \"CLOUDASSEMBLY\",\n            },\n        ],\n    }));\n    const buildId = build === null || build === void 0 ? void 0 : build.id;\n    if (buildId == null) {\n        throw new Error(\"Unknown build ID\");\n    }\n    return {\n        // This is the value the caller will use to fetch updated status.\n        // Avoid exposing what kind of ID this is, because we should be free\n        // to change implementation details.\n        jobId: buildId,\n    };\n};"
+          "S3Bucket": "cdk-hnb659fds-assets-112233445566-eu-west-1",
+          "S3Key": "snapshot-value.zip"
         },
         "Environment": {
           "Variables": {
@@ -653,7 +654,10 @@
         "CdkDeployStartDeployFunctionServiceRole191AEEB8"
       ],
       "Metadata": {
-        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StartDeployFunction/Resource"
+        "aws:cdk:path": "cdk-deploy-example/CdkDeploy/StartDeployFunction/Resource",
+        "aws:asset:path": "asset.snapshot-value",
+        "aws:asset:is-bundled": true,
+        "aws:asset:property": "Code"
       }
     },
     "CdkDeployStatusFunctionServiceRole38060AFB": {
