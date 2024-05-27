@@ -1,9 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
+
+import {
+  ECSClient,
+  DescribeTaskDefinitionCommand,
+  RegisterTaskDefinitionCommand,
+  UpdateServiceCommand,
+  DescribeServicesCommand,
+  TaskDefinition,
+  Service,
+  RegisterTaskDefinitionCommandInput,
+} from "@aws-sdk/client-ecs"
+
+import {
+  SecretsManagerClient,
+  UpdateSecretCommand,
+} from "@aws-sdk/client-secrets-manager"
 
 interface ExpectedInput {
   tag: string
@@ -11,29 +22,8 @@ interface ExpectedInput {
 
 // This function is inline-compiled for the lambda.
 // It must be self-contained.
-export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
-  event,
-) => {
-  const {
-    ECSClient,
-    DescribeTaskDefinitionCommand,
-    RegisterTaskDefinitionCommand,
-    UpdateServiceCommand,
-    DescribeServicesCommand,
-  } = await import("@aws-sdk/client-ecs")
-
-  const { SecretsManagerClient, UpdateSecretCommand } = await import(
-    "@aws-sdk/client-secrets-manager"
-  )
-
-  type Service = import("@aws-sdk/client-ecs").Service
-  type TaskDefinition = import("@aws-sdk/client-ecs").TaskDefinition
-
-  type RegisterTaskDefinitionCommandInput =
-    import("@aws-sdk/client-ecs").RegisterTaskDefinitionCommandInput
-
+export const handler: Handler<Partial<ExpectedInput>> = async (event) => {
   const ecsClient = new ECSClient()
-
   const smClient = new SecretsManagerClient()
 
   function requireEnv(name: string): string {
