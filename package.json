@@ -59,6 +59,7 @@
     "aws-cdk": "2.141.0",
     "aws-cdk-lib": "2.141.0",
     "constructs": "10.3.0",
+    "esbuild": "0.21.4",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.1.3",
