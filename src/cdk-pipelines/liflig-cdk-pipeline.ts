@@ -11,11 +11,9 @@ import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
 import { getGriidArtefactBucket } from "../griid/artefact-bucket"
-import {
-  cloudAssemblyLookupHandler,
-  CloudAssemblyLookupUserParameters,
-} from "./cloud-assembly-lookup-handler"
+import { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
 import { SlackNotification, SlackNotificationProps } from "./slack-notification"
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 
 export interface LifligCdkPipelineProps {
   /**
@@ -232,17 +230,15 @@ export class LifligCdkPipeline extends constructs.Construct {
     cdkBucket: s3.IBucket,
     pipelineName: string,
   ): { stages: codepipeline.StageProps[]; synth: pipelines.IFileSetProducer } {
-    const cloudAssemblyLookupFn = new lambda.Function(
+    const cloudAssemblyLookupFn = new NodejsFunction(
       this,
       "CloudAssemblyLookupFn",
       {
-        code: new lambda.InlineCode(
-          `exports.handler = ${cloudAssemblyLookupHandler.toString()};`,
-        ),
-        handler: "index.handler",
+        entry: require.resolve("./cloud-assembly-lookup-handler"),
         runtime: lambda.Runtime.NODEJS_18_X,
         timeout: cdk.Duration.minutes(1),
         memorySize: 512,
+        awsSdkConnectionReuse: false,
       },
     )
 
