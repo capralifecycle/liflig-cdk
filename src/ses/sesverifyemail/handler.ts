@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import {
+  DeleteIdentityCommand,
+  SESClient,
+  VerifyEmailIdentityCommand,
+} from "@aws-sdk/client-ses"
 
 type OnEventHandler = (event: {
   PhysicalResourceId?: string
@@ -11,14 +12,8 @@ type OnEventHandler = (event: {
   PhysicalResourceId?: string
 }>
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const sesVerifyEmailHandler: OnEventHandler = async (event) => {
-  const { SESClient, DeleteIdentityCommand, VerifyEmailIdentityCommand } =
-    await import("@aws-sdk/client-ses")
-
+export const handler: OnEventHandler = async (event) => {
   const sesClient = new SESClient()
-
   const emailAddress = event.ResourceProperties["EmailAddress"]
 
   switch (event.RequestType) {
