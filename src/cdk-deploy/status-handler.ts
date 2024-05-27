@@ -1,29 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Handler } from "aws-lambda"
+
+import {
+  CodeBuildClient,
+  BatchGetBuildsCommand,
+  StatusType,
+  Build,
+} from "@aws-sdk/client-codebuild"
+
+import {
+  CloudWatchLogsClient,
+  GetLogEventsCommand,
+} from "@aws-sdk/client-cloudwatch-logs"
 
 interface StatusExpectedInput {
   jobId: string
 }
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const statusHandler: Handler<Partial<StatusExpectedInput>> = async (
-  event,
-) => {
-  const { CodeBuildClient, BatchGetBuildsCommand } = await import(
-    "@aws-sdk/client-codebuild"
-  )
-
-  const { CloudWatchLogsClient, GetLogEventsCommand } = await import(
-    "@aws-sdk/client-cloudwatch-logs"
-  )
-
-  type Build = import("@aws-sdk/client-codebuild").Build
-  type StatusType = import("@aws-sdk/client-codebuild").StatusType
-
+export const handler: Handler<Partial<StatusExpectedInput>> = async (event) => {
   const codeBuildClient = new CodeBuildClient()
   const cloudWatchLogsClient = new CloudWatchLogsClient()
 
