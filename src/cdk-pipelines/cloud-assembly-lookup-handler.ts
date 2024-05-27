@@ -1,5 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3"
+import {
+  CodePipelineClient,
+  PutJobFailureResultCommand,
+  PutJobSuccessResultCommand,
+} from "@aws-sdk/client-codepipeline"
 
 // Relevant fields from
 // https://docs.amazonaws.cn/en_us/lambda/latest/dg/services-codepipeline.html
@@ -41,20 +51,7 @@ export interface CloudAssemblyLookupUserParameters {
   objectKey: string
 }
 
-// This is a self-contained function that will be serialized as a lambda.
-export const cloudAssemblyLookupHandler: Handler = async (
-  event: CodePipelineEvent,
-  context,
-) => {
-  const { S3Client, GetObjectCommand, PutObjectCommand } = await import(
-    "@aws-sdk/client-s3"
-  )
-  const {
-    CodePipelineClient,
-    PutJobFailureResultCommand,
-    PutJobSuccessResultCommand,
-  } = await import("@aws-sdk/client-codepipeline")
-
+export const handler: Handler = async (event: CodePipelineEvent, context) => {
   const s3Client = new S3Client()
   const codepipelineClient = new CodePipelineClient()
 
