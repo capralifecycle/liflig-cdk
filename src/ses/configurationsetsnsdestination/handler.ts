@@ -1,7 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import {
+  SESv2Client,
+  CreateConfigurationSetEventDestinationCommand,
+  UpdateConfigurationSetEventDestinationCommand,
+  DeleteConfigurationSetEventDestinationCommand,
+  EventType,
+  EventDestinationDefinition,
+} from "@aws-sdk/client-sesv2"
 
 interface ResourceProps {
   ConfigurationSetName: string
@@ -21,23 +25,8 @@ type OnEventHandler = (event: {
   Data?: Record<string, any>
 }>
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const configurationSetSnsDestinationHandler: OnEventHandler = async (
-  event,
-) => {
-  const {
-    SESv2Client,
-    CreateConfigurationSetEventDestinationCommand,
-    UpdateConfigurationSetEventDestinationCommand,
-    DeleteConfigurationSetEventDestinationCommand,
-  } = await import("@aws-sdk/client-sesv2")
+export const handler: OnEventHandler = async (event) => {
   const sesv2Client = new SESv2Client()
-
-  type EventDestinationDefinition =
-    import("@aws-sdk/client-sesv2").EventDestinationDefinition
-  type EventType = import("@aws-sdk/client-sesv2").EventType
-
   const configurationSetName = event.ResourceProperties.ConfigurationSetName
   const eventDestinationName = event.ResourceProperties.EventDestinationName
   const snsTopicArn = event.ResourceProperties.SnsTopicArn
