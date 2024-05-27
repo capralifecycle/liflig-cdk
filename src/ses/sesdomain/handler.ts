@@ -1,7 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import {
+  SESClient,
+  VerifyDomainIdentityCommand,
+  VerifyDomainDkimCommand,
+  DeleteIdentityCommand,
+} from "@aws-sdk/client-ses"
+
+import {
+  SESv2Client,
+  PutEmailIdentityConfigurationSetAttributesCommand,
+} from "@aws-sdk/client-sesv2"
 
 type OnEventHandler = (event: {
   PhysicalResourceId?: string
@@ -21,20 +28,9 @@ interface RecordSetProperty {
   TTL: string
 }
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const sesDomainHandler: OnEventHandler = async (event) => {
-  const {
-    SESClient,
-    VerifyDomainIdentityCommand,
-    VerifyDomainDkimCommand,
-    DeleteIdentityCommand,
-  } = await import("@aws-sdk/client-ses")
-  const { SESv2Client, PutEmailIdentityConfigurationSetAttributesCommand } =
-    await import("@aws-sdk/client-sesv2")
-
-  const sesClient = new SESClient({})
-  const sesv2Client = new SESv2Client({})
+export const handler: OnEventHandler = async (event) => {
+  const sesClient = new SESClient()
+  const sesv2Client = new SESv2Client()
 
   const ttl = "1800"
 
