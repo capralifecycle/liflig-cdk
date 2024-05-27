@@ -3,8 +3,8 @@ import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as cdk from "aws-cdk-lib"
-import { startDeployHandler } from "./start-deploy-handler"
 import { statusHandler } from "./status-handler"
 import { EcsUpdateImageTag } from "./tag"
 
@@ -53,14 +53,12 @@ export class EcsUpdateImage extends constructs.Construct {
       assumedBy: new iam.ArnPrincipal(props.callerRoleArn),
     })
 
-    const startDeployFn = new lambda.Function(this, "StartDeployFunction", {
+    const startDeployFn = new NodejsFunction(this, "StartDeployFunction", {
       functionName: props.startDeployFunctionName,
-      code: new lambda.InlineCode(
-        `exports.handler = ${startDeployHandler.toString()};`,
-      ),
+      entry: require.resolve("./start-deploy-handler"),
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: "index.handler",
       timeout: cdk.Duration.seconds(60),
+      awsSdkConnectionReuse: false,
       environment: {
         CLUSTER_NAME: props.cluster.clusterName,
         SERVICE_NAME: props.service == null ? "" : props.service.serviceName,
