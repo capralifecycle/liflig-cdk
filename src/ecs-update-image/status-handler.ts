@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
+import {
+  ECSClient,
+  DescribeServicesCommand,
+  DescribeTaskDefinitionCommand,
+  Service,
+  TaskDefinition,
+} from "@aws-sdk/client-ecs"
 
 interface Response {
   /**
@@ -13,16 +16,8 @@ interface Response {
   stabilized: boolean
 }
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const statusHandler: Handler<unknown, Response> = async () => {
-  const { ECSClient, DescribeServicesCommand, DescribeTaskDefinitionCommand } =
-    await import("@aws-sdk/client-ecs")
-
+export const handler: Handler<unknown, Response> = async () => {
   const ecsClient = new ECSClient()
-
-  type Service = import("@aws-sdk/client-ecs").Service
-  type TaskDefinition = import("@aws-sdk/client-ecs").TaskDefinition
 
   function requireEnv(name: string): string {
     const value = process.env[name]
