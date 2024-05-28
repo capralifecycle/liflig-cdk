@@ -3,7 +3,7 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as cdk from "aws-cdk-lib"
 import * as cr from "aws-cdk-lib/custom-resources"
-import { sesVerifyEmailHandler } from "./handler"
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 
 interface Props {
   /**
@@ -47,13 +47,11 @@ class SesVerifyEmailProvider extends constructs.Construct {
     super(scope, id)
 
     this.provider = new cr.Provider(this, "Provider", {
-      onEventHandler: new lambda.Function(this, "Function", {
-        code: new lambda.InlineCode(
-          `exports.handler = ${sesVerifyEmailHandler.toString()};`,
-        ),
-        handler: "index.handler",
-        runtime: lambda.Runtime.NODEJS_16_X,
+      onEventHandler: new NodejsFunction(this, "Function", {
+        entry: require.resolve("./handler"),
+        runtime: lambda.Runtime.NODEJS_18_X,
         timeout: cdk.Duration.minutes(5),
+        awsSdkConnectionReuse: false,
         initialPolicy: [
           new iam.PolicyStatement({
             actions: ["ses:DeleteIdentity", "ses:VerifyEmailIdentity"],
