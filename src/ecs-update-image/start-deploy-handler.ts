@@ -1,11 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
-import type * as _AWS from "aws-sdk"
-import { RegisterTaskDefinitionRequest } from "aws-sdk/clients/ecs"
+
+import {
+  ECSClient,
+  DescribeTaskDefinitionCommand,
+  RegisterTaskDefinitionCommand,
+  UpdateServiceCommand,
+  DescribeServicesCommand,
+  TaskDefinition,
+  Service,
+  RegisterTaskDefinitionCommandInput,
+} from "@aws-sdk/client-ecs"
+
+import {
+  SecretsManagerClient,
+  UpdateSecretCommand,
+} from "@aws-sdk/client-secrets-manager"
 
 interface ExpectedInput {
   tag: string
@@ -13,12 +22,9 @@ interface ExpectedInput {
 
 // This function is inline-compiled for the lambda.
 // It must be self-contained.
-export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
-  event,
-) => {
-  const AWS = require("aws-sdk")
-  const ecs = new AWS.ECS() as _AWS.ECS
-  const sm = new AWS.SecretsManager() as _AWS.SecretsManager
+export const handler: Handler<Partial<ExpectedInput>> = async (event) => {
+  const ecsClient = new ECSClient()
+  const smClient = new SecretsManagerClient()
 
   function requireEnv(name: string): string {
     const value = process.env[name]
@@ -31,13 +37,13 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
   async function getService(
     clusterName: string,
     serviceName: string,
-  ): Promise<AWS.ECS.Service> {
-    const services = await ecs
-      .describeServices({
+  ): Promise<Service> {
+    const services = await ecsClient.send(
+      new DescribeServicesCommand({
         cluster: clusterName,
         services: [serviceName],
-      })
-      .promise()
+      }),
+    )
 
     if (services.services?.length !== 1) {
       throw new Error(`Service not found: ${clusterName}/${serviceName}`)
@@ -48,13 +54,11 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
 
   async function getTaskDefinition(
     taskDefinition: string,
-  ): Promise<AWS.ECS.TaskDefinition> {
+  ): Promise<TaskDefinition> {
     return (
-      await ecs
-        .describeTaskDefinition({
-          taskDefinition: taskDefinition,
-        })
-        .promise()
+      await ecsClient.send(
+        new DescribeTaskDefinitionCommand({ taskDefinition }),
+      )
     ).taskDefinition!
   }
 
@@ -89,7 +93,7 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
       "taskDefinitionArn",
     ]
 
-    const updatedSpec: RegisterTaskDefinitionRequest = {
+    const updatedSpec: RegisterTaskDefinitionCommandInput = {
       ...Object.fromEntries(
         Object.entries(prevTaskDefinition).filter(
           ([key]) => !exclude.includes(key),
@@ -101,20 +105,19 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
           image,
         },
       ],
-    } as RegisterTaskDefinitionRequest
+    } as RegisterTaskDefinitionCommandInput
 
     const updatedTaskDefinition = (
-      await ecs.registerTaskDefinition(updatedSpec).promise()
+      await ecsClient.send(new RegisterTaskDefinitionCommand(updatedSpec))
     ).taskDefinition!
 
-    await ecs
-      .updateService({
+    await ecsClient.send(
+      new UpdateServiceCommand({
         cluster: clusterName,
         service: serviceName,
         taskDefinition: updatedTaskDefinition.taskDefinitionArn,
-      })
-      .promise()
-
+      }),
+    )
     console.log("Service is updated")
   }
 
@@ -131,14 +134,14 @@ export const startDeployHandler: Handler<Partial<ExpectedInput>> = async (
   // Register tag as current target.
   // This is needed so that CloudFormation deployments, e.g.
   // updates to the Task Definition, will use the same image.
-  await sm
-    .updateSecret({
+  await smClient.send(
+    new UpdateSecretCommand({
       SecretId: ecrTagSecretArn,
       SecretString: JSON.stringify({
         tag: event.tag,
       }),
-    })
-    .promise()
+    }),
+  )
 
   // Update the service if we know the service name. This is unknown
   // during initial deployment of the stack.
