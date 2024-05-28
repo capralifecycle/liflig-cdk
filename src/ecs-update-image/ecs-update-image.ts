@@ -5,7 +5,6 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as cdk from "aws-cdk-lib"
-import { statusHandler } from "./status-handler"
 import { EcsUpdateImageTag } from "./tag"
 
 interface Props {
@@ -105,14 +104,12 @@ export class EcsUpdateImage extends constructs.Construct {
       props.executionRole.grantPassRole(startDeployFn.role!)
     }
 
-    const statusFn = new lambda.Function(this, "StatusFunction", {
+    const statusFn = new NodejsFunction(this, "StatusFunction", {
       functionName: props.statusFunctionName,
-      code: new lambda.InlineCode(
-        `exports.handler = ${statusHandler.toString()};`,
-      ),
-      runtime: lambda.Runtime.NODEJS_16_X,
-      handler: "index.handler",
+      entry: require.resolve("./status-handler"),
+      runtime: lambda.Runtime.NODEJS_18_X,
       timeout: cdk.Duration.seconds(60),
+      awsSdkConnectionReuse: false,
       environment: {
         CLUSTER_NAME: props.cluster.clusterName,
         SERVICE_NAME: props.service == null ? "" : props.service.serviceName,

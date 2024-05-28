@@ -1341,7 +1341,8 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "exports.handler = async () => {\n    var _a;\n    const AWS = require(\"aws-sdk\");\n    const ecs = new AWS.ECS();\n    function requireEnv(name) {\n        const value = process.env[name];\n        if (value === undefined) {\n            throw new Error(`Missing ${name}`);\n        }\n        return value;\n    }\n    async function getService(clusterName, serviceName) {\n        var _a;\n        const services = await ecs\n            .describeServices({\n            cluster: clusterName,\n            services: [serviceName],\n        })\n            .promise();\n        if (((_a = services.services) === null || _a === void 0 ? void 0 : _a.length) !== 1) {\n            throw new Error(`Service not found: ${clusterName}/${serviceName}`);\n        }\n        return services.services[0];\n    }\n    async function getTaskDefinition(taskDefinition) {\n        return (await ecs\n            .describeTaskDefinition({\n            taskDefinition: taskDefinition,\n        })\n            .promise()).taskDefinition;\n    }\n    /**\n     * Check if the service is considered to be stabilized.\n     *\n     * Uses the logic described at\n     * https://docs.aws.amazon.com/cli/latest/reference/ecs/wait/services-stable.html\n     */\n    function isStabilized(service) {\n        var _a;\n        return (((_a = service.deployments) === null || _a === void 0 ? void 0 : _a.length) == 1 &&\n            service.runningCount == service.desiredCount);\n    }\n    function extractTag(image) {\n        if (!image.includes(\":\")) {\n            return null;\n        }\n        return image.replace(/.*:/, \"\");\n    }\n    const clusterName = requireEnv(\"CLUSTER_NAME\");\n    const serviceName = requireEnv(\"SERVICE_NAME\");\n    // The service name is unknown during initial deployment of the stack.\n    // In this case we return stabilized status as true.\n    if (serviceName === \"\") {\n        return {\n            currentTag: null,\n            stabilized: true,\n        };\n    }\n    const service = await getService(clusterName, serviceName);\n    const mainDeployment = (_a = service.deployments) === null || _a === void 0 ? void 0 : _a.find((it) => it.status === \"PRIMARY\");\n    const taskDefinition = await getTaskDefinition(mainDeployment.taskDefinition);\n    // Only one container is supported for the task definition.\n    return {\n        currentTag: extractTag(taskDefinition.containerDefinitions[0].image),\n        stabilized: isStabilized(service),\n    };\n};"
+          "S3Bucket": "cdk-hnb659fds-assets-112233445566-eu-west-1",
+          "S3Key": "snapshot-value.zip"
         },
         "Environment": {
           "Variables": {
@@ -1364,7 +1365,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Tags": [
           {
             "Key": "Project",
@@ -1386,7 +1387,10 @@
         "EcsUpdateImageStatusFunctionServiceRole8022AE8F"
       ],
       "Metadata": {
-        "aws:cdk:path": "ecs-update-image/EcsUpdateImage/StatusFunction/Resource"
+        "aws:cdk:path": "ecs-update-image/EcsUpdateImage/StatusFunction/Resource",
+        "aws:asset:path": "asset.snapshot-value",
+        "aws:asset:is-bundled": true,
+        "aws:asset:property": "Code"
       }
     }
   },
