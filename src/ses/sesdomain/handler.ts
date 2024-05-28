@@ -1,8 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
-import type * as _AWS from "aws-sdk"
+import {
+  SESClient,
+  VerifyDomainIdentityCommand,
+  VerifyDomainDkimCommand,
+  DeleteIdentityCommand,
+} from "@aws-sdk/client-ses"
+
+import {
+  SESv2Client,
+  PutEmailIdentityConfigurationSetAttributesCommand,
+} from "@aws-sdk/client-sesv2"
 
 type OnEventHandler = (event: {
   PhysicalResourceId?: string
@@ -22,15 +28,11 @@ interface RecordSetProperty {
   TTL: string
 }
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const sesDomainHandler: OnEventHandler = async (event) => {
-  const AWS = require("aws-sdk")
+export const handler: OnEventHandler = async (event) => {
+  const sesClient = new SESClient()
+  const sesv2Client = new SESv2Client()
 
   const ttl = "1800"
-
-  const ses: AWS.SES = new AWS.SES() as _AWS.SES
-  const sesv2: AWS.SESV2 = new AWS.SESV2() as _AWS.SESV2
 
   const domainName = event.ResourceProperties["DomainName"]
   const includeVerificationRecord =
@@ -71,10 +73,12 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
 
   switch (event.RequestType) {
     case "Delete":
-      const response = await ses
-        .deleteIdentity({ Identity: domainName })
-        .promise()
-      console.log(`ses.deleteIdentity: ${JSON.stringify(response)}`)
+      const deleteIdentityResp = await sesClient.send(
+        new DeleteIdentityCommand({
+          Identity: domainName,
+        }),
+      )
+      console.log(`ses.deleteIdentity: ${JSON.stringify(deleteIdentityResp)}`)
 
       return {
         PhysicalResourceId: event.PhysicalResourceId,
@@ -83,34 +87,43 @@ export const sesDomainHandler: OnEventHandler = async (event) => {
     case "Create":
     case "Update":
       // Idempotent.
-      const response1 = await ses
-        .verifyDomainIdentity({
+      const verifyDomainIdentityResp = await sesClient.send(
+        new VerifyDomainIdentityCommand({
           Domain: domainName,
-        })
-        .promise()
-
-      console.log(`ses.verifyDomainIdentity: ${JSON.stringify(response1)}`)
-      const verificationToken = response1["VerificationToken"]
-
-      // Idempotent.
-      const response2 = await ses
-        .verifyDomainDkim({ Domain: domainName })
-        .promise()
-      console.log(`ses.verifyDomainDkim: ${JSON.stringify(response2)}`)
-      const dkimTokens = response2["DkimTokens"]
+        }),
+      )
+      console.log(
+        `ses.verifyDomainIdentity: ${JSON.stringify(verifyDomainIdentityResp)}`,
+      )
+      const verificationToken = verifyDomainIdentityResp.VerificationToken
+      if (!verificationToken) {
+        throw new Error("Verification token not returned")
+      }
 
       // Idempotent.
-      const response3 = await sesv2
-        .putEmailIdentityConfigurationSetAttributes({
+      const verifyDomainDkimResp = await sesClient.send(
+        new VerifyDomainDkimCommand({
+          Domain: domainName,
+        }),
+      )
+      console.log(
+        `ses.verifyDomainDkim: ${JSON.stringify(verifyDomainDkimResp)}`,
+      )
+      const dkimTokens = verifyDomainDkimResp.DkimTokens ?? []
+      if (!dkimTokens) {
+        throw new Error("DKIM tokens not returned")
+      }
+
+      // Idempotent.
+      const putEmailIdentityConfigResp = await sesv2Client.send(
+        new PutEmailIdentityConfigurationSetAttributesCommand({
           EmailIdentity: domainName,
-          // ConfigurationSetName can be set to undefined to remove
-          // the default configuration set from the identity.
           ConfigurationSetName: defaultConfigurationSetName,
-        })
-        .promise()
+        }),
+      )
       console.log(
         `sesv2.putEmailIdentityConfigurationSetAttributes ${JSON.stringify(
-          response3,
+          putEmailIdentityConfigResp,
         )}`,
       )
 
