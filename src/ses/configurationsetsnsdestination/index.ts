@@ -70,7 +70,7 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
         `exports.handler = ${sesEventLoggerHandler.toString()};`,
       ),
       handler: "index.handler",
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       logRetention: RetentionDays.THREE_MONTHS,
     })
 
