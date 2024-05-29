@@ -10,7 +10,6 @@ import { Condition } from "aws-cdk-lib/aws-stepfunctions"
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks"
 import * as cdk from "aws-cdk-lib"
 import type { Handler } from "aws-lambda"
-import type * as _AWS from "aws-sdk"
 import { getGriidArtefactBucket } from "../griid"
 import { pipelineS3Prefix, pipelineS3TriggerKey } from "./conventions"
 import { DeployEnv } from "./deploy-env"
@@ -103,7 +102,7 @@ export class Pipeline extends constructs.Construct {
       code: new lambda.InlineCode(
         `exports.handler = ${checkCanRunHandler.toString()};`,
       ),
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       timeout: cdk.Duration.seconds(10),
     })
@@ -318,23 +317,28 @@ const collectFilesHandler: Handler = async (event: Record<string, any>) => {
 // This is a self-contained function that will be serialized as a lambda.
 const checkCanRunHandler: Handler = async (event: Record<string, string>) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-  const AWS = require("aws-sdk")
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-  const sf = new AWS.StepFunctions() as _AWS.StepFunctions
+
+  const { SFNClient, ListExecutionsCommand, ExecutionStatus } = await import(
+    "@aws-sdk/client-sfn"
+  )
+  const sfnClient = new SFNClient()
 
   console.log("Event received: ", event)
 
   const stateMachineArn = event["stateMachineId"]
   const currentExecutionArn = event["executionId"]
 
-  const executions = (
-    await sf
-      .listExecutions({
-        stateMachineArn,
-        statusFilter: "RUNNING",
-      })
-      .promise()
-  ).executions
+  const { executions } = await sfnClient.send(
+    new ListExecutionsCommand({
+      stateMachineArn,
+      statusFilter: ExecutionStatus.RUNNING,
+    }),
+  )
+
+  if (!executions) {
+    throw new Error("Could not list executions")
+  }
 
   console.log("Executions: ", executions)
 
@@ -346,9 +350,12 @@ const checkCanRunHandler: Handler = async (event: Record<string, string>) => {
     throw new Error("Could not find current execution")
   }
 
-  const newer = executions.filter(
-    (it) => it.startDate > currentExecution.startDate,
-  ).length
+  const newer = executions.filter((it) => {
+    if (!it.startDate || !currentExecution.startDate) {
+      return false
+    }
+    return it.startDate > currentExecution.startDate
+  }).length
 
   return {
     CanRunState:
