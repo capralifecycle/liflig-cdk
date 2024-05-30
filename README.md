@@ -32,16 +32,32 @@ are not yet resolved. Some relevant information:
 
 ## Testing library changes before releasing
 
-1. Assemble artifact
+### Alternative 1: Install liflig-cdk from tarball
+
+1. Assemble artifact, which emits a tarball
 
    ```bash
    npm pack
    ```
 
-   Install the library in an application
+2. Install the library in an application from a tarball
 
    ```bash
    npm install /path/to/liflig-cdk/liflig-cdk-0.0.0-development.tgz
+   ```
+
+### Alternative 2: Install liflig-cdk from a Git branch
+
+1. Navigate to the project where you want to test the changes
+
+   ```bash
+   cd /path/to/other/project
+   ```
+
+2. Install the library in an application from a Git branch
+
+   ```bash
+   npm install "https://github.com/capralifecycle/liflig-cdk.git#my-feature-branch"
    ```
 
 Note: `npm link` cannot be used, since it will lead to multiple
