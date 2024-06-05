@@ -1,7 +1,6 @@
 import * as alarms from "./alarms"
 import * as cdkPipelines from "./cdk-pipelines"
 import * as griid from "./griid"
-import * as pipelines from "./pipelines"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
@@ -30,7 +29,6 @@ export {
   alarms,
   cdkPipelines,
   griid,
-  pipelines,
   ses,
   webapp,
   configureParameters,
