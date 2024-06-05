@@ -912,24 +912,30 @@ Object {
         "Code": Object {
           "ZipFile": "exports.handler = async (event) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-    const AWS = require(\\"aws-sdk\\");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    const sf = new AWS.StepFunctions();
+    const { SFNClient, ListExecutionsCommand, ExecutionStatus } = await Promise.resolve().then(() => require(\\"@aws-sdk/client-sfn\\"));
+    const sfnClient = new SFNClient();
     console.log(\\"Event received: \\", event);
     const stateMachineArn = event[\\"stateMachineId\\"];
     const currentExecutionArn = event[\\"executionId\\"];
-    const executions = (await sf
-        .listExecutions({
+    const { executions } = await sfnClient.send(new ListExecutionsCommand({
         stateMachineArn,
-        statusFilter: \\"RUNNING\\",
-    })
-        .promise()).executions;
+        statusFilter: ExecutionStatus.RUNNING,
+    }));
+    if (!executions) {
+        throw new Error(\\"Could not list executions\\");
+    }
     console.log(\\"Executions: \\", executions);
     const currentExecution = executions.find((it) => it.executionArn == currentExecutionArn);
     if (!currentExecution) {
         throw new Error(\\"Could not find current execution\\");
     }
-    const newer = executions.filter((it) => it.startDate > currentExecution.startDate).length;
+    const newer = executions.filter((it) => {
+        if (!it.startDate || !currentExecution.startDate) {
+            return false;
+        }
+        return it.startDate > currentExecution.startDate;
+    }).length;
     return {
         CanRunState: newer > 0 ? \\"SKIP\\" : executions.length == 1 ? \\"CONTINUE\\" : \\"WAIT\\",
     };
@@ -942,7 +948,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
@@ -986,11 +992,10 @@ Object {
       "Properties": Object {
         "Code": Object {
           "ZipFile": "exports.handler = async (event) => {
-    var _a;
     // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-    const AWS = require(\\"aws-sdk\\");
+    const { S3Client, ListObjectsV2Command, GetObjectCommand } = await Promise.resolve().then(() => require(\\"@aws-sdk/client-s3\\"));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    const s3 = new AWS.S3();
+    const s3Client = new S3Client();
     console.log(\\"Event received: \\", event);
     const bucketName = event.bucketName;
     const bucketPrefix = event.bucketPrefix;
@@ -998,37 +1003,37 @@ Object {
     if (bucketPrefix.slice(-1) !== \\"/\\") {
         throw new Error(\`Expected bucket prefix to end with '/' but its value is '\${bucketPrefix}'\`);
     }
-    const files = await s3
-        .listObjectsV2({
-        Bucket: bucketName,
-        Prefix: bucketPrefix,
-    })
-        .promise();
-    async function getData(key) {
-        const result = await s3
-            .getObject({
+    async function listObjects() {
+        const { Contents } = await s3Client.send(new ListObjectsV2Command({
+            Bucket: bucketName,
+            Prefix: bucketPrefix,
+        }));
+        return Contents;
+    }
+    async function getObject(key) {
+        const { Body } = await s3Client.send(new GetObjectCommand({
             Bucket: bucketName,
             Key: key,
-        })
-            .promise();
-        return result.Body.toString();
+        }));
+        return Body.toString();
     }
     let cloudAssembly = null;
     let variables = {};
-    for (const file of (_a = files.Contents) !== null && _a !== void 0 ? _a : []) {
+    const files = await listObjects();
+    for (const file of files !== null && files !== void 0 ? files : []) {
         const key = file.Key;
         const filename = key.slice(bucketPrefix.length);
         console.log(\`File: \${filename}\`);
         if (filename === \\"cloud-assembly.json\\") {
             console.log(\\"Found Cloud Assembly\\");
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            cloudAssembly = JSON.parse(await getData(key));
+            cloudAssembly = JSON.parse(await getObject(key));
         }
         else if (/^variables.*\\\\.json$/.test(filename)) {
             console.log(\\"Found variables file\\");
             variables = {
                 ...variables,
-                ...JSON.parse(await getData(key)),
+                ...JSON.parse(await getObject(key)),
             };
         }
         else {
@@ -1058,7 +1063,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
@@ -2030,24 +2035,30 @@ Object {
         "Code": Object {
           "ZipFile": "exports.handler = async (event) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-    const AWS = require(\\"aws-sdk\\");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    const sf = new AWS.StepFunctions();
+    const { SFNClient, ListExecutionsCommand, ExecutionStatus } = await Promise.resolve().then(() => require(\\"@aws-sdk/client-sfn\\"));
+    const sfnClient = new SFNClient();
     console.log(\\"Event received: \\", event);
     const stateMachineArn = event[\\"stateMachineId\\"];
     const currentExecutionArn = event[\\"executionId\\"];
-    const executions = (await sf
-        .listExecutions({
+    const { executions } = await sfnClient.send(new ListExecutionsCommand({
         stateMachineArn,
-        statusFilter: \\"RUNNING\\",
-    })
-        .promise()).executions;
+        statusFilter: ExecutionStatus.RUNNING,
+    }));
+    if (!executions) {
+        throw new Error(\\"Could not list executions\\");
+    }
     console.log(\\"Executions: \\", executions);
     const currentExecution = executions.find((it) => it.executionArn == currentExecutionArn);
     if (!currentExecution) {
         throw new Error(\\"Could not find current execution\\");
     }
-    const newer = executions.filter((it) => it.startDate > currentExecution.startDate).length;
+    const newer = executions.filter((it) => {
+        if (!it.startDate || !currentExecution.startDate) {
+            return false;
+        }
+        return it.startDate > currentExecution.startDate;
+    }).length;
     return {
         CanRunState: newer > 0 ? \\"SKIP\\" : executions.length == 1 ? \\"CONTINUE\\" : \\"WAIT\\",
     };
@@ -2060,7 +2071,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
@@ -2104,11 +2115,10 @@ Object {
       "Properties": Object {
         "Code": Object {
           "ZipFile": "exports.handler = async (event) => {
-    var _a;
     // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-    const AWS = require(\\"aws-sdk\\");
+    const { S3Client, ListObjectsV2Command, GetObjectCommand } = await Promise.resolve().then(() => require(\\"@aws-sdk/client-s3\\"));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    const s3 = new AWS.S3();
+    const s3Client = new S3Client();
     console.log(\\"Event received: \\", event);
     const bucketName = event.bucketName;
     const bucketPrefix = event.bucketPrefix;
@@ -2116,37 +2126,37 @@ Object {
     if (bucketPrefix.slice(-1) !== \\"/\\") {
         throw new Error(\`Expected bucket prefix to end with '/' but its value is '\${bucketPrefix}'\`);
     }
-    const files = await s3
-        .listObjectsV2({
-        Bucket: bucketName,
-        Prefix: bucketPrefix,
-    })
-        .promise();
-    async function getData(key) {
-        const result = await s3
-            .getObject({
+    async function listObjects() {
+        const { Contents } = await s3Client.send(new ListObjectsV2Command({
+            Bucket: bucketName,
+            Prefix: bucketPrefix,
+        }));
+        return Contents;
+    }
+    async function getObject(key) {
+        const { Body } = await s3Client.send(new GetObjectCommand({
             Bucket: bucketName,
             Key: key,
-        })
-            .promise();
-        return result.Body.toString();
+        }));
+        return Body.toString();
     }
     let cloudAssembly = null;
     let variables = {};
-    for (const file of (_a = files.Contents) !== null && _a !== void 0 ? _a : []) {
+    const files = await listObjects();
+    for (const file of files !== null && files !== void 0 ? files : []) {
         const key = file.Key;
         const filename = key.slice(bucketPrefix.length);
         console.log(\`File: \${filename}\`);
         if (filename === \\"cloud-assembly.json\\") {
             console.log(\\"Found Cloud Assembly\\");
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            cloudAssembly = JSON.parse(await getData(key));
+            cloudAssembly = JSON.parse(await getObject(key));
         }
         else if (/^variables.*\\\\.json$/.test(filename)) {
             console.log(\\"Found variables file\\");
             variables = {
                 ...variables,
-                ...JSON.parse(await getData(key)),
+                ...JSON.parse(await getObject(key)),
             };
         }
         else {
@@ -2176,7 +2186,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",

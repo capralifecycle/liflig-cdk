@@ -5,8 +5,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as cdk from "aws-cdk-lib"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import { startDeployHandler } from "./start-deploy-handler"
-import { statusHandler } from "./status-handler"
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 
 interface Props extends cdk.StackProps {
   /**
@@ -184,13 +183,11 @@ export class CdkDeploy extends constructs.Construct {
 
     codebuildBucket.grantReadWrite(codebuildProject)
 
-    const startDeployFn = new lambda.Function(this, "StartDeployFunction", {
-      code: new lambda.InlineCode(
-        `exports.handler = ${startDeployHandler.toString()};`,
-      ),
-      runtime: lambda.Runtime.NODEJS_16_X,
-      handler: "index.handler",
+    const startDeployFn = new NodejsFunction(this, "StartDeployFunction", {
+      entry: require.resolve("./start-deploy-handler"),
+      runtime: lambda.Runtime.NODEJS_18_X,
       functionName: props.startDeployFunctionName,
+      awsSdkConnectionReuse: false,
       environment: {
         PROJECT_NAME: codebuildProject.projectName,
         BUCKET_NAME: codebuildBucket.bucketName,
@@ -209,13 +206,11 @@ export class CdkDeploy extends constructs.Construct {
       }),
     )
 
-    const statusFn = new lambda.Function(this, "StatusFunction", {
-      code: new lambda.InlineCode(
-        `exports.handler = ${statusHandler.toString()};`,
-      ),
-      runtime: lambda.Runtime.NODEJS_16_X,
-      handler: "index.handler",
+    const statusFn = new NodejsFunction(this, "StatusFunction", {
+      entry: require.resolve("./status-handler"),
+      runtime: lambda.Runtime.NODEJS_18_X,
       functionName: props.statusFunctionName,
+      awsSdkConnectionReuse: false,
       environment: {
         PROJECT_NAME: codebuildProject.projectName,
       },

@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
-import type * as _AWS from "aws-sdk"
+import {
+  DeleteIdentityCommand,
+  SESClient,
+  VerifyEmailIdentityCommand,
+} from "@aws-sdk/client-ses"
 
 type OnEventHandler = (event: {
   PhysicalResourceId?: string
@@ -12,18 +12,17 @@ type OnEventHandler = (event: {
   PhysicalResourceId?: string
 }>
 
-// This function is inline-compiled for the lambda.
-// It must be self-contained.
-export const sesVerifyEmailHandler: OnEventHandler = async (event) => {
-  const AWS = require("aws-sdk")
-
-  const ses: AWS.SES = new AWS.SES() as _AWS.SES
-
+export const handler: OnEventHandler = async (event) => {
+  const sesClient = new SESClient()
   const emailAddress = event.ResourceProperties["EmailAddress"]
 
   switch (event.RequestType) {
     case "Delete":
-      await ses.deleteIdentity({ Identity: emailAddress }).promise()
+      await sesClient.send(
+        new DeleteIdentityCommand({
+          Identity: emailAddress,
+        }),
+      )
 
       return {
         PhysicalResourceId: event.PhysicalResourceId,
@@ -31,7 +30,11 @@ export const sesVerifyEmailHandler: OnEventHandler = async (event) => {
 
     case "Create":
     case "Update":
-      await ses.verifyEmailIdentity({ EmailAddress: emailAddress }).promise()
+      await sesClient.send(
+        new VerifyEmailIdentityCommand({
+          EmailAddress: emailAddress,
+        }),
+      )
 
       return {
         PhysicalResourceId: `SesVerifyEmail:${emailAddress}`,
