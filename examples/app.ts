@@ -3,7 +3,6 @@ import * as cdk from "aws-cdk-lib"
 import "source-map-support/register"
 import { EcsUpdateImageArtifactStatus, tagResources } from "../src"
 import { BuildArtifactsStack } from "./build-artifacts"
-import { CdkDeployStack } from "./cdk-deploy-stack"
 import {
   LifligCdkPipelineCdkSourceStack,
   LifligCdkPipelineCloudAssemblyStack,
@@ -25,8 +24,6 @@ const env = {
 }
 
 new BuildArtifactsStack(app, "build-artifacts", { env })
-
-new CdkDeployStack(app, "cdk-deploy-example", { env })
 
 new EcsUpdateImageStack(app, "ecs-update-image-no-artifact", {
   env,

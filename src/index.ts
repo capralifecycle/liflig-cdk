@@ -15,7 +15,6 @@ import * as platform from "./platform"
 
 export { BastionHost } from "./bastion-host"
 export * from "./build-artifacts"
-export * from "./cdk-deploy"
 export { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
 export * from "./ecs-update-image"
 export { HostedZoneWithParam } from "./hosted-zone-with-param"
