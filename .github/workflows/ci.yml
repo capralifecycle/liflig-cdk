@@ -42,7 +42,7 @@ jobs:
         run: npm run test
 
       - name: verify cdk snapshots
-        run: npm run snapshots && git status && git add -N && git diff --exit-code
+        run: npm run snapshots && git status __snapshots__ && git add __snapshots__ --intent-to-add && git diff --exit-code __snapshots__
 
       - name: conditionally semantic release
         if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
