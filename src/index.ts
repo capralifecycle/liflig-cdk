@@ -1,7 +1,6 @@
 import * as alarms from "./alarms"
 import * as cdkPipelines from "./cdk-pipelines"
 import * as griid from "./griid"
-import * as pipelines from "./pipelines"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
@@ -16,9 +15,7 @@ import * as platform from "./platform"
 
 export { BastionHost } from "./bastion-host"
 export * from "./build-artifacts"
-export * from "./cdk-deploy"
 export { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
-export * from "./ecs-update-image"
 export { HostedZoneWithParam } from "./hosted-zone-with-param"
 export { createCloudAssemblySnapshot } from "./snapshots"
 export { SsmParameterBackedResource } from "./ssm-parameter-backed-resource"
@@ -30,7 +27,6 @@ export {
   alarms,
   cdkPipelines,
   griid,
-  pipelines,
   ses,
   webapp,
   configureParameters,
