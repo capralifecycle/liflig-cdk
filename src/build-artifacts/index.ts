@@ -30,7 +30,7 @@ interface Props {
   /**
    * The lifecycle rules to apply to images stored in the ECR repository.
    *
-   * @default - Expire images after 180 days
+   * @default - Expire untagged images and images used for CI caching after 10 days
    */
   ecrRepositoryLifecycleRules?: ecr.LifecycleRule[]
   /**
@@ -196,8 +196,13 @@ export class BuildArtifacts extends constructs.Construct {
       repositoryName: ecrRepositoryName,
       lifecycleRules: props.ecrRepositoryLifecycleRules || [
         {
-          maxImageAge: cdk.Duration.days(180),
-          tagStatus: ecr.TagStatus.ANY,
+          maxImageAge: cdk.Duration.days(10),
+          tagPrefixList: ["ci-cache-"],
+          tagStatus: ecr.TagStatus.TAGGED,
+        },
+        {
+          maxImageAge: cdk.Duration.days(10),
+          tagStatus: ecr.TagStatus.UNTAGGED,
         },
       ],
     })
