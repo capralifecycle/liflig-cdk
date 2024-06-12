@@ -6,7 +6,7 @@ Changes will be reviewed by the maintainers of the library, but individual contr
 
 ## Communication
 
-When contributing to this library, please consider first discussing the change you wish to make with the maintainers via the Slack channel [#dev-infra](https://liflig.slack.com/archives/C02T4KTPYS2), as there may be reasons why the change is not already present in the library.
+When contributing to this library, please strongly consider first discussing the change you wish to make with the maintainers via the Slack channel [#dev-infra](https://liflig.slack.com/archives/C02T4KTPYS2), as there may be reasons why the change is not already present in the library.
 
 Pull requests are evaluated in the context of other ongoing deliveries. For high priority changes, this must be communicated clearly.
 
