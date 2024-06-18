@@ -347,6 +347,12 @@
             ]
           }
         ],
+        "/cdk-pipeline-cdk-source/ArtifactsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtifactsBucket2AAC5544"
+          }
+        ],
         "/cdk-pipeline-cdk-source/Pipeline/PrepareCdkSourceFn/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -503,18 +509,6 @@
             "data": "PipelineCdkPipelineUpdatePipelineSelfMutation3D8B717E"
           }
         ],
-        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
         "/cdk-pipeline-cdk-source/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -597,6 +591,12 @@
                 "Value": "cdk-pipeline-cloud-assembly"
               }
             ]
+          }
+        ],
+        "/cdk-pipeline-cloud-assembly/ArtifactsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtifactsBucket2AAC5544"
           }
         ],
         "/cdk-pipeline-cloud-assembly/Pipeline/CloudAssemblyLookupFn/ServiceRole/Resource": [
@@ -735,18 +735,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineCdkPipelineCodeBuildActionRoleDefaultPolicy0A4D4386"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--build:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalbuildC96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/SsmParameterValue:--ccas--global--key:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueccasglobalkeyC96584B6F00A464EAD1953AFF4B05118Parameter"
           }
         ],
         "/cdk-pipeline-cloud-assembly/CDKMetadata/Default": [
