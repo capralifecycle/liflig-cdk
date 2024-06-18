@@ -1,4 +1,4 @@
-.PHONY: all build
+.PHONY: all build clean
 
 all: build
 build:
@@ -7,3 +7,6 @@ build:
 	npm run build
 	npm run snapshots
 	npm run test
+
+clean:
+	rm -rf node_modules
