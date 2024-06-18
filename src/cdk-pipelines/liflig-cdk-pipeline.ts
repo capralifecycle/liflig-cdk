@@ -10,7 +10,6 @@ import * as cdk from "aws-cdk-lib"
 import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
-import { getGriidArtefactBucket } from "../griid/artefact-bucket"
 import { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
 import { SlackNotification, SlackNotificationProps } from "./slack-notification"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
@@ -18,10 +17,8 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 export interface LifligCdkPipelineProps {
   /**
    * Bucket holding pipeline configuration and trigger file.
-   *
-   * @default - use existing bucket based on Griid conventions
    */
-  artifactsBucket?: s3.IBucket
+  artifactsBucket: s3.IBucket
   /**
    * Name of pipeline. This is used for the path where configuration
    * is stored in S3.
@@ -129,7 +126,7 @@ export class LifligCdkPipeline extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.artifactsBucket = props.artifactsBucket ?? getGriidArtefactBucket(this)
+    this.artifactsBucket = props.artifactsBucket
 
     const cloudAssemblyArtifact = new codepipeline.Artifact()
 
