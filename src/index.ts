@@ -1,6 +1,5 @@
 import * as alarms from "./alarms"
 import * as cdkPipelines from "./cdk-pipelines"
-import * as griid from "./griid"
 import * as ses from "./ses"
 import * as webapp from "./webapp"
 import * as configureParameters from "./configure-parameters"
@@ -26,7 +25,6 @@ export { WebappDeployViaRole } from "./webapp-deploy-via-role"
 export {
   alarms,
   cdkPipelines,
-  griid,
   ses,
   webapp,
   configureParameters,

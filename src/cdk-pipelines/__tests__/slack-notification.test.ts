@@ -3,6 +3,7 @@ import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
 import { SlackNotification } from "../slack-notification"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import { Bucket } from "aws-cdk-lib/aws-s3"
 
 test("slack-notification", () => {
   const app = new App({
@@ -25,7 +26,9 @@ test("slack-notification", () => {
 
   const pipelineStack = new Stack(app, "PipelineStack")
 
+  const artifactsBucket = new Bucket(pipelineStack, "ArtifactsBucket")
   const pipeline = new LifligCdkPipeline(pipelineStack, "Pipeline", {
+    artifactsBucket: artifactsBucket,
     pipelineName: "test-pipeline",
     sourceType: "cloud-assembly",
   })
