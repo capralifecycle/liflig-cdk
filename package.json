@@ -12,7 +12,7 @@
     "test": "jest --runInBand",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prepare": "npm run build && husky install",
+    "prepare": "npm run build && husky",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh"
   },
