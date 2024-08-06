@@ -77,7 +77,7 @@ export class SesDomain extends constructs.Construct {
     })
 
     const staticRecordSets: r53.CfnRecordSetGroup.RecordSetProperty[] =
-      props.spfRecord?.include ?? true
+      (props.spfRecord?.include ?? true)
         ? [
             {
               name: props.domainName,

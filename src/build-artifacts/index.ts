@@ -244,7 +244,7 @@ export class BuildArtifacts extends constructs.Construct {
         trustedOwners,
         roleName: props.githubActions.roleName ?? "github-actions-role",
         trustedBranch: createLimitedRole
-          ? props.githubActions.defaultBranch ?? "master"
+          ? (props.githubActions.defaultBranch ?? "master")
           : // NOTE: If the limited role is disabled, only one role will be created
             // and that role then needs to be assumable from all branches.
             "*",
