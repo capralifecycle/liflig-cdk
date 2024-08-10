@@ -50,7 +50,7 @@
     "@aws-sdk/client-sesv2": "3.624.0",
     "@aws-sdk/client-sfn": "3.624.0",
     "@aws-sdk/lib-storage": "3.624.0",
-    "@commitlint/cli": "19.3.0",
+    "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
     "@types/aws-lambda": "8.10.143",
     "@types/jest": "29.5.12",
