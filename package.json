@@ -54,7 +54,7 @@
     "@commitlint/config-conventional": "19.2.2",
     "@types/aws-lambda": "8.10.143",
     "@types/jest": "29.5.12",
-    "@types/node": "20.15.0",
+    "@types/node": "20.16.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "aws-cdk": "2.141.0",
