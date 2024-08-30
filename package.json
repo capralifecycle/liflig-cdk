@@ -52,7 +52,7 @@
     "@aws-sdk/lib-storage": "3.637.0",
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
-    "@types/aws-lambda": "8.10.143",
+    "@types/aws-lambda": "8.10.144",
     "@types/jest": "29.5.12",
     "@types/node": "20.16.1",
     "@typescript-eslint/eslint-plugin": "5.62.0",
