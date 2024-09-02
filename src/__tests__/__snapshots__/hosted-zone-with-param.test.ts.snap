@@ -74,7 +74,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
@@ -119,7 +119,7 @@ Object {
         "Nonce": "1",
       },
       "Properties": Object {
-        "Create": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"logApiResponseData\\":true}",
+        "Create": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/cf/hosted-zone-id/example.com-public\\"}}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -127,7 +127,7 @@ Object {
             "Arn",
           ],
         },
-        "Update": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"logApiResponseData\\":true}",
+        "Update": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/cf/hosted-zone-id/example.com-public\\"}}",
       },
       "Type": "Custom::AWS",
       "UpdateReplacePolicy": "Delete",
