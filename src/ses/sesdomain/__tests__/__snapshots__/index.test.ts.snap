@@ -2,6 +2,130 @@
 
 exports[`ses-domain with custom SPF values 1`] = `
 Object {
+  "Mappings": Object {
+    "LatestNodeRuntimeMap": Object {
+      "af-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-4": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-5": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-7": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "cn-north-1": Object {
+        "value": "nodejs18.x",
+      },
+      "cn-northwest-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-central-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-isoe-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-north-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-3": Object {
+        "value": "nodejs20.x",
+      },
+      "il-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "mx-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "sa-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-2": Object {
+        "value": "nodejs20.x",
+      },
+      "us-gov-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-gov-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-isob-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-west-2": Object {
+        "value": "nodejs20.x",
+      },
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -125,7 +249,15 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": Object {
+          "Fn::FindInMap": Array [
+            "LatestNodeRuntimeMap",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            "value",
+          ],
+        },
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -209,6 +341,130 @@ Object {
 
 exports[`ses-domain with default configuration set 1`] = `
 Object {
+  "Mappings": Object {
+    "LatestNodeRuntimeMap": Object {
+      "af-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-4": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-5": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-7": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "cn-north-1": Object {
+        "value": "nodejs18.x",
+      },
+      "cn-northwest-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-central-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-isoe-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-north-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-3": Object {
+        "value": "nodejs20.x",
+      },
+      "il-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "mx-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "sa-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-2": Object {
+        "value": "nodejs20.x",
+      },
+      "us-gov-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-gov-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-isob-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-west-2": Object {
+        "value": "nodejs20.x",
+      },
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -333,7 +589,15 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": Object {
+          "Fn::FindInMap": Array [
+            "LatestNodeRuntimeMap",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            "value",
+          ],
+        },
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -417,6 +681,130 @@ Object {
 
 exports[`ses-domain with hosted zone 1`] = `
 Object {
+  "Mappings": Object {
+    "LatestNodeRuntimeMap": Object {
+      "af-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-4": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-5": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-7": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "cn-north-1": Object {
+        "value": "nodejs18.x",
+      },
+      "cn-northwest-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-central-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-isoe-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-north-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-3": Object {
+        "value": "nodejs20.x",
+      },
+      "il-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "mx-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "sa-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-2": Object {
+        "value": "nodejs20.x",
+      },
+      "us-gov-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-gov-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-isob-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-west-2": Object {
+        "value": "nodejs20.x",
+      },
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -568,7 +956,15 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": Object {
+          "Fn::FindInMap": Array [
+            "LatestNodeRuntimeMap",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            "value",
+          ],
+        },
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -652,6 +1048,130 @@ Object {
 
 exports[`ses-domain without hosted zone 1`] = `
 Object {
+  "Mappings": Object {
+    "LatestNodeRuntimeMap": Object {
+      "af-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-northeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-2": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-3": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-4": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-5": Object {
+        "value": "nodejs20.x",
+      },
+      "ap-southeast-7": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "ca-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "cn-north-1": Object {
+        "value": "nodejs18.x",
+      },
+      "cn-northwest-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-central-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-isoe-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "eu-north-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-south-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-2": Object {
+        "value": "nodejs20.x",
+      },
+      "eu-west-3": Object {
+        "value": "nodejs20.x",
+      },
+      "il-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "me-south-1": Object {
+        "value": "nodejs20.x",
+      },
+      "mx-central-1": Object {
+        "value": "nodejs20.x",
+      },
+      "sa-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-east-2": Object {
+        "value": "nodejs20.x",
+      },
+      "us-gov-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-gov-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-iso-west-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-isob-east-1": Object {
+        "value": "nodejs18.x",
+      },
+      "us-west-1": Object {
+        "value": "nodejs20.x",
+      },
+      "us-west-2": Object {
+        "value": "nodejs20.x",
+      },
+    },
+  },
   "Resources": Object {
     "SesDomain0A5DC5B8": Object {
       "DeletionPolicy": "Delete",
@@ -775,7 +1295,15 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": Object {
+          "Fn::FindInMap": Array [
+            "LatestNodeRuntimeMap",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            "value",
+          ],
+        },
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
