@@ -376,7 +376,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.8",
+        "Runtime": "python3.12",
         "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
