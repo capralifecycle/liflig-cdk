@@ -278,7 +278,7 @@ export class LifligCdkPipeline extends constructs.Construct {
       ),
       handler: "index.handler",
       // Using python instead if NodeJS due to zip-support in stdlib.
-      runtime: lambda.Runtime.PYTHON_3_8,
+      runtime: lambda.Runtime.PYTHON_3_12,
       timeout: cdk.Duration.minutes(1),
       memorySize: 512,
     })
