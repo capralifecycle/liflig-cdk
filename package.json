@@ -47,7 +47,7 @@
     "@aws-sdk/client-s3": "3.682.0",
     "@aws-sdk/client-secrets-manager": "3.682.0",
     "@aws-sdk/client-ses": "3.682.0",
-    "@aws-sdk/client-sesv2": "3.682.0",
+    "@aws-sdk/client-sesv2": "3.684.0",
     "@aws-sdk/client-sfn": "3.682.0",
     "@aws-sdk/lib-storage": "3.682.0",
     "@commitlint/cli": "19.5.0",
