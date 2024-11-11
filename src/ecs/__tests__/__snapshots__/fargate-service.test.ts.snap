@@ -75,6 +75,10 @@ Object {
             "Enable": false,
             "Rollback": false,
           },
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 100,
         },
