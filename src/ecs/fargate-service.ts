@@ -57,7 +57,7 @@ export interface FargateServiceProps {
    */
   skipTargetGroup?: boolean
   /**
-   * @default true
+   * @default false
    */
   enableCircuitBreaker?: boolean
 }
@@ -139,7 +139,7 @@ export class FargateService extends constructs.Construct {
       hostPort: port,
     })
 
-    const enableCircuitBreaker = props.enableCircuitBreaker ?? true
+    const enableCircuitBreaker = props.enableCircuitBreaker ?? false
 
     this.fargateService = new ecs.FargateService(this, "Service", {
       serviceName: props.serviceName,
