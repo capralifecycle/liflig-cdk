@@ -78,6 +78,7 @@ test("creates fargate service with parameters and listener rule", () => {
       ecrRepository,
       "exampleEcrTag",
     ),
+    enableCircuitBreaker: true,
   })
 
   new ListenerRule(stack, "Dns", {
