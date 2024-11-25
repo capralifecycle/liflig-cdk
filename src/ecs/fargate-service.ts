@@ -56,6 +56,10 @@ export interface FargateServiceProps {
    * @default false
    */
   skipTargetGroup?: boolean
+  /**
+   * @default false
+   */
+  enableCircuitBreaker?: boolean
 }
 
 export class FargateService extends constructs.Construct {
@@ -71,6 +75,16 @@ export class FargateService extends constructs.Construct {
     props: FargateServiceProps,
   ) {
     super(scope, id)
+
+    /**
+     * Set this flag to disable this stack creating a completely new service and attempting replace when enabling circuit breakers
+     * Mitigating the deployment error: 'a service with the name <...> already exists'
+     * See: github.com/aws/aws-cdk/pull/22467
+     */
+    this.node.setContext(
+      "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker",
+      true,
+    )
 
     const parameters = new ConfigureParameters(this, {
       ssmPrefix: `/liflig-cdk/${cdk.Stack.of(this).stackName}/${
@@ -125,6 +139,8 @@ export class FargateService extends constructs.Construct {
       hostPort: port,
     })
 
+    const enableCircuitBreaker = props.enableCircuitBreaker ?? false
+
     this.fargateService = new ecs.FargateService(this, "Service", {
       serviceName: props.serviceName,
       vpcSubnets: {
@@ -139,6 +155,12 @@ export class FargateService extends constructs.Construct {
       securityGroups: [this.securityGroup],
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
       enableExecuteCommand: true,
+      circuitBreaker: enableCircuitBreaker
+        ? {
+            enable: true,
+            rollback: true,
+          }
+        : undefined,
       ...props.overrideFargateServiceProps,
     })
 
