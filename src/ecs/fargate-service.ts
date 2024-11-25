@@ -78,7 +78,7 @@ export class FargateService extends constructs.Construct {
 
     /**
      * Set this flag to disable this stack creating a completely new service and attempting replace when enabling circuit breakers
-     * Mitigating the deploytment error: 'a service with the name <...> already exists'
+     * Mitigating the deployment error: 'a service with the name <...> already exists'
      * See: github.com/aws/aws-cdk/pull/22467
      */
     this.node.setContext(
