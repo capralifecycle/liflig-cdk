@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Handler } from "aws-lambda"
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import {
