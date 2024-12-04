@@ -34,7 +34,6 @@
           "StackName": "build-artifacts"
         },
         "validateOnSynth": false,
-        "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -209,7 +208,6 @@
           "StackName": "ssm-parameter-reader"
         },
         "validateOnSynth": false,
-        "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
@@ -322,7 +320,6 @@
           "StackName": "cdk-pipeline-cdk-source"
         },
         "validateOnSynth": false,
-        "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
@@ -569,7 +566,6 @@
           "StackName": "cdk-pipeline-cloud-assembly"
         },
         "validateOnSynth": false,
-        "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/snapshot-value.json",
@@ -798,7 +794,6 @@
           "StackName": "webapp"
         },
         "validateOnSynth": false,
-        "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-deploy-role-112233445566-eu-west-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::112233445566:role/cdk-hnb659fds-cfn-exec-role-112233445566-eu-west-1",
         "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-112233445566-eu-west-1/snapshot-value.json",
