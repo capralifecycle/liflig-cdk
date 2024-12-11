@@ -14,7 +14,8 @@
     "lint:fix": "eslint --fix .",
     "prepare": "npm run build && husky",
     "semantic-release": "semantic-release",
-    "snapshots": "./scripts/create-snapshots.sh"
+    "snapshots": "./scripts/create-snapshots.sh",
+    "docs": "typedoc src --out docs"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",

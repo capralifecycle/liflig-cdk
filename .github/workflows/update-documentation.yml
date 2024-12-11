@@ -1,0 +1,47 @@
+name: update-documentation
+on:
+  workflow_run:
+    workflows: [ci]
+    types:
+      - completed
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+
+  build-documentation:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: generate documentation
+        run: npm run docs
+
+      - name: configure pages
+        uses: actions/configure-pages@v5
+
+      - name: upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+
+      - name: deploy documentation to GitHub Pages
+        uses: actions/deploy-pages@v4
