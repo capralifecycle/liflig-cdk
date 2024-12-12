@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import * as cpy from "cpy"
 import * as del from "del"
-import * as fs from "fs"
+import * as fs from "node:fs"
 import * as glob from "glob"
 import * as path from "path"
 
@@ -229,10 +228,8 @@ export async function createCloudAssemblySnapshot(
 ): Promise<void> {
   const base = path.join(process.cwd(), dst)
 
-  await cpy(".", base, {
-    parents: true,
-    cwd: path.join(process.cwd(), src),
-  })
+  // Copy all files from src (cdk.out) to dest (__snapshots__)
+  fs.cpSync(path.join(process.cwd(), src), base, { recursive: true })
 
   // Don't keep track of manifest version.
   await del(path.join(dst, "**/cdk.out"))
