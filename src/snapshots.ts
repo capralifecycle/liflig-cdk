@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import * as del from "del"
+import { deleteAsync } from "del"
 import * as fs from "node:fs"
 import * as glob from "glob"
 import * as path from "path"
@@ -232,20 +232,20 @@ export async function createCloudAssemblySnapshot(
   fs.cpSync(path.join(process.cwd(), src), base, { recursive: true })
 
   // Don't keep track of manifest version.
-  await del(path.join(dst, "**/cdk.out"))
+  await deleteAsync(path.join(dst, "**/cdk.out"))
 
   // The tree file doesn't give us much value as part of the snapshot.
-  await del(path.join(dst, "tree.json"))
+  await deleteAsync(path.join(dst, "tree.json"))
 
   // Remove asset contents for now.
-  await del(path.join(dst, "**/asset.*"))
+  await deleteAsync(path.join(dst, "**/asset.*"))
 
   // Remove asset configs so we don't have to update
   // snapshots for asset changes.
-  await del(path.join(dst, "**/*.assets.json"))
+  await deleteAsync(path.join(dst, "**/*.assets.json"))
 
   // Remove graphviz files generated when using CDK Pipelines
-  await del(path.join(dst, "**/*.dot"))
+  await deleteAsync(path.join(dst, "**/*.dot"))
 
   // Transform the manifest to be more snapshot friendly.
   for (const file of glob.sync("**/manifest.json", { cwd: base })) {
