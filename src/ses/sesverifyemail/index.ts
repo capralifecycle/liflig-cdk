@@ -6,7 +6,9 @@ import * as cr from "aws-cdk-lib/custom-resources"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 import * as path from "path"
 import { fileURLToPath } from "node:url"
+import { createRequire } from "node:module"
 
+const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -53,7 +55,7 @@ class SesVerifyEmailProvider extends constructs.Construct {
 
     this.provider = new cr.Provider(this, "Provider", {
       onEventHandler: new NodejsFunction(this, "Function", {
-        entry: require.resolve("./handler"),
+        entry: require.resolve(`${__dirname}/handler`),
         runtime: lambda.Runtime.NODEJS_18_X,
         timeout: cdk.Duration.minutes(5),
         awsSdkConnectionReuse: false,
