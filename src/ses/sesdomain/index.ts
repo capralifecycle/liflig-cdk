@@ -5,6 +5,11 @@ import * as r53 from "aws-cdk-lib/aws-route53"
 import * as cdk from "aws-cdk-lib"
 import * as cr from "aws-cdk-lib/custom-resources"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
+import * as path from "path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 interface Props {
   /**

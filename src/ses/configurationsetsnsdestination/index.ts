@@ -8,6 +8,11 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import * as snsSubscriptions from "aws-cdk-lib/aws-sns-subscriptions"
 import { SNSHandler } from "aws-lambda"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
+import * as path from "path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export type ConfigurationSetSnsDestinationEventType =
   | "SEND"

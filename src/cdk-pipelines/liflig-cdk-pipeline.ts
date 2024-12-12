@@ -10,10 +10,13 @@ import * as cdk from "aws-cdk-lib"
 import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
+import { fileURLToPath } from "node:url"
 import { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
 import { SlackNotification, SlackNotificationProps } from "./slack-notification"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 export interface LifligCdkPipelineProps {
   /**
    * Bucket holding pipeline configuration and trigger file.
