@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createCloudAssemblySnapshot } from "../snapshots"
+import { createCloudAssemblySnapshot } from "../snapshots.js"
 
 let src: string
 let dst: string
