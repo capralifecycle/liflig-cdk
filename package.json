@@ -2,6 +2,7 @@
   "name": "@liflig/cdk",
   "version": "0.0.0-development",
   "description": "CDK library for Liflig",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/capralifecycle/liflig-cdk"
@@ -9,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest --runInBand",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "npm run build && husky",
@@ -73,7 +74,7 @@
     "prettier": "3.4.2",
     "semantic-release": "24.2.0",
     "ts-jest": "29.2.5",
-    "ts-node": "10.9.2",
+    "tsx": "4.19.2",
     "typedoc": "0.27.4",
     "typescript": "5.7.2"
   },
