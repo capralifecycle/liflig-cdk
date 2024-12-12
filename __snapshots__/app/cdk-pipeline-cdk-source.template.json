@@ -635,6 +635,7 @@
           "Type": "S3"
         },
         "Name": "test-pipeline",
+        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [

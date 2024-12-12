@@ -381,12 +381,6 @@
             "data": "PipelinePrepareCdkSourceFnF78E92C9"
           }
         ],
-        "/cdk-pipeline-cdk-source/Pipeline/CodePipeline": [
-          {
-            "type": "aws:cdk:warning",
-            "data": "V1 pipeline type is implicitly selected when `pipelineType` is not set. If you want to use V2 type, set `PipelineType.V2`. [ack: @aws-cdk/aws-codepipeline:unspecifiedPipelineType]"
-          }
-        ],
         "/cdk-pipeline-cdk-source/Pipeline/CodePipeline/ArtifactsBucketEncryptionKey/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -625,12 +619,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineCloudAssemblyLookupFn679FAA51"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline": [
-          {
-            "type": "aws:cdk:warning",
-            "data": "V1 pipeline type is implicitly selected when `pipelineType` is not set. If you want to use V2 type, set `PipelineType.V2`. [ack: @aws-cdk/aws-codepipeline:unspecifiedPipelineType]"
           }
         ],
         "/cdk-pipeline-cloud-assembly/Pipeline/CodePipeline/ArtifactsBucketEncryptionKey/Resource": [

@@ -163,6 +163,7 @@ export class LifligCdkPipeline extends constructs.Construct {
 
     this.codePipeline = new codepipeline.Pipeline(this, "CodePipeline", {
       pipelineName: props.pipelineName,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: "Source",
