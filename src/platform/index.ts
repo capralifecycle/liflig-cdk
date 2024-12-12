@@ -1,6 +1,2 @@
-export {
-  PlatformProducer,
-  PlatformConsumer,
-  PlatformProducerProps,
-  PlatformConsumerProps,
-} from "./platform"
+export { PlatformProducer, PlatformConsumer } from "./platform"
+export type { PlatformProducerProps, PlatformConsumerProps } from "./platform"

@@ -1,8 +1,8 @@
 export { SesDomain } from "./sesdomain"
 export { SesVerifyEmail } from "./sesverifyemail"
-export {
+export { ConfigurationSetSnsDestination } from "./configurationsetsnsdestination"
+export { ConfigurationSetDeliveryOptions } from "./configurationsetdeliveryoptions"
+export type {
   ConfigurationSetSnsDestinationProps,
   ConfigurationSetSnsDestinationEventType,
-  ConfigurationSetSnsDestination,
 } from "./configurationsetsnsdestination"
-export { ConfigurationSetDeliveryOptions } from "./configurationsetdeliveryoptions"
