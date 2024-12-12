@@ -1,12 +1,21 @@
-.PHONY: all build clean
-
+.PHONY: all
 all: build
-build:
-	npm install
+
+.PHONY: build
+build: clean
+
+	# don't trigger prepare on install
+	npm install --ignore-scripts
 	npm run lint
 	npm run build
 	npm run snapshots
 	npm run test
 
+.PHONY: clean
 clean:
-	rm -rf node_modules
+	rm -rf lib/
+	rm -rf cdk.out/
+
+.PHONY: clean-all
+clean-all: clean
+	rm -rf node_modules/
