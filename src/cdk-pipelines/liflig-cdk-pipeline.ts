@@ -10,10 +10,15 @@ import * as cdk from "aws-cdk-lib"
 import * as pipelines from "aws-cdk-lib/pipelines"
 import * as fs from "fs"
 import * as path from "path"
+import { fileURLToPath } from "node:url"
 import { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
 import { SlackNotification, SlackNotificationProps } from "./slack-notification"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
+import { createRequire } from "node:module"
 
+const require = createRequire(import.meta.url)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 export interface LifligCdkPipelineProps {
   /**
    * Bucket holding pipeline configuration and trigger file.
@@ -163,6 +168,7 @@ export class LifligCdkPipeline extends constructs.Construct {
 
     this.codePipeline = new codepipeline.Pipeline(this, "CodePipeline", {
       pipelineName: props.pipelineName,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: "Source",
@@ -231,7 +237,7 @@ export class LifligCdkPipeline extends constructs.Construct {
       this,
       "CloudAssemblyLookupFn",
       {
-        entry: require.resolve("./cloud-assembly-lookup-handler"),
+        entry: require.resolve(`${__dirname}/cloud-assembly-lookup-handler`),
         runtime: lambda.Runtime.NODEJS_18_X,
         timeout: cdk.Duration.minutes(1),
         memorySize: 512,

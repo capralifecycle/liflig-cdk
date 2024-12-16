@@ -7,6 +7,9 @@ import * as sns from "aws-cdk-lib/aws-sns"
 import { Duration } from "aws-cdk-lib"
 import * as path from "path"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import { fileURLToPath } from "node:url"
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export interface SlackAlarmProps {
   projectName: string

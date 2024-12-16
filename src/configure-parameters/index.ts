@@ -1,5 +1,5 @@
-export {
-  ConfigureParameters,
+export { ConfigureParameters } from "./configure-parameters"
+export type {
   ConfigureParametersProps,
   PlainTextParameter,
   SecretParameter,

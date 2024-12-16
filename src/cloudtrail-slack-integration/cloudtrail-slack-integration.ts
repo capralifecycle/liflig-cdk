@@ -9,6 +9,10 @@ import * as sources from "aws-cdk-lib/aws-lambda-event-sources"
 import * as sqs from "aws-cdk-lib/aws-sqs"
 import * as targets from "aws-cdk-lib/aws-events-targets"
 import * as path from "path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export interface CloudTrailSlackIntegrationProps extends cdk.StackProps {
   /**

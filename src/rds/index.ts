@@ -1,1 +1,2 @@
-export { Database, DatabaseProps } from "./database"
+export { Database } from "./database"
+export type { DatabaseProps } from "./database"
