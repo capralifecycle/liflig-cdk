@@ -80,7 +80,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "3.726.1",
-    "@capraconsulting/webapp-deploy-lambda": "2.2.6",
+    "@capraconsulting/webapp-deploy-lambda": "2.3.0",
     "del": "8.0.0",
     "glob": "11.0.1",
     "source-map-support": "0.5.21"
