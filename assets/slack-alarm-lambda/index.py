@@ -62,7 +62,7 @@ def send_slack_notification(message: str, region: str, active_alarms: list[str])
     if message["NewStateValue"] == "ALARM":
         color = "danger"
     else:
-        color = "good"
+        color = "warning" if len(active_alarms) else "good"
     alarm_description = message["AlarmDescription"] or "Alarm is missing description"
     attachments = [
         {
