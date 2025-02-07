@@ -36,7 +36,7 @@ interface Props {
  * must have the bastion host security group as allowed ingress.
  *
  * For more internal details, see
- * https://confluence.capraconsulting.no/x/q8UBC
+ * https://liflig.atlassian.net/wiki/spaces/fag/pages/10955315/Bastion-hosts
  */
 export class BastionHost extends constructs.Construct {
   public readonly securityGroup: ec2.ISecurityGroup
