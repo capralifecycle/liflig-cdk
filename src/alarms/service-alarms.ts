@@ -248,7 +248,6 @@ export class ServiceAlarms extends constructs.Construct {
         alarmDescription:
           props.targetHealthAlarm?.description ??
           `The load balancer is either receiving bad health checks from or is unable to connect to target(s) in ECS service '${this.serviceName}'`,
-        actionsEnabled: false,
       },
     )
     if (props.targetHealthAlarm?.enabled ?? true) {

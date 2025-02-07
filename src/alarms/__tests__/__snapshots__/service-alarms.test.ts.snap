@@ -137,7 +137,6 @@ Object {
     },
     "ServiceAlarmsTargetHealthAlarm18599060": Object {
       "Properties": Object {
-        "ActionsEnabled": false,
         "AlarmActions": Array [
           Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
