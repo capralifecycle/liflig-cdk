@@ -50,10 +50,10 @@ Object {
         "value": "nodejs20.x",
       },
       "cn-north-1": Object {
-        "value": "nodejs18.x",
+        "value": "nodejs20.x",
       },
       "cn-northwest-1": Object {
-        "value": "nodejs18.x",
+        "value": "nodejs20.x",
       },
       "eu-central-1": Object {
         "value": "nodejs20.x",
@@ -104,10 +104,10 @@ Object {
         "value": "nodejs20.x",
       },
       "us-gov-east-1": Object {
-        "value": "nodejs18.x",
+        "value": "nodejs20.x",
       },
       "us-gov-west-1": Object {
-        "value": "nodejs18.x",
+        "value": "nodejs20.x",
       },
       "us-iso-east-1": Object {
         "value": "nodejs18.x",
@@ -313,6 +313,16 @@ Object {
                   ],
                 },
               ],
+            },
+            Object {
+              "Action": "lambda:GetFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "lifligcdksesverifyemailproviderFunction7D5F58AF",
+                  "Arn",
+                ],
+              },
             },
           ],
           "Version": "2012-10-17",
