@@ -11,6 +11,11 @@ build: clean
 	npm run snapshots
 	npm run test
 
+.PHONY: snapshots
+snapshots:
+	npm run snapshots
+	npm test -- --updateSnapshot
+
 .PHONY: clean
 clean:
 	rm -rf lib/
