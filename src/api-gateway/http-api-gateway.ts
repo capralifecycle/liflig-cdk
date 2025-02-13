@@ -981,6 +981,18 @@ class SqsRouteIntegration extends apigw.HttpRouteIntegration {
 }
 
 /**
+ * When using `NodejsFunction` with `entry`, we point CDK to a file with our lambda code. This can
+ * either be a TypeScript or JavaScript file. When creating constructs in tests inside this library,
+ * the entry will point to the TypeScript file in the source code. But when a library consumer uses
+ * this, it will instead point to the transpiled JavaScript file. So to set the correct file
+ * extension, we must check if we're being run in the context of the TypeScript source code
+ * (src/api-gateway), otherwise we're being run by a consumer as transpiled JavaScript.
+ */
+const authorizerFileExtension = __dirname.endsWith("src/api-gateway")
+  ? "ts"
+  : "js"
+
+/**
  * Creates a custom authorizer lambda which reads `Authorization: Bearer <token>` header and
  * verifies the token against a Cognito user pool.
  */
@@ -1007,7 +1019,7 @@ class CognitoUserPoolAuthorizer<
     this.lambda = new lambdaNodejs.NodejsFunction(this, "AuthorizerFunction", {
       entry: path.join(
         __dirname,
-        "authorizer-lambdas/cognito-user-pool-authorizer.ts",
+        `authorizer-lambdas/cognito-user-pool-authorizer.${authorizerFileExtension}`,
       ),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
@@ -1053,7 +1065,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
     this.lambda = new lambdaNodejs.NodejsFunction(this, "BasicAuthLambda", {
       entry: path.join(
         __dirname,
-        "authorizer-lambdas/basic-auth-authorizer.ts",
+        `authorizer-lambdas/basic-auth-authorizer.${authorizerFileExtension}`,
       ),
       description:
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
@@ -1107,7 +1119,7 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
     this.lambda = new lambdaNodejs.NodejsFunction(this, "AuthorizerFunction", {
       entry: path.join(
         __dirname,
-        "authorizer-lambdas/cognito-user-pool-or-basic-auth-authorizer.ts",
+        `authorizer-lambdas/cognito-user-pool-or-basic-auth-authorizer.${authorizerFileExtension}`,
       ),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
