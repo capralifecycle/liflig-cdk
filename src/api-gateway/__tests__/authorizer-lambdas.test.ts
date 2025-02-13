@@ -9,9 +9,16 @@ import {
 import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { expect, jest } from "@jest/globals"
 
-const TEST_BASIC_AUTH_USERNAME = "test-user"
-const TEST_BASIC_AUTH_PASSWORD = "test-password"
-const TEST_CREDENTIALS_SECRET_NAME = "test-secret-name"
+const DEFAULT_CREDENTIALS_SECRET = "default"
+const CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT = "encoded-array"
+const DEFAULT_CREDENTIALS = {
+  username: "test-user-1",
+  password: "test-password-1",
+}
+const ALTERNATE_CREDENTIALS = {
+  username: "test-user-2",
+  password: "test-password-2",
+}
 
 const TEST_AUTH_CLIENT_ID = "test-client-id"
 const VALID_ACCESS_TOKEN = "fVe5qmqtQOgKsj87O0uFHu8cQmEygpkW"
@@ -21,85 +28,132 @@ describe("API Gateway authorizer lambdas", () => {
   // We want to test various cases for all the different authorizer lambdas.
   // Some of the test cases overlap between the lambdas.
   // So we run table-driven tests, to cover all cases for all lambdas.
-  type TestCase = {
-    name: string
+  type BaseTestCase = {
     authorizerName: string
     authorizer: {
       handler: (
         event: APIGatewayRequestAuthorizerEventV2,
       ) => Promise<APIGatewaySimpleAuthorizerResult>
     }
-    env?: Record<string, string>
+    supportsBasicAuth?: boolean
+    supportsAccessToken?: boolean
+    supportsMultipleCredentials?: boolean
+    credentialsEnvKey: string
+    credentialsEnvValue: string
+  }
+
+  type TestCase = BaseTestCase & {
+    name: string
     authHeader: string
     expectedResult: APIGatewaySimpleAuthorizerResult
   }
 
-  const baseBasicAuthAuthorizerTestCase = {
-    authorizerName: "basic auth authorizer",
-    authorizer: basicAuthAuthorizer,
-    env: { ["CREDENTIALS_SECRET_NAME"]: TEST_CREDENTIALS_SECRET_NAME },
-  }
-
-  const baseCognitoAuthorizerTestCase = {
+  const baseCognitoAuthorizerTestCase: BaseTestCase = {
     authorizerName: "cognito authorizer",
     authorizer: cognitoUserPoolAuthorizer,
+    supportsAccessToken: true,
+    credentialsEnvKey: "CREDENTIALS_FOR_INTERNAL_AUTHORIZATION",
+    credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
   }
 
-  const baseCognitoOrBasicAuthAuthorizerTestCase = {
+  const baseBasicAuthAuthorizerTestCase: BaseTestCase = {
+    authorizerName: "basic auth authorizer",
+    authorizer: basicAuthAuthorizer,
+    supportsBasicAuth: true,
+    credentialsEnvKey: "CREDENTIALS_SECRET_NAME",
+    credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
+  }
+
+  const baseCognitoOrBasicAuthAuthorizerTestCase: BaseTestCase = {
     authorizerName: "cognito or basic auth authorizer",
     authorizer: cognitoUserPoolOrBasicAuthAuthorizer,
-    env: {
-      ["BASIC_AUTH_CREDENTIALS_SECRET_NAME"]: TEST_CREDENTIALS_SECRET_NAME,
-    },
+    supportsAccessToken: true,
+    supportsBasicAuth: true,
+    credentialsEnvKey: "BASIC_AUTH_CREDENTIALS_SECRET_NAME",
+    credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
   }
 
-  const testCases: TestCase[] = [
-    // Basic auth tests (for both basic-auth-authorizer and cognito-user-pool-or-basic-auth-authorizer)
-    ...[
-      baseBasicAuthAuthorizerTestCase,
-      baseCognitoOrBasicAuthAuthorizerTestCase,
-    ].flatMap((baseTestCase) => [
-      {
-        ...baseTestCase,
-        name: "valid credentials",
-        authHeader: basicAuthHeader(
-          TEST_BASIC_AUTH_USERNAME,
-          TEST_BASIC_AUTH_PASSWORD,
-        ),
-        expectedResult: { isAuthorized: true },
-      },
-      {
-        ...baseTestCase,
-        name: "invalid credentials",
-        authHeader: basicAuthHeader("wrong-username", "wrong-password"),
-        expectedResult: { isAuthorized: false },
-      },
-    ]),
+  const baseTestCases: BaseTestCase[] = [
+    baseCognitoAuthorizerTestCase,
+    baseBasicAuthAuthorizerTestCase,
+    baseCognitoOrBasicAuthAuthorizerTestCase,
+  ].flatMap((testCase) => {
+    if (!testCase.supportsBasicAuth) {
+      return [testCase]
+    }
 
+    // If authorizer supports basic auth, we want to test loading the credentials secret on the
+    // alternate encoded array format as well
+    return [
+      testCase,
+      {
+        ...testCase,
+        credentialsEnvValue: CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT,
+        supportsMultipleCredentials: true,
+      },
+    ]
+  })
+
+  const testCases: TestCase[] = [
     // Cognito access token tests (for both cognito-user-pool-authorizer and cognito-user-pool-or-basic-auth-authorizer)
-    ...[
-      baseCognitoAuthorizerTestCase,
-      baseCognitoOrBasicAuthAuthorizerTestCase,
-    ].flatMap((baseTestCase) => [
-      {
-        ...baseTestCase,
-        name: "valid token",
-        authHeader: accessTokenHeader(VALID_ACCESS_TOKEN),
+    ...baseTestCases
+      .filter((testCase) => testCase.supportsAccessToken)
+      .flatMap((testCase) => [
+        {
+          ...testCase,
+          name: "valid token",
+          authHeader: accessTokenHeader(VALID_ACCESS_TOKEN),
+          expectedResult: { isAuthorized: true },
+        },
+        {
+          ...testCase,
+          name: "invalid token",
+          authHeader: "gibberish",
+          expectedResult: { isAuthorized: false },
+        },
+      ]),
+
+    // Basic auth tests (for both basic-auth-authorizer and cognito-user-pool-or-basic-auth-authorizer)
+    ...baseTestCases
+      .filter((testCase) => testCase.supportsBasicAuth)
+      .flatMap((testCase) => [
+        {
+          ...testCase,
+          name: "valid credentials",
+          authHeader: basicAuthHeader(DEFAULT_CREDENTIALS),
+          expectedResult: { isAuthorized: true },
+        },
+        {
+          ...testCase,
+          name: "invalid credentials",
+          authHeader: basicAuthHeader({
+            username: "wrong-username",
+            password: "wrong-password",
+          }),
+          expectedResult: { isAuthorized: false },
+        },
+      ]),
+
+    // If authorizer supports multiple credentials (using secret on encoded array format), we want
+    // to test that it can be invoked with alternate credentials
+    ...baseTestCases
+      .filter(
+        (testCase) =>
+          testCase.supportsBasicAuth && testCase.supportsMultipleCredentials,
+      )
+      .map((testCase) => ({
+        ...testCase,
+        name: "alternate credentials",
+        authHeader: basicAuthHeader(ALTERNATE_CREDENTIALS),
         expectedResult: { isAuthorized: true },
-      },
-      {
-        ...baseTestCase,
-        name: "invalid token",
-        authHeader: "gibberish",
-        expectedResult: { isAuthorized: false },
-      },
-    ]),
+      })),
   ]
 
   for (const testCase of testCases) {
-    test(`${testCase.authorizerName}: ${testCase.name}`, async () => {
-      if (testCase.env !== undefined) {
-        process.env = { ...process.env, ...testCase.env }
+    test(`${testCase.authorizerName}: ${testCase.name} (secret format: ${testCase.credentialsEnvValue})`, async () => {
+      process.env = {
+        ...process.env,
+        [testCase.credentialsEnvKey]: testCase.credentialsEnvValue,
       }
 
       const result = await testCase.authorizer.handler(
@@ -140,14 +194,23 @@ describe("API Gateway authorizer lambdas", () => {
       new MockTokenVerifier() as unknown as cognitoUserPoolAuthorizer.TokenVerifier
 
     basicAuthAuthorizer.dependencies.createSecretsManager = mockSecretsManager
+
     cognitoUserPoolAuthorizer.dependencies.createSecretsManager =
       mockSecretsManager
     cognitoUserPoolAuthorizer.dependencies.createTokenVerifier =
       mockTokenVerifier
+
     cognitoUserPoolOrBasicAuthAuthorizer.dependencies.createSecretsManager =
       mockSecretsManager
     cognitoUserPoolOrBasicAuthAuthorizer.dependencies.createTokenVerifier =
       mockTokenVerifier
+  })
+
+  // Clear cached global variables after each test
+  afterEach(() => {
+    basicAuthAuthorizer.clearCache()
+    cognitoUserPoolAuthorizer.clearCache()
+    cognitoUserPoolOrBasicAuthAuthorizer.clearCache()
   })
 
   // Reset process.env between tests: https://stackoverflow.com/a/48042799
@@ -173,8 +236,13 @@ function createAuthorizerEvent(
   } as unknown as APIGatewayRequestAuthorizerEventV2 // We only use the above fields
 }
 
-function basicAuthHeader(username: string, password: string) {
-  return "Basic " + Buffer.from(`${username}:${password}`).toString("base64")
+function basicAuthHeader(credentials: { username: string; password: string }) {
+  return (
+    "Basic " +
+    Buffer.from(`${credentials.username}:${credentials.password}`).toString(
+      "base64",
+    )
+  )
 }
 
 function accessTokenHeader(token: string) {
@@ -186,12 +254,26 @@ class MockSecretsManager {
   public async getSecretValue(args: {
     SecretId: string
   }): Promise<{ SecretString: string }> {
-    if (args.SecretId !== TEST_CREDENTIALS_SECRET_NAME) {
-      throw new Error(`Invalid secret name '${args.SecretId}'`)
-    }
-
-    return {
-      SecretString: `{"username":"${TEST_BASIC_AUTH_USERNAME}","password":"${TEST_BASIC_AUTH_PASSWORD}"}`,
+    switch (args.SecretId) {
+      case DEFAULT_CREDENTIALS_SECRET: {
+        return { SecretString: JSON.stringify(DEFAULT_CREDENTIALS) }
+      }
+      case CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT: {
+        const credentialsArray: string[] = [
+          DEFAULT_CREDENTIALS,
+          ALTERNATE_CREDENTIALS,
+        ].map(({ username, password }) =>
+          Buffer.from(`${username}:${password}`).toString("base64"),
+        )
+        return {
+          SecretString: JSON.stringify({
+            credentials: JSON.stringify(credentialsArray),
+          }),
+        }
+      }
+      default: {
+        throw new Error(`Invalid secret name '${args.SecretId}'`)
+      }
     }
   }
 }
