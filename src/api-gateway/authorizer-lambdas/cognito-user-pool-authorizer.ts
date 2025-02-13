@@ -190,3 +190,8 @@ function secretHasExpectedFormat(
     typeof value.password === "string"
   )
 }
+
+export function clearCache() {
+  cachedTokenVerifier = undefined
+  cachedInternalAuthorizationHeader = undefined
+}

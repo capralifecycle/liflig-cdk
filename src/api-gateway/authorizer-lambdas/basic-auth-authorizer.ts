@@ -4,7 +4,9 @@
  *
  * Expects the following environment variables:
  * - CREDENTIALS_SECRET_NAME
- *   - Secret value should follow this format: `{"username":"<username>","password":"<password>"}`
+ *   - Secret value should follow this format: `{"username":"<username>","password":"<password>"}`.
+ *     A different format with an array of pre-encoded credentials is also supported - see docs for
+ *     the `BasicAuthAuthorizerProps` on the `ApiGateway` construct.
  */
 
 import type {
@@ -21,16 +23,26 @@ export const handler = async (
     return { isAuthorized: false }
   }
 
-  const expectedAuthHeader = await getExpectedAuthHeader()
+  const expectedAuthHeaders = await getExpectedBasicAuthHeaders()
 
-  return { isAuthorized: authHeader === expectedAuthHeader }
+  for (const expectedHeader of expectedAuthHeaders) {
+    if (authHeader === expectedHeader) {
+      return { isAuthorized: true }
+    }
+  }
+
+  return { isAuthorized: false }
 }
 
 /** Cache this value, so that subsequent lambda invocations don't have to refetch. */
-let cachedAuthHeader: string | undefined = undefined
+let cachedBasicAuthHeaders: string[] | undefined = undefined
 
-async function getExpectedAuthHeader(): Promise<string> {
-  if (cachedAuthHeader === undefined) {
+/**
+ * Returns an array of allowed basic auth headers, to support credential secrets with multiple
+ * values (see `BasicAuthAuthorizerProps` on the `ApiGateway` construct for more on this).
+ */
+async function getExpectedBasicAuthHeaders(): Promise<string[]> {
+  if (cachedBasicAuthHeaders === undefined) {
     const secretName: string | undefined =
       process.env["CREDENTIALS_SECRET_NAME"]
     if (!secretName) {
@@ -38,27 +50,49 @@ async function getExpectedAuthHeader(): Promise<string> {
       throw new Error()
     }
 
-    cachedAuthHeader = await getSecretAsBasicAuthHeader(secretName)
+    cachedBasicAuthHeaders = await getSecretAsBasicAuthHeaders(secretName)
   }
 
-  return cachedAuthHeader
+  return cachedBasicAuthHeaders
 }
 
-async function getSecretAsBasicAuthHeader(secretName: string): Promise<string> {
-  const credentials = await getSecretValue(secretName)
-  if (!secretHasExpectedFormat(credentials)) {
-    console.error(
-      `Basic auth credentials secret did not follow expected format (secret name: '${secretName}')`,
-    )
-    throw new Error()
+async function getSecretAsBasicAuthHeaders(
+  secretName: string,
+): Promise<string[]> {
+  const secret = await getSecretValue(secretName)
+
+  if (isSingleUsernameAndPassword(secret)) {
+    const header =
+      "Basic " +
+      Buffer.from(`${secret.username}:${secret.password}`).toString("base64")
+    return [header]
   }
 
-  return (
-    "Basic " +
-    Buffer.from(`${credentials.username}:${credentials.password}`).toString(
-      "base64",
-    )
+  // See `BasicAuthAuthorizerProps` on the `ApiGateway` construct for an explanation of the formats
+  // we parse here
+  if (hasCredentialsKeyWithStringValue(secret)) {
+    let credentialsArray: unknown
+    try {
+      credentialsArray = JSON.parse(secret.credentials)
+    } catch (e) {
+      console.error(
+        `Failed to parse credentials array in secret '${secretName}' as JSON`,
+        e,
+      )
+      throw new Error()
+    }
+
+    if (isStringArray(credentialsArray)) {
+      return credentialsArray.map(
+        (encodedCredential) => `Basic ${encodedCredential}`,
+      )
+    }
+  }
+
+  console.error(
+    `Basic auth credentials secret did not follow any expected format (secret name: '${secretName}')`,
   )
+  throw new Error()
 }
 
 /** For overriding dependency creation in tests. */
@@ -75,10 +109,15 @@ async function getSecretValue(secretName: string): Promise<unknown> {
     throw new Error()
   }
 
-  return JSON.parse(secret.SecretString)
+  try {
+    return JSON.parse(secret.SecretString)
+  } catch (e) {
+    console.error(`Failed to parse secret '${secretName}' as JSON`, e)
+    throw new Error()
+  }
 }
 
-function secretHasExpectedFormat(
+function isSingleUsernameAndPassword(
   value: unknown,
 ): value is { username: string; password: string } {
   return (
@@ -89,4 +128,33 @@ function secretHasExpectedFormat(
     "password" in value &&
     typeof value.password === "string"
   )
+}
+
+function hasCredentialsKeyWithStringValue(
+  value: unknown,
+): value is { credentials: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "credentials" in value &&
+    typeof value.credentials === "string"
+  )
+}
+
+function isStringArray(value: unknown): value is string[] {
+  if (!Array.isArray(value)) {
+    return false
+  }
+
+  for (const element of value) {
+    if (typeof element !== "string") {
+      return false
+    }
+  }
+
+  return true
+}
+
+export function clearCache() {
+  cachedBasicAuthHeaders = undefined
 }
