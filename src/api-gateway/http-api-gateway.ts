@@ -467,11 +467,11 @@ export type ApiGatewayAccessLogsProps = {
  *
  * The approach followed in this construct is:
  * 1. One API-GW per service
- * 3. One subdomain per API-GW / service
- * 4. Use HTTP API, not REST
- * 5. Use a $default stage with autodeploy
- * 6. Support multiple routes (with possible `/{proxy+}` to let all sub-paths through)
- * 7. Allow custom integration/authorizer for each route, or defaults for the whole gateway
+ * 2. One subdomain per API-GW / service
+ * 3. Use HTTP API, not REST
+ * 4. Use a $default stage with autodeploy
+ * 5. Support multiple routes (with possible `/{proxy+}` to let all sub-paths through)
+ * 6. Allow custom integration/authorizer for each route, or defaults for the whole gateway
  *
  * The route integration is one of these:
  * - ALB private integration with VPC Link using HTTPS to the ALB
