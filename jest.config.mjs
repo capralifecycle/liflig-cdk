@@ -1,6 +1,6 @@
 export default {
-  testEnvironment: 'node',
-  extensionsToTreatAsEsm: ['.ts'],
+  testEnvironment: "node",
+  extensionsToTreatAsEsm: [".ts"],
   testMatch: ["**/*.test.ts"],
   transform: {
     "^.+\\.tsx?$": [
