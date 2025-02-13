@@ -8,6 +8,7 @@ import * as loadBalancer from "./load-balancer"
 import * as cloudTrailSlackIntegration from "./cloudtrail-slack-integration"
 import * as rds from "./rds"
 import * as platform from "./platform"
+import * as apigw from "./api-gateway"
 
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.
@@ -33,6 +34,7 @@ export {
   rds,
   platform,
   cloudTrailSlackIntegration,
+  apigw,
 }
 
 /**

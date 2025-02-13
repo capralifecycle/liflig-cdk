@@ -1,5 +1,6 @@
 import "@aws-cdk/assert/jest"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
+import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
@@ -11,7 +12,7 @@ import { ApiGateway } from ".."
 import { LoadBalancer } from "../../load-balancer"
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import { FargateService, ListenerRule } from "../../ecs"
-import { Secret } from "aws-cdk-lib/aws-secretsmanager"
+import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Queue } from "aws-cdk-lib/aws-sqs"
 import { Function, InlineCode, Runtime } from "aws-cdk-lib/aws-lambda"
 
@@ -25,35 +26,29 @@ describe("HTTP API Gateway", () => {
   let loadBalancer: LoadBalancer
   let loadBalancerSecurityGroup: ec2.SecurityGroup
 
+  const accessLogs = {
+    removalPolicy: RemovalPolicy.RETAIN,
+    retention: RetentionDays.SIX_MONTHS,
+  }
+
   test("creates API-GW HTTP API using IAM auth and ALB integration", () => {
     // The loadbalancer security group MUST have an egress rule to the API-GW.
     // Check the createEcsAlbService method for this.
     createEcsAlbService()
 
     const apiGw = new ApiGateway(stack, "TestAlbApiGateway", {
-      dns: {
-        subdomain: "my-test-alb-api",
-        hostedZone: hostedZone,
+      dns: { subdomain: "my-test-alb-api", hostedZone },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
       },
-      apiGateway: {
-        accessLogs: {
-          removalPolicy: RemovalPolicy.RETAIN,
-          retention: RetentionDays.SIX_MONTHS,
-        },
-        basePath: "/api",
-        authorization: { type: "IAM" },
-        albIntegration: {
-          applicationLoadBalancerListener: loadBalancer.httpsListener,
-          listenerPriority: listenerPriorities.myTestAlbApi,
-          hostHttpsName: albListenerHostName,
-          serviceListenerRuleHostHeader: albListenerHostName,
-          securityGroupWithAlbAccess: loadBalancerSecurityGroup,
-          applicationLoadBalancerVpc: vpc,
-        },
-      },
+      defaultAuthorization: { type: "IAM" },
+      routes: [{ path: "/api" }],
+      accessLogs,
     })
-
-    apiGw.grantTeamAdministratorRoleInvoke()
 
     // An external API consumer's AWS account, which we allow access:
     const externalAccountId = "12312312"
@@ -71,21 +66,7 @@ describe("HTTP API Gateway", () => {
   })
 
   test("creates API-GW HTTP API using basic auth and SQS integration", () => {
-    // Don't do this in your stack - use a cli script to set secrets.
-    new Secret(stack, "BasicAuthCredentialsSecret", {
-      secretName:
-        "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
-      secretStringValue: SecretValue.unsafePlainText(
-        `{ "credentials": "[\\"dXNlcm5hbWU6cGFzc3dvcmQ=\\", \\"YWRtaW46aHVudGVyMg==\\"]" }`,
-      ),
-    })
-
-    // Load a referenced secret that is already set
-    const credentialsJsonArraySecret = Secret.fromSecretNameV2(
-      stack,
-      "BasicAuthCredentials",
-      `/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials`,
-    )
+    const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const ingressSqsQueue = new Queue(stack, "IngressQueue", {
       queueName: "api-ingress-queue",
@@ -93,25 +74,14 @@ describe("HTTP API Gateway", () => {
     })
 
     new ApiGateway(stack, "TestSqsApiGateway", {
-      dns: {
-        subdomain: "my-test-sqs-api",
-        hostedZone: hostedZone,
+      dns: { subdomain: "my-test-sqs-api", hostedZone },
+      defaultIntegration: { type: "SQS", queue: ingressSqsQueue },
+      defaultAuthorization: {
+        type: "BASIC_AUTH",
+        credentialsSecretName: credentialsSecret.secretName,
       },
-      apiGateway: {
-        accessLogs: {
-          removalPolicy: RemovalPolicy.RETAIN,
-          retention: RetentionDays.SIX_MONTHS,
-        },
-        basePath: "/api/queue/add",
-        disableProxyPath: true,
-        authorization: {
-          type: "BASIC_AUTH_LAMBDA",
-          credentialsJsonArraySecret: credentialsJsonArraySecret,
-        },
-        sqsIntegration: {
-          queue: ingressSqsQueue,
-        },
-      },
+      routes: [{ path: "/api/queue/add" }],
+      accessLogs,
     })
 
     expect(stack).toMatchCdkSnapshot()
@@ -124,28 +94,72 @@ describe("HTTP API Gateway", () => {
         `exports.handler = async(event) => { return "Hello World"; }`,
       ),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_22_X,
     })
 
     new ApiGateway(stack, "TestLambdaApiGateway", {
+      dns: { subdomain: "my-test-lambda-api", hostedZone },
+      defaultIntegration: { type: "Lambda", lambda: apiLambda },
+      defaultAuthorization: { type: "NONE" },
+      routes: [{ path: "/api/hello" }],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API with Cognito User Pool authorizer", () => {
+    createEcsAlbService()
+    const userPool = createCognitoUserPool()
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    new ApiGateway(stack, "TestApiGatewayWithCognitoUserPoolAuth", {
+      dns: { subdomain: "my-test-api-with-cognito-user-pool-auth", hostedZone },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: {
+        type: "COGNITO_USER_POOL",
+        userPool,
+        requiredScope: "example/read_users",
+        credentialsForInternalAuthorization: credentialsSecret.secretName,
+      },
+      routes: [{ path: "/api" }],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API with Cognito User Pool/Basic Auth authorizer", () => {
+    createEcsAlbService()
+    const userPool = createCognitoUserPool()
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    new ApiGateway(stack, "TestApiGatewayWithCognitoUserPoolAuth", {
       dns: {
-        subdomain: "my-test-lambda-api",
-        hostedZone: hostedZone,
+        subdomain: "my-test-api-with-cognito-user-pool-or-basic-auth",
+        hostedZone,
       },
-      apiGateway: {
-        accessLogs: {
-          removalPolicy: RemovalPolicy.RETAIN,
-          retention: RetentionDays.SIX_MONTHS,
-        },
-        basePath: "/api/hello",
-        disableProxyPath: true,
-        authorization: {
-          type: "NONE",
-        },
-        lambdaIntegration: {
-          lambdaFunction: apiLambda,
-        },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
       },
+      defaultAuthorization: {
+        type: "COGNITO_USER_POOL_OR_BASIC_AUTH",
+        userPool,
+        basicAuthCredentialsSecretName: credentialsSecret.secretName,
+        requiredScope: "example/read_users",
+      },
+      routes: [{ path: "/api" }],
+      accessLogs,
     })
 
     expect(stack).toMatchCdkSnapshot()
@@ -154,15 +168,9 @@ describe("HTTP API Gateway", () => {
   beforeEach(() => {
     const app = new App()
     supportStack = new Stack(app, "SupportStack", {
-      env: {
-        region: "eu-west-1",
-      },
+      env: { region: "eu-west-1" },
     })
-    stack = new Stack(app, "Stack", {
-      env: {
-        region: "eu-west-1",
-      },
-    })
+    stack = new Stack(app, "Stack", { env: { region: "eu-west-1" } })
 
     vpc = new ec2.Vpc(supportStack, "Vpc")
 
@@ -181,10 +189,7 @@ describe("HTTP API Gateway", () => {
     loadBalancerSecurityGroup = new ec2.SecurityGroup(
       supportStack,
       "LoadBalancerSecurityGroup",
-      {
-        vpc: vpc,
-        allowAllOutbound: false,
-      },
+      { vpc: vpc, allowAllOutbound: false },
     )
 
     // VERY IMPORTANT! Or your api-gw fails silently when invoking it
@@ -197,14 +202,10 @@ describe("HTTP API Gateway", () => {
     loadBalancer = new LoadBalancer(supportStack, "LoadBalancer", {
       certificates: [certificate],
       vpc: vpc,
-      overrideLoadBalancerProps: {
-        securityGroup: loadBalancerSecurityGroup,
-      },
+      overrideLoadBalancerProps: { securityGroup: loadBalancerSecurityGroup },
     })
 
-    const ecsCluster = new ecs.Cluster(supportStack, "Cluster", {
-      vpc,
-    })
+    const ecsCluster = new ecs.Cluster(supportStack, "Cluster", { vpc })
 
     const ecrRepository = new ecr.Repository(supportStack, "Repository", {
       repositoryName: "example-repository",
@@ -231,8 +232,26 @@ describe("HTTP API Gateway", () => {
       targetGroup: service.targetGroup!,
     })
   }
-})
 
-const listenerPriorities = {
-  myTestAlbApi: 10,
-}
+  function createCognitoUserPool(): cognito.IUserPool {
+    return new cognito.UserPool(stack, "UserPool")
+  }
+
+  function createBasicAuthCredentialsSecret(): ISecret {
+    // Don't do this in your stack - use a cli script to set secrets.
+    new Secret(stack, "BasicAuthCredentialsSecret", {
+      secretName:
+        "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
+      secretStringValue: SecretValue.unsafePlainText(
+        `{"username":"test-user","password":"test-password"}`,
+      ),
+    })
+
+    // Load a referenced secret that is already set
+    return Secret.fromSecretNameV2(
+      stack,
+      "BasicAuthCredentials",
+      `/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials`,
+    )
+  }
+})
