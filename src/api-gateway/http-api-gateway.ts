@@ -318,8 +318,8 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
    */
   | { type: "IAM" }
   /**
-   * Creates a custom authorizer lambda which reads `Authorization: Bearer <token>` header and
-   * verifies the token against a Cognito user pool.
+   * Creates a custom authorizer lambda which reads `Authorization: Bearer <access token>` header
+   * and verifies the token against a Cognito user pool.
    */
   | ({
       type: "COGNITO_USER_POOL"
@@ -331,8 +331,8 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
   | ({ type: "BASIC_AUTH" } & BasicAuthAuthorizerProps)
   /**
    * Creates a custom authorizer lambda which allows both:
-   * - `Authorization: Bearer <token>` header, for which the token is checked against the given
-   *   Cognito user pool
+   * - `Authorization: Bearer <access token>` header, for which the token is checked against the
+   *   given Cognito user pool
    * - `Authorization: Basic <base64-encoded credentials>` header, for which the credentials are
    *   checked against the credentials from the given basic auth secret name
    *
@@ -348,7 +348,7 @@ export type CognitoUserPoolAuthorizerProps<
   userPool: IUserPool
 
   /**
-   * Verifies that token claims contain the given scope.
+   * Verifies that access token claims contain the given scope.
    *
    * When defined as part of a resource server, scopes are on the format:
    * `{resource server identifier}/{scope name}`, e.g. `external/view_users`.
@@ -447,8 +447,8 @@ export type CognitoUserPoolOrBasicAuthAuthorizerProps<
   basicAuthCredentialsSecretName?: string
 
   /**
-   * Verifies that token claims contain the given scope. Only applicable for `Bearer` token requests
-   * checked against the Cognito User Pool (not applicable for basic auth).
+   * Verifies that access token claims contain the given scope. Only applicable for requests that
+   * use `Authorization: Bearer <access token>` (not applicable for basic auth).
    *
    * When defined as part of a resource server, scopes are on the format:
    * `{resource server identifier}/{scope name}`, e.g. `external/view_users`.
@@ -1025,7 +1025,7 @@ const authorizerFileExtension = __dirname.endsWith("src/api-gateway")
   : "js"
 
 /**
- * Creates a custom authorizer lambda which reads `Authorization: Bearer <token>` header and
+ * Creates a custom authorizer lambda which reads `Authorization: Bearer <access token>` header and
  * verifies the token against a Cognito user pool.
  */
 class CognitoUserPoolAuthorizer<
@@ -1121,7 +1121,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
 
 /**
  * Creates a custom authorizer lambda which allows both:
- * - `Authorization: Bearer <token>` header, for which the token is checked against the given
+ * - `Authorization: Bearer <access token>` header, for which the token is checked against the given
  *   Cognito user pool
  * - `Authorization: Basic <base64-encoded credentials>` header, for which the credentials are
  *   checked against the credentials from the given basic auth secret name
@@ -1194,7 +1194,6 @@ const defaultAccessLogFormat = {
   responseLength: "$context.responseLength",
   responseLatency: "$context.responseLatency",
   domainName: "$context.domainName",
-  //  hostHeaderOverride: "$context.requestOverride.header.Host", //Mapping template overrides cannot be used with proxy integration endpoints, which lack data mappings https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-override-request-response-parameters.html#:~:text=Mapping%20template%20overrides%20cannot%20be%20used%20with%20proxy%20integration%20endpoints%2C%20which%20lack%20data%20mappings
   error: {
     type: "$context.error.responseType",
     gatewayError: "$context.error.message",
@@ -1213,13 +1212,13 @@ const defaultAccessLogFormat = {
       awsPrincipal: "$context.identity.caller",
       awsPrincipalOrg: "$context.identity.principalOrgId",
     },
-    basic: { user: "$context.authorizer.user" },
+    basic: { username: "$context.authorizer.username" },
+    cognito: { clientId: "$context.authorizer.clientId" },
   },
   awsEndpointRequest: {
     id: "$context.awsEndpointRequestId",
     id2: "$context.awsEndpointRequestId2",
   },
-  // For datadog
   message:
     "$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]",
 }

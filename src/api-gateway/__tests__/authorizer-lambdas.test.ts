@@ -33,20 +33,27 @@ describe("API Gateway authorizer lambdas", () => {
     authorizer: {
       handler: (
         event: APIGatewayRequestAuthorizerEventV2,
-      ) => Promise<APIGatewaySimpleAuthorizerResult>
+      ) => Promise<APIGatewaySimpleAuthorizerResult & { context?: unknown }>
     }
-    supportsBasicAuth?: boolean
     supportsAccessToken?: boolean
+    supportsBasicAuth?: boolean
     supportsMultipleCredentials?: boolean
     credentialsEnvKey: string
     credentialsEnvValue: string
+    expectedResultContext: {
+      clientId?: boolean
+      username?: boolean
+      internalAuthorizationHeader?: boolean
+    }
   }
 
   type TestCase = BaseTestCase & {
     name: string
-    authHeader: string
     expectedResult: APIGatewaySimpleAuthorizerResult
-  }
+  } & (
+      | { accessToken: string }
+      | { basicAuth: { username: string; password: string } }
+    )
 
   const baseCognitoAuthorizerTestCase: BaseTestCase = {
     authorizerName: "cognito authorizer",
@@ -54,6 +61,10 @@ describe("API Gateway authorizer lambdas", () => {
     supportsAccessToken: true,
     credentialsEnvKey: "CREDENTIALS_FOR_INTERNAL_AUTHORIZATION",
     credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
+    expectedResultContext: {
+      clientId: true,
+      internalAuthorizationHeader: true,
+    },
   }
 
   const baseBasicAuthAuthorizerTestCase: BaseTestCase = {
@@ -62,6 +73,9 @@ describe("API Gateway authorizer lambdas", () => {
     supportsBasicAuth: true,
     credentialsEnvKey: "CREDENTIALS_SECRET_NAME",
     credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
+    expectedResultContext: {
+      username: true,
+    },
   }
 
   const baseCognitoOrBasicAuthAuthorizerTestCase: BaseTestCase = {
@@ -71,6 +85,11 @@ describe("API Gateway authorizer lambdas", () => {
     supportsBasicAuth: true,
     credentialsEnvKey: "BASIC_AUTH_CREDENTIALS_SECRET_NAME",
     credentialsEnvValue: DEFAULT_CREDENTIALS_SECRET,
+    expectedResultContext: {
+      clientId: true,
+      username: true,
+      internalAuthorizationHeader: true,
+    },
   }
 
   const baseTestCases: BaseTestCase[] = [
@@ -101,14 +120,14 @@ describe("API Gateway authorizer lambdas", () => {
       .flatMap((testCase) => [
         {
           ...testCase,
-          name: "valid token",
-          authHeader: accessTokenHeader(VALID_ACCESS_TOKEN),
+          name: "valid access token",
+          accessToken: VALID_ACCESS_TOKEN,
           expectedResult: { isAuthorized: true },
         },
         {
           ...testCase,
-          name: "invalid token",
-          authHeader: "gibberish",
+          name: "invalid access token",
+          accessToken: "gibberish",
           expectedResult: { isAuthorized: false },
         },
       ]),
@@ -119,17 +138,17 @@ describe("API Gateway authorizer lambdas", () => {
       .flatMap((testCase) => [
         {
           ...testCase,
-          name: "valid credentials",
-          authHeader: basicAuthHeader(DEFAULT_CREDENTIALS),
+          name: "valid basic auth credentials",
+          basicAuth: DEFAULT_CREDENTIALS,
           expectedResult: { isAuthorized: true },
         },
         {
           ...testCase,
-          name: "invalid credentials",
-          authHeader: basicAuthHeader({
+          name: "invalid basic auth credentials",
+          basicAuth: {
             username: "wrong-username",
             password: "wrong-password",
-          }),
+          },
           expectedResult: { isAuthorized: false },
         },
       ]),
@@ -144,7 +163,7 @@ describe("API Gateway authorizer lambdas", () => {
       .map((testCase) => ({
         ...testCase,
         name: "alternate credentials",
-        authHeader: basicAuthHeader(ALTERNATE_CREDENTIALS),
+        basicAuth: ALTERNATE_CREDENTIALS,
         expectedResult: { isAuthorized: true },
       })),
   ]
@@ -156,10 +175,44 @@ describe("API Gateway authorizer lambdas", () => {
         [testCase.credentialsEnvKey]: testCase.credentialsEnvValue,
       }
 
+      let authHeader: string
+      if ("accessToken" in testCase) {
+        authHeader = bearerTokenHeader(testCase.accessToken)
+      } else {
+        authHeader = basicAuthHeader(testCase.basicAuth)
+      }
+
       const result = await testCase.authorizer.handler(
-        createAuthorizerEvent(testCase.authHeader),
+        createAuthorizerEvent(authHeader),
       )
       expect(result.isAuthorized).toBe(testCase.expectedResult.isAuthorized)
+
+      if (result.isAuthorized) {
+        const expectedResultContext: Record<string, string> = {}
+        if (
+          testCase.expectedResultContext.clientId &&
+          "accessToken" in testCase
+        ) {
+          expectedResultContext.clientId = TEST_AUTH_CLIENT_ID
+        }
+        if (
+          testCase.expectedResultContext.username &&
+          "basicAuth" in testCase
+        ) {
+          expectedResultContext.username = testCase.basicAuth.username
+        }
+        if (testCase.expectedResultContext.internalAuthorizationHeader) {
+          if ("basicAuth" in testCase) {
+            expectedResultContext.internalAuthorizationHeader = basicAuthHeader(
+              testCase.basicAuth,
+            )
+          } else {
+            expectedResultContext.internalAuthorizationHeader =
+              basicAuthHeader(DEFAULT_CREDENTIALS)
+          }
+        }
+        expect(result.context).toEqual(expectedResultContext)
+      }
     })
   }
 
@@ -173,7 +226,7 @@ describe("API Gateway authorizer lambdas", () => {
       let error: unknown
       try {
         await testCase.authorizer.handler(
-          createAuthorizerEvent(accessTokenHeader(EXPIRED_ACCESS_TOKEN)),
+          createAuthorizerEvent(bearerTokenHeader(EXPIRED_ACCESS_TOKEN)),
         )
       } catch (e: unknown) {
         error = e
@@ -245,7 +298,7 @@ function basicAuthHeader(credentials: { username: string; password: string }) {
   )
 }
 
-function accessTokenHeader(token: string) {
+function bearerTokenHeader(token: string) {
   return "Bearer " + token
 }
 

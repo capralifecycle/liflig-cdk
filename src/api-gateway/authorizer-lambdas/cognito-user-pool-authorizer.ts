@@ -1,10 +1,10 @@
 /**
- * This lambda verifies bearer token in authorization header using Cognito.
+ * This lambda verifies access token in Bearer authorization header using Cognito.
  *
  * Expects the following environment variables:
  * - USER_POOL_ID
  * - REQUIRED_SCOPE (optional)
- *   - Set this to require that the bearer token payload contains the given scope
+ *   - Set this to require that the access token payload contains the given scope
  * - CREDENTIALS_FOR_INTERNAL_AUTHORIZATION (optional)
  *   - Secret name from which to get basic auth credentials that should be forwarded to backend
  *     integration if authentication succeeds
@@ -23,14 +23,15 @@ type AuthorizerResult = APIGatewaySimpleAuthorizerResult & {
   /**
    * Returning a context object from our authorizer allows our API Gateway to access these variables
    * via `${context.authorizer.<property>}`.
-   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging-variables.html
+   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html
    */
   context?: {
     /**
      * If the token is verified, we return the auth client ID from the token's claims as a context
-     * variable (named `authorizer.clientId`). You can then use this for parameter mapping on the
-     * API Gateway (see `AlbIntegrationProps.mapParameters` on the `ApiGateway` construct), if for
-     * example you want to forward this to the backend integration.
+     * variable (named `authorizer.clientId`). We use this to include the requesting client in the
+     * API Gateway access logs (see `defaultAccessLogFormat` in our `ApiGateway` construct). You can
+     * also use this when mapping parameters to the backend integration (see
+     * `AlbIntegrationProps.mapParameters` on the `ApiGateway` construct).
      */
     clientId: string
     /**
