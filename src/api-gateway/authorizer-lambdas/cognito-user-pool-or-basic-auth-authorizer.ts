@@ -3,12 +3,11 @@
  * - Against Cognito user pool if request uses access token in Bearer authorization header
  * - Against credentials saved in Secret Manager if request uses basic auth (and if secret exists)
  *
- * Expects the following environment variables
+ * Expects the following environment variables:
  * - USER_POOL_ID
  * - BASIC_AUTH_CREDENTIALS_SECRET_NAME (optional)
- *   - Secret value should follow this format: `{"username":"<username>","password":"<password>"}`.
- *     A different format with an array of pre-encoded credentials is also supported - see docs for
- *     the `CognitoUserPoolOrBasicAuthAuthorizerProps` on the `ApiGateway` construct.
+ *   - Name of secret in AWS Secrets Manager that stores basic auth credentials. See
+ *     `BasicAuthAuthorizerProps` on the `ApiGateway` construct for the supported formats.
  * - REQUIRED_SCOPE (optional)
  *   - Set this to require that the access token payload contains the given scope
  */
@@ -197,11 +196,8 @@ async function getBasicAuthCredentialsSecret(
 ): Promise<ExpectedBasicAuthCredentials[]> {
   const secret = await getSecretValue(secretName)
 
-  if (isSingleUsernameAndPassword(secret)) {
-    const header =
-      "Basic " +
-      Buffer.from(`${secret.username}:${secret.password}`).toString("base64")
-    return [{ basicAuthHeader: header, username: secret.username }]
+  if (isUsernameAndPasswordObject(secret)) {
+    return [encodeBasicAuthCredentials(secret)]
   }
 
   // See `BasicAuthAuthorizerProps` on the `ApiGateway` construct for an explanation of the formats
@@ -216,6 +212,10 @@ async function getBasicAuthCredentialsSecret(
         e,
       )
       throw new Error()
+    }
+
+    if (isArrayOfUsernameAndPasswordObjects(credentialsArray)) {
+      return credentialsArray.map(encodeBasicAuthCredentials)
     }
 
     if (isStringArray(credentialsArray)) {
@@ -246,7 +246,20 @@ async function getSecretValue(secretName: string): Promise<unknown> {
   }
 }
 
-function isSingleUsernameAndPassword(
+function encodeBasicAuthCredentials(credentials: {
+  username: string
+  password: string
+}): ExpectedBasicAuthCredentials {
+  const basicAuthHeader =
+    "Basic " +
+    Buffer.from(`${credentials.username}:${credentials.password}`).toString(
+      "base64",
+    )
+
+  return { basicAuthHeader, username: credentials.username }
+}
+
+function isUsernameAndPasswordObject(
   value: unknown,
 ): value is { username: string; password: string } {
   return (
@@ -257,6 +270,22 @@ function isSingleUsernameAndPassword(
     "password" in value &&
     typeof value.password === "string"
   )
+}
+
+function isArrayOfUsernameAndPasswordObjects(
+  value: unknown,
+): value is { username: string; password: string }[] {
+  if (!Array.isArray(value)) {
+    return false
+  }
+
+  for (const element of value) {
+    if (!isUsernameAndPasswordObject(element)) {
+      return false
+    }
+  }
+
+  return true
 }
 
 function hasCredentialsKeyWithStringValue(

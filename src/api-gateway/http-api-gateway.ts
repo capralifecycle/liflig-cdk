@@ -391,27 +391,30 @@ export type CognitoUserPoolAuthorizerProps<
 
 export type BasicAuthAuthorizerProps = {
   /**
-   * Name of secret in AWS Secrets Manager that stores basic auth credentials. The secret value
-   * should follow this format:
-   * ```json
-   * { "username": "<username>", "password": "<password>" }
-   * ```
+   * Name of secret in AWS Secrets Manager that stores basic auth credentials.
    *
-   * The following format is also supported:
-   * ```json
-   * { "credentials": "[\"<encoded-credential-1>\",\"<encoded-credential-2>\"]" }
-   * ```
-   * ...consisting of:
-   * - A single key, `credentials`
-   * - With a _string_ value
-   * - Which is a stringified, escaped JSON array of base64-encoded credentials
-   * - In which each element is encoded from `<username>:<password>`
+   * The following formats are supported for the secret value:
+   * - Single username and password:
+   *   ```json
+   *   { "username": "<username>", "password": "<password>" }
+   *   ```
+   * - Array of username + password objects:
+   *   ```json
+   *   { "credentials": "[{\"username\":\"<user-1>\",\"password\":\"password-1\"},{\"username\":\"<user-2>\",\"password\":\"<password-2>\"}]" }
+   *   ```
+   *   - The value of the `credentials` field is a string, with a stringified, escaped JSON array of
+   *     objects with `username` and `password` fields.
+   *   - The reason that this second format stores stringified JSON _inside_ JSON, is due to a
+   *     limitation in Liflig's `load-secrets` library, which only allows storing string values.
+   * - Array of base64-encoded credentials:
+   *   ```json
+   *   { "credentials": "[\"<encoded-credential-1>\",\"<encoded-credential-2>\"]" }
+   *   ```
+   *   - Each element is encoded from `<username>:<password>`.
+   *   - The array is stringified for the same reason as above.
    *
-   * If the secret is on this format, the authorizer will match the request's Authorization header
-   * against any one of these encoded credentials.
-   *
-   * The reason that this second format stores stringified JSON _inside_ JSON, is due to a
-   * limitation in Liflig's `load-secrets` library, which only allows storing strings values.
+   * If the secret uses one of the array formats, the authorizer will match the request's
+   * Authorization header against any one of the credentials.
    */
   credentialsSecretName: string
 }
@@ -422,27 +425,9 @@ export type CognitoUserPoolOrBasicAuthAuthorizerProps<
   userPool: IUserPool
 
   /**
-   * Name of secret in AWS Secrets Manager that stores basic auth credentials. The secret value
-   * should follow this format:
-   * ```json
-   * { "username": "<username>", "password": "<password>" }
-   * ```
+   * Name of secret in AWS Secrets Manager that stores basic auth credentials.
    *
-   * The following format is also supported:
-   * ```json
-   * { "credentials": "[\"<encoded-credential-1>\",\"<encoded-credential-2>\"]" }
-   * ```
-   * ...consisting of:
-   * - A single key, `credentials`
-   * - With a _string_ value
-   * - Which is a stringified, escaped JSON array of base64-encoded credentials
-   * - In which each element is encoded from `<username>:<password>`
-   *
-   * If the secret is on this format, the authorizer will match the request's Authorization header
-   * against any one of these encoded credentials.
-   *
-   * The reason that this second format stores stringified JSON _inside_ JSON, is due to a
-   * limitation in Liflig's `load-secrets` library, which only allows storing strings values.
+   * See {@link BasicAuthAuthorizerProps.credentialsSecretName} for the supported formats.
    */
   basicAuthCredentialsSecretName?: string
 
