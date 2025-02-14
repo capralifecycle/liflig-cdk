@@ -1,7 +1,7 @@
 import "@aws-cdk/assert/jest"
-import * as basicAuthAuthorizer from "../authorizer-lambdas/basic-auth-authorizer"
-import * as cognitoUserPoolAuthorizer from "../authorizer-lambdas/cognito-user-pool-authorizer"
-import * as cognitoUserPoolOrBasicAuthAuthorizer from "../authorizer-lambdas/cognito-user-pool-or-basic-auth-authorizer"
+import * as basicAuthAuthorizer from "../authorizers/basic-auth-authorizer"
+import * as cognitoUserPoolAuthorizer from "../authorizers/cognito-user-pool-authorizer"
+import * as cognitoUserPoolOrBasicAuthAuthorizer from "../authorizers/cognito-user-pool-or-basic-auth-authorizer"
 import {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
@@ -25,8 +25,8 @@ const TEST_AUTH_CLIENT_ID = "test-client-id"
 const VALID_ACCESS_TOKEN = "fVe5qmqtQOgKsj87O0uFHu8cQmEygpkW"
 const EXPIRED_ACCESS_TOKEN = "YLflvBo2ryV9drG6IrRX7AfMZj6PLtjQ"
 
-describe("API Gateway authorizer lambdas", () => {
-  // We want to test various cases for all the different authorizer lambdas.
+describe("API Gateway Lambda authorizers", () => {
+  // We want to test various cases for all the different Lambda authorizers.
   // Some of the test cases overlap between the lambdas.
   // So we run table-driven tests, to cover all cases for all lambdas.
   type BaseTestCase = {

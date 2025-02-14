@@ -6,6 +6,8 @@ import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
 import { App, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { ApiGateway } from ".."
@@ -157,6 +159,50 @@ describe("HTTP API Gateway", () => {
         userPool,
         basicAuthCredentialsSecretName: credentialsSecret.secretName,
         requiredScope: "example/read_users",
+      },
+      routes: [{ path: "/api" }],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API with custom Lambda authorizer", () => {
+    createEcsAlbService()
+
+    const lambdaAuthorizer = new lambdaNodejs.NodejsFunction(
+      stack,
+      "LambdaAuthorizer",
+      {
+        code: lambda.Code.fromInline(`
+export async function handler(event) {
+  return { isAuthorized: false }
+}       
+`),
+        handler: "handler",
+        runtime: lambda.Runtime.NODEJS_LATEST,
+      },
+    )
+
+    new ApiGateway(stack, "TestApiGatewayWithCognitoUserPoolAuth", {
+      dns: {
+        subdomain: "my-test-api-with-cognito-user-pool-or-basic-auth",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: {
+        type: "CUSTOM_LAMBDA_AUTHORIZER",
+        lambdaAuthorizer,
+        authorizerProps: {
+          authorizerName: "my-custom-authorizer",
+          identitySource: ["$request.header.X-Api-Key"],
+        },
       },
       routes: [{ path: "/api" }],
       accessLogs,

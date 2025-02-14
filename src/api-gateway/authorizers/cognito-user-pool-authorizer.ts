@@ -58,7 +58,7 @@ export const handler = async (
       return { isAuthorized: false }
     case "EXPIRED":
       // We want to return 401 Unauthorized for expired tokens, so the client knows to refresh
-      // their token when receiving this status code. API Gateway authorizer lambdas return
+      // their token when receiving this status code. API Gateway Lambda authorizers return
       // 403 Forbidden for {isAuthorized: false}, but there is a way to return 401: throwing an
       // error with this exact string. https://stackoverflow.com/a/71965890
       throw new Error("Unauthorized")
