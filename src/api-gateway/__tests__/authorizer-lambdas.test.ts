@@ -10,6 +10,7 @@ import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import { expect, jest } from "@jest/globals"
 
 const DEFAULT_CREDENTIALS_SECRET = "default"
+const CREDENTIALS_SECRET_WITH_ARRAY_FORMAT = "array"
 const CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT = "encoded-array"
 const DEFAULT_CREDENTIALS = {
   username: "test-user-1",
@@ -107,6 +108,11 @@ describe("API Gateway authorizer lambdas", () => {
       testCase,
       {
         ...testCase,
+        credentialsEnvValue: CREDENTIALS_SECRET_WITH_ARRAY_FORMAT,
+        supportsMultipleCredentials: true,
+      },
+      {
+        ...testCase,
         credentialsEnvValue: CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT,
         supportsMultipleCredentials: true,
       },
@@ -153,8 +159,8 @@ describe("API Gateway authorizer lambdas", () => {
         },
       ]),
 
-    // If authorizer supports multiple credentials (using secret on encoded array format), we want
-    // to test that it can be invoked with alternate credentials
+    // If authorizer supports multiple credentials (using secret on array format), we want to test
+    // that it can be invoked with alternate credentials
     ...baseTestCases
       .filter(
         (testCase) =>
@@ -308,25 +314,21 @@ class MockSecretsManager {
     SecretId: string
   }): Promise<{ SecretString: string }> {
     switch (args.SecretId) {
-      case DEFAULT_CREDENTIALS_SECRET: {
-        return { SecretString: JSON.stringify(DEFAULT_CREDENTIALS) }
-      }
-      case CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT: {
-        const credentialsArray: string[] = [
-          DEFAULT_CREDENTIALS,
-          ALTERNATE_CREDENTIALS,
-        ].map(({ username, password }) =>
-          Buffer.from(`${username}:${password}`).toString("base64"),
-        )
+      case DEFAULT_CREDENTIALS_SECRET:
         return {
-          SecretString: JSON.stringify({
-            credentials: JSON.stringify(credentialsArray),
-          }),
+          SecretString: `{"username":"test-user-1","password":"test-password-1"}`,
         }
-      }
-      default: {
+      case CREDENTIALS_SECRET_WITH_ARRAY_FORMAT:
+        return {
+          SecretString: String.raw`{"credentials":"[{\"username\":\"test-user-1\",\"password\":\"test-password-1\"},{\"username\":\"test-user-2\",\"password\":\"test-password-2\"}]"}`,
+        }
+      case CREDENTIALS_SECRET_WITH_ENCODED_ARRAY_FORMAT:
+        return {
+          // base64-encoding of DEFAULT_CREDENTIALS and ALTERNATE_CREDENTIALS
+          SecretString: String.raw`{"credentials":"[\"dGVzdC11c2VyLTE6dGVzdC1wYXNzd29yZC0x\",\"dGVzdC11c2VyLTI6dGVzdC1wYXNzd29yZC0y\"]"}`,
+        }
+      default:
         throw new Error(`Invalid secret name '${args.SecretId}'`)
-      }
     }
   }
 }
