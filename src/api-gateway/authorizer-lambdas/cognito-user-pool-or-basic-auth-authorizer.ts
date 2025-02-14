@@ -1,6 +1,6 @@
 /**
  * This lambda verifies credentials:
- * - Against Cognito user pool if request uses Bearer token
+ * - Against Cognito user pool if request uses access token in Bearer authorization header
  * - Against credentials saved in Secret Manager if request uses basic auth (and if secret exists)
  *
  * Expects the following environment variables
@@ -10,7 +10,7 @@
  *     A different format with an array of pre-encoded credentials is also supported - see docs for
  *     the `CognitoUserPoolOrBasicAuthAuthorizerProps` on the `ApiGateway` construct.
  * - REQUIRED_SCOPE (optional)
- *   - Set this to require that the bearer token payload contains the given scope
+ *   - Set this to require that the access token payload contains the given scope
  */
 
 import type {
@@ -25,18 +25,27 @@ type AuthorizerResult = APIGatewaySimpleAuthorizerResult & {
   /**
    * Returning a context object from our authorizer allows our API Gateway to access these variables
    * via `${context.authorizer.<property>}`.
-   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging-variables.html
+   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html
    */
   context?: {
     /**
-     * If the token is verified, we return the auth client ID from the token's claims as a context
-     * variable (named `authorizer.clientId`). You can then use this for parameter mapping on the
-     * API Gateway (see `AlbIntegrationProps.mapParameters` on the `ApiGateway` construct), if for
-     * example you want to forward this to the backend integration.
+     * If the request used an access token, and the token was verified, we return the auth client ID
+     * from the token's claims in this context variable (named `authorizer.clientId`). We use this
+     * to include the requesting client in the API Gateway access logs (see `defaultAccessLogFormat`
+     * in our `ApiGateway` construct). You can also use this when mapping parameters to the backend
+     * integration (see `AlbIntegrationProps.mapParameters` on the `ApiGateway` construct).
      */
     clientId?: string
     /**
-     * See `CognitoUserPoolAuthorizerProps.basicAuthForInternalAuthorization` in the `ApiGateway`
+     * If the request used Basic Auth, and the credentials were verified, we return the username
+     * that was used in this context variable (named `authorizer.username`). We use this to include
+     * the requesting user in the API Gateway access logs (see `defaultAccessLogFormat` in our
+     * `ApiGateway` construct). You can also use this when mapping parameters to the backend
+     * integration (see `AlbIntegrationProps.mapParameters` on the `ApiGateway` construct).
+     */
+    username?: string
+    /**
+     * See `CognitoUserPoolAuthorizerProps.basicAuthForInternalAuthorization` on the `ApiGateway`
      * construct (we provide the same context variable here as in the Cognito User Pool authorizer,
      * using the credentials from BASIC_AUTH_CREDENTIALS_SECRET_NAME).
      */
@@ -52,7 +61,7 @@ export const handler = async (
     return { isAuthorized: false }
   }
 
-  const expectedBasicAuthHeaders = await getExpectedBasicAuthHeaders()
+  const expectedBasicAuthCredentials = await getExpectedBasicAuthCredentials()
 
   if (authHeader.startsWith("Bearer ")) {
     const result = await verifyAccessToken(authHeader.substring(7)) // substring(7) == after 'Bearer '
@@ -70,20 +79,22 @@ export const handler = async (
           isAuthorized: true,
           context: {
             clientId: result.client_id,
-            internalAuthorizationHeader: expectedBasicAuthHeaders?.[0],
+            internalAuthorizationHeader:
+              expectedBasicAuthCredentials?.[0]?.basicAuthHeader,
           },
         }
     }
   } else if (
     authHeader.startsWith("Basic ") &&
-    expectedBasicAuthHeaders !== undefined
+    expectedBasicAuthCredentials !== undefined
   ) {
-    for (const expectedHeader of expectedBasicAuthHeaders) {
-      if (authHeader === expectedHeader) {
+    for (const expected of expectedBasicAuthCredentials) {
+      if (authHeader === expected.basicAuthHeader) {
         return {
           isAuthorized: true,
           context: {
-            internalAuthorizationHeader: expectedHeader,
+            username: expected.username,
+            internalAuthorizationHeader: expected.basicAuthHeader,
           },
         }
       }
@@ -152,37 +163,45 @@ export const dependencies = {
   createSecretsManager: () => new SecretsManager(),
 }
 
+type ExpectedBasicAuthCredentials = {
+  basicAuthHeader: string
+  username: string
+}
+
 /** Cache this value, so that subsequent lambda invocations don't have to refetch. */
-let cachedBasicAuthHeaders: string[] | undefined = undefined
+let cachedBasicAuthCredentials: ExpectedBasicAuthCredentials[] | undefined =
+  undefined
 
 /**
- * Returns an array of allowed basic auth headers, to support credential secrets with multiple
- * values (see `BasicAuthAuthorizerProps` on the `ApiGateway` construct for more on this).
+ * Returns an array, to support credential secrets with multiple values (see
+ * `BasicAuthAuthorizerProps` on the `ApiGateway` construct for more on this).
  */
-async function getExpectedBasicAuthHeaders(): Promise<string[] | undefined> {
-  if (cachedBasicAuthHeaders === undefined) {
+async function getExpectedBasicAuthCredentials(): Promise<
+  ExpectedBasicAuthCredentials[] | undefined
+> {
+  if (cachedBasicAuthCredentials === undefined) {
     const secretName: string | undefined =
       process.env["BASIC_AUTH_CREDENTIALS_SECRET_NAME"]
     if (!secretName) {
       return undefined
     }
 
-    cachedBasicAuthHeaders = await getSecretAsBasicAuthHeaders(secretName)
+    cachedBasicAuthCredentials = await getBasicAuthCredentialsSecret(secretName)
   }
 
-  return cachedBasicAuthHeaders
+  return cachedBasicAuthCredentials
 }
 
-async function getSecretAsBasicAuthHeaders(
+async function getBasicAuthCredentialsSecret(
   secretName: string,
-): Promise<string[]> {
+): Promise<ExpectedBasicAuthCredentials[]> {
   const secret = await getSecretValue(secretName)
 
   if (isSingleUsernameAndPassword(secret)) {
     const header =
       "Basic " +
       Buffer.from(`${secret.username}:${secret.password}`).toString("base64")
-    return [header]
+    return [{ basicAuthHeader: header, username: secret.username }]
   }
 
   // See `BasicAuthAuthorizerProps` on the `ApiGateway` construct for an explanation of the formats
@@ -200,9 +219,7 @@ async function getSecretAsBasicAuthHeaders(
     }
 
     if (isStringArray(credentialsArray)) {
-      return credentialsArray.map(
-        (encodedCredential) => `Basic ${encodedCredential}`,
-      )
+      return credentialsArray.map(parseEncodedBasicAuthCredentials)
     }
   }
 
@@ -224,7 +241,7 @@ async function getSecretValue(secretName: string): Promise<unknown> {
   try {
     return JSON.parse(secret.SecretString)
   } catch (e) {
-    console.error(`Failed to parse secret '${secretName}' as JSON`, e)
+    console.error(`Failed to parse secret '${secretName}' as JSON:`, e)
     throw new Error()
   }
 }
@@ -267,7 +284,41 @@ function isStringArray(value: unknown): value is string[] {
   return true
 }
 
+/**
+ * We want to return the requesting username as a context variable in
+ * {@link AuthorizerResult.context}, for API Gateway access logs and parameter mapping. So if the
+ * basic auth credentials secret is stored as pre-encoded base64 strings, we need to parse them to
+ * get the username.
+ */
+function parseEncodedBasicAuthCredentials(
+  encodedCredentials: string,
+): ExpectedBasicAuthCredentials {
+  let decodedCredentials: string
+  try {
+    decodedCredentials = Buffer.from(encodedCredentials, "base64").toString()
+  } catch (e) {
+    console.error(
+      "Basic auth credentials secret could not be decoded as base64:",
+      e,
+    )
+    throw new Error()
+  }
+
+  const usernameAndPassword = decodedCredentials.split(":", 2)
+  if (usernameAndPassword.length !== 2) {
+    console.error(
+      "Basic auth credentials secret could not be decoded as 'username:password'",
+    )
+    throw new Error()
+  }
+
+  return {
+    basicAuthHeader: `Basic ${encodedCredentials}`,
+    username: usernameAndPassword[0],
+  }
+}
+
 export function clearCache() {
   cachedTokenVerifier = undefined
-  cachedBasicAuthHeaders = undefined
+  cachedBasicAuthCredentials = undefined
 }
