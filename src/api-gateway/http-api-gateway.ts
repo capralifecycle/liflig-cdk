@@ -318,19 +318,19 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
    */
   | { type: "IAM" }
   /**
-   * Creates a custom authorizer lambda which reads `Authorization: Bearer <access token>` header
+   * Creates a custom Lambda authorizer which reads `Authorization: Bearer <access token>` header
    * and verifies the token against a Cognito user pool.
    */
   | ({
       type: "COGNITO_USER_POOL"
     } & CognitoUserPoolAuthorizerProps<AuthScopesT>)
   /**
-   * Creates a custom authorizer lambda which reads `Authorization: Basic <base64-encoded credentials>`
+   * Creates a custom Lambda authorizer which reads `Authorization: Basic <base64-encoded credentials>`
    * header and verifies the credentials against a given secret.
    */
   | ({ type: "BASIC_AUTH" } & BasicAuthAuthorizerProps)
   /**
-   * Creates a custom authorizer lambda which allows both:
+   * Creates a custom Lambda authorizer which allows both:
    * - `Authorization: Bearer <access token>` header, for which the token is checked against the
    *   given Cognito user pool
    * - `Authorization: Basic <base64-encoded credentials>` header, for which the credentials are
@@ -341,6 +341,13 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
   | ({
       type: "COGNITO_USER_POOL_OR_BASIC_AUTH"
     } & CognitoUserPoolOrBasicAuthAuthorizerProps<AuthScopesT>)
+  /**
+   * Creates a custom authorizer with the given Lambda function. Use this if you have custom
+   * authorization logic, and the other authorizers from this construct don't meet your needs.
+   *
+   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
+   */
+  | ({ type: "CUSTOM_LAMBDA_AUTHORIZER" } & CustomLambdaAuthorizerProps)
 
 export type CognitoUserPoolAuthorizerProps<
   AuthScopesT extends string = string,
@@ -442,6 +449,34 @@ export type CognitoUserPoolOrBasicAuthAuthorizerProps<
    * {@link ApiGateway}.
    */
   requiredScope?: AuthScopesT
+}
+
+type CustomLambdaAuthorizerProps = {
+  /**
+   * The Lambda function that will be run whenever the API Gateway route is invoked, to authenticate
+   * the request. See AWS docs for more on how to write the Lambda:
+   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
+   *
+   * The default response format used is `HttpLambdaResponseType.SIMPLE` (format 2.0). If you write
+   * your Lambda in TypeScript, this means that your handler must return
+   * `APIGatewaySimpleAuthorizerResult` (from the `aws-lambda` package). The request event will also
+   * use format 2.0 (`APIGatewayRequestAuthorizerEventV2` in TypeScript). See the AWS docs linked
+   * above for more details on these formats.
+   *
+   * You can override the response format type in
+   * {@link CustomLambdaAuthorizerProps.authorizerProps}.
+   *
+   * See the Lambdas under the `authorizers` folder next to the `ApiGateway` construct in
+   * `liflig-cdk` for examples.
+   */
+  lambdaAuthorizer: lambda.IFunction
+
+  /**
+   * Props for the `HttpLambdaAuthorizer` construct. We provide some different defaults:
+   * - `responseTypes` defaults to `[HttpLambdaResponseType.SIMPLE]`
+   * - `resultsCacheTtl` defaults to `Duration.hours(1)`
+   */
+  authorizerProps?: Partial<authorizers.HttpLambdaAuthorizerProps>
 }
 
 export type ApiGatewayAccessLogsProps = {
@@ -807,6 +842,21 @@ export class ApiGateway<
           resultsCacheTtl: cdk.Duration.hours(1),
         })
       }
+      case "CUSTOM_LAMBDA_AUTHORIZER": {
+        return new authorizers.HttpLambdaAuthorizer(
+          id,
+          authorization.lambdaAuthorizer,
+          {
+            ...authorization.authorizerProps,
+            responseTypes: authorization.authorizerProps?.responseTypes ?? [
+              authorizers.HttpLambdaResponseType.SIMPLE,
+            ],
+            resultsCacheTtl:
+              authorization.authorizerProps?.resultsCacheTtl ??
+              cdk.Duration.hours(1),
+          },
+        )
+      }
     }
   }
 
@@ -1010,7 +1060,7 @@ const authorizerFileExtension = __dirname.endsWith("src/api-gateway")
   : "js"
 
 /**
- * Creates a custom authorizer lambda which reads `Authorization: Bearer <access token>` header and
+ * Creates a custom Lambda authorizer which reads `Authorization: Bearer <access token>` header and
  * verifies the token against a Cognito user pool.
  */
 class CognitoUserPoolAuthorizer<
@@ -1036,7 +1086,7 @@ class CognitoUserPoolAuthorizer<
     this.lambda = new lambdaNodejs.NodejsFunction(this, "AuthorizerFunction", {
       entry: path.join(
         __dirname,
-        `authorizer-lambdas/cognito-user-pool-authorizer.${authorizerFileExtension}`,
+        `authorizers/cognito-user-pool-authorizer.${authorizerFileExtension}`,
       ),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
@@ -1061,7 +1111,7 @@ class CognitoUserPoolAuthorizer<
 }
 
 /**
- * Creates a custom authorizer lambda which reads `Authorization: Basic <base64-encoded credentials>`
+ * Creates a custom Lambda authorizer which reads `Authorization: Basic <base64-encoded credentials>`
  * header and verifies the credentials against a given secret.
  */
 class BasicAuthAuthorizer extends constructs.Construct {
@@ -1082,7 +1132,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
     this.lambda = new lambdaNodejs.NodejsFunction(this, "BasicAuthLambda", {
       entry: path.join(
         __dirname,
-        `authorizer-lambdas/basic-auth-authorizer.${authorizerFileExtension}`,
+        `authorizers/basic-auth-authorizer.${authorizerFileExtension}`,
       ),
       description:
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
@@ -1105,7 +1155,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
 }
 
 /**
- * Creates a custom authorizer lambda which allows both:
+ * Creates a custom Lambda authorizer which allows both:
  * - `Authorization: Bearer <access token>` header, for which the token is checked against the given
  *   Cognito user pool
  * - `Authorization: Basic <base64-encoded credentials>` header, for which the credentials are
@@ -1136,7 +1186,7 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
     this.lambda = new lambdaNodejs.NodejsFunction(this, "AuthorizerFunction", {
       entry: path.join(
         __dirname,
-        `authorizer-lambdas/cognito-user-pool-or-basic-auth-authorizer.${authorizerFileExtension}`,
+        `authorizers/cognito-user-pool-or-basic-auth-authorizer.${authorizerFileExtension}`,
       ),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
