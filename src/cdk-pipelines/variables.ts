@@ -1,8 +1,3 @@
-import {
-  SSMClient,
-  GetParametersByPathCommand,
-  GetParametersByPathResult,
-} from "@aws-sdk/client-ssm"
 import * as fs from "fs"
 import * as path from "path"
 import * as process from "process"
@@ -72,35 +67,4 @@ export function getVariable(name: string): string {
   }
 
   return value
-}
-
-/**
- * Read all variables from SSM Parameter Store under a given prefix.
- */
-export async function getVariablesFromParameterStore(
-  prefix: string,
-): Promise<Record<string, string>> {
-  const ssm = new SSMClient({})
-
-  const parameters: Record<string, string> = {}
-
-  let nextToken: string | undefined = undefined
-
-  do {
-    const result: GetParametersByPathResult = await ssm.send(
-      new GetParametersByPathCommand({
-        Path: prefix,
-        NextToken: nextToken,
-      }),
-    )
-
-    for (const parameter of result.Parameters!) {
-      const name = parameter.Name!.slice(prefix.length)
-      parameters[name] = parameter.Value!
-    }
-
-    nextToken = result.NextToken
-  } while (nextToken != null)
-
-  return parameters
 }
