@@ -33,7 +33,7 @@ jobs:
       - uses: capralifecycle/actions-lib/configure-npm@a6d9e4b11cdae620cc8e7fcc121de8466f6cfde9 # v1.6.0
 
       - name: install dependencies
-        run: npm ci
+        run: npm run install-deps
 
       - name: lint
         run: npm run lint

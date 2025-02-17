@@ -16,7 +16,8 @@
     "prepare": "npm run build && husky",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh",
-    "docs": "typedoc src --out docs"
+    "docs": "typedoc src --out docs",
+    "install-deps": "npm ci && npm --prefix ./src/api-gateway/authorizers ci"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
