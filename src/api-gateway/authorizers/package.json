@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "aws-jwt-verify": "5.0.0"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-secrets-manager": "3.744.0",
+    "@types/aws-lambda": "8.10.147",
+    "@types/node": "22.13.4",
+    "esbuild": "0.25.0"
+  }
+}

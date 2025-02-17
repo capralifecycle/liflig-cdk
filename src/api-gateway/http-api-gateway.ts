@@ -1088,6 +1088,7 @@ class CognitoUserPoolAuthorizer<
         __dirname,
         `authorizers/cognito-user-pool-authorizer.${authorizerFileExtension}`,
       ),
+      depsLockFilePath: path.join(__dirname, "authorizers/package-lock.json"),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
@@ -1134,6 +1135,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
         __dirname,
         `authorizers/basic-auth-authorizer.${authorizerFileExtension}`,
       ),
+      depsLockFilePath: path.join(__dirname, "authorizers/package-lock.json"),
       description:
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -1144,13 +1146,11 @@ class BasicAuthAuthorizer extends constructs.Construct {
       },
     })
 
-    if (props.credentialsSecretName) {
-      secretsmanager.Secret.fromSecretNameV2(
-        scope,
-        id + "BasicAuthSecret",
-        props.credentialsSecretName,
-      ).grantRead(this.lambda)
-    }
+    secretsmanager.Secret.fromSecretNameV2(
+      scope,
+      id + "BasicAuthSecret",
+      props.credentialsSecretName,
+    ).grantRead(this.lambda)
   }
 }
 
@@ -1188,6 +1188,7 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
         __dirname,
         `authorizers/cognito-user-pool-or-basic-auth-authorizer.${authorizerFileExtension}`,
       ),
+      depsLockFilePath: path.join(__dirname, "authorizers/package-lock.json"),
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
