@@ -63,6 +63,7 @@
     "@typescript-eslint/parser": "8.24.0",
     "aws-cdk": "2.178.2",
     "aws-cdk-lib": "2.178.2",
+    "aws-jwt-verify": "5.0.0",
     "constructs": "10.4.2",
     "esbuild": "0.25.0",
     "eslint": "9.20.1",
