@@ -34,6 +34,7 @@ export type ApiGatewayDnsProps = {
 
 /**
  * Creates a custom domain for the API-Gateway, a Route53 record and an HTTPS cert.
+ *
  * @author Kristian Rekstad <kre@capraconsulting.no>
  */
 export class ApiGatewayDomain extends constructs.Construct {

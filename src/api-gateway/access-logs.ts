@@ -75,6 +75,7 @@ const defaultAccessLogFormat = {
       awsPrincipal: "$context.identity.caller",
       awsPrincipalOrg: "$context.identity.principalOrgId",
     },
+    // We output these context variables from our Lambda authorizers
     basic: { username: "$context.authorizer.username" },
     cognito: { clientId: "$context.authorizer.clientId" },
   },
