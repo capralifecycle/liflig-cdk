@@ -16,8 +16,7 @@
     "prepare": "npm run build && husky",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh",
-    "docs": "typedoc src --out docs",
-    "install-deps": "npm ci && npm --prefix ./src/api-gateway/authorizers ci"
+    "docs": "typedoc src --out docs"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
@@ -64,7 +63,6 @@
     "@typescript-eslint/parser": "8.24.0",
     "aws-cdk": "2.178.2",
     "aws-cdk-lib": "2.178.2",
-    "aws-jwt-verify": "5.0.0",
     "constructs": "10.4.2",
     "esbuild": "0.25.0",
     "eslint": "9.20.1",
@@ -83,6 +81,7 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "3.744.0",
     "@capraconsulting/webapp-deploy-lambda": "2.4.1",
+    "aws-jwt-verify": "5.0.0",
     "del": "8.0.0",
     "glob": "11.0.1",
     "source-map-support": "0.5.21"

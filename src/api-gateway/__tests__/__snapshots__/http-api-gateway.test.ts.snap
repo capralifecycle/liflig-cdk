@@ -1029,7 +1029,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
           },
-          "S3Key": "76233b3b87af2e5b85107de69a3247989b8bfaa4adeb9213f82f5419bbb61fde.zip",
+          "S3Key": "503a7065146aeb795b5704997ee2be6df36849c367f08c6984aad6da2774ad69.zip",
         },
         "Description": "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
         "Environment": Object {
@@ -1939,7 +1939,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
           },
-          "S3Key": "5a78fa2577c4fc26b9629c1069314f149fa6da003d4851e3f51b5ac824cc86e6.zip",
+          "S3Key": "89d1ff602538923bdf5aa10b9516805787a11c078264ac9847165a34f8cb30f2.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -2884,7 +2884,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
           },
-          "S3Key": "df401f5b5f4542ae2d9fb5249bc934816cbabae22c6ba5404cc69beb53c95a0c.zip",
+          "S3Key": "df7dc9baf9f61b980efabc655198d12c1565edd8724fb09352c094e9037cea95.zip",
         },
         "Environment": Object {
           "Variables": Object {
