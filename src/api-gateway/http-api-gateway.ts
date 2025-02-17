@@ -13,12 +13,11 @@ import * as authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
 import type { IUserPool } from "aws-cdk-lib/aws-cognito"
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
 import { createHash } from "crypto"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import * as route53Targets from "aws-cdk-lib/aws-route53-targets"
-import * as acm from "aws-cdk-lib/aws-certificatemanager"
 import { tagResources } from "../tags"
 import * as path from "path"
 import { fileURLToPath } from "url"
+import { ApiGatewayDnsProps, ApiGatewayDomain } from "./domain"
+import { ApiGatewayAccessLogs, ApiGatewayAccessLogsProps } from "./access-logs"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -104,33 +103,6 @@ export type ApiGatewayProps<AuthScopesT extends string = string> = {
      */
     httpApi?: Partial<apigw.HttpApiProps>
   }
-}
-
-export type ApiGatewayDnsProps = {
-  /**
-   * Only the subdomain prefix, which should be the name of the service.
-   * Example: Subdomain `product` would give the end result of an API-GW with
-   * `product.platform.example.no`.
-   */
-  subdomain: string
-
-  /**
-   * Hosted Zone for the external facing domain.
-   * This is where routes will be created, to redirect consumers to the API-GW.
-   * For example a HZ for `platform.example.no`.
-   */
-  hostedZone: route53.IHostedZone
-
-  /**
-   * The Time To Live (TTL) for the public DNS A record that will expose the API-GW.
-   * This is how long DNS servers will cache the record.
-   *
-   * A long TTL (hours) is beneficial to DNS servers, but makes developers (you) wait longer when
-   * doing changes.
-   *
-   * @default 5 minutes
-   */
-  ttl?: cdk.Duration
 }
 
 export type ApiGatewayRoute<AuthScopesT extends string = string> = {
@@ -479,40 +451,6 @@ type CustomLambdaAuthorizerProps = {
   authorizerProps?: Partial<authorizers.HttpLambdaAuthorizerProps>
 }
 
-export type ApiGatewayAccessLogsProps = {
-  /**
-   * Delete the access logs if this construct is deleted?
-   *
-   * Maybe you want to DESTROY instead. Or for legal reasons, retain for audit.
-   *
-   * @default RemovalPolicy.RETAIN
-   */
-  removalPolicy?: cdk.RemovalPolicy
-
-  /**
-   * How long to keep the logs. If undefined, uses the same default as new AWS log groups.
-   *
-   * @default RetentionDays.TWO_YEARS
-   */
-  retention?: logs.RetentionDays
-
-  /**
-   * A custom JSON log format, which uses variables from `"$context"`.
-   *
-   * See [AWS: CloudWatch log formats for API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html#apigateway-cloudwatch-log-formats)
-   * for formats and rules. It is possible to use other formats like CLF and XML, but this construct
-   * only supports JSON for now.
-   *
-   * For a list of all possible variables to log, see
-   * [AWS: $context Variables for data models, authorizers, mapping templates, and CloudWatch access logging](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#context-variable-reference)
-   * and
-   * [AWS: $context Variables for access logging only](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#context-variable-reference-access-logging-only) .
-   *
-   * @default {@link defaultAccessLogFormat}
-   */
-  accessLogFormat?: Record<string, string>
-}
-
 /**
  * This construct tries to simplify the creation of an API Gateway for a service, by collecting most
  * of the common setup here.
@@ -601,8 +539,8 @@ export class ApiGateway<
 
     ApiGateway.validateProps(props, id, cdk.Stack.of(this))
 
-    const customDomain = new CustomDomain(this, "CustomDomain", props.dns)
-    this.domain = customDomain.customDomainName
+    const customDomain = new ApiGatewayDomain(this, "CustomDomain", props.dns)
+    this.domain = customDomain.fullDomainName
 
     let corsOptions: apigw.CorsPreflightOptions | undefined
     if (props.corsAllowAll) {
@@ -634,7 +572,7 @@ export class ApiGateway<
       description: `An HTTP API for ${props.dns.subdomain}.${props.dns.hostedZone.zoneName}.`,
       disableExecuteApiEndpoint: true, // Force externals to go through custom domain. MUST be true when using Mutual TLS, for security reasons
       createDefaultStage: true,
-      defaultDomainMapping: { domainName: customDomain.apiGwCustomDomain },
+      defaultDomainMapping: { domainName: customDomain.apiGwDomainName },
       corsPreflight: corsOptions,
       ...props?.propsOverride?.httpApi,
     })
@@ -647,7 +585,6 @@ export class ApiGateway<
       "AccessLogs",
       stage,
       props.accessLogs,
-      defaultAccessLogFormat,
     )
     this.logGroup = logs.logGroup
 
@@ -967,60 +904,6 @@ export class ApiGateway<
   }
 }
 
-/**
- * Creates a custom domain for the API-Gateway, a Route53 record and an HTTPS cert.
- * @author Kristian Rekstad <kre@capraconsulting.no>
- */
-class CustomDomain extends constructs.Construct {
-  public readonly apiGwCustomDomain: apigw.DomainName
-
-  /** The Fully Qualified Domain Name (FQDN) like `product.platform.example.no`. */
-  public readonly customDomainName: string
-
-  constructor(
-    scope: constructs.Construct,
-    id: string,
-    props: ApiGatewayDnsProps,
-  ) {
-    super(scope, id)
-    this.customDomainName = `${props.subdomain}.${props.hostedZone.zoneName}`
-
-    // Can also use wildcard certs instead! Cheaper
-    /** Allows external users to connect with HTTPS. */
-    const customDomainCert = new acm.Certificate(this, "HttpsCertificate", {
-      domainName: this.customDomainName,
-      validation: acm.CertificateValidation.fromDns(props.hostedZone),
-    })
-
-    // Note that API-GW can also support wildcard domains! https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-custom-domain-names.html#http-wildcard-custom-domain-names
-    // But this will not work when AWS account X has CustomDomain `staging.platform.example.no` and account Y has CustomDomain `*.platform.example.no`.
-    // Not sure how sub-subdomains are affected: `myservice.staging.platform.example.no` and `*.platform.example.no`.
-    this.apiGwCustomDomain = new apigw.DomainName(
-      this,
-      "DomainName-" + props.subdomain,
-      {
-        domainName: this.customDomainName,
-        certificate: customDomainCert,
-        endpointType: apigw.EndpointType.REGIONAL,
-        securityPolicy: apigw.SecurityPolicy.TLS_1_2,
-      },
-    )
-
-    // This makes the API-GW publicly available on the custom domain name.
-    new route53.ARecord(this, "Route53ARecordApigwAlias", {
-      recordName: props.subdomain,
-      zone: props.hostedZone,
-      target: route53.RecordTarget.fromAlias(
-        new route53Targets.ApiGatewayv2DomainProperties(
-          this.apiGwCustomDomain.regionalDomainName,
-          this.apiGwCustomDomain.regionalHostedZoneId,
-        ),
-      ),
-      ttl: props.ttl ?? cdk.Duration.minutes(5), // Low TTL makes it easier to do changes
-    })
-  }
-}
-
 /** Acts as glue (between the integration props and the HttpApi) when creating an SqsIntegration. */
 class SqsRouteIntegration extends apigw.HttpRouteIntegration {
   /**
@@ -1205,104 +1088,6 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
         props.basicAuthCredentialsSecretName,
       ).grantRead(this.lambda)
     }
-  }
-}
-
-/**
- * A slightly extended version of the [default JSON format suggested by AWS](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging.html#http-api-enable-logging.examples).
- */
-const defaultAccessLogFormat = {
-  requestId: "$context.requestId",
-  userAgent: "$context.identity.userAgent",
-  ip: "$context.identity.sourceIp",
-  /** CLF format: `dd/MMM/yyyy:HH:mm:ss +-hhmm` */
-  requestTime: "$context.requestTime",
-  requestTimeEpoch: "$context.requestTimeEpoch",
-  dataProcessed: "$context.dataProcessed",
-  httpMethod: "$context.httpMethod",
-  path: "$context.path",
-  routeKey: "$context.routeKey",
-  status: "$context.status",
-  protocol: "$context.protocol",
-  responseLength: "$context.responseLength",
-  responseLatency: "$context.responseLatency",
-  domainName: "$context.domainName",
-  error: {
-    type: "$context.error.responseType",
-    gatewayError: "$context.error.message",
-    integrationError: "$context.integration.error",
-    authorizerError: "$context.authorizer.error",
-  },
-  integration: {
-    latency: "$context.integration.latency",
-    requestId: "$context.integration.requestId",
-    responseStatus: "$context.integration.status",
-  },
-  auth: {
-    iam: {
-      userArn: "$context.identity.userArn",
-      awsAccount: "$context.identity.accountId",
-      awsPrincipal: "$context.identity.caller",
-      awsPrincipalOrg: "$context.identity.principalOrgId",
-    },
-    basic: { username: "$context.authorizer.username" },
-    cognito: { clientId: "$context.authorizer.clientId" },
-  },
-  awsEndpointRequest: {
-    id: "$context.awsEndpointRequestId",
-    id2: "$context.awsEndpointRequestId2",
-  },
-  message:
-    "$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]",
-}
-
-/**
- * Enables access logs on the API-Gateway.
- *
- * @author Kristian Rekstad <kre@capraconsulting.no>
- */
-class ApiGatewayAccessLogs extends constructs.Construct {
-  public readonly logGroup: logs.LogGroup
-
-  constructor(
-    scope: constructs.Construct,
-    id: string,
-    stage: apigw.CfnStage,
-    props: ApiGatewayAccessLogsProps | undefined,
-    defaultAccessLogFormat: Record<string, unknown>,
-  ) {
-    super(scope, id)
-
-    // logGroup is set up with help from: https://github.com/aws/aws-cdk/issues/11100#issuecomment-904627081
-    // Not sure if HTTP API actually needs the service role with managed policy: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging.html
-    const accessLogs = new logs.LogGroup(this, "AccessLogGroup", {
-      retention: props?.retention,
-      removalPolicy: props?.removalPolicy ?? cdk.RemovalPolicy.RETAIN,
-      // Always use the default encryption key. Otherwise, the key needs special policies:
-      // https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html#cmk-permissions
-      encryptionKey: undefined,
-    })
-    this.logGroup = accessLogs
-
-    stage.accessLogSettings = {
-      destinationArn: accessLogs.logGroupArn,
-      format: JSON.stringify(props?.accessLogFormat ?? defaultAccessLogFormat),
-    }
-
-    const apiGwLogsRole = new iam.Role(
-      this,
-      "ApiGatewayPushToCloudwatchLogsRole",
-      {
-        assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
-        managedPolicies: [
-          iam.ManagedPolicy.fromAwsManagedPolicyName(
-            "service-role/AmazonAPIGatewayPushToCloudWatchLogs",
-          ),
-        ],
-      },
-    )
-
-    accessLogs.grantWrite(apiGwLogsRole)
   }
 }
 

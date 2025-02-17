@@ -1,7 +1,6 @@
 export {
   ApiGateway,
   type ApiGatewayProps,
-  type ApiGatewayDnsProps,
   type ApiGatewayRoute,
   type HttpMethod,
   type IntegrationProps,
@@ -12,5 +11,11 @@ export {
   type CognitoUserPoolAuthorizerProps,
   type BasicAuthAuthorizerProps,
   type CognitoUserPoolOrBasicAuthAuthorizerProps,
-  type ApiGatewayAccessLogsProps,
 } from "./http-api-gateway"
+
+export {
+  ApiGatewayAccessLogs,
+  type ApiGatewayAccessLogsProps,
+} from "./access-logs"
+
+export { ApiGatewayDomain, type ApiGatewayDnsProps } from "./domain"
