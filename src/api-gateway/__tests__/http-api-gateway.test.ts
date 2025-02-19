@@ -184,9 +184,9 @@ export async function handler(event) {
       },
     )
 
-    new ApiGateway(stack, "TestApiGatewayWithCognitoUserPoolAuth", {
+    new ApiGateway(stack, "TestApiGatewayWithCustomLambdaAuthorizer", {
       dns: {
-        subdomain: "my-test-api-with-cognito-user-pool-or-basic-auth",
+        subdomain: "my-test-api-with-custom-lambda-authorizer",
         hostedZone,
       },
       defaultIntegration: {
@@ -206,6 +206,39 @@ export async function handler(event) {
       },
       routes: [{ path: "/api" }],
       accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API with custom access log format", () => {
+    createEcsAlbService()
+
+    new ApiGateway(stack, "TestApiGatewayWithCustomAccessLogFormat", {
+      dns: {
+        subdomain: "my-test-api-with-custom-access-log-format",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: { type: "NONE" },
+      routes: [{ path: "/api" }],
+      accessLogs: {
+        removalPolicy: RemovalPolicy.DESTROY,
+        retention: RetentionDays.ONE_YEAR,
+        accessLogFormat: {
+          path: "$context.path",
+          request: {
+            id: "$context.requestId",
+            body: "$request.body",
+          },
+        },
+      },
     })
 
     expect(stack).toMatchCdkSnapshot()

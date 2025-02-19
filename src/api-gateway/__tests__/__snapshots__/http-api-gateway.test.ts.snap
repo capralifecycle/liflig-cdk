@@ -3695,21 +3695,21 @@ export async function handler(event) {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthAccessLogsAccessLogGroup4174FE48": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsAccessLogGroup688F3FA7": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "RetentionInDays": 180,
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-api-with-cognito-user-pool-or-basic-auth",
+            "Value": "my-test-api-with-custom-lambda-authorizer",
           },
         ],
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthAccessLogsApiGatewayPushToCloudwatchLogsRole6EFEC430": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRole90191C33": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -3740,13 +3740,13 @@ export async function handler(event) {
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-api-with-cognito-user-pool-or-basic-auth",
+            "Value": "my-test-api-with-custom-lambda-authorizer",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyFDE58B7C": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy4F4400B0": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -3758,7 +3758,7 @@ export async function handler(event) {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "TestApiGatewayWithCognitoUserPoolAuthAccessLogsAccessLogGroup4174FE48",
+                  "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsAccessLogGroup688F3FA7",
                   "Arn",
                 ],
               },
@@ -3766,18 +3766,18 @@ export async function handler(event) {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "TestApiGatewayWithCognitoUserPoolAuthAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyFDE58B7C",
+        "PolicyName": "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy4F4400B0",
         "Roles": Array [
           Object {
-            "Ref": "TestApiGatewayWithCognitoUserPoolAuthAccessLogsApiGatewayPushToCloudwatchLogsRole6EFEC430",
+            "Ref": "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRole90191C33",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthAlbVpcLink985E4A83": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerAlbVpcLink9F6CC241": Object {
       "Properties": Object {
-        "Name": "StackTestApiGatewayWithCognitoUserPoolAuthAlbVpcLink2EFF2C60",
+        "Name": "StackTestApiGatewayWithCustomLambdaAuthorizerAlbVpcLinkDF2907A9",
         "SecurityGroupIds": Array [
           Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
@@ -3792,35 +3792,35 @@ export async function handler(event) {
           },
         ],
         "Tags": Object {
-          "service": "my-test-api-with-cognito-user-pool-or-basic-auth",
+          "service": "my-test-api-with-custom-lambda-authorizer",
         },
       },
       "Type": "AWS::ApiGatewayV2::VpcLink",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4": Object {
       "Properties": Object {
-        "DomainName": "my-test-api-with-cognito-user-pool-or-basic-auth.example.com",
+        "DomainName": "my-test-api-with-custom-lambda-authorizer.example.com",
         "DomainNameConfigurations": Array [
           Object {
             "CertificateArn": Object {
-              "Ref": "TestApiGatewayWithCognitoUserPoolAuthCustomDomainHttpsCertificate812CE797",
+              "Ref": "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainHttpsCertificateF4380AF1",
             },
             "EndpointType": "REGIONAL",
             "SecurityPolicy": "TLS_1_2",
           },
         ],
         "Tags": Object {
-          "service": "my-test-api-with-cognito-user-pool-or-basic-auth",
+          "service": "my-test-api-with-custom-lambda-authorizer",
         },
       },
       "Type": "AWS::ApiGatewayV2::DomainName",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthCustomDomainHttpsCertificate812CE797": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainHttpsCertificateF4380AF1": Object {
       "Properties": Object {
-        "DomainName": "my-test-api-with-cognito-user-pool-or-basic-auth.example.com",
+        "DomainName": "my-test-api-with-custom-lambda-authorizer.example.com",
         "DomainValidationOptions": Array [
           Object {
-            "DomainName": "my-test-api-with-cognito-user-pool-or-basic-auth.example.com",
+            "DomainName": "my-test-api-with-custom-lambda-authorizer.example.com",
             "HostedZoneId": Object {
               "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
             },
@@ -3829,29 +3829,29 @@ export async function handler(event) {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "Stack/TestApiGatewayWithCognitoUserPoolAuth/CustomDomain/HttpsCertificate",
+            "Value": "Stack/TestApiGatewayWithCustomLambdaAuthorizer/CustomDomain/HttpsCertificate",
           },
           Object {
             "Key": "service",
-            "Value": "my-test-api-with-cognito-user-pool-or-basic-auth",
+            "Value": "my-test-api-with-custom-lambda-authorizer",
           },
         ],
         "ValidationMethod": "DNS",
       },
       "Type": "AWS::CertificateManager::Certificate",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthCustomDomainRoute53ARecordApigwAlias0EA12A84": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainRoute53ARecordApigwAliasAA0E023D": Object {
       "Properties": Object {
         "AliasTarget": Object {
           "DNSName": Object {
             "Fn::GetAtt": Array [
-              "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02",
+              "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4",
               "RegionalDomainName",
             ],
           },
           "HostedZoneId": Object {
             "Fn::GetAtt": Array [
-              "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02",
+              "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4",
               "RegionalHostedZoneId",
             ],
           },
@@ -3859,27 +3859,27 @@ export async function handler(event) {
         "HostedZoneId": Object {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
         },
-        "Name": "my-test-api-with-cognito-user-pool-or-basic-auth.example.com.",
+        "Name": "my-test-api-with-custom-lambda-authorizer.example.com.",
         "Type": "A",
       },
       "Type": "AWS::Route53::RecordSet",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320": Object {
       "Properties": Object {
-        "Description": "An HTTP API for my-test-api-with-cognito-user-pool-or-basic-auth.example.com.",
+        "Description": "An HTTP API for my-test-api-with-custom-lambda-authorizer.example.com.",
         "DisableExecuteApiEndpoint": true,
-        "Name": "HttpApi-my-test-api-with-cognito-user-pool-or-basic-auth",
+        "Name": "HttpApi-my-test-api-with-custom-lambda-authorizer",
         "ProtocolType": "HTTP",
         "Tags": Object {
-          "service": "my-test-api-with-cognito-user-pool-or-basic-auth",
+          "service": "my-test-api-with-custom-lambda-authorizer",
         },
       },
       "Type": "AWS::ApiGatewayV2::Api",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultAuthorizerD8C90E76": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultAuthorizer2A2B01A7": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
         },
         "AuthorizerPayloadFormatVersion": "2.0",
         "AuthorizerResultTtlInSeconds": 3600,
@@ -3911,22 +3911,22 @@ export async function handler(event) {
       },
       "Type": "AWS::ApiGatewayV2::Authorizer",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultStage62DF3C4D": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultStage93457153": Object {
       "DependsOn": Array [
-        "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02",
+        "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4",
       ],
       "Properties": Object {
         "AccessLogSettings": Object {
           "DestinationArn": Object {
             "Fn::GetAtt": Array [
-              "TestApiGatewayWithCognitoUserPoolAuthAccessLogsAccessLogGroup4174FE48",
+              "TestApiGatewayWithCustomLambdaAuthorizerAccessLogsAccessLogGroup688F3FA7",
               "Arn",
             ],
           },
           "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"userAgent\\":\\"$context.identity.userAgent\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"requestTime\\":\\"$context.requestTime\\",\\"requestTimeEpoch\\":\\"$context.requestTimeEpoch\\",\\"dataProcessed\\":\\"$context.dataProcessed\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"path\\":\\"$context.path\\",\\"routeKey\\":\\"$context.routeKey\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\",\\"responseLatency\\":\\"$context.responseLatency\\",\\"domainName\\":\\"$context.domainName\\",\\"error\\":{\\"type\\":\\"$context.error.responseType\\",\\"gatewayError\\":\\"$context.error.message\\",\\"integrationError\\":\\"$context.integration.error\\",\\"authorizerError\\":\\"$context.authorizer.error\\"},\\"integration\\":{\\"latency\\":\\"$context.integration.latency\\",\\"requestId\\":\\"$context.integration.requestId\\",\\"responseStatus\\":\\"$context.integration.status\\"},\\"auth\\":{\\"iam\\":{\\"userArn\\":\\"$context.identity.userArn\\",\\"awsAccount\\":\\"$context.identity.accountId\\",\\"awsPrincipal\\":\\"$context.identity.caller\\",\\"awsPrincipalOrg\\":\\"$context.identity.principalOrgId\\"},\\"basic\\":{\\"username\\":\\"$context.authorizer.username\\"},\\"cognito\\":{\\"clientId\\":\\"$context.authorizer.clientId\\"}},\\"awsEndpointRequest\\":{\\"id\\":\\"$context.awsEndpointRequestId\\",\\"id2\\":\\"$context.awsEndpointRequestId2\\"},\\"message\\":\\"$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]\\"}",
         },
         "ApiId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
         },
         "AutoDeploy": true,
         "DefaultRouteSettings": Object {
@@ -3934,28 +3934,28 @@ export async function handler(event) {
         },
         "StageName": "$default",
         "Tags": Object {
-          "service": "my-test-api-with-cognito-user-pool-or-basic-auth",
+          "service": "my-test-api-with-custom-lambda-authorizer",
         },
       },
       "Type": "AWS::ApiGatewayV2::Stage",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultStageStackTestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauthundefinedC30D22CB": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultStageStackTestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizerundefinedFB1520C6": Object {
       "DependsOn": Array [
-        "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02",
-        "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultStage62DF3C4D",
+        "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4",
+        "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultStage93457153",
       ],
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
         },
         "DomainName": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthCustomDomainDomainNamemytestapiwithcognitouserpoolorbasicauth5EB12B02",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerCustomDomainDomainNamemytestapiwithcustomlambdaauthorizer8C41BAD4",
         },
         "Stage": "$default",
       },
       "Type": "AWS::ApiGatewayV2::ApiMapping",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthStackTestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultAuthorizerC9A20EE9Permission0EF38AA1": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerStackTestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultAuthorizer08DAE106Permission9B5F53E7": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -3979,11 +3979,11 @@ export async function handler(event) {
               },
               ":",
               Object {
-                "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+                "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
               },
               "/authorizers/",
               Object {
-                "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultAuthorizerD8C90E76",
+                "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultAuthorizer2A2B01A7",
               },
             ],
           ],
@@ -3991,13 +3991,37 @@ export async function handler(event) {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthRouteapiAlbIntegrationmytestapiwithcognitouserpoolorbasicauthC4CF73D6": Object {
+    "TestApiGatewayWithCustomLambdaAuthorizerRouteapi1A6F8BEA": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
+        },
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": Object {
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizerDefaultAuthorizer2A2B01A7",
+        },
+        "RouteKey": "ANY /api",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "TestApiGatewayWithCustomLambdaAuthorizerRouteapiAlbIntegrationmytestapiwithcustomlambdaauthorizerDFE4544C",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "TestApiGatewayWithCustomLambdaAuthorizerRouteapiAlbIntegrationmytestapiwithcustomlambdaauthorizerDFE4544C": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerHttpApimytestapiwithcustomlambdaauthorizer1CB1A320",
         },
         "ConnectionId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthAlbVpcLink985E4A83",
+          "Ref": "TestApiGatewayWithCustomLambdaAuthorizerAlbVpcLink9F6CC241",
         },
         "ConnectionType": "VPC_LINK",
         "IntegrationMethod": "ANY",
@@ -4015,15 +4039,683 @@ export async function handler(event) {
       },
       "Type": "AWS::ApiGatewayV2::Integration",
     },
-    "TestApiGatewayWithCognitoUserPoolAuthRouteapiF0960F71": Object {
+  },
+}
+`;
+
+exports[`HTTP API Gateway creates API-GW HTTP API with custom access log format 1`] = `
+Object {
+  "Resources": Object {
+    "DnsARecordFED6ED67": Object {
+      "Properties": Object {
+        "AliasTarget": Object {
+          "DNSName": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "dualstack.",
+                Object {
+                  "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancer8E47CE52DNSName59BE487A",
+                },
+              ],
+            ],
+          },
+          "HostedZoneId": Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancer8E47CE52CanonicalHostedZoneID7C0E7DD7",
+          },
+        },
+        "HostedZoneId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+        },
+        "Name": "my-test-service-behind-alb.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "DnsListenerRule18B182CC": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+            "Type": "forward",
+          },
+        ],
+        "Conditions": Array [
+          Object {
+            "Field": "host-header",
+            "HostHeaderConfig": Object {
+              "Values": Array [
+                "my-test-service-behind-alb.example.com",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefLoadBalancerHttpsListener68D81C9458BEEF85",
+        },
+        "Priority": 10,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
+    "Service9571FDD8": Object {
+      "DependsOn": Array [
+        "DnsListenerRule18B182CC",
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
+        },
+        "DeploymentConfiguration": Object {
+          "Alarms": Object {
+            "AlarmNames": Array [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 2,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": Object {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+              },
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service",
+        "TaskDefinition": Object {
+          "Ref": "ServiceTaskDefinition55FA0F15",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceLogGroupB910EE76": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceSecurityGroupC96ED6A7": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceSecurityGroupSupportStackLoadBalancerSecurityGroup0F63AB0C8080from36CDC9C8": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ServiceSecurityGroupC96ED6A7",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8080,
+        "GroupId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8080,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ServiceSecurityGroupfromSupportStackLoadBalancerSecurityGroup0F63AB0C80803CEA72C3": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8080,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ServiceSecurityGroupC96ED6A7",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+        },
+        "ToPort": 8080,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ServiceTargetGroupE74A3394": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceTaskDefinition55FA0F15": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
+              },
+              Object {
+                "Name": "PARAMS_HASH",
+                "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
+                  },
+                  ":exampleEcrTag",
+                ],
+              ],
+            },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": Object {
+                  "Ref": "ServiceLogGroupB910EE76",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionExecutionRole5D3DB197",
+            "Arn",
+          ],
+        },
+        "Family": "StackServiceTaskDefinition81B5CCD5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionTaskRole3BD32B0F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ServiceLogGroupB910EE76",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatAccessLogsAccessLogGroupA6DF172D": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 365,
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-api-with-custom-access-log-format",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatAccessLogsApiGatewayPushToCloudwatchLogsRoleA4276139": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-api-with-custom-access-log-format",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy3AB082AB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TestApiGatewayWithCustomAccessLogFormatAccessLogsAccessLogGroupA6DF172D",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestApiGatewayWithCustomAccessLogFormatAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy3AB082AB",
+        "Roles": Array [
+          Object {
+            "Ref": "TestApiGatewayWithCustomAccessLogFormatAccessLogsApiGatewayPushToCloudwatchLogsRoleA4276139",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatAlbVpcLink3D7424B5": Object {
+      "Properties": Object {
+        "Name": "StackTestApiGatewayWithCustomAccessLogFormatAlbVpcLink88460371",
+        "SecurityGroupIds": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+          },
+        ],
+        "SubnetIds": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+          },
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3",
+          },
+        ],
+        "Tags": Object {
+          "service": "my-test-api-with-custom-access-log-format",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::VpcLink",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A": Object {
+      "Properties": Object {
+        "DomainName": "my-test-api-with-custom-access-log-format.example.com",
+        "DomainNameConfigurations": Array [
+          Object {
+            "CertificateArn": Object {
+              "Ref": "TestApiGatewayWithCustomAccessLogFormatCustomDomainHttpsCertificate5EAA8F91",
+            },
+            "EndpointType": "REGIONAL",
+            "SecurityPolicy": "TLS_1_2",
+          },
+        ],
+        "Tags": Object {
+          "service": "my-test-api-with-custom-access-log-format",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::DomainName",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatCustomDomainHttpsCertificate5EAA8F91": Object {
+      "Properties": Object {
+        "DomainName": "my-test-api-with-custom-access-log-format.example.com",
+        "DomainValidationOptions": Array [
+          Object {
+            "DomainName": "my-test-api-with-custom-access-log-format.example.com",
+            "HostedZoneId": Object {
+              "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+            },
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack/TestApiGatewayWithCustomAccessLogFormat/CustomDomain/HttpsCertificate",
+          },
+          Object {
+            "Key": "service",
+            "Value": "my-test-api-with-custom-access-log-format",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatCustomDomainRoute53ARecordApigwAlias3103F1F0": Object {
+      "Properties": Object {
+        "AliasTarget": Object {
+          "DNSName": Object {
+            "Fn::GetAtt": Array [
+              "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A",
+              "RegionalDomainName",
+            ],
+          },
+          "HostedZoneId": Object {
+            "Fn::GetAtt": Array [
+              "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A",
+              "RegionalHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+        },
+        "Name": "my-test-api-with-custom-access-log-format.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformat82FB71DF": Object {
+      "Properties": Object {
+        "Description": "An HTTP API for my-test-api-with-custom-access-log-format.example.com.",
+        "DisableExecuteApiEndpoint": true,
+        "Name": "HttpApi-my-test-api-with-custom-access-log-format",
+        "ProtocolType": "HTTP",
+        "Tags": Object {
+          "service": "my-test-api-with-custom-access-log-format",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformatDefaultStageAD0985DC": Object {
+      "DependsOn": Array [
+        "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A",
+      ],
+      "Properties": Object {
+        "AccessLogSettings": Object {
+          "DestinationArn": Object {
+            "Fn::GetAtt": Array [
+              "TestApiGatewayWithCustomAccessLogFormatAccessLogsAccessLogGroupA6DF172D",
+              "Arn",
+            ],
+          },
+          "Format": "{\\"path\\":\\"$context.path\\",\\"request\\":{\\"id\\":\\"$context.requestId\\",\\"body\\":\\"$request.body\\"}}",
+        },
+        "ApiId": Object {
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformat82FB71DF",
+        },
+        "AutoDeploy": true,
+        "DefaultRouteSettings": Object {
+          "DetailedMetricsEnabled": true,
+        },
+        "StageName": "$default",
+        "Tags": Object {
+          "service": "my-test-api-with-custom-access-log-format",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformatDefaultStageStackTestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatundefinedBF2C676C": Object {
+      "DependsOn": Array [
+        "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A",
+        "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformatDefaultStageAD0985DC",
+      ],
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauth873A1284",
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformat82FB71DF",
         },
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": Object {
-          "Ref": "TestApiGatewayWithCognitoUserPoolAuthHttpApimytestapiwithcognitouserpoolorbasicauthDefaultAuthorizerD8C90E76",
+        "DomainName": Object {
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatCustomDomainDomainNamemytestapiwithcustomaccesslogformatCBC0C30A",
         },
+        "Stage": "$default",
+      },
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatRouteapi79940E14": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformat82FB71DF",
+        },
+        "AuthorizationType": "NONE",
         "RouteKey": "ANY /api",
         "Target": Object {
           "Fn::Join": Array [
@@ -4031,13 +4723,37 @@ export async function handler(event) {
             Array [
               "integrations/",
               Object {
-                "Ref": "TestApiGatewayWithCognitoUserPoolAuthRouteapiAlbIntegrationmytestapiwithcognitouserpoolorbasicauthC4CF73D6",
+                "Ref": "TestApiGatewayWithCustomAccessLogFormatRouteapiAlbIntegrationmytestapiwithcustomaccesslogformat00666495",
               },
             ],
           ],
         },
       },
       "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "TestApiGatewayWithCustomAccessLogFormatRouteapiAlbIntegrationmytestapiwithcustomaccesslogformat00666495": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatHttpApimytestapiwithcustomaccesslogformat82FB71DF",
+        },
+        "ConnectionId": Object {
+          "Ref": "TestApiGatewayWithCustomAccessLogFormatAlbVpcLink3D7424B5",
+        },
+        "ConnectionType": "VPC_LINK",
+        "IntegrationMethod": "ANY",
+        "IntegrationType": "HTTP_PROXY",
+        "IntegrationUri": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefLoadBalancerHttpsListener68D81C9458BEEF85",
+        },
+        "PayloadFormatVersion": "1.0",
+        "RequestParameters": Object {
+          "overwrite:header.Host": "my-test-service-behind-alb.example.com",
+        },
+        "TlsConfig": Object {
+          "ServerNameToVerify": "my-test-service-behind-alb.example.com",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
     },
   },
 }

@@ -35,7 +35,7 @@ export type ApiGatewayAccessLogsProps = {
    *
    * @default {@link defaultAccessLogFormat}
    */
-  accessLogFormat?: Record<string, string>
+  accessLogFormat?: Record<string, unknown>
 }
 
 /**
