@@ -1,5 +1,524 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HTTP API Gateway creates API-GW HTTP API using EventBridge integration 1`] = `
+Object {
+  "Resources": Object {
+    "BasicAuthCredentialsSecretED3C53F8": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Name": "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
+        "SecretString": "{\\"username\\":\\"test-user\\",\\"password\\":\\"test-password\\"}",
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EventBus7B8748AA": Object {
+      "Properties": Object {
+        "Name": "api-event-bus",
+      },
+      "Type": "AWS::Events::EventBus",
+    },
+    "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 180,
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D",
+        "Roles": Array [
+          Object {
+            "Ref": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Allows API-GW to put events to ",
+              Object {
+                "Fn::GetAtt": Array [
+                  "EventBus7B8748AA",
+                  "Arn",
+                ],
+              },
+            ],
+          ],
+        },
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "events:PutEvents",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "EventBus7B8748AA",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF",
+        "Roles": Array [
+          Object {
+            "Ref": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076": Object {
+      "Properties": Object {
+        "DomainName": "my-test-eventbridge-api.example.com",
+        "DomainNameConfigurations": Array [
+          Object {
+            "CertificateArn": Object {
+              "Ref": "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B",
+            },
+            "EndpointType": "REGIONAL",
+            "SecurityPolicy": "TLS_1_2",
+          },
+        ],
+        "Tags": Object {
+          "service": "my-test-eventbridge-api",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::DomainName",
+    },
+    "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B": Object {
+      "Properties": Object {
+        "DomainName": "my-test-eventbridge-api.example.com",
+        "DomainValidationOptions": Array [
+          Object {
+            "DomainName": "my-test-eventbridge-api.example.com",
+            "HostedZoneId": Object {
+              "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+            },
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack/TestEventBridgeApiGateway/CustomDomain/HttpsCertificate",
+          },
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "TestEventBridgeApiGatewayCustomDomainRoute53ARecordApigwAlias02B67FD3": Object {
+      "Properties": Object {
+        "AliasTarget": Object {
+          "DNSName": Object {
+            "Fn::GetAtt": Array [
+              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+              "RegionalDomainName",
+            ],
+          },
+          "HostedZoneId": Object {
+            "Fn::GetAtt": Array [
+              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+              "RegionalHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+        },
+        "Name": "my-test-eventbridge-api.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE": Object {
+      "DependsOn": Array [
+        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
+        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
+          },
+          "S3Key": "503a7065146aeb795b5704997ee2be6df36849c367f08c6984aad6da2774ad69.zip",
+        },
+        "Description": "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
+        "Environment": Object {
+          "Variables": Object {
+            "CREDENTIALS_SECRET_NAME": "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "service",
+            "Value": "my-test-eventbridge-api",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":secretsmanager:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":secret:/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials-??????",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
+        "Roles": Array [
+          Object {
+            "Ref": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC": Object {
+      "Properties": Object {
+        "Description": "An HTTP API for my-test-eventbridge-api.example.com.",
+        "DisableExecuteApiEndpoint": true,
+        "Name": "HttpApi-my-test-eventbridge-api",
+        "ProtocolType": "HTTP",
+        "Tags": Object {
+          "service": "my-test-eventbridge-api",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+        },
+        "AuthorizerPayloadFormatVersion": "2.0",
+        "AuthorizerResultTtlInSeconds": 1800,
+        "AuthorizerType": "REQUEST",
+        "AuthorizerUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+        "EnableSimpleResponses": true,
+        "IdentitySource": Array [
+          "$request.header.Authorization",
+        ],
+        "Name": "DefaultAuthorizer",
+      },
+      "Type": "AWS::ApiGatewayV2::Authorizer",
+    },
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162": Object {
+      "DependsOn": Array [
+        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+      ],
+      "Properties": Object {
+        "AccessLogSettings": Object {
+          "DestinationArn": Object {
+            "Fn::GetAtt": Array [
+              "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
+              "Arn",
+            ],
+          },
+          "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"userAgent\\":\\"$context.identity.userAgent\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"requestTime\\":\\"$context.requestTime\\",\\"requestTimeEpoch\\":\\"$context.requestTimeEpoch\\",\\"dataProcessed\\":\\"$context.dataProcessed\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"path\\":\\"$context.path\\",\\"routeKey\\":\\"$context.routeKey\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\",\\"responseLatency\\":\\"$context.responseLatency\\",\\"domainName\\":\\"$context.domainName\\",\\"error\\":{\\"type\\":\\"$context.error.responseType\\",\\"gatewayError\\":\\"$context.error.message\\",\\"integrationError\\":\\"$context.integration.error\\",\\"authorizerError\\":\\"$context.authorizer.error\\"},\\"integration\\":{\\"latency\\":\\"$context.integration.latency\\",\\"requestId\\":\\"$context.integration.requestId\\",\\"responseStatus\\":\\"$context.integration.status\\"},\\"auth\\":{\\"iam\\":{\\"userArn\\":\\"$context.identity.userArn\\",\\"awsAccount\\":\\"$context.identity.accountId\\",\\"awsPrincipal\\":\\"$context.identity.caller\\",\\"awsPrincipalOrg\\":\\"$context.identity.principalOrgId\\"},\\"basic\\":{\\"username\\":\\"$context.authorizer.username\\"},\\"cognito\\":{\\"clientId\\":\\"$context.authorizer.clientId\\"}},\\"awsEndpointRequest\\":{\\"id\\":\\"$context.awsEndpointRequestId\\",\\"id2\\":\\"$context.awsEndpointRequestId2\\"},\\"message\\":\\"$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]\\"}",
+        },
+        "ApiId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+        },
+        "AutoDeploy": true,
+        "DefaultRouteSettings": Object {
+          "DetailedMetricsEnabled": true,
+        },
+        "StageName": "$default",
+        "Tags": Object {
+          "service": "my-test-eventbridge-api",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStageStackTestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapiundefinedD37D84F1": Object {
+      "DependsOn": Array [
+        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+        "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+        },
+        "DomainName": Object {
+          "Ref": "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+        },
+        "Stage": "$default",
+      },
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+    },
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiStackTestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer870A40C8PermissionA9F7B186": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:eu-west-1:",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+              },
+              "/authorizers/",
+              Object {
+                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "TestEventBridgeApiGatewayRouteapieventbridgeadd741B2F1D": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+        },
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
+        },
+        "RouteKey": "ANY /api/eventbridge/add",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "TestEventBridgeApiGatewayRouteapieventbridgeaddEventBridgeIntegration2175EBF8",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "TestEventBridgeApiGatewayRouteapieventbridgeaddEventBridgeIntegration2175EBF8": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
+        },
+        "CredentialsArn": Object {
+          "Fn::GetAtt": Array [
+            "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
+            "Arn",
+          ],
+        },
+        "IntegrationSubtype": "EventBridge-PutEvents",
+        "IntegrationType": "AWS_PROXY",
+        "PayloadFormatVersion": "1.0",
+        "RequestParameters": Object {
+          "Detail": "$request.body",
+          "DetailType": "liflig-test-http-api",
+          "EventBusName": Object {
+            "Ref": "EventBus7B8748AA",
+          },
+          "Source": "$context.apiId",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+  },
+}
+`;
+
 exports[`HTTP API Gateway creates API-GW HTTP API using IAM auth and ALB integration 1`] = `
 Object {
   "Resources": Object {
@@ -777,525 +1296,6 @@ Object {
         },
         "TlsConfig": Object {
           "ServerNameToVerify": "my-test-service-behind-alb.example.com",
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Integration",
-    },
-  },
-}
-`;
-
-exports[`HTTP API Gateway creates API-GW HTTP API using basic auth and EventBridge integration 1`] = `
-Object {
-  "Resources": Object {
-    "BasicAuthCredentialsSecretED3C53F8": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "Name": "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
-        "SecretString": "{\\"username\\":\\"test-user\\",\\"password\\":\\"test-password\\"}",
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EventBus7B8748AA": Object {
-      "Properties": Object {
-        "Name": "api-event-bus",
-      },
-      "Type": "AWS::Events::EventBus",
-    },
-    "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "RetentionInDays": 180,
-        "Tags": Array [
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
-              ],
-            ],
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D",
-        "Roles": Array [
-          Object {
-            "Ref": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "Allows API-GW to put events to ",
-              Object {
-                "Fn::GetAtt": Array [
-                  "EventBus7B8748AA",
-                  "Arn",
-                ],
-              },
-            ],
-          ],
-        },
-        "Tags": Array [
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "events:PutEvents",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "EventBus7B8748AA",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF",
-        "Roles": Array [
-          Object {
-            "Ref": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076": Object {
-      "Properties": Object {
-        "DomainName": "my-test-eventbridge-api.example.com",
-        "DomainNameConfigurations": Array [
-          Object {
-            "CertificateArn": Object {
-              "Ref": "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B",
-            },
-            "EndpointType": "REGIONAL",
-            "SecurityPolicy": "TLS_1_2",
-          },
-        ],
-        "Tags": Object {
-          "service": "my-test-eventbridge-api",
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::DomainName",
-    },
-    "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B": Object {
-      "Properties": Object {
-        "DomainName": "my-test-eventbridge-api.example.com",
-        "DomainValidationOptions": Array [
-          Object {
-            "DomainName": "my-test-eventbridge-api.example.com",
-            "HostedZoneId": Object {
-              "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
-            },
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "Stack/TestEventBridgeApiGateway/CustomDomain/HttpsCertificate",
-          },
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-        "ValidationMethod": "DNS",
-      },
-      "Type": "AWS::CertificateManager::Certificate",
-    },
-    "TestEventBridgeApiGatewayCustomDomainRoute53ARecordApigwAlias02B67FD3": Object {
-      "Properties": Object {
-        "AliasTarget": Object {
-          "DNSName": Object {
-            "Fn::GetAtt": Array [
-              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
-              "RegionalDomainName",
-            ],
-          },
-          "HostedZoneId": Object {
-            "Fn::GetAtt": Array [
-              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
-              "RegionalHostedZoneId",
-            ],
-          },
-        },
-        "HostedZoneId": Object {
-          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
-        },
-        "Name": "my-test-eventbridge-api.example.com.",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE": Object {
-      "DependsOn": Array [
-        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
-        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-eu-west-1",
-          },
-          "S3Key": "503a7065146aeb795b5704997ee2be6df36849c367f08c6984aad6da2774ad69.zip",
-        },
-        "Description": "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
-        "Environment": Object {
-          "Variables": Object {
-            "CREDENTIALS_SECRET_NAME": "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs22.x",
-        "Tags": Array [
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "service",
-            "Value": "my-test-eventbridge-api",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:eu-west-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials-??????",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
-        "Roles": Array [
-          Object {
-            "Ref": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC": Object {
-      "Properties": Object {
-        "Description": "An HTTP API for my-test-eventbridge-api.example.com.",
-        "DisableExecuteApiEndpoint": true,
-        "Name": "HttpApi-my-test-eventbridge-api",
-        "ProtocolType": "HTTP",
-        "Tags": Object {
-          "service": "my-test-eventbridge-api",
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Api",
-    },
-    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-        },
-        "AuthorizerPayloadFormatVersion": "2.0",
-        "AuthorizerResultTtlInSeconds": 1800,
-        "AuthorizerType": "REQUEST",
-        "AuthorizerUri": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
-              Object {
-                "Fn::GetAtt": Array [
-                  "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
-                  "Arn",
-                ],
-              },
-              "/invocations",
-            ],
-          ],
-        },
-        "EnableSimpleResponses": true,
-        "IdentitySource": Array [
-          "$request.header.Authorization",
-        ],
-        "Name": "DefaultAuthorizer",
-      },
-      "Type": "AWS::ApiGatewayV2::Authorizer",
-    },
-    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162": Object {
-      "DependsOn": Array [
-        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
-      ],
-      "Properties": Object {
-        "AccessLogSettings": Object {
-          "DestinationArn": Object {
-            "Fn::GetAtt": Array [
-              "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
-              "Arn",
-            ],
-          },
-          "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"userAgent\\":\\"$context.identity.userAgent\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"requestTime\\":\\"$context.requestTime\\",\\"requestTimeEpoch\\":\\"$context.requestTimeEpoch\\",\\"dataProcessed\\":\\"$context.dataProcessed\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"path\\":\\"$context.path\\",\\"routeKey\\":\\"$context.routeKey\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\",\\"responseLatency\\":\\"$context.responseLatency\\",\\"domainName\\":\\"$context.domainName\\",\\"error\\":{\\"type\\":\\"$context.error.responseType\\",\\"gatewayError\\":\\"$context.error.message\\",\\"integrationError\\":\\"$context.integration.error\\",\\"authorizerError\\":\\"$context.authorizer.error\\"},\\"integration\\":{\\"latency\\":\\"$context.integration.latency\\",\\"requestId\\":\\"$context.integration.requestId\\",\\"responseStatus\\":\\"$context.integration.status\\"},\\"auth\\":{\\"iam\\":{\\"userArn\\":\\"$context.identity.userArn\\",\\"awsAccount\\":\\"$context.identity.accountId\\",\\"awsPrincipal\\":\\"$context.identity.caller\\",\\"awsPrincipalOrg\\":\\"$context.identity.principalOrgId\\"},\\"basic\\":{\\"username\\":\\"$context.authorizer.username\\"},\\"cognito\\":{\\"clientId\\":\\"$context.authorizer.clientId\\"}},\\"awsEndpointRequest\\":{\\"id\\":\\"$context.awsEndpointRequestId\\",\\"id2\\":\\"$context.awsEndpointRequestId2\\"},\\"message\\":\\"$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]\\"}",
-        },
-        "ApiId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-        },
-        "AutoDeploy": true,
-        "DefaultRouteSettings": Object {
-          "DetailedMetricsEnabled": true,
-        },
-        "StageName": "$default",
-        "Tags": Object {
-          "service": "my-test-eventbridge-api",
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Stage",
-    },
-    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStageStackTestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapiundefinedD37D84F1": Object {
-      "DependsOn": Array [
-        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
-        "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162",
-      ],
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-        },
-        "DomainName": Object {
-          "Ref": "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
-        },
-        "Stage": "$default",
-      },
-      "Type": "AWS::ApiGatewayV2::ApiMapping",
-    },
-    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiStackTestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer870A40C8PermissionA9F7B186": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:eu-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-              },
-              "/authorizers/",
-              Object {
-                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
-              },
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "TestEventBridgeApiGatewayRouteapieventbridgeadd741B2F1D": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-        },
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
-        },
-        "RouteKey": "ANY /api/eventbridge/add",
-        "Target": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "integrations/",
-              Object {
-                "Ref": "TestEventBridgeApiGatewayRouteapieventbridgeaddEventbusIntegrationFC6B2233",
-              },
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Route",
-    },
-    "TestEventBridgeApiGatewayRouteapieventbridgeaddEventbusIntegrationFC6B2233": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
-        },
-        "CredentialsArn": Object {
-          "Fn::GetAtt": Array [
-            "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
-            "Arn",
-          ],
-        },
-        "IntegrationSubtype": "EventBridge-PutEvents",
-        "IntegrationType": "AWS_PROXY",
-        "PayloadFormatVersion": "1.0",
-        "RequestParameters": Object {
-          "Detail": "$request.body",
-          "DetailType": "liflig-test-http-api",
-          "EventBusName": Object {
-            "Ref": "EventBus7B8748AA",
-          },
-          "Source": "$context.apiId",
         },
       },
       "Type": "AWS::ApiGatewayV2::Integration",

@@ -161,7 +161,7 @@ export type IntegrationProps =
   | ({ type: "Lambda" } & LambdaIntegrationProps)
   /** Use this when connecting a route to send to an SQS queue. */
   | ({ type: "SQS" } & SqsIntegrationProps)
-  /** Use this when connecting a route to send to an EventBus. */
+  /** Use this when connecting a route to send to an EventBridge event bus. */
   | ({ type: "EventBridge" } & EventBridgeIntegrationProps)
 
 /**
@@ -282,7 +282,18 @@ export type SqsIntegrationProps = {
 }
 
 export type EventBridgeIntegrationProps = {
+  /**
+   * An EventBridge event bus. Request bodies sent to the route will be forwarded to this event bus,
+   * in the `Detail` field (see
+   * https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html).
+   */
   eventBus: events.IEventBus
+  /**
+   * Sets the `DetailType` field (i.e., event type) on events published to the event bus.
+   *
+   * See AWS docs for more on this:
+   * https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html
+   */
   detailType: string
 }
 
@@ -898,14 +909,13 @@ export class ApiGateway<
         integration.eventBus.grantPutEventsTo(role)
 
         const parameterMapping = new apigw.ParameterMapping()
-          // https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html#EventBridge-PutEvents
+          // https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html
           .custom("EventBusName", integration.eventBus.eventBusName)
           .custom("Detail", "$request.body")
-          // TODO: Figure out a better name
           .custom("DetailType", integration.detailType)
           .custom("Source", "$context.apiId")
 
-        return new EventBusRouteIntegration("EventbusIntegration", {
+        return new EventBridgeRouteIntegration("EventBridgeIntegration", {
           type: apigw.HttpIntegrationType.AWS_PROXY,
           subtype: apigw.HttpIntegrationSubtype.EVENTBRIDGE_PUT_EVENTS,
           credentials: apigw.IntegrationCredentials.fromRole(role),
@@ -966,8 +976,8 @@ class SqsRouteIntegration extends apigw.HttpRouteIntegration {
   }
 }
 
-/** Acts as glue (between the integration props and the HttpApi) when creating an EventbusIntegration. */
-class EventBusRouteIntegration extends apigw.HttpRouteIntegration {
+/** Acts as glue (between the integration props and the HttpApi) when creating an EventBridge integration. */
+class EventBridgeRouteIntegration extends apigw.HttpRouteIntegration {
   /**
    * @param id The id used in the {@link apigw.HttpIntegration} construct
    *    created internally by {@link apigw.HttpRouteIntegration._bindToRoute}.
