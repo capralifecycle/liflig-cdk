@@ -90,7 +90,7 @@ describe("HTTP API Gateway", () => {
     expect(stack).toMatchCdkSnapshot()
   })
 
-  test("creates API-GW HTTP API using basic auth and EventBridge integration", () => {
+  test("creates API-GW HTTP API using EventBridge integration", () => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
