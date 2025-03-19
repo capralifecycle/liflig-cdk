@@ -16,6 +16,7 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import { FargateService, ListenerRule } from "../../ecs"
 import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Queue } from "aws-cdk-lib/aws-sqs"
+import { EventBus } from "aws-cdk-lib/aws-events"
 import { Function, InlineCode, Runtime } from "aws-cdk-lib/aws-lambda"
 
 describe("HTTP API Gateway", () => {
@@ -83,6 +84,31 @@ describe("HTTP API Gateway", () => {
         credentialsSecretName: credentialsSecret.secretName,
       },
       routes: [{ path: "/api/queue/add" }],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API using basic auth and EventBridge integration", () => {
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    const eventBus = new EventBus(stack, "EventBus", {
+      eventBusName: "api-event-bus",
+    })
+
+    new ApiGateway(stack, "TestEventBusApiGateway", {
+      dns: { subdomain: "my-test-eventbus-api", hostedZone },
+      defaultIntegration: {
+        type: "EventBus",
+        eventBus,
+        detailType: "liflig-test-http-api",
+      },
+      defaultAuthorization: {
+        type: "BASIC_AUTH",
+        credentialsSecretName: credentialsSecret.secretName,
+      },
+      routes: [{ path: "/api/eventbus/add" }],
       accessLogs,
     })
 
@@ -177,7 +203,7 @@ describe("HTTP API Gateway", () => {
         code: lambda.Code.fromInline(`
 export async function handler(event) {
   return { isAuthorized: false }
-}       
+}
 `),
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_LATEST,

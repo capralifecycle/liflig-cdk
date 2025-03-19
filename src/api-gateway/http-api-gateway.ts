@@ -4,6 +4,7 @@ import type * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import type * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import type * as sqs from "aws-cdk-lib/aws-sqs"
+import type * as events from "aws-cdk-lib/aws-events"
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -160,6 +161,8 @@ export type IntegrationProps =
   | ({ type: "Lambda" } & LambdaIntegrationProps)
   /** Use this when connecting a route to send to an SQS queue. */
   | ({ type: "SQS" } & SqsIntegrationProps)
+  /** Use this when connecting a route to send to an EventBus. */
+  | ({ type: "EventBus" } & EventBusIntegrationProps)
 
 /**
  * Props for the API-GW -> ALB (Application Load Balancer) integration.
@@ -276,6 +279,11 @@ export type SqsIntegrationProps = {
           BinaryValue: string
         }
   }
+}
+
+export type EventBusIntegrationProps = {
+  eventBus: events.IEventBus
+  detailType: string
 }
 
 export type AuthorizationProps<AuthScopesT extends string = string> =
@@ -877,6 +885,34 @@ export class ApiGateway<
           payloadFormatVersion: apigw.PayloadFormatVersion.VERSION_1_0,
         })
       }
+      case "EventBus": {
+        // API-GW does not have access to put events to event bus by default
+        const role = new iam.Role(
+          this,
+          `ApiGwTo${integration.eventBus.node.id}ServiceRole`,
+          {
+            description: `Allows API-GW to put events to ${integration.eventBus.eventBusArn}`,
+            assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+          },
+        )
+        integration.eventBus.grantPutEventsTo(role)
+
+        const parameterMapping = new apigw.ParameterMapping()
+          // https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html#SQS-SendMessage
+          .custom("EventBusName", integration.eventBus.eventBusName)
+          .custom("Detail", "$request.body")
+          // TODO: Figure out a better name
+          .custom("DetailType", integration.detailType)
+          .custom("Source", "$context.apiId")
+
+        return new EventBusRouteIntegration("EventbusIntegration", {
+          type: apigw.HttpIntegrationType.AWS_PROXY,
+          subtype: apigw.HttpIntegrationSubtype.EVENTBRIDGE_PUT_EVENTS,
+          credentials: apigw.IntegrationCredentials.fromRole(role),
+          parameterMapping: parameterMapping,
+          payloadFormatVersion: apigw.PayloadFormatVersion.VERSION_1_0,
+        })
+      }
     }
   }
 
@@ -906,6 +942,32 @@ export class ApiGateway<
 
 /** Acts as glue (between the integration props and the HttpApi) when creating an SqsIntegration. */
 class SqsRouteIntegration extends apigw.HttpRouteIntegration {
+  /**
+   * @param id The id used in the {@link apigw.HttpIntegration} construct
+   *    created internally by {@link apigw.HttpRouteIntegration._bindToRoute}.
+   *    [Source code](https://github.com/aws/aws-cdk/blob/b5ae37782bc3cb637eeef9fbb1fbe2c5efdfc068/packages/%40aws-cdk/aws-apigatewayv2/lib/http/integration.ts#L321)
+   * @param integrationProps The props to pass to the {@link apigw.HttpIntegration} construct.
+   */
+  constructor(
+    id: string,
+    private integrationProps: apigw.HttpRouteIntegrationConfig,
+  ) {
+    super(id)
+  }
+
+  /**
+   * This sends the properties needed for creating a {@link apigw.HttpIntegration} to the
+   * {@link apigw.HttpRouteIntegration}.
+   */
+  bind(): apigw.HttpRouteIntegrationConfig {
+    // This method is called by:
+    // https://github.com/aws/aws-cdk/blob/b5ae37782bc3cb637eeef9fbb1fbe2c5efdfc068/packages/%40aws-cdk/aws-apigatewayv2/lib/http/integration.ts#L319
+    return this.integrationProps
+  }
+}
+
+/** Acts as glue (between the integration props and the HttpApi) when creating an EventbusIntegration. */
+class EventBusRouteIntegration extends apigw.HttpRouteIntegration {
   /**
    * @param id The id used in the {@link apigw.HttpIntegration} construct
    *    created internally by {@link apigw.HttpRouteIntegration._bindToRoute}.
