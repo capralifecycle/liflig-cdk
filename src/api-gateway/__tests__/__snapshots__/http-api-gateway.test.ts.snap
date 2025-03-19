@@ -803,21 +803,21 @@ Object {
       },
       "Type": "AWS::Events::EventBus",
     },
-    "TestEventBusApiGatewayAccessLogsAccessLogGroup98D2D6F0": Object {
+    "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "RetentionInDays": 180,
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "TestEventBusApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole3DAA3EAC": Object {
+    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -848,13 +848,13 @@ Object {
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "TestEventBusApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy7F97823D": Object {
+    "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -866,7 +866,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "TestEventBusApiGatewayAccessLogsAccessLogGroup98D2D6F0",
+                  "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
                   "Arn",
                 ],
               },
@@ -874,16 +874,16 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "TestEventBusApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicy7F97823D",
+        "PolicyName": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyA1E30C6D",
         "Roles": Array [
           Object {
-            "Ref": "TestEventBusApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole3DAA3EAC",
+            "Ref": "TestEventBridgeApiGatewayAccessLogsApiGatewayPushToCloudwatchLogsRole96DE390C",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TestEventBusApiGatewayApiGwToEventBusServiceRole9DEF465C": Object {
+    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -914,13 +914,13 @@ Object {
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "TestEventBusApiGatewayApiGwToEventBusServiceRoleDefaultPolicy70DAC53B": Object {
+    "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -937,39 +937,39 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "TestEventBusApiGatewayApiGwToEventBusServiceRoleDefaultPolicy70DAC53B",
+        "PolicyName": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDefaultPolicy405989BF",
         "Roles": Array [
           Object {
-            "Ref": "TestEventBusApiGatewayApiGwToEventBusServiceRole9DEF465C",
+            "Ref": "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0": Object {
+    "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076": Object {
       "Properties": Object {
-        "DomainName": "my-test-eventbus-api.example.com",
+        "DomainName": "my-test-eventbridge-api.example.com",
         "DomainNameConfigurations": Array [
           Object {
             "CertificateArn": Object {
-              "Ref": "TestEventBusApiGatewayCustomDomainHttpsCertificateBB4C14EF",
+              "Ref": "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B",
             },
             "EndpointType": "REGIONAL",
             "SecurityPolicy": "TLS_1_2",
           },
         ],
         "Tags": Object {
-          "service": "my-test-eventbus-api",
+          "service": "my-test-eventbridge-api",
         },
       },
       "Type": "AWS::ApiGatewayV2::DomainName",
     },
-    "TestEventBusApiGatewayCustomDomainHttpsCertificateBB4C14EF": Object {
+    "TestEventBridgeApiGatewayCustomDomainHttpsCertificate0EDD7C1B": Object {
       "Properties": Object {
-        "DomainName": "my-test-eventbus-api.example.com",
+        "DomainName": "my-test-eventbridge-api.example.com",
         "DomainValidationOptions": Array [
           Object {
-            "DomainName": "my-test-eventbus-api.example.com",
+            "DomainName": "my-test-eventbridge-api.example.com",
             "HostedZoneId": Object {
               "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
             },
@@ -978,29 +978,29 @@ Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "Stack/TestEventBusApiGateway/CustomDomain/HttpsCertificate",
+            "Value": "Stack/TestEventBridgeApiGateway/CustomDomain/HttpsCertificate",
           },
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
         "ValidationMethod": "DNS",
       },
       "Type": "AWS::CertificateManager::Certificate",
     },
-    "TestEventBusApiGatewayCustomDomainRoute53ARecordApigwAlias834BD48C": Object {
+    "TestEventBridgeApiGatewayCustomDomainRoute53ARecordApigwAlias02B67FD3": Object {
       "Properties": Object {
         "AliasTarget": Object {
           "DNSName": Object {
             "Fn::GetAtt": Array [
-              "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0",
+              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
               "RegionalDomainName",
             ],
           },
           "HostedZoneId": Object {
             "Fn::GetAtt": Array [
-              "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0",
+              "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
               "RegionalHostedZoneId",
             ],
           },
@@ -1008,15 +1008,15 @@ Object {
         "HostedZoneId": Object {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
         },
-        "Name": "my-test-eventbus-api.example.com.",
+        "Name": "my-test-eventbridge-api.example.com.",
         "Type": "A",
       },
       "Type": "AWS::Route53::RecordSet",
     },
-    "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaBECC85A6": Object {
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE": Object {
       "DependsOn": Array [
-        "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy0C859BB9",
-        "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole42DB48B4",
+        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
+        "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
       ],
       "Properties": Object {
         "Code": Object {
@@ -1034,7 +1034,7 @@ Object {
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
-            "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole42DB48B4",
+            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
             "Arn",
           ],
         },
@@ -1042,13 +1042,13 @@ Object {
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
       },
       "Type": "AWS::Lambda::Function",
     },
-    "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole42DB48B4": Object {
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1079,13 +1079,13 @@ Object {
         "Tags": Array [
           Object {
             "Key": "service",
-            "Value": "my-test-eventbus-api",
+            "Value": "my-test-eventbridge-api",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy0C859BB9": Object {
+    "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1115,31 +1115,31 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy0C859BB9",
+        "PolicyName": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRoleDefaultPolicy05EE7BE8",
         "Roles": Array [
           Object {
-            "Ref": "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole42DB48B4",
+            "Ref": "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaServiceRole5F880716",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843": Object {
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC": Object {
       "Properties": Object {
-        "Description": "An HTTP API for my-test-eventbus-api.example.com.",
+        "Description": "An HTTP API for my-test-eventbridge-api.example.com.",
         "DisableExecuteApiEndpoint": true,
-        "Name": "HttpApi-my-test-eventbus-api",
+        "Name": "HttpApi-my-test-eventbridge-api",
         "ProtocolType": "HTTP",
         "Tags": Object {
-          "service": "my-test-eventbus-api",
+          "service": "my-test-eventbridge-api",
         },
       },
       "Type": "AWS::ApiGatewayV2::Api",
     },
-    "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultAuthorizer1D9DBA27": Object {
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
         },
         "AuthorizerPayloadFormatVersion": "2.0",
         "AuthorizerResultTtlInSeconds": 1800,
@@ -1155,7 +1155,7 @@ Object {
               ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
               Object {
                 "Fn::GetAtt": Array [
-                  "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaBECC85A6",
+                  "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
                   "Arn",
                 ],
               },
@@ -1171,22 +1171,22 @@ Object {
       },
       "Type": "AWS::ApiGatewayV2::Authorizer",
     },
-    "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultStageEED9902C": Object {
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162": Object {
       "DependsOn": Array [
-        "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0",
+        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
       ],
       "Properties": Object {
         "AccessLogSettings": Object {
           "DestinationArn": Object {
             "Fn::GetAtt": Array [
-              "TestEventBusApiGatewayAccessLogsAccessLogGroup98D2D6F0",
+              "TestEventBridgeApiGatewayAccessLogsAccessLogGroup0C1548DC",
               "Arn",
             ],
           },
           "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"userAgent\\":\\"$context.identity.userAgent\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"requestTime\\":\\"$context.requestTime\\",\\"requestTimeEpoch\\":\\"$context.requestTimeEpoch\\",\\"dataProcessed\\":\\"$context.dataProcessed\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"path\\":\\"$context.path\\",\\"routeKey\\":\\"$context.routeKey\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\",\\"responseLatency\\":\\"$context.responseLatency\\",\\"domainName\\":\\"$context.domainName\\",\\"error\\":{\\"type\\":\\"$context.error.responseType\\",\\"gatewayError\\":\\"$context.error.message\\",\\"integrationError\\":\\"$context.integration.error\\",\\"authorizerError\\":\\"$context.authorizer.error\\"},\\"integration\\":{\\"latency\\":\\"$context.integration.latency\\",\\"requestId\\":\\"$context.integration.requestId\\",\\"responseStatus\\":\\"$context.integration.status\\"},\\"auth\\":{\\"iam\\":{\\"userArn\\":\\"$context.identity.userArn\\",\\"awsAccount\\":\\"$context.identity.accountId\\",\\"awsPrincipal\\":\\"$context.identity.caller\\",\\"awsPrincipalOrg\\":\\"$context.identity.principalOrgId\\"},\\"basic\\":{\\"username\\":\\"$context.authorizer.username\\"},\\"cognito\\":{\\"clientId\\":\\"$context.authorizer.clientId\\"}},\\"awsEndpointRequest\\":{\\"id\\":\\"$context.awsEndpointRequestId\\",\\"id2\\":\\"$context.awsEndpointRequestId2\\"},\\"message\\":\\"$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]\\"}",
         },
         "ApiId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
         },
         "AutoDeploy": true,
         "DefaultRouteSettings": Object {
@@ -1194,33 +1194,33 @@ Object {
         },
         "StageName": "$default",
         "Tags": Object {
-          "service": "my-test-eventbus-api",
+          "service": "my-test-eventbridge-api",
         },
       },
       "Type": "AWS::ApiGatewayV2::Stage",
     },
-    "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultStageStackTestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiundefined70F3D3CA": Object {
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStageStackTestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapiundefinedD37D84F1": Object {
       "DependsOn": Array [
-        "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0",
-        "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultStageEED9902C",
+        "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
+        "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultStage58B6C162",
       ],
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
         },
         "DomainName": Object {
-          "Ref": "TestEventBusApiGatewayCustomDomainDomainNamemytesteventbusapiC1226DE0",
+          "Ref": "TestEventBridgeApiGatewayCustomDomainDomainNamemytesteventbridgeapi37BFE076",
         },
         "Stage": "$default",
       },
       "Type": "AWS::ApiGatewayV2::ApiMapping",
     },
-    "TestEventBusApiGatewayHttpApimytesteventbusapiStackTestEventBusApiGatewayHttpApimytesteventbusapiDefaultAuthorizer1D1514A4PermissionEEF7A16D": Object {
+    "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiStackTestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer870A40C8PermissionA9F7B186": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "TestEventBusApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaBECC85A6",
+            "TestEventBridgeApiGatewayDefaultAuthorizerLambdaBasicAuthLambdaE17306FE",
             "Arn",
           ],
         },
@@ -1239,11 +1239,11 @@ Object {
               },
               ":",
               Object {
-                "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
               },
               "/authorizers/",
               Object {
-                "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultAuthorizer1D9DBA27",
+                "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
               },
             ],
           ],
@@ -1251,23 +1251,23 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "TestEventBusApiGatewayRouteapieventbusadd74C3E729": Object {
+    "TestEventBridgeApiGatewayRouteapieventbridgeadd741B2F1D": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
         },
         "AuthorizationType": "CUSTOM",
         "AuthorizerId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiDefaultAuthorizer1D9DBA27",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiDefaultAuthorizer106D515D",
         },
-        "RouteKey": "ANY /api/eventbus/add",
+        "RouteKey": "ANY /api/eventbridge/add",
         "Target": Object {
           "Fn::Join": Array [
             "",
             Array [
               "integrations/",
               Object {
-                "Ref": "TestEventBusApiGatewayRouteapieventbusaddEventbusIntegration5A9D08F2",
+                "Ref": "TestEventBridgeApiGatewayRouteapieventbridgeaddEventbusIntegrationFC6B2233",
               },
             ],
           ],
@@ -1275,14 +1275,14 @@ Object {
       },
       "Type": "AWS::ApiGatewayV2::Route",
     },
-    "TestEventBusApiGatewayRouteapieventbusaddEventbusIntegration5A9D08F2": Object {
+    "TestEventBridgeApiGatewayRouteapieventbridgeaddEventbusIntegrationFC6B2233": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "TestEventBusApiGatewayHttpApimytesteventbusapiC26A9843",
+          "Ref": "TestEventBridgeApiGatewayHttpApimytesteventbridgeapiC8FFC5FC",
         },
         "CredentialsArn": Object {
           "Fn::GetAtt": Array [
-            "TestEventBusApiGatewayApiGwToEventBusServiceRole9DEF465C",
+            "TestEventBridgeApiGatewayApiGwToEventBusServiceRoleDD9C1BFB",
             "Arn",
           ],
         },

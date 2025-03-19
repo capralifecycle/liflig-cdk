@@ -97,10 +97,10 @@ describe("HTTP API Gateway", () => {
       eventBusName: "api-event-bus",
     })
 
-    new ApiGateway(stack, "TestEventBusApiGateway", {
-      dns: { subdomain: "my-test-eventbus-api", hostedZone },
+    new ApiGateway(stack, "TestEventBridgeApiGateway", {
+      dns: { subdomain: "my-test-eventbridge-api", hostedZone },
       defaultIntegration: {
-        type: "EventBus",
+        type: "EventBridge",
         eventBus,
         detailType: "liflig-test-http-api",
       },
@@ -108,7 +108,7 @@ describe("HTTP API Gateway", () => {
         type: "BASIC_AUTH",
         credentialsSecretName: credentialsSecret.secretName,
       },
-      routes: [{ path: "/api/eventbus/add" }],
+      routes: [{ path: "/api/eventbridge/add" }],
       accessLogs,
     })
 
