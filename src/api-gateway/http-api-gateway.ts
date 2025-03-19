@@ -162,7 +162,7 @@ export type IntegrationProps =
   /** Use this when connecting a route to send to an SQS queue. */
   | ({ type: "SQS" } & SqsIntegrationProps)
   /** Use this when connecting a route to send to an EventBus. */
-  | ({ type: "EventBus" } & EventBusIntegrationProps)
+  | ({ type: "EventBridge" } & EventBridgeIntegrationProps)
 
 /**
  * Props for the API-GW -> ALB (Application Load Balancer) integration.
@@ -281,7 +281,7 @@ export type SqsIntegrationProps = {
   }
 }
 
-export type EventBusIntegrationProps = {
+export type EventBridgeIntegrationProps = {
   eventBus: events.IEventBus
   detailType: string
 }
@@ -885,7 +885,7 @@ export class ApiGateway<
           payloadFormatVersion: apigw.PayloadFormatVersion.VERSION_1_0,
         })
       }
-      case "EventBus": {
+      case "EventBridge": {
         // API-GW does not have access to put events to event bus by default
         const role = new iam.Role(
           this,
@@ -898,7 +898,7 @@ export class ApiGateway<
         integration.eventBus.grantPutEventsTo(role)
 
         const parameterMapping = new apigw.ParameterMapping()
-          // https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html#SQS-SendMessage
+          // https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html#EventBridge-PutEvents
           .custom("EventBusName", integration.eventBus.eventBusName)
           .custom("Detail", "$request.body")
           // TODO: Figure out a better name
