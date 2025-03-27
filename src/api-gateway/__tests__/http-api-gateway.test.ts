@@ -90,7 +90,7 @@ describe("HTTP API Gateway", () => {
     expect(stack).toMatchCdkSnapshot()
   })
 
-  test("creates API-GW HTTP API using EventBridge integration", () => {
+  test("creates API-GW HTTP API using EventBridge integration with a default role", () => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
@@ -109,6 +109,138 @@ describe("HTTP API Gateway", () => {
         credentialsSecretName: credentialsSecret.secretName,
       },
       routes: [{ path: "/api/eventbridge/add" }],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API with default integration using same role on default integration as in a route integration", () => {
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    const eventBus = new EventBus(stack, "EventBus", {
+      eventBusName: "api-event-bus",
+    })
+
+    const role = new iam.Role(stack, "OtherRole", {
+      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+    })
+
+    new ApiGateway(stack, "TestEventBridgeApiGateway", {
+      dns: { subdomain: "my-test-eventbridge-api", hostedZone },
+      defaultIntegration: {
+        type: "EventBridge",
+        eventBus,
+        role: role,
+        detailType: "liflig-test-http-api",
+      },
+      defaultAuthorization: {
+        type: "BASIC_AUTH",
+        credentialsSecretName: credentialsSecret.secretName,
+      },
+      routes: [
+        { path: "/api/eventbridge/add" },
+        {
+          path: "/api/eventbride/role",
+          integration: {
+            type: "EventBridge",
+            role: role,
+            eventBus: eventBus,
+            detailType: "another-route",
+          },
+        },
+      ],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("creates API-GW HTTP API without default integration where all routes shared the same role", () => {
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    const eventBus = new EventBus(stack, "EventBus", {
+      eventBusName: "api-event-bus",
+    })
+
+    const role = new iam.Role(stack, "OtherRole", {
+      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+    })
+
+    new ApiGateway(stack, "TestEventBridgeApiGateway", {
+      dns: { subdomain: "my-test-eventbridge-api", hostedZone },
+      defaultAuthorization: {
+        type: "BASIC_AUTH",
+        credentialsSecretName: credentialsSecret.secretName,
+      },
+      routes: [
+        {
+          path: "/api/eventbridge/add",
+          integration: {
+            type: "EventBridge",
+            eventBus,
+            role: role,
+            detailType: "liflig-test-http-api",
+          },
+        },
+        {
+          path: "/api/eventbride/role",
+          integration: {
+            type: "EventBridge",
+            role: role,
+            eventBus: eventBus,
+            detailType: "another-route",
+          },
+        },
+      ],
+      accessLogs,
+    })
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  /**
+   * This should most likely never occur, but the design supports it, so lets test it does not create any issues for us
+   */
+  test("creates API-GW HTTP API using multiple EventBridge where different roles are used for default and routes with a specific role", () => {
+    const credentialsSecret = createBasicAuthCredentialsSecret()
+
+    const eventBus = new EventBus(stack, "EventBus", {
+      eventBusName: "api-event-bus",
+    })
+
+    const mainRole = new iam.Role(stack, "MainRole", {
+      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+    })
+
+    const secondRole = new iam.Role(stack, "SecondRole", {
+      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+    })
+
+    new ApiGateway(stack, "TestEventBridgeApiGateway", {
+      dns: { subdomain: "my-test-eventbridge-api", hostedZone },
+      defaultIntegration: {
+        type: "EventBridge",
+        eventBus,
+        role: mainRole,
+        detailType: "liflig-test-http-api",
+      },
+      defaultAuthorization: {
+        type: "BASIC_AUTH",
+        credentialsSecretName: credentialsSecret.secretName,
+      },
+      routes: [
+        { path: "/api/eventbridge/add" },
+        {
+          path: "/api/eventbridge/another-role",
+          integration: {
+            type: "EventBridge",
+            eventBus: eventBus,
+            role: secondRole,
+            detailType: "another-role",
+          },
+        },
+      ],
       accessLogs,
     })
 
