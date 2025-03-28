@@ -283,6 +283,15 @@ export type SqsIntegrationProps = {
 
 export type EventBridgeIntegrationProps = {
   /**
+   * A role is needed in order to grant api gateway access to put events
+   * on the desired event bus.
+   *
+   * If no role is provided, a new role will be created in order to grant apigw access to the event bus
+   *
+   * @default: creates role that can be assumed by api gw with access to putEvents on the but inputted
+   */
+  role?: iam.IRole
+  /**
    * An EventBridge event bus. Request bodies sent to the route will be forwarded to this event bus,
    * in the `Detail` field (see
    * https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html).
@@ -897,15 +906,21 @@ export class ApiGateway<
         })
       }
       case "EventBridge": {
-        // API-GW does not have access to put events to event bus by default
-        const role = new iam.Role(
-          this,
-          `ApiGwTo${integration.eventBus.node.id}ServiceRole`,
-          {
-            description: `Allows API-GW to put events to ${integration.eventBus.eventBusArn}`,
-            assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
-          },
-        )
+        /**
+         * API-GW does not have access to put events to event bus by default
+         *
+         * By default, we will create a new role to be used if this is undefined in the input
+         */
+        const role =
+          integration.role ??
+          new iam.Role(
+            this,
+            `ApiGwTo${integration.eventBus.node.id}ServiceRole`,
+            {
+              description: `Allows API-GW to put events to ${integration.eventBus.eventBusArn}`,
+              assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+            },
+          )
         integration.eventBus.grantPutEventsTo(role)
 
         const parameterMapping = new apigw.ParameterMapping()
