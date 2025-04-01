@@ -15,6 +15,8 @@ export interface FargateServiceProps {
   cluster: ecs.ICluster
   desiredCount: number
   ecsImage: ecs.ContainerImage
+  portMappings?: ecs.PortMapping[]
+  containerHealthCheck?: ecs.HealthCheck
   /**
    * @default 256
    */
@@ -112,6 +114,8 @@ export class FargateService extends constructs.Construct {
 
     parameters.grantRead(this.taskDefinition.taskRole)
 
+    const port = props.containerPort ?? 8080
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const container = this.taskDefinition.addContainer("Container", {
       logging: ecs.LogDriver.awsLogs({
         logGroup: this.logGroup,
@@ -120,6 +124,13 @@ export class FargateService extends constructs.Construct {
       }),
       image: props.ecsImage,
       secrets: props.secrets,
+      healthCheck: props.containerHealthCheck,
+      portMappings: props.portMappings ?? [
+        {
+          containerPort: port,
+          hostPort: port,
+        },
+      ],
       environment: {
         SSM_PREFIX: parameters.ssmPrefix,
         // Not read by the application, only used to help with redeployments.
@@ -130,13 +141,6 @@ export class FargateService extends constructs.Construct {
         initProcessEnabled: true,
       }),
       ...props.overrideContainerProps,
-    })
-
-    const port = props.containerPort ?? 8080
-
-    container.addPortMappings({
-      containerPort: port,
-      hostPort: port,
     })
 
     const enableCircuitBreaker = props.enableCircuitBreaker ?? false
