@@ -58,7 +58,7 @@
     "@eslint/js": "9.25.1",
     "@types/aws-lambda": "8.10.149",
     "@types/jest": "29.5.14",
-    "@types/node": "22.14.1",
+    "@types/node": "22.15.2",
     "@typescript-eslint/eslint-plugin": "8.31.0",
     "@typescript-eslint/parser": "8.31.0",
     "aws-cdk": "2.1012.0",
