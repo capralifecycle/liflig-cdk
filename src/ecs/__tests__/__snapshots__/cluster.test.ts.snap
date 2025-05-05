@@ -10,6 +10,9 @@ Object {
       "ap-east-1": Object {
         "value": "nodejs20.x",
       },
+      "ap-east-2": Object {
+        "value": "nodejs20.x",
+      },
       "ap-northeast-1": Object {
         "value": "nodejs20.x",
       },
@@ -118,6 +121,9 @@ Object {
       "us-isob-east-1": Object {
         "value": "nodejs18.x",
       },
+      "us-isob-west-1": Object {
+        "value": "nodejs18.x",
+      },
       "us-west-1": Object {
         "value": "nodejs20.x",
       },
@@ -136,7 +142,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "4cd2f2411231aa073e609dc99a49b5c5e974252bf9abf0f9350d237d17cce8be.zip",
+          "S3Key": "9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00.zip",
         },
         "Handler": "index.handler",
         "Role": Object {

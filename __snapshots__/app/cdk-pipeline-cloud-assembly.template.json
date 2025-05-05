@@ -838,19 +838,9 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":root"
-                    ]
+                  "Fn::GetAtt": [
+                    "PipelineCodePipelineRoleEE058E60",
+                    "Arn"
                   ]
                 }
               }
@@ -985,19 +975,9 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":root"
-                    ]
+                  "Fn::GetAtt": [
+                    "PipelineCodePipelineRoleEE058E60",
+                    "Arn"
                   ]
                 }
               }
