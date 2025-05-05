@@ -67,5 +67,6 @@
       },
       "displayName": "cdk-pipeline-cdk-source/example/example"
     }
-  }
+  },
+  "minimumCliVersion": "2.1005.0"
 }
