@@ -45,7 +45,7 @@
     "@aws-sdk/client-cloudwatch-logs": "3.808.0",
     "@aws-sdk/client-codebuild": "3.808.0",
     "@aws-sdk/client-codepipeline": "3.808.0",
-    "@aws-sdk/client-ecs": "3.808.0",
+    "@aws-sdk/client-ecs": "3.809.0",
     "@aws-sdk/client-s3": "3.808.0",
     "@aws-sdk/client-secrets-manager": "3.808.0",
     "@aws-sdk/client-ses": "3.808.0",
