@@ -43,7 +43,7 @@
   "devDependencies": {
     "@aws-cdk/assert": "2.68.0",
     "@aws-sdk/client-cloudwatch-logs": "3.810.0",
-    "@aws-sdk/client-codebuild": "3.810.0",
+    "@aws-sdk/client-codebuild": "3.811.0",
     "@aws-sdk/client-codepipeline": "3.810.0",
     "@aws-sdk/client-ecs": "3.810.0",
     "@aws-sdk/client-s3": "3.810.0",
