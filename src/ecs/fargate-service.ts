@@ -32,6 +32,10 @@ export interface FargateServiceProps {
   /**
    * @default 15 seconds
    */
+  logDriverMode?: ecs.AwsLogDriverMode
+  /**
+   * @default AwsLogDriverMode.BLOCKING
+   */
   deregistrationDelay?: cdk.Duration
   /**
    * @default 8080
@@ -121,6 +125,7 @@ export class FargateService extends constructs.Construct {
         logGroup: this.logGroup,
         streamPrefix: "ecs",
         datetimeFormat: "%Y-%m-%dT%H:%M:%S",
+        mode: props.logDriverMode ?? ecs.AwsLogDriverMode.BLOCKING,
       }),
       image: props.ecsImage,
       secrets: props.secrets,
