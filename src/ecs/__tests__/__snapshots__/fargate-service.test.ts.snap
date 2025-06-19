@@ -334,6 +334,7 @@ Object {
                 },
                 "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
               },
             },
             "Name": "Container",
