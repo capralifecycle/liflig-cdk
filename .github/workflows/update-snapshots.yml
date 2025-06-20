@@ -95,7 +95,7 @@ jobs:
           # stage CDK snapshot changes
           git add __snapshots__
 
-          git commit -m "chore: update snapshots triggered by comment"
+          git commit -m "chore: update snapshots triggered by comment [skip ci]"
 
           # rebase onto the PR branch to avoid merge conflicts
           git fetch origin ${{ steps.pr.outputs.head_ref }}
