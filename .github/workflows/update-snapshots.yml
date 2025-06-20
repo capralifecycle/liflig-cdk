@@ -71,11 +71,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Update CDK snapshots
-        run: npm run snapshots
-
-      - name: Update jest snapshots
-        run: npm run test -- --updateSnapshot
+      - name: Update CDK and Jest snapshots
+        run: make snapshots
 
       - name: Check for snapshot changes
         id: check_changes
