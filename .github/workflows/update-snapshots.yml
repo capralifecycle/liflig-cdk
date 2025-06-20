@@ -1,0 +1,108 @@
+name: update snapshots
+
+on:
+  issue_comment:
+    types: [created]
+
+defaults:
+  run:
+    # NOTE: A bit stricter than the default bash options used by GitHub Actions
+    # (bash --noprofile --norc -e -o pipefail {0})
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+# NOTE: Set concurrency for the current workflow to 1
+concurrency: update-snapshots-${{ github.ref }}-${{ github.workflow }}
+
+jobs:
+  update-snapshots:
+    if: |
+      github.event.issue.pull_request != null &&
+      contains(github.event.comment.body, '/update-snapshots')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+
+      - name: Notify PR about snapshot update
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.issue.number;
+            const runId = process.env.GITHUB_RUN_ID;
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+            const body = `Updating snapshots... [View workflow run](${runUrl})`;
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: owner,
+              repo: repo,
+              body: body
+            });
+
+      - name: fetch pr branch name
+        if: ${{ github.event.issue.pull_request }}
+        id: pr
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.issue.number;
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            core.setOutput('head_ref', pr.head.ref);
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update CDK snapshots
+        run: npm run snapshots
+
+      - name: Update jest snapshots
+        run: npm run test -- --updateSnapshot
+
+      - name: Check for snapshot changes
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push snapshot changes
+        if: steps.check_changes.outputs.changes_detected == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # stage Jest snapshot changes
+          git add src
+
+          # stage CDK snapshot changes
+          git add __snapshots__
+
+          git commit -m "chore: update snapshots triggered by comment"
+
+          # rebase onto the PR branch to avoid merge conflicts
+          git fetch origin ${{ steps.pr.outputs.head_ref }}
+          git rebase origin/${{ steps.pr.outputs.head_ref }}
+
+          # push updated snapshots
+          git push origin HEAD:${{ steps.pr.outputs.head_ref }}
