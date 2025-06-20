@@ -30,11 +30,11 @@ export interface FargateServiceProps {
    */
   logsRetention?: logs.RetentionDays
   /**
-   * @default 15 seconds
+   * @default AwsLogDriverMode.BLOCKING
    */
   logDriverMode?: ecs.AwsLogDriverMode
   /**
-   * @default AwsLogDriverMode.BLOCKING
+   * @default 15 seconds
    */
   deregistrationDelay?: cdk.Duration
   /**
