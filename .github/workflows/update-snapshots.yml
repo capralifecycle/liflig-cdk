@@ -1,4 +1,4 @@
-name: update snapshots
+name: update-snapshots
 
 on:
   issue_comment:
