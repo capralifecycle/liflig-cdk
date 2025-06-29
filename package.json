@@ -37,7 +37,7 @@
   },
   "overrides": {
     "semantic-release": {
-      "@semantic-release/npm": "12.0.1"
+      "@semantic-release/npm": "12.0.2"
     }
   },
   "devDependencies": {
