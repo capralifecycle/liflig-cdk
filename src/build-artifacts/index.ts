@@ -30,7 +30,7 @@ interface Props {
   /**
    * The lifecycle rules to apply to images stored in the ECR repository.
    *
-   * @default - Expire images after 180 days
+   * @default - Expire untagged images after 10 days and any image older than 180 days
    */
   ecrRepositoryLifecycleRules?: ecr.LifecycleRule[]
   /**
@@ -195,6 +195,10 @@ export class BuildArtifacts extends constructs.Construct {
     const ecrRepo = new ecr.Repository(this, "EcrRepository", {
       repositoryName: ecrRepositoryName,
       lifecycleRules: props.ecrRepositoryLifecycleRules || [
+        {
+          maxImageAge: cdk.Duration.days(10),
+          tagStatus: ecr.TagStatus.UNTAGGED,
+        },
         {
           maxImageAge: cdk.Duration.days(180),
           tagStatus: ecr.TagStatus.ANY,
