@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`HTTP API Gateway creates API-GW HTTP API using EventBridge integration with a default role 1`] = `
 Object {
