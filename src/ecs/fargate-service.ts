@@ -22,6 +22,10 @@ export interface FargateServiceProps {
    */
   cpu?: number
   /**
+   * @default undefined
+   */
+  runtimePlatform?: ecs.RuntimePlatform
+  /**
    * @default 512
    */
   memoryLimitMiB?: number
@@ -113,6 +117,7 @@ export class FargateService extends constructs.Construct {
       {
         cpu: props.cpu ?? 256,
         memoryLimitMiB: props.memoryLimitMiB ?? 512,
+        runtimePlatform: props.runtimePlatform,
       },
     )
 
