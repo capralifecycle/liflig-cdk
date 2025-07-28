@@ -107,7 +107,10 @@ export interface SidecarOptions {
 class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
   private readonly construct: constructs.Construct
 
-  constructor(construct: constructs.Construct, private props?: SidecarOptions) {
+  constructor(
+    construct: constructs.Construct,
+    private props?: SidecarOptions,
+  ) {
     this.construct = construct
   }
 
