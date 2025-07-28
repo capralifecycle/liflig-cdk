@@ -14,7 +14,7 @@ test("create alarms", () => {
   const action = new cloudwatchActions.SnsAction(topic)
 
   const alarms = new LambdaAlarms(stack, "LambdaAlarms", {
-    actions: [action],
+    action: action,
     lambdaFunctionName: "lambda-function-name",
   })
 
