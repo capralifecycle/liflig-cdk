@@ -85,6 +85,9 @@ Object {
       "eu-west-3": Object {
         "value": "nodejs22.x",
       },
+      "eusc-de-east-1": Object {
+        "value": "nodejs22.x",
+      },
       "il-central-1": Object {
         "value": "nodejs22.x",
       },

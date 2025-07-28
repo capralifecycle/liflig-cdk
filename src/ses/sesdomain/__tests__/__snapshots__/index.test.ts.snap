@@ -85,6 +85,9 @@ Object {
       "eu-west-3": Object {
         "value": "nodejs22.x",
       },
+      "eusc-de-east-1": Object {
+        "value": "nodejs22.x",
+      },
       "il-central-1": Object {
         "value": "nodejs22.x",
       },
@@ -249,6 +252,10 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": Object {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON",
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
@@ -440,6 +447,9 @@ Object {
       "eu-west-3": Object {
         "value": "nodejs22.x",
       },
+      "eusc-de-east-1": Object {
+        "value": "nodejs22.x",
+      },
       "il-central-1": Object {
         "value": "nodejs22.x",
       },
@@ -605,6 +615,10 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": Object {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON",
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
@@ -794,6 +808,9 @@ Object {
         "value": "nodejs22.x",
       },
       "eu-west-3": Object {
+        "value": "nodejs22.x",
+      },
+      "eusc-de-east-1": Object {
         "value": "nodejs22.x",
       },
       "il-central-1": Object {
@@ -988,6 +1005,10 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": Object {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON",
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
@@ -1179,6 +1200,9 @@ Object {
       "eu-west-3": Object {
         "value": "nodejs22.x",
       },
+      "eusc-de-east-1": Object {
+        "value": "nodejs22.x",
+      },
       "il-central-1": Object {
         "value": "nodejs22.x",
       },
@@ -1343,6 +1367,10 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": Object {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON",
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
