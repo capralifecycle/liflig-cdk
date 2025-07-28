@@ -3,12 +3,12 @@ import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 
 export interface LambdaAlarmsProps {
-  actions: cloudwatch.IAlarmAction[]
+  action: cloudwatch.IAlarmAction
   lambdaFunctionName: string
 }
 
 export class LambdaAlarms extends constructs.Construct {
-  private readonly actions: cloudwatch.IAlarmAction[]
+  private readonly action: cloudwatch.IAlarmAction
   private readonly lambdaFunctionName: string
 
   constructor(
@@ -18,7 +18,7 @@ export class LambdaAlarms extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.actions = props.actions
+    this.action = props.action
     this.lambdaFunctionName = props.lambdaFunctionName
   }
 
@@ -54,9 +54,7 @@ export class LambdaAlarms extends constructs.Construct {
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
 
-    this.actions.forEach((action) => {
-      alarm.addAlarmAction(action)
-      alarm.addOkAction(action)
-    })
+    alarm.addAlarmAction(this.action)
+    alarm.addOkAction(this.action)
   }
 }
