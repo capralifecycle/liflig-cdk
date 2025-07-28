@@ -4,10 +4,25 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 
 export interface LambdaAlarmsProps {
+  /**
+   * The default action to use for CloudWatch alarm state changes.
+   */
   action: cloudwatch.IAlarmAction
+  /**
+   * The Lambda to add alarms to.
+   */
   lambdaFunction: lambda.IFunction
 }
 
+/**
+ * Alarms for Lambda functions.
+ *
+ * By itself, no alarms are created. Use the methods available
+ * to add alarms.
+ *
+ * Create multiple instances of {@link LambdaAlarms} with different `action`
+ * if you need an alarm to do multiple things.
+ */
 export class LambdaAlarms extends constructs.Construct {
   private readonly action: cloudwatch.IAlarmAction
   private readonly lambdaFunction: lambda.IFunction
