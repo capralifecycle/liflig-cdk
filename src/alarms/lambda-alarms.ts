@@ -42,7 +42,7 @@ export class LambdaAlarms extends constructs.Construct {
       metricName: "Errors",
       namespace: "AWS/Lambda",
       statistic: "Sum",
-      period: cdk.Duration.seconds(60), // Standard resolution metric has a minimum of 60s period
+      period: cdk.Duration.seconds(60),
       dimensionsMap: {
         FunctionName: this.lambdaFunction.functionName,
       },
