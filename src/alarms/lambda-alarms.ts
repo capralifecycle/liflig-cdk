@@ -1,15 +1,16 @@
 import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
+import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 
 export interface LambdaAlarmsProps {
   action: cloudwatch.IAlarmAction
-  lambdaFunctionName: string
+  lambdaFunction: lambda.IFunction
 }
 
 export class LambdaAlarms extends constructs.Construct {
   private readonly action: cloudwatch.IAlarmAction
-  private readonly lambdaFunctionName: string
+  private readonly lambdaFunction: lambda.IFunction
 
   constructor(
     scope: constructs.Construct,
@@ -19,7 +20,7 @@ export class LambdaAlarms extends constructs.Construct {
     super(scope, id)
 
     this.action = props.action
-    this.lambdaFunctionName = props.lambdaFunctionName
+    this.lambdaFunction = props.lambdaFunction
   }
 
   /**
@@ -43,10 +44,10 @@ export class LambdaAlarms extends constructs.Construct {
       statistic: "Sum",
       period: cdk.Duration.seconds(60), // Standard resolution metric has a minimum of 60s period
       dimensionsMap: {
-        FunctionName: this.lambdaFunctionName,
+        FunctionName: this.lambdaFunction.functionName,
       },
     }).createAlarm(this, "FailedInvocationAlarm", {
-      alarmDescription: `Invocation for '${this.lambdaFunctionName}' failed. ${props?.appendToAlarmDescription ?? ""}`,
+      alarmDescription: `Invocation for '${this.lambdaFunction.functionName}' failed. ${props?.appendToAlarmDescription ?? ""}`,
       comparisonOperator:
         cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       evaluationPeriods: 1,

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`create alarms 1`] = `
 Object {
@@ -10,12 +10,25 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "Invocation for 'lambda-function-name' failed. Runbook at https://liflig.no",
+        "AlarmDescription": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Invocation for '",
+              Object {
+                "Ref": "TestedLambdaAAAB7B55",
+              },
+              "' failed. Runbook at https://liflig.no",
+            ],
+          ],
+        },
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "Dimensions": Array [
           Object {
             "Name": "FunctionName",
-            "Value": "lambda-function-name",
+            "Value": Object {
+              "Ref": "TestedLambdaAAAB7B55",
+            },
           },
         ],
         "EvaluationPeriods": 1,
@@ -32,6 +45,57 @@ Object {
         "TreatMissingData": "ignore",
       },
       "Type": "AWS::CloudWatch::Alarm",
+    },
+    "TestedLambdaAAAB7B55": Object {
+      "DependsOn": Array [
+        "TestedLambdaServiceRole1EFFE97F",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "FunctionName": "lambda-function-name",
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestedLambdaServiceRole1EFFE97F",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestedLambdaServiceRole1EFFE97F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
   },
 }
