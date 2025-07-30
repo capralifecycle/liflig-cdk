@@ -6,6 +6,16 @@ import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import { RemovalPolicy } from "aws-cdk-lib"
 import { FargateService } from "./fargate-service"
 
+export interface OpenTelemetryCollectorsProps {
+  service: FargateService
+
+  /** @default 6 months **/
+  logRetention?: RetentionDays
+
+  /** @default "amazon/aws-otel-collector:v0.43.1" */
+  dockerImage?: string
+}
+
 /**
  * Methods to enable collection of Open Telemetry (otel) data of a {@link FargateService}
  * using a docker container with an otel agent.
@@ -49,7 +59,11 @@ import { FargateService } from "./fargate-service"
  * @see OpenTelemetryCollectors.addOpenTelemetryCollectorSidecar
  */
 export class OpenTelemetryCollectors extends constructs.Construct {
-  constructor(scope: constructs.Construct, id: string) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    private readonly props: OpenTelemetryCollectorsProps,
+  ) {
     super(scope, id)
   }
 
@@ -61,8 +75,8 @@ export class OpenTelemetryCollectors extends constructs.Construct {
    * connection attempts to the otel collector.
    * @param service
    */
-  public static disableOpenTelemetryJavaAgent(service: FargateService) {
-    service.taskDefinition.defaultContainer?.addEnvironment(
+  public disableOpenTelemetryJavaAgent() {
+    this.props.service.taskDefinition.defaultContainer?.addEnvironment(
       "OTEL_JAVAAGENT_ENABLED",
       "false",
     )
@@ -75,24 +89,19 @@ export class OpenTelemetryCollectors extends constructs.Construct {
    * You also need to add either the Java SDK for OTel or a java agent,
    * to capture telemetry and send to this collector.
    */
-  public addOpenTelemetryCollectorSidecar(
-    service: FargateService,
-    options?: SidecarOptions,
-  ) {
+  public addOpenTelemetryCollectorSidecar() {
     new OpenTelemetryPolicies(this, "OpenTelemetryPolicies", {
-      taskDefinition: service.taskDefinition,
+      taskDefinition: this.props.service.taskDefinition,
     })
-    service.taskDefinition.addExtension(
-      new OpenTelemetryCollectorSidecar(this, options),
+
+    this.props.service.taskDefinition.addExtension(
+      new OpenTelemetryCollectorSidecar(
+        this,
+        this.props.logRetention,
+        this.props.dockerImage,
+      ),
     )
   }
-}
-
-export interface SidecarOptions {
-  /** @default 6 months **/
-  logRetention?: RetentionDays
-  /** @default "amazon/aws-otel-collector:v0.43.1" */
-  dockerImage?: string
 }
 
 /**
@@ -103,14 +112,11 @@ export interface SidecarOptions {
  * to capture telemetry and send to this collector.
  */
 class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
-  private readonly construct: constructs.Construct
-
   constructor(
-    construct: constructs.Construct,
-    private props?: SidecarOptions,
-  ) {
-    this.construct = construct
-  }
+    private readonly construct: constructs.Construct,
+    private readonly logRetention?: RetentionDays,
+    private readonly dockerImage?: string,
+  ) {}
 
   extend(taskDefinition: ecs.TaskDefinition): void {
     if (taskDefinition.networkMode !== ecs.NetworkMode.AWS_VPC) {
@@ -126,12 +132,11 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
     }
 
     const logGroup = new logs.LogGroup(this.construct, "CollectorLogGroup", {
-      retention: this.props?.logRetention ?? RetentionDays.SIX_MONTHS,
+      retention: this.logRetention ?? RetentionDays.SIX_MONTHS,
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
-    const sidecarImage =
-      this.props?.dockerImage ?? "amazon/aws-otel-collector:v0.43.1"
+    const sidecarImage = this.dockerImage ?? "amazon/aws-otel-collector:v0.43.1"
     const sidecar = taskDefinition.addContainer("aws-opentelemetry-collector", {
       cpu: 32,
       memoryReservationMiB: 24,

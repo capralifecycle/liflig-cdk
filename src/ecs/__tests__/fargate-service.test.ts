@@ -81,10 +81,9 @@ test("creates fargate service with parameters and listener rule", () => {
     enableCircuitBreaker: true,
   })
 
-  new OpenTelemetryCollectors(
-    stack,
-    "OpenTelemetryCollectors",
-  ).addOpenTelemetryCollectorSidecar(service)
+  new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
+    service: service,
+  }).addOpenTelemetryCollectorSidecar()
 
   new ListenerRule(stack, "Dns", {
     domainName: `example.com`,
