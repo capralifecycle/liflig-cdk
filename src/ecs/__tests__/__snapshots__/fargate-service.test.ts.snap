@@ -393,9 +393,6 @@ receivers:
   awsxray:
     endpoint: 0.0.0.0:2000
     transport: udp
-  statsd:
-    endpoint: 0.0.0.0:8125
-    aggregation_interval: 60s
   awsecscontainermetrics:
 
 processors:
@@ -444,7 +441,114 @@ processors:
       - include: ecs.task.storage.write_bytes
         action: update
         new_name: StorageWriteBytes
-
+  filter/application:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'resource.attributes[\\"http.target\\"] == \\"/health\\"'
+        - 'resource.attributes[\\"net.peer.name\\"] == \\"169.254.170.2\\"' # EC2 Metadata Endpoint
+  filter/traces:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes[\\"http.route\\"] == \\"health\\"'
+        - 'attributes[\\"http.url\\"] == \\"/health\\"'
+        - 'name == \\"GET health\\"'
+  attributes/application:
+    actions:
+      # Http adds lots of high cardinality, which xray creates 1 metric per. Expensive.
+      - key: http.url
+        action: delete
+      - key: http.target
+        action: delete
+      - key: http.client_ip
+        action: delete
+      - key: http.response_content_length
+        action: delete
+      - key: http.request_content_length
+        action: delete
+      - key: net.host.name
+        action: delete
+      - key: net.sock.peer.addr
+        action: delete
+      - key: net.sock.peer.port
+        action: delete
+      - key: net.sock.host.addr
+        action: delete
+      - key: net.sock.host.port
+        action: delete
+      - key: user_agent.original
+        action: delete
+  resource/application:
+    attributes:
+      - key: cloud.provider
+        action: delete
+      - key: host.arch
+        action: delete
+      - key: aws.ecs.container.image.id
+        action: delete
+      - key: aws.ecs.task.arn
+        action: delete
+      - key: aws.log.stream.names
+        action: delete
+      - key: aws.log.stream.arns
+        action: delete
+      - key: cloud.platform
+        action: delete
+      - key: container.name
+        action: delete
+      - key: process.executable.path
+        action: delete
+      - key: process.runtime.version
+        action: delete
+      - key: telemetry.auto.version
+        action: delete
+      - key: telemetry.sdk.name
+        action: delete
+      - key: container.id
+        action: delete
+      - key: container.image.tag
+        action: delete
+      - key: process.runtime.name
+        action: delete
+      - key: service.namespace
+        action: delete
+      - key: telemetry.sdk.version
+        action: delete
+      - key: aws.ecs.task.family
+        action: delete
+      - key: aws.ecs.task.revision
+        action: delete
+      - key: aws.log.group.arns
+        action: delete
+      - key: container.image.name
+        action: delete
+      - key: os.description
+        action: delete
+      - key: os.type
+        action: delete
+      - key: process.runtime.description
+        action: delete
+      - key: version
+        action: delete
+      - key: aws.ecs.launchtype
+        action: delete
+      - key: aws.log.group.names
+        action: delete
+      - key: host.name
+        action: delete
+      - key: process.pid
+        action: delete
+      - key: telemetry.sdk.language
+        action: delete
+      - key: aws.ecs.container.arn
+        action: delete
+      - key: service.version
+        action: delete
+      - key: process.command_args
+        action: delete
+      - key: service
+        action: delete
   resource:
     attributes:
       - key: ClusterName
@@ -457,9 +561,6 @@ processors:
         action: insert
       - key: aws.ecs.service.name
         action: delete
-      - key: TaskId
-        from_attribute: aws.ecs.task.id
-        action: insert
       - key: aws.ecs.task.id
         action: delete
       - key: TaskDefinitionFamily
@@ -467,29 +568,14 @@ processors:
         action: insert
       - key: aws.ecs.task.family
         action: delete
-      - key: TaskARN
-        from_attribute: aws.ecs.task.arn
-        action: insert
       - key: aws.ecs.task.arn
         action: delete
-      - key: DockerName
-        from_attribute: aws.ecs.docker.name
-        action: insert
       - key: aws.ecs.docker.name
         action: delete
-      - key: TaskDefinitionRevision
-        from_attribute: aws.ecs.task.version
-        action: insert
       - key: aws.ecs.task.version
         action: delete
-      - key: PullStartedAt
-        from_attribute: aws.ecs.task.pull_started_at
-        action: insert
       - key: aws.ecs.task.pull_started_at
         action: delete
-      - key: PullStoppedAt
-        from_attribute: aws.ecs.task.pull_stopped_at
-        action: insert
       - key: aws.ecs.task.pull_stopped_at
         action: delete
       - key: AvailabilityZone
@@ -497,9 +583,6 @@ processors:
         action: insert
       - key: cloud.zone
         action: delete
-      - key: LaunchType
-        from_attribute: aws.ecs.task.launch_type
-        action: insert
       - key: aws.ecs.task.launch_type
         action: delete
       - key: Region
@@ -512,145 +595,35 @@ processors:
         action: insert
       - key: cloud.account.id
         action: delete
-      - key: DockerId
-        from_attribute: container.id
-        action: insert
       - key: container.id
         action: delete
-      - key: ContainerName
-        from_attribute: container.name
-        action: insert
       - key: container.name
         action: delete
-      - key: Image
-        from_attribute: container.image.name
-        action: insert
       - key: container.image.name
         action: delete
-      - key: ImageId
-        from_attribute: aws.ecs.container.image.id
-        action: insert
       - key: aws.ecs.container.image.id
         action: delete
-      - key: ExitCode
-        from_attribute: aws.ecs.container.exit_code
-        action: insert
       - key: aws.ecs.container.exit_code
         action: delete
-      - key: CreatedAt
-        from_attribute: aws.ecs.container.created_at
-        action: insert
       - key: aws.ecs.container.created_at
         action: delete
-      - key: StartedAt
-        from_attribute: aws.ecs.container.started_at
-        action: insert
       - key: aws.ecs.container.started_at
         action: delete
-      - key: FinishedAt
-        from_attribute: aws.ecs.container.finished_at
-        action: insert
       - key: aws.ecs.container.finished_at
         action: delete
-      - key: ImageTag
-        from_attribute: container.image.tag
-        action: insert
       - key: container.image.tag
         action: delete
 
-  # THIS IS WHAT LIFLIG ADDED
-  resourcedetection:
-    detectors:
-      - env
-      - ecs
-      - ec2
-  resource/application:
-    attributes:
-      - key: aws.ecs.task.family
-        action: delete
-      - key: host.id
-        action: delete
-      - key: aws.ecs.task.arn
-        action: delete
-      - key: aws.ecs.task.revision
-        action: delete
-      - key: aws.ecs.launchtype
-        action: delete
-      - key: aws.ecs.cluster.arn
-        action: delete
-      - key: cloud.provider
-        action: delete
-      - key: cloud.platform
-        action: delete
-      - key: cloud.account.id
-        action: delete
-      - key: cloud.region
-        action: delete
-      - key: cloud.availability_zone
-        action: delete
-      - key: aws.log.group.names
-        action: delete
-      - key: aws.log.group.arns
-        action: delete
-      - key: aws.log.stream.names
-        action: delete
-      - key: host.image.id
-        action: delete
-      - key: host.name
-        action: delete
-      - key: host.type
-        action: delete
-      - key: container.id
-        action: delete
-      - key: http.flavor
-        action: delete
-      - key: http.scheme
-        action: delete
-      - key: http.url
-        action: delete
-      - key: container.name
-        action: delete
-      - key: host.arch
-        action: delete
-      - key: http.route
-        action: delete
-      - key: net.peer.name
-        action: delete
-      - key: os.description
-        action: delete
-      - key: os.type
-        action: delete
-      - key: process.command_line
-        action: delete
-      - key: process.executable.path
-        action: delete
-      - key: process.pid
-        action: delete
-      - key: process.runtime.description
-        action: delete
-      - key: process.runtime.name
-        action: delete
-      - key: process.runtime.version
-        action: delete
-      - key: telemetry.auto.version
-        action: delete
-      - key: telemetry.sdk.language
-        action: delete
-      - key: telemetry.sdk.name
-        action: delete
-      - key: telemetry.sdk.version
-        action: delete
-  # END OF LIFLIG CHANGES
-
 exporters:
   awsxray:
+    indexed_attributes: [\\"otel.resource.service.name\\"] # Max 50 attributes
   awsemf/application:
     namespace: ECS/AWSOTel/Application
     log_group_name: '/aws/ecs/application/metrics'
-    # THIS IS WHAT LIFLIG ADDED
+    log_retention: 365
     resource_to_telemetry_conversion:
       enabled: true
-    # END OF LIFLIG CHANGES
+    dimension_rollup_option: NoDimensionRollup
   awsemf/performance:
     namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
@@ -675,11 +648,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp,awsxray]
-      processors: [batch/traces]
+      processors: [filter/traces, batch/traces]
       exporters: [awsxray]
     metrics/application:
-      receivers: [otlp, statsd]
-      processors: [resourcedetection, resource/application, batch/metrics]
+      receivers: [otlp]
+      processors: [filter/application, resource/application, attributes/application, batch/metrics]
       exporters: [awsemf/application]
     metrics/performance:
       receivers: [awsecscontainermetrics ]
@@ -687,7 +660,6 @@ service:
       exporters: [ awsemf/performance ]
 
   extensions: [health_check]
-
 ",
               },
             ],
@@ -813,6 +785,7 @@ service:
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
                 "xray:PutTraceSegments",
                 "xray:PutTelemetryRecords",
                 "xray:GetSamplingRules",
@@ -965,6 +938,7 @@ service:
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
                 "xray:PutTraceSegments",
                 "xray:PutTelemetryRecords",
                 "xray:GetSamplingRules",
