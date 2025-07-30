@@ -223,6 +223,7 @@ class OpenTelemetryPolicies extends constructs.Construct {
         "logs:CreateLogStream",
         "logs:DescribeLogStreams",
         "logs:DescribeLogGroups",
+        "logs:PutRetentionPolicy",
         "xray:PutTraceSegments",
         "xray:PutTelemetryRecords",
         "xray:GetSamplingRules",
