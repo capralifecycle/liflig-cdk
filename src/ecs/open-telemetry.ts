@@ -92,7 +92,6 @@ export interface SidecarOptions {
   /** @default 6 months **/
   logRetention?: RetentionDays
   /** @default "amazon/aws-otel-collector:v0.43.1" */
-  /** @default "amazon/aws-otel-collector:v0.43.1" */
   dockerImage?: string
 }
 
