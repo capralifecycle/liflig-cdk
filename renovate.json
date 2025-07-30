@@ -2,5 +2,17 @@
   "extends": [
     "github>capraconsulting/renovate-config:library",
     "github>capraconsulting/renovate-config:aggressive"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["src/**/open-telemetry.ts"],
+      "matchStrings": [
+        "amazon\\\/aws-otel-collector:(?<currentValue>[^\"]+)"
+      ],
+      "depNameTemplate": "amazon/aws-otel-collector",
+      "datasourceTemplate": "docker",
+      "versioning": "docker"
+    }
   ]
 }
