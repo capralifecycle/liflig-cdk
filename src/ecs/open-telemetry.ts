@@ -73,10 +73,21 @@ export class OpenTelemetryCollectors extends constructs.Construct {
    *
    * You might want to do this to avoid overhead or error logs from failed
    * connection attempts to the otel collector.
-   * @param service
    */
   public disableOpenTelemetryJavaAgent() {
-    this.props.service.taskDefinition.defaultContainer?.addEnvironment(
+    OpenTelemetryCollectors.disableOpenTelemetryJavaAgent(this.props.service)
+  }
+
+  /**
+   * The open-telemetry java agent may run by default in the Docker image.
+   * This method will tell the agent to disable itself.
+   *
+   * You might want to do this to avoid overhead or error logs from failed
+   * connection attempts to the otel collector.
+   * @param service
+   */
+  public static disableOpenTelemetryJavaAgent(service: FargateService) {
+    service.taskDefinition.defaultContainer?.addEnvironment(
       "OTEL_JAVAAGENT_ENABLED",
       "false",
     )
