@@ -91,10 +91,9 @@ export class OpenTelemetryCollectors extends constructs.Construct {
 export interface SidecarOptions {
   /** @default 6 months **/
   logRetention?: RetentionDays
-  /** @default "amazon/aws-otel-collector" */
+  /** @default "amazon/aws-otel-collector:v0.43.1" */
+  /** @default "amazon/aws-otel-collector:v0.43.1" */
   dockerImage?: string
-  /** @default "0.21.0" */
-  dockerImageVersion?: string
 }
 
 /**
@@ -132,15 +131,13 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
-    const sidecarImage = this.props?.dockerImage ?? "amazon/aws-otel-collector"
-    const sidecarVersion = this.props?.dockerImageVersion ?? "0.21.0" // FIXME let renovate detect this
+    const sidecarImage =
+      this.props?.dockerImage ?? "amazon/aws-otel-collector:v0.43.1"
     const sidecar = taskDefinition.addContainer("aws-opentelemetry-collector", {
       cpu: 32,
       memoryReservationMiB: 24,
       memoryLimitMiB: 256,
-      image: ecs.ContainerImage.fromRegistry(
-        `${sidecarImage}:${sidecarVersion}`,
-      ),
+      image: ecs.ContainerImage.fromRegistry(sidecarImage),
       command: [commands.metricsAndTracesAndContainerResources], // This is not used when the AOT_CONFIG_CONTENT is set!
       environment: {
         // You can alternatively create an SSM parameter with the config, and pass it to the `secrets` option
