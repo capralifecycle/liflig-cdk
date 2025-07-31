@@ -5,6 +5,7 @@ import * as ecs from "aws-cdk-lib/aws-ecs"
 import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { FargateService, OpenTelemetryCollectors } from ".."
+import { RetentionDays } from "aws-cdk-lib/aws-logs"
 
 describe("OpenTelemetryCollectors", () => {
   const createService = () => {
@@ -46,6 +47,24 @@ describe("OpenTelemetryCollectors", () => {
 
     new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
       service: service,
+    }).addOpenTelemetryCollectorSidecar()
+
+    expect(stack).toMatchCdkSnapshot()
+  })
+
+  test("sets all options on OpenTelemetry collector sidecar", () => {
+    const { service, stack } = createService()
+
+    new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
+      service: service,
+      awsOtelConfig: "myCustomYaml: true",
+      dockerImage: "example-image:latest",
+      logRetention: RetentionDays.FIVE_DAYS,
+      containerProps: {
+        cpu: 128,
+        memoryLimitMiB: 2048,
+        memoryReservationMiB: 1024,
+      },
     }).addOpenTelemetryCollectorSidecar()
 
     expect(stack).toMatchCdkSnapshot()

@@ -29,6 +29,16 @@ export interface OpenTelemetryCollectorsProps {
    * @default a file in `assets` tuned to work for aws and strips known high-cardinality metrics (like those containing IP addresses and ports)
    */
   awsOtelConfig?: string
+
+  /** Overrides for the sidecar container.
+   * You do not need to specify this.
+   *
+   * Defaults:
+   * - cpu: 32 units
+   * - memory reservation: 24 MiB
+   * - memory limit: 256 MiB
+   */
+  containerProps?: SidecarContainerProps
 }
 
 /**
@@ -125,10 +135,16 @@ export class OpenTelemetryCollectors extends constructs.Construct {
         this.props.logRetention,
         this.props.dockerImage,
         this.props.awsOtelConfig,
+        this.props.containerProps,
       ),
     )
   }
 }
+
+export type SidecarContainerProps = Pick<
+  ecs.ContainerDefinitionProps,
+  "cpu" | "memoryReservationMiB" | "memoryLimitMiB"
+>
 
 /**
  * Adds a sidecar with an AWS Distro OpenTelemetry Collector.
@@ -143,6 +159,7 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
     private readonly logRetention?: RetentionDays,
     private readonly dockerImage?: string,
     private readonly awsOtelConfig?: string,
+    private readonly containerProps?: SidecarContainerProps,
   ) {}
 
   extend(taskDefinition: ecs.TaskDefinition): void {
@@ -165,9 +182,9 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
 
     const sidecarImage = this.dockerImage ?? "amazon/aws-otel-collector:v0.43.1"
     const sidecar = taskDefinition.addContainer("aws-opentelemetry-collector", {
-      cpu: 32,
-      memoryReservationMiB: 24,
-      memoryLimitMiB: 256,
+      cpu: this.containerProps?.cpu ?? 32,
+      memoryReservationMiB: this.containerProps?.memoryReservationMiB ?? 24,
+      memoryLimitMiB: this.containerProps?.memoryLimitMiB ?? 256,
       image: ecs.ContainerImage.fromRegistry(sidecarImage),
       command: [commands.metricsAndTracesAndContainerResources], // This is not used when the AOT_CONFIG_CONTENT is set!
       environment: {
