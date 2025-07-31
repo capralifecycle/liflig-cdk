@@ -111,7 +111,7 @@ export class OpenTelemetryCollectors extends constructs.Construct {
    * Adds a sidecar with an AWS Distro OpenTelemetry Collector.
    * https://aws-otel.github.io/docs/setup/ecs
    *
-   * You also need to add either the Java SDK for OTel or a java agent,
+   * You also need to add either the Java SDK for OTel or a Java agent,
    * to capture telemetry and send to this collector.
    */
   public addOpenTelemetryCollectorSidecar() {
