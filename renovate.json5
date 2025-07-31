@@ -25,6 +25,6 @@
     }
   ],
   "prBodyNotes": [
-    "{{#if (equals depName 'amazon/aws-otel-collector') }}:warning: Always validate the [otel config](assets/open-telemetry/otel-collector-task-metrics-config.yaml) for new versions using https://www.otelbin.io/#distro=adot%7E&distroVersion={{{currentValue}}}%7E . {{/if}}"
+    "{{#if (equals depName 'amazon/aws-otel-collector') }}:warning: Always validate the [otel config](https://github.com/capralifecycle/liflig-cdk/blob/master/assets/open-telemetry/otel-collector-task-metrics-config.yaml) for new versions using https://www.otelbin.io/#distro=adot%7E&distroVersion={{{newVersion}}}%7E . {{/if}}"
   ]
 }
