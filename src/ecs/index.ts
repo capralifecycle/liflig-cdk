@@ -1,6 +1,8 @@
 export { Cluster } from "./cluster"
 export { FargateService } from "./fargate-service"
 export { ListenerRule } from "./listener-rule"
+export { OpenTelemetryCollectors } from "./open-telemetry"
 export type { ClusterProps } from "./cluster"
 export type { FargateServiceProps } from "./fargate-service"
 export type { ListenerRuleProps } from "./listener-rule"
+export type { OpenTelemetryCollectorsProps } from "./open-telemetry"

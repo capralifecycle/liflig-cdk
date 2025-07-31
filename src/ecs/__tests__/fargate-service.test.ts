@@ -8,7 +8,7 @@ import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { FargateService, ListenerRule } from ".."
-import { Parameter } from "../../configure-parameters/configure-parameters"
+import { Parameter } from "../../configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
 
 test("creates fargate service with parameters and listener rule", () => {

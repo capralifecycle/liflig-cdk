@@ -1,0 +1,1624 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`OpenTelemetryCollectors creates OpenTelemetry collector sidecar 1`] = `
+Object {
+  "Resources": Object {
+    "OpenTelemetryCollectorsCollectorLogGroup9161858D": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 180,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Service9571FDD8": Object {
+      "DependsOn": Array [
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
+        },
+        "DeploymentConfiguration": Object {
+          "Alarms": Object {
+            "AlarmNames": Array [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 2,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": Object {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+              },
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service",
+        "TaskDefinition": Object {
+          "Ref": "ServiceTaskDefinition55FA0F15",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceLogGroupB910EE76": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceSecurityGroupC96ED6A7": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceTargetGroupE74A3394": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceTaskDefinition55FA0F15": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "START",
+                "ContainerName": "aws-opentelemetry-collector",
+              },
+            ],
+            "Environment": Array [
+              Object {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
+              },
+              Object {
+                "Name": "PARAMS_HASH",
+                "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              },
+              Object {
+                "Name": "AWS_XRAY_DAEMON_ADDRESS",
+                "Value": "http://localhost:2000",
+              },
+              Object {
+                "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                "Value": "http://localhost:4317",
+              },
+              Object {
+                "Name": "OTEL_JAVAAGENT_ENABLED",
+                "Value": "true",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
+                  },
+                  ":exampleEcrTag",
+                ],
+              ],
+            },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": Object {
+                  "Ref": "ServiceLogGroupB910EE76",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          Object {
+            "Command": Array [
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
+            ],
+            "Cpu": 32,
+            "Environment": Array [
+              Object {
+                "Name": "AOT_CONFIG_CONTENT",
+                "Value": "extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+  awsecscontainermetrics:
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+          - container.duration
+  metricstransform:
+    transforms:
+      - include: ecs.task.memory.utilized
+        action: update
+        new_name: MemoryUtilized
+      - include: ecs.task.memory.reserved
+        action: update
+        new_name: MemoryReserved
+      - include: ecs.task.cpu.utilized
+        action: update
+        new_name: CpuUtilized
+      - include: ecs.task.cpu.reserved
+        action: update
+        new_name: CpuReserved
+      - include: ecs.task.network.rate.rx
+        action: update
+        new_name: NetworkRxBytes
+      - include: ecs.task.network.rate.tx
+        action: update
+        new_name: NetworkTxBytes
+      - include: ecs.task.storage.read_bytes
+        action: update
+        new_name: StorageReadBytes
+      - include: ecs.task.storage.write_bytes
+        action: update
+        new_name: StorageWriteBytes
+  filter/application:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'resource.attributes[\\"http.target\\"] == \\"/health\\"'
+        - 'resource.attributes[\\"net.peer.name\\"] == \\"169.254.170.2\\"' # EC2 Metadata Endpoint
+  filter/traces:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes[\\"http.route\\"] == \\"health\\"'
+        - 'attributes[\\"http.url\\"] == \\"/health\\"'
+        - 'name == \\"GET health\\"'
+  attributes/application:
+    actions:
+      # Http adds lots of high cardinality, which xray creates 1 metric per. Expensive.
+      - key: http.url
+        action: delete
+      - key: http.target
+        action: delete
+      - key: http.client_ip
+        action: delete
+      - key: http.response_content_length
+        action: delete
+      - key: http.request_content_length
+        action: delete
+      - key: net.host.name
+        action: delete
+      - key: net.sock.peer.addr
+        action: delete
+      - key: net.sock.peer.port
+        action: delete
+      - key: net.sock.host.addr
+        action: delete
+      - key: net.sock.host.port
+        action: delete
+      - key: user_agent.original
+        action: delete
+  resource/application:
+    attributes:
+      - key: cloud.provider
+        action: delete
+      - key: host.arch
+        action: delete
+      - key: aws.ecs.container.image.id
+        action: delete
+      - key: aws.ecs.task.arn
+        action: delete
+      - key: aws.log.stream.names
+        action: delete
+      - key: aws.log.stream.arns
+        action: delete
+      - key: cloud.platform
+        action: delete
+      - key: container.name
+        action: delete
+      - key: process.executable.path
+        action: delete
+      - key: process.runtime.version
+        action: delete
+      - key: telemetry.auto.version
+        action: delete
+      - key: telemetry.sdk.name
+        action: delete
+      - key: container.id
+        action: delete
+      - key: container.image.tag
+        action: delete
+      - key: process.runtime.name
+        action: delete
+      - key: service.namespace
+        action: delete
+      - key: telemetry.sdk.version
+        action: delete
+      - key: aws.ecs.task.family
+        action: delete
+      - key: aws.ecs.task.revision
+        action: delete
+      - key: aws.log.group.arns
+        action: delete
+      - key: container.image.name
+        action: delete
+      - key: os.description
+        action: delete
+      - key: os.type
+        action: delete
+      - key: process.runtime.description
+        action: delete
+      - key: version
+        action: delete
+      - key: aws.ecs.launchtype
+        action: delete
+      - key: aws.log.group.names
+        action: delete
+      - key: host.name
+        action: delete
+      - key: process.pid
+        action: delete
+      - key: telemetry.sdk.language
+        action: delete
+      - key: aws.ecs.container.arn
+        action: delete
+      - key: service.version
+        action: delete
+      - key: process.command_args
+        action: delete
+      - key: service
+        action: delete
+  resource:
+    attributes:
+      - key: ClusterName
+        from_attribute: aws.ecs.cluster.name
+        action: insert
+      - key: aws.ecs.cluster.name
+        action: delete
+      - key: ServiceName
+        from_attribute: aws.ecs.service.name
+        action: insert
+      - key: aws.ecs.service.name
+        action: delete
+      - key: aws.ecs.task.id
+        action: delete
+      - key: TaskDefinitionFamily
+        from_attribute: aws.ecs.task.family
+        action: insert
+      - key: aws.ecs.task.family
+        action: delete
+      - key: aws.ecs.task.arn
+        action: delete
+      - key: aws.ecs.docker.name
+        action: delete
+      - key: aws.ecs.task.version
+        action: delete
+      - key: aws.ecs.task.pull_started_at
+        action: delete
+      - key: aws.ecs.task.pull_stopped_at
+        action: delete
+      - key: AvailabilityZone
+        from_attribute: cloud.zone
+        action: insert
+      - key: cloud.zone
+        action: delete
+      - key: aws.ecs.task.launch_type
+        action: delete
+      - key: Region
+        from_attribute: cloud.region
+        action: insert
+      - key: cloud.region
+        action: delete
+      - key: AccountId
+        from_attribute: cloud.account.id
+        action: insert
+      - key: cloud.account.id
+        action: delete
+      - key: container.id
+        action: delete
+      - key: container.name
+        action: delete
+      - key: container.image.name
+        action: delete
+      - key: aws.ecs.container.image.id
+        action: delete
+      - key: aws.ecs.container.exit_code
+        action: delete
+      - key: aws.ecs.container.created_at
+        action: delete
+      - key: aws.ecs.container.started_at
+        action: delete
+      - key: aws.ecs.container.finished_at
+        action: delete
+      - key: container.image.tag
+        action: delete
+
+exporters:
+  awsxray:
+    indexed_attributes: [\\"otel.resource.service.name\\"] # Max 50 attributes
+  awsemf/application:
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
+    log_retention: 365
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+  awsemf/performance:
+    namespace: ECS/ContainerInsights
+    log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
+    log_stream_name: '{TaskId}'
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ ClusterName ], [ ClusterName, TaskDefinitionFamily ] ]
+        metric_name_selectors:
+          - MemoryUtilized
+          - MemoryReserved
+          - CpuUtilized
+          - CpuReserved
+          - NetworkRxBytes
+          - NetworkTxBytes
+          - StorageReadBytes
+          - StorageWriteBytes
+      - metric_name_selectors: [container.*]
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp,awsxray]
+      processors: [filter/traces, batch/traces]
+      exporters: [awsxray]
+    metrics/application:
+      receivers: [otlp]
+      processors: [filter/application, resource/application, attributes/application, batch/metrics]
+      exporters: [awsemf/application]
+    metrics/performance:
+      receivers: [awsecscontainermetrics ]
+      processors: [filter, metricstransform, resource]
+      exporters: [ awsemf/performance ]
+
+  extensions: [health_check]
+",
+              },
+            ],
+            "Essential": true,
+            "Image": "amazon/aws-otel-collector:v0.43.1",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "OpenTelemetryCollectorsCollectorLogGroup9161858D",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+              },
+            },
+            "Memory": 256,
+            "MemoryReservation": 24,
+            "Name": "aws-opentelemetry-collector",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionExecutionRole5D3DB197",
+            "Arn",
+          ],
+        },
+        "Family": "StackServiceTaskDefinition81B5CCD5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionTaskRole3BD32B0F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLogsFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMReadOnlyAccess",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ServiceLogGroupB910EE76",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "OpenTelemetryCollectorsCollectorLogGroup9161858D",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;
+
+exports[`OpenTelemetryCollectors disables OpenTelemetry Java agent 1`] = `
+Object {
+  "Resources": Object {
+    "Service9571FDD8": Object {
+      "DependsOn": Array [
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
+        },
+        "DeploymentConfiguration": Object {
+          "Alarms": Object {
+            "AlarmNames": Array [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 2,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": Object {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+              },
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service",
+        "TaskDefinition": Object {
+          "Ref": "ServiceTaskDefinition55FA0F15",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceLogGroupB910EE76": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceSecurityGroupC96ED6A7": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceTargetGroupE74A3394": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceTaskDefinition55FA0F15": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
+              },
+              Object {
+                "Name": "PARAMS_HASH",
+                "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              },
+              Object {
+                "Name": "OTEL_JAVAAGENT_ENABLED",
+                "Value": "false",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
+                  },
+                  ":exampleEcrTag",
+                ],
+              ],
+            },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": Object {
+                  "Ref": "ServiceLogGroupB910EE76",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionExecutionRole5D3DB197",
+            "Arn",
+          ],
+        },
+        "Family": "StackServiceTaskDefinition81B5CCD5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionTaskRole3BD32B0F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ServiceLogGroupB910EE76",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;
+
+exports[`OpenTelemetryCollectors sets all options on OpenTelemetry collector sidecar 1`] = `
+Object {
+  "Resources": Object {
+    "OpenTelemetryCollectorsCollectorLogGroup9161858D": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 5,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Service9571FDD8": Object {
+      "DependsOn": Array [
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
+        },
+        "DeploymentConfiguration": Object {
+          "Alarms": Object {
+            "AlarmNames": Array [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 2,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": Object {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+              },
+              Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service",
+        "TaskDefinition": Object {
+          "Ref": "ServiceTaskDefinition55FA0F15",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceLogGroupB910EE76": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceSecurityGroupC96ED6A7": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceTargetGroupE74A3394": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceTaskDefinition55FA0F15": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "START",
+                "ContainerName": "aws-opentelemetry-collector",
+              },
+            ],
+            "Environment": Array [
+              Object {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
+              },
+              Object {
+                "Name": "PARAMS_HASH",
+                "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              },
+              Object {
+                "Name": "AWS_XRAY_DAEMON_ADDRESS",
+                "Value": "http://localhost:2000",
+              },
+              Object {
+                "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                "Value": "http://localhost:4317",
+              },
+              Object {
+                "Name": "OTEL_JAVAAGENT_ENABLED",
+                "Value": "true",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
+                  },
+                  ":exampleEcrTag",
+                ],
+              ],
+            },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": Object {
+                  "Ref": "ServiceLogGroupB910EE76",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          Object {
+            "Command": Array [
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
+            ],
+            "Cpu": 128,
+            "Environment": Array [
+              Object {
+                "Name": "AOT_CONFIG_CONTENT",
+                "Value": "myCustomYaml: true",
+              },
+            ],
+            "Essential": true,
+            "Image": "example-image:latest",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "OpenTelemetryCollectorsCollectorLogGroup9161858D",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+              },
+            },
+            "Memory": 2048,
+            "MemoryReservation": 1024,
+            "Name": "aws-opentelemetry-collector",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionExecutionRole5D3DB197",
+            "Arn",
+          ],
+        },
+        "Family": "StackServiceTaskDefinition81B5CCD5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceTaskDefinitionTaskRole3BD32B0F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLogsFullAccess",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMReadOnlyAccess",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ServiceLogGroupB910EE76",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "OpenTelemetryCollectorsCollectorLogGroup9161858D",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;

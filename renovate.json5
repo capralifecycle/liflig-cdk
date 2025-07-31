@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "github>capraconsulting/renovate-config:library",
+    "github>capraconsulting/renovate-config:aggressive"
+  ],
+  "customManagers": [
+    {
+      // Keeps the OpenTelemetry Collector up-to-date inside a ts file.
+      // Renovate does not find the docker tag otherwise, and the docker tag becomes outdated.
+      "customType": "regex",
+      "managerFilePatterns": ["src/ecs/open-telemetry.ts"],
+      "matchStrings": [
+        "amazon\\\/aws-otel-collector:(?<currentValue>[^\"]+)"
+      ],
+      "depNameTemplate": "amazon/aws-otel-collector",
+      "datasourceTemplate": "docker",
+      "versioning": "docker"
+    }
+  ],
+  // We don't trust the "AWS Distro of OpenTelemetry Collector" enough to automerge.
+  "packageRules": [
+    {
+      "matchDepNames": ["amazon/aws-otel-collector"],
+      "automerge": false
+    }
+  ],
+  "prBodyNotes": [
+    "{{#if (equals depName 'amazon/aws-otel-collector') }}:warning: Always validate the [otel config](assets/open-telemetry/otel-collector-task-metrics-config.yaml) for new versions using https://www.otelbin.io/#distro=adot%7E&distroVersion={{{currentValue}}}%7E . {{/if}}"
+  ]
+}
