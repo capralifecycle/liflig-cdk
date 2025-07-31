@@ -65,9 +65,8 @@ export interface OpenTelemetryCollectorsProps {
  *
  * The sidecar exposes these ports to your service:
  * - udp 2000 : AWS XRay
- * - tcp 55680 : AWS CloudWatch EMF collection
- * - tcp 55681 : OpenTelemetry collection HTTP
  * - tcp 4317 : OpenTelemetry collection GRPC
+ * - tcp 4318 : OpenTelemetry collection HTTP
  *
  * ---
  *
@@ -207,9 +206,8 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
     /*
      * aws-otel-collector exposes these ports, and more:
      * - udp 2000 : AWS XRay
-     * - tcp 55680 : AWS CloudWatch EMF collection
-     * - tcp 55681 : OpenTelemetry collection HTTP
      * - tcp 4317 : OpenTelemetry collection GRPC
+     * - tcp 4318 : OpenTelemetry collection HTTP
      *
      * These are defined in the yaml config for the collector.
      */
