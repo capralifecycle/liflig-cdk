@@ -5,6 +5,8 @@
   ],
   "customManagers": [
     {
+      // Keeps the OpenTelemetry Collector up-to-date inside a ts file.
+      // Renovate does not find the docker tag otherwise, and the docker tag becomes outdated.
       "customType": "regex",
       "managerFilePatterns": ["src/**/open-telemetry.ts"],
       "matchStrings": [
