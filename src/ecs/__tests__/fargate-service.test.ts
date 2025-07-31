@@ -7,7 +7,7 @@ import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
-import { FargateService, ListenerRule, OpenTelemetryCollectors } from ".."
+import { FargateService, ListenerRule } from ".."
 import { Parameter } from "../../configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
 
@@ -80,10 +80,6 @@ test("creates fargate service with parameters and listener rule", () => {
     ),
     enableCircuitBreaker: true,
   })
-
-  new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
-    service: service,
-  }).addOpenTelemetryCollectorSidecar()
 
   new ListenerRule(stack, "Dns", {
     domainName: `example.com`,
