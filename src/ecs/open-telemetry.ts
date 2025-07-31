@@ -193,6 +193,8 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
      * - tcp 55680 : AWS CloudWatch EMF collection
      * - tcp 55681 : OpenTelemetry collection HTTP
      * - tcp 4317 : OpenTelemetry collection GRPC
+     *
+     * These are defined in the yaml config for the collector.
      */
     taskDefinition.defaultContainer?.addEnvironment(
       "AWS_XRAY_DAEMON_ADDRESS",

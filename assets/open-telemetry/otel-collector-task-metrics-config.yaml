@@ -15,6 +15,9 @@
 extensions:
   health_check:
 
+## These ports are also set in `taskDefinition.defaultContainer` as
+## `OTEL_EXPORTER_OTLP_ENDPOINT` and so on.
+## Changes must happen in both places.
 receivers:
   otlp:
     protocols:
