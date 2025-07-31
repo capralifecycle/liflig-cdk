@@ -221,6 +221,9 @@ interface OpenTelemetryPoliciesProps {
   taskDefinition: ecs.TaskDefinition
 }
 
+/**
+ * Grants the sidecar permissions to create logs, metrics and XRay traces by extending the task roles.
+ */
 class OpenTelemetryPolicies extends constructs.Construct {
   constructor(
     scope: constructs.Construct,
