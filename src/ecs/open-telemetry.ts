@@ -46,7 +46,7 @@ export interface OpenTelemetryCollectorsProps {
  * using a docker container with an otel agent.
  *
  *
- * An example of a java auto-instrumentation agent in docker can be found
+ * An example of a Java auto-instrumentation agent in Docker can be found
  * [in liflig-rest-baseline Dockerfile](https://github.com/capralifecycle/liflig-rest-service-baseline/blob/a29b5a472c982aa7ce04d09d0e7cfdc92a6cc977/docker/Dockerfile#L9-L29).
  *
  * The agent must be configured to output metrics to a collector.
@@ -91,7 +91,7 @@ export class OpenTelemetryCollectors extends constructs.Construct {
   }
 
   /**
-   * The open-telemetry java agent may run by default in the Docker image.
+   * The OpenTelemetry Java agent may run by default in the Docker image.
    * This method will tell the agent to disable itself.
    *
    * You might want to do this to avoid overhead or error logs from failed
@@ -102,7 +102,7 @@ export class OpenTelemetryCollectors extends constructs.Construct {
   }
 
   /**
-   * The open-telemetry java agent may run by default in the Docker image.
+   * The OpenTelemetry Java agent may run by default in the Docker image.
    * This method will tell the agent to disable itself.
    *
    * You might want to do this to avoid overhead or error logs from failed
@@ -149,7 +149,7 @@ export type SidecarContainerProps = Pick<
  * Adds a sidecar with an AWS Distro OpenTelemetry Collector.
  * https://aws-otel.github.io/docs/setup/ecs
  *
- * You also need to add either the Java SDK for OTel or a java agent,
+ * You also need to add either the Java SDK for OTel or a Java agent,
  * to capture telemetry and send to this collector.
  */
 class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
