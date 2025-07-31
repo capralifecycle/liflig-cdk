@@ -61,7 +61,7 @@ export interface OpenTelemetryCollectorsProps {
  *
  * ---
  *
- * You can also disable the Open Telemetry instrumentation agent
+ * You can also disable the OpenTelemetry instrumentation agent
  * for Java-based services,
  * by setting the appropriate environment variable with {@link disableOpenTelemetryJavaAgent}:
  * ```ts
