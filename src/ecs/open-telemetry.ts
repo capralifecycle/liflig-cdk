@@ -22,7 +22,7 @@ export interface OpenTelemetryCollectorsProps {
   dockerImage?: string
 
   /** Should be kept as `undefined` unless you know what you are doing.
-   * This is the yaml config for the open-telemetry collector sidecar.
+   * This is the YAML config for the OpenTelemetry collector sidecar.
    *
    * An example of a config can be found at https://github.com/aws-observability/aws-otel-collector/blob/0ae198c7e7b8c43bcc8715f54e52c879c04407b6/config/ecs/container-insights/otel-task-metrics-config.yaml
    *
