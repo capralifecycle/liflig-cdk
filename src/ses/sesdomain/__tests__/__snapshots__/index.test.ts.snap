@@ -43,6 +43,9 @@ Object {
       "ap-southeast-5": Object {
         "value": "nodejs22.x",
       },
+      "ap-southeast-6": Object {
+        "value": "nodejs22.x",
+      },
       "ap-southeast-7": Object {
         "value": "nodejs22.x",
       },
@@ -403,6 +406,9 @@ Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-5": Object {
+        "value": "nodejs22.x",
+      },
+      "ap-southeast-6": Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-7": Object {
@@ -766,6 +772,9 @@ Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-5": Object {
+        "value": "nodejs22.x",
+      },
+      "ap-southeast-6": Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-7": Object {
@@ -1156,6 +1165,9 @@ Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-5": Object {
+        "value": "nodejs22.x",
+      },
+      "ap-southeast-6": Object {
         "value": "nodejs22.x",
       },
       "ap-southeast-7": Object {
