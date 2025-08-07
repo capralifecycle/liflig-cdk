@@ -1,6 +1,7 @@
 {
   "app": "tsx examples/app.ts",
   "context": {
-    "@aws-cdk/customresources:installLatestAwsSdkDefault": false
+    "@aws-cdk/customresources:installLatestAwsSdkDefault": false,
+    "cli-telemetry": false
   }
 }
