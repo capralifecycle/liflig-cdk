@@ -4,5 +4,8 @@
     "eu-west-1a",
     "eu-west-1b",
     "eu-west-1c"
+  ],
+  "acknowledged-issue-numbers": [
+    34892
   ]
 }
