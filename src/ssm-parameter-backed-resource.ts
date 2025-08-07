@@ -1,6 +1,6 @@
-import * as constructs from "constructs"
-import * as ssm from "aws-cdk-lib/aws-ssm"
 import * as cdk from "aws-cdk-lib"
+import * as ssm from "aws-cdk-lib/aws-ssm"
+import * as constructs from "constructs"
 import { CrossRegionSsmParameter } from "./cross-region-ssm-parameter"
 import { getStageOrApp } from "./utils"
 

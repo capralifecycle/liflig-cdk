@@ -1,6 +1,6 @@
+import { App, Stack } from "aws-cdk-lib"
 import { Distribution } from "aws-cdk-lib/aws-cloudfront"
 import { Bucket } from "aws-cdk-lib/aws-s3"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { WebappDeployViaRole } from "../webapp-deploy-via-role"
 

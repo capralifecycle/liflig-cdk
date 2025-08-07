@@ -1,10 +1,10 @@
 import {
-  SESv2Client,
   CreateConfigurationSetEventDestinationCommand,
-  UpdateConfigurationSetEventDestinationCommand,
   DeleteConfigurationSetEventDestinationCommand,
-  EventType,
-  EventDestinationDefinition,
+  type EventDestinationDefinition,
+  type EventType,
+  SESv2Client,
+  UpdateConfigurationSetEventDestinationCommand,
 } from "@aws-sdk/client-sesv2"
 
 interface ResourceProps {
@@ -45,7 +45,7 @@ export const handler: OnEventHandler = async (event) => {
   console.log(`EventDestination ${JSON.stringify(eventDestination)}`)
 
   switch (event.RequestType) {
-    case "Delete":
+    case "Delete": {
       const deleteResponse = await sesv2Client.send(
         new DeleteConfigurationSetEventDestinationCommand({
           ConfigurationSetName: configurationSetName,
@@ -61,8 +61,9 @@ export const handler: OnEventHandler = async (event) => {
       return {
         PhysicalResourceId: event.PhysicalResourceId,
       }
+    }
 
-    case "Create":
+    case "Create": {
       const createResponse = await sesv2Client.send(
         new CreateConfigurationSetEventDestinationCommand({
           ConfigurationSetName: configurationSetName,
@@ -78,8 +79,9 @@ export const handler: OnEventHandler = async (event) => {
       return {
         PhysicalResourceId: `ConfigurationSetSnsDestination-${configurationSetName}-${eventDestinationName}`,
       }
+    }
 
-    case "Update":
+    case "Update": {
       const previousEventDestinationName =
         event.OldResourceProperties!.EventDestinationName
       const previousConfigurationSetName =
@@ -119,5 +121,6 @@ export const handler: OnEventHandler = async (event) => {
       return {
         PhysicalResourceId: `ConfigurationSetSnsDestination-${configurationSetName}-${eventDestinationName}`,
       }
+    }
   }
 }

@@ -1,15 +1,15 @@
 import "@aws-cdk/assert/jest"
+import { App, Stack } from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
-import { FargateService, ListenerRule } from ".."
-import { Parameter } from "../../configure-parameters"
+import type { Parameter } from "../../configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
+import { FargateService, ListenerRule } from ".."
 
 test("creates fargate service with parameters and listener rule", () => {
   const app = new App()
@@ -31,7 +31,7 @@ test("creates fargate service with parameters and listener rule", () => {
   })
 
   const certificate = new cm.Certificate(supportStack, "Certificate", {
-    domainName: `*.example.com`,
+    domainName: "*.example.com",
     subjectAlternativeNames: ["example.com"],
     validation: cm.CertificateValidation.fromDns(hostedZone),
   })
@@ -82,7 +82,7 @@ test("creates fargate service with parameters and listener rule", () => {
   })
 
   new ListenerRule(stack, "Dns", {
-    domainName: `example.com`,
+    domainName: "example.com",
     hostedZone: hostedZone,
     httpsListener: loadBalancer.httpsListener,
     listenerPriority: 10,

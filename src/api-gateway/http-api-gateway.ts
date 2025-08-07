@@ -1,24 +1,27 @@
-import * as constructs from "constructs"
+import { createHash } from "node:crypto"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 import * as cdk from "aws-cdk-lib"
-import type * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
-import type * as ec2 from "aws-cdk-lib/aws-ec2"
-import * as lambda from "aws-cdk-lib/aws-lambda"
-import type * as sqs from "aws-cdk-lib/aws-sqs"
-import type * as events from "aws-cdk-lib/aws-events"
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
-import * as logs from "aws-cdk-lib/aws-logs"
-import * as iam from "aws-cdk-lib/aws-iam"
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
 import * as authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
+import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
 import type { IUserPool } from "aws-cdk-lib/aws-cognito"
+import type * as ec2 from "aws-cdk-lib/aws-ec2"
+import type * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import type * as events from "aws-cdk-lib/aws-events"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
-import { createHash } from "crypto"
+import type * as logs from "aws-cdk-lib/aws-logs"
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import type * as sqs from "aws-cdk-lib/aws-sqs"
+import * as constructs from "constructs"
 import { tagResources } from "../tags"
-import * as path from "path"
-import { fileURLToPath } from "url"
-import { ApiGatewayDnsProps, ApiGatewayDomain } from "./domain"
-import { ApiGatewayAccessLogs, ApiGatewayAccessLogsProps } from "./access-logs"
+import {
+  ApiGatewayAccessLogs,
+  type ApiGatewayAccessLogsProps,
+} from "./access-logs"
+import { type ApiGatewayDnsProps, ApiGatewayDomain } from "./domain"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -595,7 +598,7 @@ export class ApiGateway<
     }
 
     // The actual API. This holds the routes, authorizers and integrations.
-    const api = new apigw.HttpApi(this, "HttpApi-" + props.dns.subdomain, {
+    const api = new apigw.HttpApi(this, `HttpApi-${props.dns.subdomain}`, {
       // defaultIntegration: defaultIntegration, // This is for a catch-all $default route
       description: `An HTTP API for ${props.dns.subdomain}.${props.dns.hostedZone.zoneName}.`,
       disableExecuteApiEndpoint: true, // Force externals to go through custom domain. MUST be true when using Mutual TLS, for security reasons
@@ -657,7 +660,7 @@ export class ApiGateway<
         // match all subroutes). We want both this route and the normal route without /{proxy+},
         // since /{proxy+} will only match the base path with trailing slash.
         routePaths.push(
-          route.path + (route.path === "/" ? "" : "/") + "{proxy+}",
+          `${route.path + (route.path === "/" ? "" : "/")}{proxy+}`,
         )
       }
 
@@ -771,7 +774,7 @@ export class ApiGateway<
         // by CDK, in order to support `requiredScope` and setting of custom context variables.
         const authorizer = new CognitoUserPoolAuthorizer(
           this,
-          id + "Lambda",
+          `${id}Lambda`,
           authorization,
         )
 
@@ -784,7 +787,7 @@ export class ApiGateway<
       case "BASIC_AUTH": {
         const authorizer = new BasicAuthAuthorizer(
           this,
-          id + "Lambda",
+          `${id}Lambda`,
           authorization,
         )
 
@@ -797,7 +800,7 @@ export class ApiGateway<
       case "COGNITO_USER_POOL_OR_BASIC_AUTH": {
         const authorizer = new CognitoUserPoolOrBasicAuthAuthorizer(
           this,
-          id + "Lambda",
+          `${id}Lambda`,
           authorization,
         )
 
@@ -851,7 +854,7 @@ export class ApiGateway<
         }
 
         return new integrations.HttpAlbIntegration(
-          "AlbIntegration-" + dns.subdomain,
+          `AlbIntegration-${dns.subdomain}`,
           integration.loadBalancerListener,
           {
             secureServerName: integration.hostName,
@@ -877,8 +880,7 @@ export class ApiGateway<
           this,
           `ApiGwTo${integration.queue.node.id}ServiceRole`,
           {
-            description:
-              "Allows API-GW to add messages to " + integration.queue.queueArn,
+            description: `Allows API-GW to add messages to ${integration.queue.queueArn}`,
             assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
           },
         )
@@ -1061,9 +1063,9 @@ class CognitoUserPoolAuthorizer<
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
-        ["USER_POOL_ID"]: props.userPool.userPoolId,
-        ["REQUIRED_SCOPE"]: props.requiredScope ?? "",
-        ["CREDENTIALS_FOR_INTERNAL_AUTHORIZATION"]:
+        USER_POOL_ID: props.userPool.userPoolId,
+        REQUIRED_SCOPE: props.requiredScope ?? "",
+        CREDENTIALS_FOR_INTERNAL_AUTHORIZATION:
           props.credentialsForInternalAuthorization
             ? props.credentialsForInternalAuthorization
             : "",
@@ -1073,7 +1075,7 @@ class CognitoUserPoolAuthorizer<
     if (props.credentialsForInternalAuthorization) {
       secretsmanager.Secret.fromSecretNameV2(
         scope,
-        id + "BasicAuthSecret",
+        `${id}BasicAuthSecret`,
         props.credentialsForInternalAuthorization,
       ).grantRead(this.lambda)
     }
@@ -1108,7 +1110,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
       runtime: lambda.Runtime.NODEJS_22_X,
       environment: {
-        ["CREDENTIALS_SECRET_NAME"]: props.credentialsSecretName
+        CREDENTIALS_SECRET_NAME: props.credentialsSecretName
           ? props.credentialsSecretName
           : "",
       },
@@ -1116,7 +1118,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
 
     secretsmanager.Secret.fromSecretNameV2(
       scope,
-      id + "BasicAuthSecret",
+      `${id}BasicAuthSecret`,
       props.credentialsSecretName,
     ).grantRead(this.lambda)
   }
@@ -1159,19 +1161,18 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
       runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
-        ["USER_POOL_ID"]: props.userPool ? props.userPool.userPoolId : "",
-        ["REQUIRED_SCOPE"]: props.requiredScope ?? "",
-        ["BASIC_AUTH_CREDENTIALS_SECRET_NAME"]:
-          props.basicAuthCredentialsSecretName
-            ? props.basicAuthCredentialsSecretName
-            : "",
+        USER_POOL_ID: props.userPool ? props.userPool.userPoolId : "",
+        REQUIRED_SCOPE: props.requiredScope ?? "",
+        BASIC_AUTH_CREDENTIALS_SECRET_NAME: props.basicAuthCredentialsSecretName
+          ? props.basicAuthCredentialsSecretName
+          : "",
       },
     })
 
     if (props.basicAuthCredentialsSecretName) {
       secretsmanager.Secret.fromSecretNameV2(
         scope,
-        id + "BasicAuthSecret",
+        `${id}BasicAuthSecret`,
         props.basicAuthCredentialsSecretName,
       ).grantRead(this.lambda)
     }

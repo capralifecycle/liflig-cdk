@@ -1,11 +1,11 @@
-import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as s3 from "aws-cdk-lib/aws-s3"
-import * as cdk from "aws-cdk-lib"
+import * as constructs from "constructs"
 import {
   GithubActionsRole,
-  Props as GithubActionsRoleProps,
+  type Props as GithubActionsRoleProps,
 } from "./github-actions-role"
 
 interface Props {

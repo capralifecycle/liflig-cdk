@@ -14,7 +14,7 @@ type OnEventHandler = (event: {
 
 export const handler: OnEventHandler = async (event) => {
   const sesClient = new SESClient()
-  const emailAddress = event.ResourceProperties["EmailAddress"]
+  const emailAddress = event.ResourceProperties.EmailAddress
 
   switch (event.RequestType) {
     case "Delete":

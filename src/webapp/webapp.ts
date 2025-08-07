@@ -1,15 +1,15 @@
-import * as constructs from "constructs"
-import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
+import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
+import type * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as r53 from "aws-cdk-lib/aws-route53"
 import * as r53t from "aws-cdk-lib/aws-route53-targets"
 import * as s3 from "aws-cdk-lib/aws-s3"
-import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda"
+import * as constructs from "constructs"
 import {
   WebappSecurityHeaders,
-  WebappSecurityHeadersProps,
+  type WebappSecurityHeadersProps,
 } from "./security-headers"
 
 export interface WebappProps {

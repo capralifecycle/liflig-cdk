@@ -12,13 +12,13 @@
  *   - Set this to require that the access token payload contains the given scope
  */
 
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { CognitoJwtVerifier } from "aws-jwt-verify"
+import type { CognitoAccessTokenPayload } from "aws-jwt-verify/jwt-model"
 import type {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
 } from "aws-lambda"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { CognitoJwtVerifier } from "aws-jwt-verify"
-import type { CognitoAccessTokenPayload } from "aws-jwt-verify/jwt-model"
 
 type AuthorizerResult = APIGatewaySimpleAuthorizerResult & {
   /**
@@ -83,7 +83,8 @@ export const handler = async (
           },
         }
     }
-  } else if (
+  }
+  if (
     authHeader.startsWith("Basic ") &&
     expectedBasicAuthCredentials !== undefined
   ) {
@@ -99,9 +100,8 @@ export const handler = async (
       }
     }
     return { isAuthorized: false }
-  } else {
-    return { isAuthorized: false }
   }
+  return { isAuthorized: false }
 }
 
 /** Decodes and verifies the given token against Cognito. */
@@ -120,9 +120,8 @@ async function verifyAccessToken(
     // best thing.
     if (e instanceof Error && e.message?.includes("Token expired")) {
       return "EXPIRED"
-    } else {
-      return "INVALID"
     }
+    return "INVALID"
   }
 }
 
@@ -134,7 +133,7 @@ export type TokenVerifier = {
  * We cache the verifier in this global variable, so that subsequent invocations of a hot lambda
  * will re-use this.
  */
-let cachedTokenVerifier: TokenVerifier | undefined = undefined
+let cachedTokenVerifier: TokenVerifier | undefined
 
 function getTokenVerifier(): TokenVerifier {
   if (cachedTokenVerifier === undefined) {
@@ -146,7 +145,7 @@ function getTokenVerifier(): TokenVerifier {
 /** For overriding dependency creation in tests. */
 export const dependencies = {
   createTokenVerifier: (): TokenVerifier => {
-    const userPoolId = process.env["USER_POOL_ID"]
+    const userPoolId = process.env.USER_POOL_ID
     if (!userPoolId) {
       console.error("USER_POOL_ID env variable is not defined")
       throw new Error()
@@ -168,8 +167,7 @@ type ExpectedBasicAuthCredentials = {
 }
 
 /** Cache this value, so that subsequent lambda invocations don't have to refetch. */
-let cachedBasicAuthCredentials: ExpectedBasicAuthCredentials[] | undefined =
-  undefined
+let cachedBasicAuthCredentials: ExpectedBasicAuthCredentials[] | undefined
 
 /**
  * Returns an array, to support credential secrets with multiple values (see
@@ -180,7 +178,7 @@ async function getExpectedBasicAuthCredentials(): Promise<
 > {
   if (cachedBasicAuthCredentials === undefined) {
     const secretName: string | undefined =
-      process.env["BASIC_AUTH_CREDENTIALS_SECRET_NAME"]
+      process.env.BASIC_AUTH_CREDENTIALS_SECRET_NAME
     if (!secretName) {
       return undefined
     }

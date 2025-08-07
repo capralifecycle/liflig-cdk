@@ -1,13 +1,13 @@
-import * as constructs from "constructs"
+import { createRequire } from "node:module"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+import * as cdk from "aws-cdk-lib"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as r53 from "aws-cdk-lib/aws-route53"
-import * as cdk from "aws-cdk-lib"
-import * as cr from "aws-cdk-lib/custom-resources"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
-import * as path from "path"
-import { fileURLToPath } from "node:url"
-import { createRequire } from "node:module"
+import * as r53 from "aws-cdk-lib/aws-route53"
+import * as cr from "aws-cdk-lib/custom-resources"
+import * as constructs from "constructs"
 
 const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)

@@ -1,9 +1,9 @@
-import * as fs from "fs"
-import * as path from "path"
-import * as process from "process"
+import * as fs from "node:fs"
+import * as path from "node:path"
+import * as process from "node:process"
 import { isSnapshot } from ".."
 
-let variables: Record<string, string | undefined> | undefined = undefined
+let variables: Record<string, string | undefined> | undefined
 
 function isInCodeBuild() {
   return "CODEBUILD_BUILD_ID" in process.env
@@ -17,11 +17,10 @@ function checkTimestamp(timestampStr: string | undefined) {
       return
     }
 
-    throw new Error(`Variable variablesTimestamp not found`)
+    throw new Error("Variable variablesTimestamp not found")
   }
 
-  const ageMs =
-    new Date().getTime() - new Date(Date.parse(timestampStr)).getTime()
+  const ageMs = Date.now() - new Date(Date.parse(timestampStr)).getTime()
   if (ageMs > 3600 * 6 * 1000) {
     throw new Error(
       "The timestamp stored in variables.json is too old and must be refreshed - refetch variables or manually override",
@@ -57,7 +56,7 @@ export function getVariable(name: string): string {
     >
   }
 
-  const timestampStr = variables["variablesTimestamp"]
+  const timestampStr = variables.variablesTimestamp
   checkTimestamp(timestampStr)
 
   const value = variables[name]

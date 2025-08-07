@@ -11,13 +11,13 @@
  *   - Secret value should follow this format: `{"username":"<username>","password":"<password>"}`
  */
 
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { CognitoJwtVerifier } from "aws-jwt-verify"
+import type { CognitoAccessTokenPayload } from "aws-jwt-verify/jwt-model"
 import type {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
 } from "aws-lambda"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { CognitoJwtVerifier } from "aws-jwt-verify"
-import type { CognitoAccessTokenPayload } from "aws-jwt-verify/jwt-model"
 
 type AuthorizerResult = APIGatewaySimpleAuthorizerResult & {
   /**
@@ -90,9 +90,8 @@ async function verifyAccessToken(
     // best thing.
     if (e instanceof Error && e.message?.includes("Token expired")) {
       return "EXPIRED"
-    } else {
-      return "INVALID"
     }
+    return "INVALID"
   }
 }
 
@@ -104,7 +103,7 @@ export type TokenVerifier = {
  * We cache the verifier in this global variable, so that subsequent invocations of a hot lambda
  * will re-use this.
  */
-let cachedTokenVerifier: TokenVerifier | undefined = undefined
+let cachedTokenVerifier: TokenVerifier | undefined
 
 function getTokenVerifier(): TokenVerifier {
   if (cachedTokenVerifier === undefined) {
@@ -116,7 +115,7 @@ function getTokenVerifier(): TokenVerifier {
 /** For overriding dependency creation in tests. */
 export const dependencies = {
   createTokenVerifier: (): TokenVerifier => {
-    const userPoolId = process.env["USER_POOL_ID"]
+    const userPoolId = process.env.USER_POOL_ID
     if (!userPoolId) {
       console.error("USER_POOL_ID env variable is not defined")
       throw new Error()
@@ -133,12 +132,12 @@ export const dependencies = {
 }
 
 /** Cache this value, so that subsequent lambda invocations don't have to refetch. */
-let cachedInternalAuthorizationHeader: string | undefined = undefined
+let cachedInternalAuthorizationHeader: string | undefined
 
 async function getInternalAuthorizationHeader(): Promise<string | undefined> {
   if (cachedInternalAuthorizationHeader === undefined) {
     const secretName: string | undefined =
-      process.env["CREDENTIALS_FOR_INTERNAL_AUTHORIZATION"]
+      process.env.CREDENTIALS_FOR_INTERNAL_AUTHORIZATION
     if (!secretName) {
       return undefined
     }

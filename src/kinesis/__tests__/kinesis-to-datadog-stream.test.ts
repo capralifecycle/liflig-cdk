@@ -1,6 +1,6 @@
 import "@aws-cdk/assert/jest"
-import * as logs from "aws-cdk-lib/aws-logs"
 import { App, Stack } from "aws-cdk-lib"
+import * as logs from "aws-cdk-lib/aws-logs"
 import "jest-cdk-snapshot"
 import { KinesisToDatadogStream } from "../kinesis-to-datadog-stream"
 

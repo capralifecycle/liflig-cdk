@@ -1,10 +1,10 @@
-import * as constructs from "constructs"
-import * as iam from "aws-cdk-lib/aws-iam"
-import * as cdk from "aws-cdk-lib"
 import {
   WebappDeploy,
-  WebappDeployProps,
+  type WebappDeployProps,
 } from "@capraconsulting/webapp-deploy-lambda"
+import * as cdk from "aws-cdk-lib"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as constructs from "constructs"
 
 interface Props {
   /**

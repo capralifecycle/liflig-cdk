@@ -1,7 +1,7 @@
 import "@aws-cdk/assert/jest"
+import { App, Stack } from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { Database } from ".."
 

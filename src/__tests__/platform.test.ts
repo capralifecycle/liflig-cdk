@@ -1,14 +1,13 @@
-import { Construct } from "constructs"
+import type { Construct } from "constructs"
 import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as sns from "aws-cdk-lib/aws-sns"
 import * as ssm from "aws-cdk-lib/aws-ssm"
 import "jest-cdk-snapshot"
 import {
-  PlatformProducer,
   PlatformConsumer,
-  PlatformConsumerProps,
-  PlatformProducerProps,
+  PlatformProducer,
+  type PlatformProducerProps,
 } from "../platform"
 
 interface ProducerProps extends PlatformProducerProps {
@@ -25,10 +24,6 @@ class ExamplePlatformProducer extends PlatformProducer {
 }
 
 class ExamplePlatformConsumer extends PlatformConsumer {
-  constructor(scope: Construct, id: string, props: PlatformConsumerProps) {
-    super(scope, id, props)
-  }
-
   public get alarmTopic(): sns.ITopic {
     return this._alarmTopic()
   }

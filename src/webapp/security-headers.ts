@@ -1,6 +1,6 @@
 import * as cdk from "aws-cdk-lib"
-import * as constructs from "constructs"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
+import * as constructs from "constructs"
 
 export type WebappSecurityHeadersProps = Partial<
   cloudfront.ResponseSecurityHeadersBehavior & {

@@ -1,14 +1,14 @@
 import * as alarms from "./alarms"
+import * as apigw from "./api-gateway"
 import * as cdkPipelines from "./cdk-pipelines"
-import * as ses from "./ses"
-import * as webapp from "./webapp"
+import * as cloudTrailSlackIntegration from "./cloudtrail-slack-integration"
 import * as configureParameters from "./configure-parameters"
 import * as ecs from "./ecs"
 import * as loadBalancer from "./load-balancer"
-import * as cloudTrailSlackIntegration from "./cloudtrail-slack-integration"
-import * as rds from "./rds"
 import * as platform from "./platform"
-import * as apigw from "./api-gateway"
+import * as rds from "./rds"
+import * as ses from "./ses"
+import * as webapp from "./webapp"
 
 // TODO: We want to switch exports so they every construct under
 //  a namespace such as the sns export.

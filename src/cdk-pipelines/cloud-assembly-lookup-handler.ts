@@ -1,11 +1,11 @@
-import type { Handler } from "aws-lambda"
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import {
   CodePipelineClient,
   PutJobFailureResultCommand,
   PutJobSuccessResultCommand,
 } from "@aws-sdk/client-codepipeline"
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
+import type { Handler } from "aws-lambda"
 
 // Relevant fields from
 // https://docs.amazonaws.cn/en_us/lambda/latest/dg/services-codepipeline.html

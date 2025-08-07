@@ -1,8 +1,8 @@
 import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
-import * as sns from "aws-cdk-lib/aws-sns"
 import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
 import { LambdaAlarms } from "../lambda-alarms"
 

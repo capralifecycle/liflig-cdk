@@ -1,8 +1,8 @@
 import "@aws-cdk/assert/jest"
+import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as sns from "aws-cdk-lib/aws-sns"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
 import { Cluster } from ".."
 

@@ -1,20 +1,23 @@
-import * as constructs from "constructs"
+import * as fs from "node:fs"
+import { createRequire } from "node:module"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+import * as cdk from "aws-cdk-lib"
 import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
 import * as codepipelineActions from "aws-cdk-lib/aws-codepipeline-actions"
-import * as iam from "aws-cdk-lib/aws-iam"
-import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as events from "aws-cdk-lib/aws-events"
 import * as targets from "aws-cdk-lib/aws-events-targets"
-import * as s3 from "aws-cdk-lib/aws-s3"
-import * as cdk from "aws-cdk-lib"
-import * as pipelines from "aws-cdk-lib/pipelines"
-import * as fs from "fs"
-import * as path from "path"
-import { fileURLToPath } from "node:url"
-import { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
-import { SlackNotification, SlackNotificationProps } from "./slack-notification"
+import * as iam from "aws-cdk-lib/aws-iam"
+import * as lambda from "aws-cdk-lib/aws-lambda"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
-import { createRequire } from "node:module"
+import type * as s3 from "aws-cdk-lib/aws-s3"
+import * as pipelines from "aws-cdk-lib/pipelines"
+import * as constructs from "constructs"
+import type { CloudAssemblyLookupUserParameters } from "./cloud-assembly-lookup-handler"
+import {
+  SlackNotification,
+  type SlackNotificationProps,
+} from "./slack-notification"
 
 const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
@@ -139,7 +142,7 @@ export class LifligCdkPipeline extends constructs.Construct {
     let stages: codepipeline.StageProps[]
 
     switch (props.sourceType) {
-      case "cloud-assembly":
+      case "cloud-assembly": {
         const cloudAssembly = this.cloudAssemblyStage(
           cloudAssemblyArtifact,
           this.artifactsBucket,
@@ -148,7 +151,8 @@ export class LifligCdkPipeline extends constructs.Construct {
         synth = cloudAssembly.synth
         stages = cloudAssembly.stages
         break
-      case "cdk-source":
+      }
+      case "cdk-source": {
         const cdkSource = this.cdkSourceStage(
           cloudAssemblyArtifact,
           this.artifactsBucket,
@@ -158,6 +162,7 @@ export class LifligCdkPipeline extends constructs.Construct {
         synth = cdkSource.synth
         stages = cdkSource.stages
         break
+      }
     }
 
     const dummyArtifact = new codepipeline.Artifact()

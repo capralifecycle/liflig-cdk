@@ -1,8 +1,7 @@
-import { App, CfnElement, Stack } from "aws-cdk-lib"
+import { App, type CfnElement, Stack } from "aws-cdk-lib"
 import { Match, Template } from "aws-cdk-lib/assertions"
-
-import * as sns from "aws-cdk-lib/aws-sns"
 import * as cw_actions from "aws-cdk-lib/aws-cloudwatch-actions"
+import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
 import { WebappMonitor } from ".."
 

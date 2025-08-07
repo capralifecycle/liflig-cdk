@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import * as fs from "fs"
+import * as fs from "node:fs"
 import {
-  SSMClient,
   GetParametersByPathCommand,
-  GetParametersByPathResult,
+  type GetParametersByPathResult,
+  SSMClient,
 } from "@aws-sdk/client-ssm"
 
 /**
@@ -16,7 +16,7 @@ export async function getVariablesFromParameterStore(
 
   const parameters: Record<string, string> = {}
 
-  let nextToken: string | undefined = undefined
+  let nextToken: string | undefined
 
   do {
     const result: GetParametersByPathResult = await ssm.send(
@@ -39,7 +39,7 @@ export async function getVariablesFromParameterStore(
 let namespace: string
 
 // If no arguments are given, use some sensible defaults.
-if (process.argv.length == 2) {
+if (process.argv.length === 2) {
   namespace = "default"
 } else {
   // In Node, first parameter is the third element.

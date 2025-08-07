@@ -1,13 +1,13 @@
-import * as constructs from "constructs"
-import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+import * as cdk from "aws-cdk-lib"
+import type * as codepipeline from "aws-cdk-lib/aws-codepipeline"
 import * as eventsTargets from "aws-cdk-lib/aws-events-targets"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as cdk from "aws-cdk-lib"
-import * as path from "path"
-import * as s3 from "aws-cdk-lib/aws-s3"
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import { fileURLToPath } from "node:url"
+import type * as s3 from "aws-cdk-lib/aws-s3"
+import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
+import * as constructs from "constructs"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
