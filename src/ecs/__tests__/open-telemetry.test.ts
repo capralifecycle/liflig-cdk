@@ -1,11 +1,11 @@
 import "@aws-cdk/assert/jest"
+import { App, Stack } from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
-import { FargateService, OpenTelemetryCollectors } from ".."
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import { FargateService, OpenTelemetryCollectors } from ".."
 
 describe("OpenTelemetryCollectors", () => {
   const createService = () => {

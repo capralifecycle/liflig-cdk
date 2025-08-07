@@ -1,7 +1,7 @@
-import * as constructs from "constructs"
 import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53Targets from "aws-cdk-lib/aws-route53-targets"
+import * as constructs from "constructs"
 
 export interface ListenerRuleProps {
   httpsListener: elb.IApplicationListener

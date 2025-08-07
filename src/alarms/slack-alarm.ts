@@ -1,13 +1,14 @@
-import * as constructs from "constructs"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
+import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import * as sns from "aws-cdk-lib/aws-sns"
-import { Duration } from "aws-cdk-lib"
-import * as path from "path"
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
-import { fileURLToPath } from "node:url"
+import * as constructs from "constructs"
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 

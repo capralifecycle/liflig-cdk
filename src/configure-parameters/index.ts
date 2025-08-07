@@ -1,8 +1,8 @@
-export { ConfigureParameters } from "./configure-parameters"
 export type {
   ConfigureParametersProps,
-  PlainTextParameter,
-  SecretParameter,
-  SecretByNameParameter,
   Parameter,
+  PlainTextParameter,
+  SecretByNameParameter,
+  SecretParameter,
 } from "./configure-parameters"
+export { ConfigureParameters } from "./configure-parameters"

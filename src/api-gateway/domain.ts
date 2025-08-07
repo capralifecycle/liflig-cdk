@@ -1,9 +1,9 @@
-import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
+import * as acm from "aws-cdk-lib/aws-certificatemanager"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as route53Targets from "aws-cdk-lib/aws-route53-targets"
-import * as acm from "aws-cdk-lib/aws-certificatemanager"
+import * as constructs from "constructs"
 
 export type ApiGatewayDnsProps = {
   /**
@@ -63,7 +63,7 @@ export class ApiGatewayDomain extends constructs.Construct {
     // Not sure how sub-subdomains are affected: `myservice.staging.platform.example.no` and `*.platform.example.no`.
     this.apiGwDomainName = new apigw.DomainName(
       this,
-      "DomainName-" + props.subdomain,
+      `DomainName-${props.subdomain}`,
       {
         domainName: this.fullDomainName,
         certificate: customDomainCert,

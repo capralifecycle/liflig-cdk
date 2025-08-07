@@ -1,13 +1,13 @@
 import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
+import type { CfnService } from "aws-cdk-lib/aws-ecs"
 import * as ecs from "aws-cdk-lib/aws-ecs"
-import { CfnService } from "aws-cdk-lib/aws-ecs"
 import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as constructs from "constructs"
 import { ConfigureParameters } from "../configure-parameters"
-import { Parameter } from "../configure-parameters/configure-parameters"
+import type { Parameter } from "../configure-parameters/configure-parameters"
 
 export interface FargateServiceProps {
   serviceName: string

@@ -1,6 +1,6 @@
-import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
+import type * as constructs from "constructs"
 
 function shouldTag(construct: constructs.IConstruct) {
   // See https://github.com/aws/aws-cdk/issues/14519#issuecomment-833103147

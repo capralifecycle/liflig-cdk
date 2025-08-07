@@ -1,5 +1,5 @@
-import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
+import type * as constructs from "constructs"
 
 export function getStageOrApp(
   scope: constructs.Construct,

@@ -1,23 +1,27 @@
 import "@aws-cdk/assert/jest"
+import { App, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
-import * as route53 from "aws-cdk-lib/aws-route53"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
-import { App, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib"
+import * as route53 from "aws-cdk-lib/aws-route53"
 import "jest-cdk-snapshot"
-import { ApiGateway } from ".."
-import { LoadBalancer } from "../../load-balancer"
-import { RetentionDays } from "aws-cdk-lib/aws-logs"
-import { FargateService, ListenerRule } from "../../ecs"
-import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
-import { Queue } from "aws-cdk-lib/aws-sqs"
 import { EventBus } from "aws-cdk-lib/aws-events"
-import { Function, InlineCode, Runtime } from "aws-cdk-lib/aws-lambda"
+import {
+  InlineCode,
+  Function as LambdaFunction,
+  Runtime,
+} from "aws-cdk-lib/aws-lambda"
+import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import { type ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
+import { Queue } from "aws-cdk-lib/aws-sqs"
+import { FargateService, ListenerRule } from "../../ecs"
+import { LoadBalancer } from "../../load-balancer"
+import { ApiGateway } from ".."
 
 describe("HTTP API Gateway", () => {
   const albListenerHostName = "my-test-service-behind-alb.example.com"
@@ -248,7 +252,7 @@ describe("HTTP API Gateway", () => {
   })
 
   test("creates API-GW HTTP API with no auth and Lambda integration", () => {
-    const apiLambda = new Function(stack, "MyApiLambda", {
+    const apiLambda = new LambdaFunction(stack, "MyApiLambda", {
       vpc: vpc,
       code: new InlineCode(
         `exports.handler = async(event) => { return "Hello World"; }`,
@@ -418,7 +422,7 @@ export async function handler(event) {
 
   function createEcsAlbService() {
     const certificate = new cm.Certificate(supportStack, "Certificate", {
-      domainName: `*.example.com`,
+      domainName: "*.example.com",
       subjectAlternativeNames: ["example.com"],
       validation: cm.CertificateValidation.fromDns(hostedZone),
     })
@@ -488,7 +492,7 @@ export async function handler(event) {
     return Secret.fromSecretNameV2(
       stack,
       "BasicAuthCredentials",
-      `/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials`,
+      "/example/cdk/prod/myService/myservice.gateway.auth.basic.credentials",
     )
   }
 })

@@ -1,5 +1,5 @@
-import * as constructs from "constructs"
 import * as ssm from "aws-cdk-lib/aws-ssm"
+import * as constructs from "constructs"
 
 function paramName(
   platformNamespace: string,

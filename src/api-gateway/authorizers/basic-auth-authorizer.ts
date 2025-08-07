@@ -8,11 +8,11 @@
  *     `BasicAuthAuthorizerProps` on the `ApiGateway` construct for the supported formats.
  */
 
+import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 import type {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
 } from "aws-lambda"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
 
 type AuthorizerResult = APIGatewaySimpleAuthorizerResult & {
   /**
@@ -62,8 +62,7 @@ type ExpectedBasicAuthCredentials = {
 }
 
 /** Cache this value, so that subsequent lambda invocations don't have to refetch. */
-let cachedBasicAuthCredentials: ExpectedBasicAuthCredentials[] | undefined =
-  undefined
+let cachedBasicAuthCredentials: ExpectedBasicAuthCredentials[] | undefined
 
 /**
  * Returns an array, to support credential secrets with multiple values (see
@@ -73,8 +72,7 @@ async function getExpectedBasicAuthCredentials(): Promise<
   ExpectedBasicAuthCredentials[]
 > {
   if (cachedBasicAuthCredentials === undefined) {
-    const secretName: string | undefined =
-      process.env["CREDENTIALS_SECRET_NAME"]
+    const secretName: string | undefined = process.env.CREDENTIALS_SECRET_NAME
     if (!secretName) {
       console.error("CREDENTIALS_SECRET_NAME env variable is not defined")
       throw new Error()

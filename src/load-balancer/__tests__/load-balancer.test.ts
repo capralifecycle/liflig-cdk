@@ -1,11 +1,11 @@
 import "@aws-cdk/assert/jest"
+import { App, Stack } from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as route53 from "aws-cdk-lib/aws-route53"
-import { App, Stack } from "aws-cdk-lib"
 import "jest-cdk-snapshot"
-import { LoadBalancer } from ".."
 import { SslPolicy } from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import { LoadBalancer } from ".."
 
 test("create load balancer", () => {
   const app = new App()
@@ -27,7 +27,7 @@ test("create load balancer", () => {
   })
 
   const certificate = new cm.Certificate(supportStack, "Certificate", {
-    domainName: `*.example.com`,
+    domainName: "*.example.com",
     subjectAlternativeNames: ["example.com"],
     validation: cm.CertificateValidation.fromDns(hostedZone),
   })
@@ -62,7 +62,7 @@ test("create load balancer and override TLS configuration", () => {
   })
 
   const certificate = new cm.Certificate(supportStack, "Certificate", {
-    domainName: `*.2.example.com`,
+    domainName: "*.2.example.com",
     subjectAlternativeNames: ["2.example.com"],
     validation: cm.CertificateValidation.fromDns(hostedZone),
   })

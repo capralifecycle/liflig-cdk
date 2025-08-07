@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { deleteAsync } from "del"
+
 import * as fs from "node:fs"
+import * as path from "node:path"
+import { deleteAsync } from "del"
 import * as glob from "glob"
-import * as path from "path"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeVersion(data: any): any {
@@ -18,7 +19,7 @@ function removeVersion(data: any): any {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeTrace(data: any): any {
-  if (data instanceof Array) {
+  if (Array.isArray(data)) {
     return data.map(removeTrace)
   }
 
@@ -64,7 +65,7 @@ function rewriteCurrentVersionIfFound(value: string): string | null {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeAssetDetailsFromTemplate(data: any): any {
-  if (data instanceof Array) {
+  if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromTemplate)
   }
 
@@ -75,23 +76,25 @@ function removeAssetDetailsFromTemplate(data: any): any {
           const newCurrentVersion = rewriteCurrentVersionIfFound(key)
           if (newCurrentVersion) {
             return [newCurrentVersion, removeAssetDetailsFromTemplate(value)]
-          } else if (key.includes("AssetParameter")) {
+          }
+          if (key.includes("AssetParameter")) {
             return null
-          } else if (
+          }
+          if (
             key === "Ref" &&
             typeof value === "string" &&
             value.includes("AssetParameters")
           ) {
             return [key, "snapshot-value"]
-          } else if (
+          }
+          if (
             key === "aws:asset:path" &&
             typeof value === "string" &&
             /asset\.[0-9a-f]{64}/.test(value)
           ) {
             return [key, "asset.snapshot-value"]
-          } else {
-            return [key, removeAssetDetailsFromTemplate(value)]
           }
+          return [key, removeAssetDetailsFromTemplate(value)]
         })
         .filter((it): it is [] => it != null),
     )
@@ -112,13 +115,13 @@ function removeAssetDetailsFromTemplate(data: any): any {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeAssetDetailsFromManifest(data: any): any {
-  if (data instanceof Array) {
+  if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromManifest)
   }
 
   if (data === Object(data)) {
     // aws:cdk:asset in metadata
-    if (data["type"] === "aws:cdk:asset" && "data" in data) {
+    if (data.type === "aws:cdk:asset" && "data" in data) {
       return {
         ...data,
         data: "snapshot-value",
@@ -130,9 +133,8 @@ function removeAssetDetailsFromManifest(data: any): any {
         .map(([key, value]) => {
           if (key.includes("AssetParameters")) {
             return null
-          } else {
-            return [key, removeAssetDetailsFromManifest(value)]
           }
+          return [key, removeAssetDetailsFromManifest(value)]
         })
         .filter((it): it is [] => it != null),
     )

@@ -1,9 +1,9 @@
-import * as constructs from "constructs"
+import * as crypto from "node:crypto"
+import * as cdk from "aws-cdk-lib"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import * as ssm from "aws-cdk-lib/aws-ssm"
-import * as cdk from "aws-cdk-lib"
-import * as crypto from "crypto"
+import type * as constructs from "constructs"
 
 /**
  * A plain text application parameter that will be stored

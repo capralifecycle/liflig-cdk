@@ -1,11 +1,11 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack, Size } from "aws-cdk-lib"
+import { App, Size, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
-import * as sns from "aws-cdk-lib/aws-sns"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
+import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
-import { DatabaseAlarms } from "../database-alarms"
 import { throws } from "node:assert"
+import { DatabaseAlarms } from "../database-alarms"
 
 test("create alarms", () => {
   const app = new App()

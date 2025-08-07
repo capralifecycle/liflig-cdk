@@ -1,13 +1,13 @@
 import {
-  SESClient,
-  VerifyDomainIdentityCommand,
-  VerifyDomainDkimCommand,
   DeleteIdentityCommand,
+  SESClient,
+  VerifyDomainDkimCommand,
+  VerifyDomainIdentityCommand,
 } from "@aws-sdk/client-ses"
 
 import {
-  SESv2Client,
   PutEmailIdentityConfigurationSetAttributesCommand,
+  SESv2Client,
 } from "@aws-sdk/client-sesv2"
 
 type OnEventHandler = (event: {
@@ -34,12 +34,12 @@ export const handler: OnEventHandler = async (event) => {
 
   const ttl = "1800"
 
-  const domainName = event.ResourceProperties["DomainName"]
+  const domainName = event.ResourceProperties.DomainName
   const includeVerificationRecord =
-    event.ResourceProperties["IncludeVerificationRecord"] == "true"
+    event.ResourceProperties.IncludeVerificationRecord === "true"
 
   const defaultConfigurationSetName =
-    event.ResourceProperties["DefaultConfigurationSetName"]
+    event.ResourceProperties.DefaultConfigurationSetName
 
   if (!includeVerificationRecord) {
     console.log("Excluding verification TXT record")
@@ -72,7 +72,7 @@ export const handler: OnEventHandler = async (event) => {
   }
 
   switch (event.RequestType) {
-    case "Delete":
+    case "Delete": {
       const deleteIdentityResp = await sesClient.send(
         new DeleteIdentityCommand({
           Identity: domainName,
@@ -83,9 +83,10 @@ export const handler: OnEventHandler = async (event) => {
       return {
         PhysicalResourceId: event.PhysicalResourceId,
       }
+    }
 
     case "Create":
-    case "Update":
+    case "Update": {
       // Idempotent.
       const verifyDomainIdentityResp = await sesClient.send(
         new VerifyDomainIdentityCommand({
@@ -137,5 +138,6 @@ export const handler: OnEventHandler = async (event) => {
           VerificationToken: verificationToken,
         },
       }
+    }
   }
 }

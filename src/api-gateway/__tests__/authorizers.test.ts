@@ -1,13 +1,13 @@
 import "@aws-cdk/assert/jest"
-import * as basicAuthAuthorizer from "../authorizers/basic-auth-authorizer"
-import * as cognitoUserPoolAuthorizer from "../authorizers/cognito-user-pool-authorizer"
-import * as cognitoUserPoolOrBasicAuthAuthorizer from "../authorizers/cognito-user-pool-or-basic-auth-authorizer"
-import {
+import type { SecretsManager } from "@aws-sdk/client-secrets-manager"
+import { expect, jest } from "@jest/globals"
+import type {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
 } from "aws-lambda"
-import { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { expect, jest } from "@jest/globals"
+import * as basicAuthAuthorizer from "../authorizers/basic-auth-authorizer"
+import * as cognitoUserPoolAuthorizer from "../authorizers/cognito-user-pool-authorizer"
+import * as cognitoUserPoolOrBasicAuthAuthorizer from "../authorizers/cognito-user-pool-or-basic-auth-authorizer"
 
 const DEFAULT_CREDENTIALS_SECRET = "default"
 const CREDENTIALS_SECRET_WITH_ARRAY_FORMAT = "array"
@@ -305,7 +305,7 @@ function basicAuthHeader(credentials: { username: string; password: string }) {
 }
 
 function bearerTokenHeader(token: string) {
-  return "Bearer " + token
+  return `Bearer ${token}`
 }
 
 class MockSecretsManager {

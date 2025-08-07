@@ -1,13 +1,13 @@
-import * as constructs from "constructs"
+import { readFileSync } from "node:fs"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+import { RemovalPolicy } from "aws-cdk-lib"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as logs from "aws-cdk-lib/aws-logs"
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
-import { RemovalPolicy } from "aws-cdk-lib"
-import { FargateService } from "./fargate-service"
-import { readFileSync } from "fs"
-import { fileURLToPath } from "url"
-import * as path from "path"
+import * as constructs from "constructs"
+import type { FargateService } from "./fargate-service"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -164,7 +164,7 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
   extend(taskDefinition: ecs.TaskDefinition): void {
     if (taskDefinition.networkMode !== ecs.NetworkMode.AWS_VPC) {
       throw new Error(
-        "Task NetworkMode must be AWS_VPC: " + taskDefinition.networkMode,
+        `Task NetworkMode must be AWS_VPC: ${taskDefinition.networkMode}`,
       )
     }
 

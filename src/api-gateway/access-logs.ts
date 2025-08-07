@@ -1,8 +1,8 @@
-import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
-import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
-import * as logs from "aws-cdk-lib/aws-logs"
+import type * as apigw from "aws-cdk-lib/aws-apigatewayv2"
 import * as iam from "aws-cdk-lib/aws-iam"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as constructs from "constructs"
 
 export type ApiGatewayAccessLogsProps = {
   /**

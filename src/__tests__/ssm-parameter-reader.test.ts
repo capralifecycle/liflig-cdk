@@ -1,5 +1,5 @@
-import { CfnParameter } from "aws-cdk-lib/aws-ssm"
 import { App, Stack } from "aws-cdk-lib"
+import { CfnParameter } from "aws-cdk-lib/aws-ssm"
 import "jest-cdk-snapshot"
 import { SsmParameterReader } from "../ssm-parameter-reader"
 

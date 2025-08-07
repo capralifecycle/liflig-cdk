@@ -5,7 +5,7 @@ let src: string
 let dst: string
 
 // If no arguments are given, use some sensible defaults.
-if (process.argv.length == 2) {
+if (process.argv.length === 2) {
   src = "cdk.out"
   dst = "__snapshots__"
 } else {

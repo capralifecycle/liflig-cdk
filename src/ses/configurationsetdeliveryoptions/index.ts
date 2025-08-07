@@ -1,6 +1,6 @@
-import * as constructs from "constructs"
-import * as cr from "aws-cdk-lib/custom-resources"
 import * as iam from "aws-cdk-lib/aws-iam"
+import * as cr from "aws-cdk-lib/custom-resources"
+import * as constructs from "constructs"
 
 export type TlsPolicy = "Require" | "Optional"
 

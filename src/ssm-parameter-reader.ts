@@ -1,6 +1,6 @@
-import * as constructs from "constructs"
 import * as cdk from "aws-cdk-lib"
 import * as cr from "aws-cdk-lib/custom-resources"
+import type * as constructs from "constructs"
 
 interface Props {
   parameterName: string
@@ -14,7 +14,7 @@ interface Props {
 }
 
 function removeLeadingSlash(value: string): string {
-  return value.slice(0, 1) == "/" ? value.slice(1) : value
+  return value.slice(0, 1) === "/" ? value.slice(1) : value
 }
 
 /**

@@ -1,10 +1,10 @@
-import * as constructs from "constructs"
-import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
+import * as cdk from "aws-cdk-lib"
+import type * as certificatemanager from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import { ListenerAction } from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import * as s3 from "aws-cdk-lib/aws-s3"
-import * as cdk from "aws-cdk-lib"
+import * as constructs from "constructs"
 
 export interface LoadBalancerProps {
   certificates: certificatemanager.ICertificate[]

@@ -1,4 +1,4 @@
-import * as constructs from "constructs"
+import type * as constructs from "constructs"
 
 interface FeatureFlagInfo {
   /**
@@ -64,9 +64,8 @@ export class FeatureFlags {
     const contextValue = this.scope.node.tryGetContext(flagName) as unknown
     if (contextValue === undefined) {
       return getFeatureFlagDefault(flagName)
-    } else if (
-      Object.prototype.toString.call(contextValue) === "[object Boolean]"
-    ) {
+    }
+    if (Object.prototype.toString.call(contextValue) === "[object Boolean]") {
       return Boolean(contextValue)
     }
     throw new Error(

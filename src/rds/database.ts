@@ -1,8 +1,8 @@
-import * as constructs from "constructs"
+import * as cdk from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
-import * as sm from "aws-cdk-lib/aws-secretsmanager"
-import * as cdk from "aws-cdk-lib"
+import type * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as constructs from "constructs"
 
 export interface DatabaseProps extends cdk.StackProps {
   vpc: ec2.IVpc
