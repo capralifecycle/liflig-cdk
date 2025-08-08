@@ -21,7 +21,6 @@ type OnEventHandler = (event: {
   OldResourceProperties?: ResourceProps
 }) => Promise<{
   PhysicalResourceId?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Data?: Record<string, any>
 }>
 

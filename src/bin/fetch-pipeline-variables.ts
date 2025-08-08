@@ -65,7 +65,6 @@ async function main(namespace: string) {
 }
 
 main(namespace).catch((e) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   console.error(e.stack || e.message || e)
   process.exitCode = 1
 })

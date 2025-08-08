@@ -309,7 +309,6 @@ function bearerTokenHeader(token: string) {
 }
 
 class MockSecretsManager {
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async getSecretValue(args: {
     SecretId: string
   }): Promise<{ SecretString: string }> {
@@ -334,7 +333,6 @@ class MockSecretsManager {
 }
 
 class MockTokenVerifier {
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async verify(token: string): Promise<{ client_id: string }> {
     switch (token) {
       case VALID_ACCESS_TOKEN:

@@ -124,7 +124,6 @@ export class FargateService extends constructs.Construct {
     parameters.grantRead(this.taskDefinition.taskRole)
 
     const port = props.containerPort ?? 8080
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const container = this.taskDefinition.addContainer("Container", {
       logging: ecs.LogDriver.awsLogs({
         logGroup: this.logGroup,

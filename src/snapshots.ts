@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import * as fs from "node:fs"
 import * as path from "node:path"
 import { deleteAsync } from "del"
 import * as glob from "glob"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeVersion(data: any): any {
   const cp = {
     ...data,
@@ -17,7 +12,6 @@ function removeVersion(data: any): any {
   return cp
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeTrace(data: any): any {
   if (Array.isArray(data)) {
     return data.map(removeTrace)
@@ -34,7 +28,6 @@ function removeTrace(data: any): any {
   return data
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeRuntimeLibraries(data: any): any {
   const cp = {
     ...data,
@@ -63,7 +56,6 @@ function rewriteCurrentVersionIfFound(value: string): string | null {
   return match ? `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` : null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeAssetDetailsFromTemplate(data: any): any {
   if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromTemplate)
@@ -113,7 +105,6 @@ function removeAssetDetailsFromTemplate(data: any): any {
   return data
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeAssetDetailsFromManifest(data: any): any {
   if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromManifest)
@@ -157,7 +148,6 @@ function removeAssetDetailsFromManifest(data: any): any {
  * Remove the CDKMetadata resources that is part of the synthesized
  * template since CDK 1.63.0.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeCdkMetadataResourceFromTemplate(data: any): any {
   const cp = {
     ...data,
