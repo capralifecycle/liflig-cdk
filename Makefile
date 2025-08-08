@@ -1,28 +1,46 @@
 .PHONY: all
 all: build
 
-.PHONY: build
-build: clean
+.PHONY: install-deps
+install-deps:
+ifeq ($(CI),true)
+	npm ci
+else
+	npm install
+endif
 
-	# don't trigger prepare on install
-	npm install --ignore-scripts
+.PHONY: build
+build: clean install-deps
+	npm install
 	npm run lint
 	npm run build
-	npm run snapshots
 	npm run test
+	npm run snapshots
 
 .PHONY: snapshots
 snapshots:
 	npm run snapshots
 	npm test -- --updateSnapshot
 
+.PHONY: check-snapshots
+check-snapshots:
+	git status __snapshots__ && git add __snapshots__ --intent-to-add && git diff --exit-code __snapshots__
+
 .PHONY: lint
 lint:
 	npm run lint
 
+.PHONY: test
+test:
+	npm run test
+
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	npx --yes --package renovate@latest -- renovate-config-validator --strict renovate.json5
+
+.PHONY: release
+release:
+	npm run semantic-release
 
 .PHONY: clean
 clean:

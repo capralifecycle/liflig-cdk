@@ -64,7 +64,6 @@ Note: `npm link` cannot be used, since it will lead to multiple
 declarations of the same classes from CDK, breaking the `instanceof`
 operator.
 
-
 ## Contributing
 
 This project accepts contributions. To get started, see the [Contributing Guidelines](./CONTRIBUTING.md).

@@ -30,7 +30,7 @@ If the change requires action from existing library consumers, ensure there is a
 
 ### Testing
 
-Ensure there is a strategy for how the change will be tested going forward to keep the code maintainable. 
+Ensure there is a strategy for how the change will be tested going forward to keep the code maintainable.
 
 Being solely manually tested or tested in a non-reproducible manner is not sufficient, as this will incur a maintenance cost in the future.
 
@@ -45,4 +45,3 @@ Avoid introducing unstable, immature or custom resources if possible, as these m
 - Follow the existing code conventions of the library
 - When defining default values for constructs, such as `minCapacity` or `maxCapacity`, ensure that the reasoning for the choice of values are documented
 - Prefer general and flexible code to highly specific and inflexible code, as the latter are more likely to require rework and continual maintenance.
-
