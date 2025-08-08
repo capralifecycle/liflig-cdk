@@ -1,0 +1,34 @@
+# lefthook.yml
+---
+# Lint commit messages
+commit-msg:
+  commands:
+    "lint commit message":
+      run: npx --no -- commitlint --edit
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: lint code
+      glob: "**/*.{js,ts,jsx,tsx}"
+      run: make lint
+
+    - name: lint markdown
+      glob: "*.md"
+      run: markdownlint {staged_files} --disable MD013
+      exclude:
+        - .github/*template.md
+
+    - name: lint yaml
+      glob: "*.{yml,yaml}"
+      run: yamllint --no-warnings {staged_files}
+      exclude:
+        - assets/open-telemetry/otel-collector-task-metrics-config.yaml
+
+    - name: lint json
+      glob: "*.json"
+      run: jsonlint {staged_files} --no-duplicate-keys --compact --quiet
+
+    - name: validate renovate config
+      glob: "renovate.json*"
+      run: make validate-renovate-config
