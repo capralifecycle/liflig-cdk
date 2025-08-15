@@ -167,7 +167,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs22.x",
         "Timeout": 300,
       },
       "Type": "AWS::Lambda::Function",

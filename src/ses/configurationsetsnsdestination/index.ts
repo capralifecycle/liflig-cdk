@@ -77,7 +77,7 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
         `exports.handler = ${sesEventLoggerHandler.toString()};`,
       ),
       handler: "index.handler",
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       logRetention: RetentionDays.THREE_MONTHS,
     })
 
@@ -117,7 +117,7 @@ class ConfigurationSetSnsDestinationProvider extends constructs.Construct {
     this.provider = new cr.Provider(this, "Provider", {
       onEventHandler: new NodejsFunction(this, "Function", {
         entry: require.resolve(`${__dirname}/handler`),
-        runtime: lambda.Runtime.NODEJS_18_X,
+        runtime: lambda.Runtime.NODEJS_22_X,
         timeout: cdk.Duration.minutes(5),
         awsSdkConnectionReuse: false,
         initialPolicy: [
