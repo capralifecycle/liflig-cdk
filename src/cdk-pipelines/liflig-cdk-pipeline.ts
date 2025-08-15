@@ -243,7 +243,7 @@ export class LifligCdkPipeline extends constructs.Construct {
       "CloudAssemblyLookupFn",
       {
         entry: require.resolve(`${__dirname}/cloud-assembly-lookup-handler`),
-        runtime: lambda.Runtime.NODEJS_18_X,
+        runtime: lambda.Runtime.NODEJS_22_X,
         timeout: cdk.Duration.minutes(1),
         memorySize: 512,
         awsSdkConnectionReuse: false,
