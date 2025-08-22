@@ -14,7 +14,7 @@
     "lint": "biome check",
     "lint:fix": "biome check --fix",
     "format": "biome format --write",
-    "prepare": "lefthook install",
+    "prepare": "lefthook install || true",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh",
     "docs": "typedoc src --out docs"
