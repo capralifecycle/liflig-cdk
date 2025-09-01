@@ -90,6 +90,7 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
 }
 
 const sesEventLoggerHandler: SNSHandler = (event) => {
+  // biome-ignore lint/suspicious/useIterableCallbackReturn: ignore newly added rule
   event.Records.forEach((record) =>
     console.log(`SES event message from SNS: ${record.Sns.Message}`),
   )

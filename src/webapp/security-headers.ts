@@ -83,6 +83,7 @@ export function generateContentSecurityPolicyHeader(
     ...headerOptions,
   }
 
+  // biome-ignore lint/suspicious/useIterableCallbackReturn: ignore newly added rule
   Object.values(options).forEach(
     (v) => typeof v === "string" && validateCspParam(v),
   )
