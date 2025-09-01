@@ -8,3 +8,4 @@ cdk.out/
 /*.tgz
 .idea
 docs/
+.DS_Store
