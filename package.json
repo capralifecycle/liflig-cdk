@@ -53,7 +53,7 @@
     "@aws-sdk/client-sesv2": "3.876.0",
     "@aws-sdk/client-sfn": "3.876.0",
     "@aws-sdk/lib-storage": "3.878.0",
-    "@biomejs/biome": "2.1.4",
+    "@biomejs/biome": "2.2.2",
     "@commitlint/cli": "19.8.1",
     "@commitlint/config-conventional": "19.8.1",
     "@types/aws-lambda": "8.10.152",
