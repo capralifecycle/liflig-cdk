@@ -76,7 +76,7 @@
   "dependencies": {
     "@capraconsulting/webapp-deploy-lambda": "2.5.0",
     "aws-jwt-verify": "5.1.0",
-    "del": "8.0.0",
+    "del": "8.0.1",
     "glob": "11.0.3",
     "source-map-support": "0.5.21"
   },
