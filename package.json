@@ -60,7 +60,7 @@
     "@types/aws-lambda": "8.10.153",
     "@types/jest": "30.0.0",
     "@types/node": "24.6.1",
-    "aws-cdk": "2.1029.3",
+    "aws-cdk": "2.1029.4",
     "aws-cdk-lib": "2.213.0",
     "constructs": "10.4.2",
     "esbuild": "0.25.10",
