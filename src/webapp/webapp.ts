@@ -172,7 +172,7 @@ export class Webapp extends constructs.Construct {
     if (
       (props.securityHeaders?.enabled ?? true) &&
       !props.overrideCloudFrontBehaviourOptions?.responseHeadersPolicy
-        ?.responseHeadersPolicyId
+        ?.responseHeadersPolicyRef.responseHeadersPolicyId
     ) {
       const securityHeaders = new WebappSecurityHeaders(
         this,
