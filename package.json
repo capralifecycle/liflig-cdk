@@ -17,7 +17,8 @@
     "prepare": "lefthook install",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh",
-    "docs": "typedoc src --out docs"
+    "docs": "typedoc src --out docs",
+    "upgrade-dependencies": "ncu --upgrade --install always --format group"
   },
   "bin": {
     "cdk-create-snapshots": "lib/bin/cdk-create-snapshots.js",
@@ -67,6 +68,7 @@
     "jest": "30.2.0",
     "jest-cdk-snapshot": "2.3.6",
     "lefthook": "1.13.6",
+    "npm-check-updates": "19.0.0",
     "semantic-release": "24.2.9",
     "ts-jest": "29.4.4",
     "tsx": "4.20.6",

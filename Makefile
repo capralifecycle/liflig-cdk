@@ -54,3 +54,8 @@ clean:
 .PHONY: clean-all
 clean-all: clean
 	rm -rf node_modules/
+
+.PHONY: upgrade-dependencies
+upgrade-dependencies:
+	npm run upgrade-dependencies
+	npm run snapshots
