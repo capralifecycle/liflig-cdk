@@ -76,7 +76,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@capraconsulting/webapp-deploy-lambda": "2.5.0",
+    "@capraconsulting/webapp-deploy-lambda": "2.5.1",
     "aws-jwt-verify": "5.1.1",
     "del": "8.0.1",
     "glob": "11.0.3",
