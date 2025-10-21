@@ -31,8 +31,6 @@ jobs:
         with:
           node-version: 24.10.0
 
-      - uses: capralifecycle/actions-lib/configure-npm@b4bb65b0ab41499f4829fe99c4b33b0b5a363562 # v1.6.2
-
       - name: build project
         run: make build
 
@@ -44,4 +42,3 @@ jobs:
         if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.SHARED_NPMJS_TOKEN }}
