@@ -51,7 +51,7 @@
     "@aws-sdk/client-sfn": "3.914.0",
     "@aws-sdk/client-ssm": "3.914.0",
     "@aws-sdk/lib-storage": "3.914.0",
-    "@biomejs/biome": "2.2.6",
+    "@biomejs/biome": "2.2.7",
     "@commitlint/cli": "20.1.0",
     "@commitlint/config-conventional": "20.0.0",
     "@types/aws-lambda": "8.10.156",
