@@ -216,12 +216,17 @@ export async function createCloudAssemblySnapshot(
   src: string,
   dst: string,
 ): Promise<void> {
-  const base = path.join(process.cwd(), dst)
+  const destAbs = path.join(process.cwd(), dst)
+  const srcAbs = path.join(process.cwd(), src)
 
   // Copy all files from src (cdk.out) to dest (__snapshots__)
-  fs.cpSync(path.join(process.cwd(), src), base, { recursive: true })
+  fs.cpSync(srcAbs, destAbs, { recursive: true })
 
-  const pathGlobsToDelete = [
+  const expandGlob = (pattern: string, cwd: string): string[] => {
+    return fs.globSync(pattern, { cwd }).map((p) => path.join(cwd, p))
+  }
+
+  const filesToDelete = [
     // Don't keep track of manifest version.
     "**/cdk.out",
 
@@ -236,14 +241,8 @@ export async function createCloudAssemblySnapshot(
 
     // Remove graphviz files generated when using CDK Pipelines
     "**/*.dot",
-  ]
+  ].flatMap((g) => expandGlob(g, destAbs))
 
-  const expandGlobs = (patterns: string[], cwd: string): string[] =>
-    patterns.flatMap((pattern) =>
-      fs.globSync(pattern, { cwd }).map((p) => path.join(cwd, p)),
-    )
-
-  const filesToDelete = expandGlobs(pathGlobsToDelete, base)
   await Promise.all(
     filesToDelete.map((p) =>
       fs.promises.rm(p, {
@@ -253,13 +252,21 @@ export async function createCloudAssemblySnapshot(
     ),
   )
 
-  // Transform the manifest to be more snapshot friendly.
-  for (const file of fs.globSync("**/manifest.json", { cwd: base })) {
-    await prepareManifestFileForSnapshot(path.join(base, file))
+  const manifestFiles = [
+    // Transform the manifest to be more snapshot friendly.
+    "**/manifest.json",
+  ].flatMap((g) => expandGlob(g, destAbs))
+
+  for (const file of manifestFiles) {
+    await prepareManifestFileForSnapshot(file)
   }
 
-  // Transform all templates.
-  for (const file of fs.globSync("**/*.template.json", { cwd: base })) {
-    await prepareTemplateFileForSnapshot(path.join(base, file))
+  const templateFiles = [
+    // Transform all templates.
+    "**/*.template.json",
+  ].flatMap((g) => expandGlob(g, destAbs))
+
+  for (const file of templateFiles) {
+    await prepareTemplateFileForSnapshot(file)
   }
 }
