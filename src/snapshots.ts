@@ -1,7 +1,5 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { deleteAsync } from "del"
-import * as glob from "glob"
 
 function removeVersion(data: any): any {
   const cp = {
@@ -223,29 +221,45 @@ export async function createCloudAssemblySnapshot(
   // Copy all files from src (cdk.out) to dest (__snapshots__)
   fs.cpSync(path.join(process.cwd(), src), base, { recursive: true })
 
-  // Don't keep track of manifest version.
-  await deleteAsync(path.join(dst, "**/cdk.out"))
+  const pathGlobsToDelete = [
+    // Don't keep track of manifest version.
+    "**/cdk.out",
 
-  // The tree file doesn't give us much value as part of the snapshot.
-  await deleteAsync(path.join(dst, "tree.json"))
+    // The tree file doesn't give us much value as part of the snapshot.
+    "**/tree.json",
 
-  // Remove asset contents for now.
-  await deleteAsync(path.join(dst, "**/asset.*"))
+    // Remove asset contents for now.
+    "**/asset.*",
 
-  // Remove asset configs so we don't have to update
-  // snapshots for asset changes.
-  await deleteAsync(path.join(dst, "**/*.assets.json"))
+    // Remove asset configs so we don't have to update snapshots for asset changes.
+    "**/*.assets.json",
 
-  // Remove graphviz files generated when using CDK Pipelines
-  await deleteAsync(path.join(dst, "**/*.dot"))
+    // Remove graphviz files generated when using CDK Pipelines
+    "**/*.dot",
+  ]
+
+  const expandGlobs = (patterns: string[], cwd: string): string[] =>
+    patterns.flatMap((pattern) =>
+      fs.globSync(pattern, { cwd }).map((p) => path.join(cwd, p)),
+    )
+
+  const filesToDelete = expandGlobs(pathGlobsToDelete, base)
+  await Promise.all(
+    filesToDelete.map((p) =>
+      fs.promises.rm(p, {
+        recursive: true,
+        force: true,
+      }),
+    ),
+  )
 
   // Transform the manifest to be more snapshot friendly.
-  for (const file of glob.sync("**/manifest.json", { cwd: base })) {
+  for (const file of fs.globSync("**/manifest.json", { cwd: base })) {
     await prepareManifestFileForSnapshot(path.join(base, file))
   }
 
   // Transform all templates.
-  for (const file of glob.sync("**/*.template.json", { cwd: base })) {
+  for (const file of fs.globSync("**/*.template.json", { cwd: base })) {
     await prepareTemplateFileForSnapshot(path.join(base, file))
   }
 }

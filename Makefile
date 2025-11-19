@@ -59,3 +59,7 @@ clean-all: clean
 upgrade-dependencies:
 	npm run upgrade-dependencies
 	npm run snapshots
+
+.PHONY: fmt
+fmt:
+	npm run format
