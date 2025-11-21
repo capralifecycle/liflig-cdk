@@ -77,7 +77,7 @@ export class CloudTrailSlackIntegration extends constructs.Construct {
         description:
           "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         handler: "main.handler_event_transformer",
-        runtime: lambda.Runtime.PYTHON_3_9,
+        runtime: lambda.Runtime.PYTHON_3_13,
         timeout: cdk.Duration.seconds(15),
         logRetention: logs.RetentionDays.SIX_MONTHS,
         environment: {
@@ -134,7 +134,7 @@ export class CloudTrailSlackIntegration extends constructs.Construct {
         description:
           "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         handler: "main.handler_slack_forwarder",
-        runtime: lambda.Runtime.PYTHON_3_9,
+        runtime: lambda.Runtime.PYTHON_3_13,
         timeout: cdk.Duration.seconds(15),
         logRetention: logs.RetentionDays.TWO_WEEKS,
       })

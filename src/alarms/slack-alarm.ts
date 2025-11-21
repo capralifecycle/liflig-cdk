@@ -48,7 +48,7 @@ export class SlackAlarm extends constructs.Construct {
         "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
       handler: "index.handler",
       memorySize: 128,
-      runtime: lambda.Runtime.PYTHON_3_11,
+      runtime: lambda.Runtime.PYTHON_3_13,
       timeout: Duration.seconds(6),
       environment: {
         SLACK_URL_SECRET_NAME: props.slackWebhookUrlSecret.secretName,
