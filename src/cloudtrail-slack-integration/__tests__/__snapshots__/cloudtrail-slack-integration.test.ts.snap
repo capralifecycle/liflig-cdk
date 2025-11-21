@@ -13,7 +13,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a.zip",
+          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -31,7 +31,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.13",
         "Timeout": 15,
       },
       "Type": "AWS::Lambda::Function",
@@ -583,7 +583,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a.zip",
+          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -604,7 +604,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.13",
         "Timeout": 15,
       },
       "Type": "AWS::Lambda::Function",
@@ -1093,7 +1093,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a.zip",
+          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
@@ -1103,7 +1103,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.13",
         "Timeout": 15,
       },
       "Type": "AWS::Lambda::Function",
@@ -1337,7 +1337,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a.zip",
+          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -1358,7 +1358,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.13",
         "Timeout": 15,
       },
       "Type": "AWS::Lambda::Function",
@@ -1880,7 +1880,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "0c885446d72e6661a79624064ea7cb9e138800f12ba21b79752c0e899c9fb25a.zip",
+          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
@@ -1890,7 +1890,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.13",
         "Timeout": 15,
       },
       "Type": "AWS::Lambda::Function",
