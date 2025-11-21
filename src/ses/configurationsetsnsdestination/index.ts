@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/useIterableCallbackReturn: ignore newly added rule */
 import { createRequire } from "node:module"
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -90,7 +91,6 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
 }
 
 const sesEventLoggerHandler: SNSHandler = (event) => {
-  // biome-ignore lint/suspicious/useIterableCallbackReturn: ignore newly added rule
   event.Records.forEach((record) =>
     console.log(`SES event message from SNS: ${record.Sns.Message}`),
   )
