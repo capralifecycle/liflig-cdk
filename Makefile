@@ -63,3 +63,15 @@ upgrade-dependencies:
 .PHONY: fmt
 fmt:
 	npm run format
+
+.PHONY: lint-python
+lint-python:
+	ruff check
+
+.PHONY: lint-fix-python
+lint-fix-python:
+	ruff check --fix
+
+.PHONY: fmt-python
+fmt-python:
+	ruff format
