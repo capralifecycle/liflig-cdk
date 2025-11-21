@@ -57,7 +57,7 @@ are not yet resolved. Some relevant information:
 2. Install the library in an application from a Git branch
 
    ```bash
-   npm install "https://github.com/capralifecycle/liflig-cdk.git#my-feature-branch"
+   npm install github:capralifecycle/liflig-cdk#remove-del-and-glob-packages
    ```
 
 Note: `npm link` cannot be used, since it will lead to multiple
