@@ -13,7 +13,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "d9fa0c922ce4bc8129ffc5b4336a9215994c76b4b61b0364801d607df00d774b.zip",
+          "S3Key": "b168313d75457e2aed2043426bbb3605e39e368820ee1d491662d7338896f4f3.zip",
         },
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {
@@ -53,7 +53,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.11",
+        "Runtime": "python3.13",
         "Timeout": 6,
       },
       "Type": "AWS::Lambda::Function",
