@@ -51,7 +51,7 @@ def get_slack_payload_for_assume_role_event(event, friendly_names):
     elif principal_id.startswith("AROA"):
         # The other part of the principal ID for a role is the name of the session
         principal_id = principal_id.split(":")[0]
-        pretext_messages.append(f"IAM role")
+        pretext_messages.append("IAM role")
     else:
         pretext_messages.append("principal")
     pretext_messages.append(f"in `{principal_account_id}`")
