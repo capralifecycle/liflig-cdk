@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import typing as t
 from urllib.error import HTTPError, URLError
