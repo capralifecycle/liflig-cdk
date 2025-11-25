@@ -9,3 +9,9 @@ cdk.out/
 .idea
 docs/
 .DS_Store
+.claude/settings.local.json
+.serena/project.yml
+.serena/.gitignore
+.mcp.json
+AGENTS.md
+opencode.jsonc
