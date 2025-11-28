@@ -79,7 +79,7 @@ export class SlackNotification extends constructs.Construct {
         path.join(__dirname, "../../assets/pipeline-slack-notification-lambda"),
       ),
       handler: "index.handler",
-      runtime: lambda.Runtime.PYTHON_3_11,
+      runtime: lambda.Runtime.PYTHON_3_13,
       timeout: cdk.Duration.seconds(10),
       environment,
       description:
