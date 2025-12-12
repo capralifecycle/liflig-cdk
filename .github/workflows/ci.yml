@@ -32,10 +32,7 @@ jobs:
           node-version-file: ".node-version"
 
       - name: build project
-        run: make build
-
-      - name: check if snapshots are up to date
-        run: make check-snapshots
+        run: make ci
 
       - name: conditionally semantic release
         run: make release
