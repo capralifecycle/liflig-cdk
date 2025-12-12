@@ -67,6 +67,7 @@ jobs:
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version-file: ".node-version"
+          cache: "npm"
 
       - name: install python linter
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v3.5.1
