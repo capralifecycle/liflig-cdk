@@ -6,10 +6,11 @@ all: build
 ######################
 
 .PHONY: build
-build: clean install fmt lint-fix npm-build snapshots test
+build: clean install fmt lint-fix npm-build snapshots
 
 .PHONY: ci
 ci: install lint fmt-check npm-build snapshots-check test
+
 
 ######################
 # Composite targets
@@ -78,13 +79,19 @@ npm-fmt-check:
 	npm run format:check
 
 .PHONY: npm-snapshots
-npm-snapshots:
+npm-snapshots: npm-cdk-snapshots npm-jest-snapshots
+
+.PHONY: npm-cdk-snapshots
+npm-cdk-snapshots:
 	npm run snapshots
+
+.PHONY: npm-jest-snapshots
+npm-jest-snapshots:
 	npm test -- --updateSnapshot
 
-.PHONY: snapshots-check
-snapshots-check:
-	git status __snapshots__ && git add __snapshots__ --intent-to-add && git diff --exit-code __snapshots__
+.PHONY: npm-snapshots-check
+npm-snapshots-check:
+	git status ':(glob)**/__snapshots__/**' && git add --intent-to-add ':(glob)**/__snapshots__/**' && git diff --exit-code ':(glob)**/__snapshots__/**'
 
 .PHONY: validate-renovate-config
 validate-renovate-config:
