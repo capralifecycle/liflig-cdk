@@ -30,10 +30,10 @@ jobs:
           node-version-file: ".node-version"
 
       - name: install dependencies
-        run: npm ci
+        run: make ci
 
       - name: generate documentation
-        run: npm run docs
+        run: make update-docs
 
       - name: configure pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5

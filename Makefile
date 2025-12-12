@@ -1,46 +1,98 @@
 .PHONY: all
 all: build
 
-.PHONY: install-deps
-install-deps:
+######################
+# Main targets
+######################
+
+.PHONY: build
+build: clean install fmt lint-fix npm-build snapshots test
+
+.PHONY: ci
+ci: install lint fmt-check npm-build snapshots-check test
+
+######################
+# Composite targets
+######################
+
+.PHONY: install
+install: npm-install
+
+.PHONY: lint
+lint: npm-lint py-lint
+
+.PHONY: lint-fix
+lint-fix: npm-lint-fix py-lint-fix
+
+.PHONY: fmt
+fmt: npm-fmt py-fmt
+
+.PHONY: fmt-check
+fmt-check: npm-fmt-check py-fmt-check
+
+.PHONY: test
+test: npm-test
+
+.PHONY: snapshots
+snapshots: npm-snapshots
+
+.PHONY: snapshots-check
+snapshots-check: npm-snapshots-check
+
+.PHONY: upgrade-dependencies
+upgrade-dependencies: npm-upgrade-dependencies
+
+.PHONY: update-docs
+update-docs: npm-update-docs
+
+######################
+# Node targets
+######################
+
+.PHONY: npm-install
+npm-install:
 ifeq ($(CI),true)
 	npm ci
 else
 	npm install
 endif
 
-.PHONY: build
-build: clean install-deps
-	npm install
-	npm run lint
+.PHONY: npm-build
+npm-build:
 	npm run build
-	npm run test
-	npm run snapshots
 
-.PHONY: snapshots
-snapshots:
+.PHONY: npm-lint
+npm-lint:
+	npm run lint
+
+.PHONY: npm-lint-fix
+npm-lint-fix:
+	npm run lint:fix
+
+.PHONY: npm-fmt
+npm-fmt:
+	npm run format
+
+.PHONY: npm-fmt-check
+npm-fmt-check:
+	npm run format:check
+
+.PHONY: npm-snapshots
+npm-snapshots:
 	npm run snapshots
 	npm test -- --updateSnapshot
 
-.PHONY: check-snapshots
-check-snapshots:
+.PHONY: snapshots-check
+snapshots-check:
 	git status __snapshots__ && git add __snapshots__ --intent-to-add && git diff --exit-code __snapshots__
-
-.PHONY: lint
-lint:
-	npm run lint
-
-.PHONY: lint-fix
-lint-fix:
-	npm run lint:fix
-
-.PHONY: test
-test:
-	npm run test
 
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	npx --yes --package renovate@latest -- renovate-config-validator --strict renovate.json5
+
+.PHONY: npm-test
+npm-test:
+	npm test
 
 .PHONY: release
 release:
@@ -55,23 +107,31 @@ clean:
 clean-all: clean
 	rm -rf node_modules/
 
-.PHONY: upgrade-dependencies
-upgrade-dependencies:
+.PHONY: npm-upgrade-dependencies
+npm-upgrade-dependencies:
 	npm run upgrade-dependencies
 	npm run snapshots
 
-.PHONY: fmt
-fmt:
-	npm run format
+.PHONY: npm-update-docs
+npm-update-docs:
+	npm run docs
 
-.PHONY: lint-python
-lint-python:
+######################
+# Python targets
+######################
+
+.PHONY: py-lint
+py-lint:
 	ruff check
 
-.PHONY: lint-fix-python
-lint-fix-python:
+.PHONY: py-lint-fix
+py-lint-fix:
 	ruff check --fix
 
-.PHONY: fmt-python
-fmt-python:
+.PHONY: py-fmt
+py-fmt:
 	ruff format
+
+.PHONY: py-fmt-check
+py-fmt-check:
+	ruff format --check
