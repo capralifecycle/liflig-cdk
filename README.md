@@ -13,22 +13,23 @@ are not yet resolved. Some relevant information:
 
 - <https://github.com/aws/aws-cdk-rfcs/blob/master/text/0006-monolothic-packaging.md>
 
-## Pre-commit checklist
+## Development
 
-1. Lint code
+Project commands are defined using `Make`. Examples:
 
-   ```bash
-   npm run lint
-   ```
+```sh
+# Primary commands
+$ make         # runs '$ make build'
+$ make build   # build project, apply lint and formatting fixes, update snapshots
+$ make verify  # verify project, ensure lint, formatting and snapshots are up-to-date
 
-1. Run tests and update snapshots
+# Misc commands
+$ make lint      # lint code
+$ make fmt       # reformat code
+$ make snapshots # regenerate snapshots
+```
 
-   ```bash
-   npm run snapshots
-   npm run test -- -u
-   ```
-
-   Investigate any changes before committing.
+For a complete list of commands, refer to the `Makefile`.
 
 ## Testing library changes before releasing
 
