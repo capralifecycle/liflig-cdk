@@ -31,6 +31,9 @@ jobs:
         with:
           node-version-file: ".node-version"
 
+      - name: install python linter
+        uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v3.5.1
+
       - name: build project
         run: make ci
 

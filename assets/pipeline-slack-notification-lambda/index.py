@@ -202,7 +202,6 @@ def get_secret(secret):
 
 
 def handler(event, context):
-
     print("Event: " + json.dumps(event))
 
     region = event["region"]

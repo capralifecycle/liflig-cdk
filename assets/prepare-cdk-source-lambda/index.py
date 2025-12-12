@@ -19,26 +19,26 @@ def get_variables_from_parameters(namespace):
     next_token = None
     result = {}
 
-    prefix = f'/liflig-cdk/{namespace}/pipeline-variables/'
+    prefix = f"/liflig-cdk/{namespace}/pipeline-variables/"
     params = {
-        'Path': prefix,
+        "Path": prefix,
     }
 
     while True:
         if next_token is not None:
-            params['NextToken'] = next_token
+            params["NextToken"] = next_token
         response = ssm.get_parameters_by_path(**params)
 
-        parameters = response['Parameters']
+        parameters = response["Parameters"]
         if len(parameters) == 0:
             break
 
         for parameter in parameters:
-            result[parameter['Name'][len(prefix) :]] = parameter['Value']
+            result[parameter["Name"][len(prefix) :]] = parameter["Value"]
 
-        if 'NextToken' not in response:
+        if "NextToken" not in response:
             break
-        next_token = response['NextToken']
+        next_token = response["NextToken"]
 
     return result
 
@@ -67,7 +67,7 @@ def handler(event, context):
             # Special variable that can be used when reading variables
             # to ensure it is not stale. In the pipeline, variables
             # will never be stale, but locally it can be.
-            'variablesTimestamp': now.isoformat(),
+            "variablesTimestamp": now.isoformat(),
         }
 
         for file in files.get("Contents", []):

@@ -17,6 +17,7 @@ import boto3
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def augment_strings_with_friendly_names(strings, friendly_names):
     """A helper method for augmenting various values (e.g., AWS account ID) in
     a list of strings with a more friendly name"""
@@ -25,8 +26,15 @@ def augment_strings_with_friendly_names(strings, friendly_names):
     # inside ARNs as this would look messy.This is a quite basic heuristic, but it should allow
     # us to easily replace most relevant values (e.g., principal ID, account ID, etc.) with
     # friendly names without a complicated regex.
-    pattern = re.compile("|".join([f"(?<!:)({re.escape(key)})(?!:)" for key in friendly_names]))
-    return [pattern.sub(lambda m: m[0] + f" ({friendly_names[m.string[m.start():m.end()]]})", s) for s in strings]
+    pattern = re.compile(
+        "|".join([f"(?<!:)({re.escape(key)})(?!:)" for key in friendly_names])
+    )
+    return [
+        pattern.sub(
+            lambda m: m[0] + f" ({friendly_names[m.string[m.start() : m.end()]]})", s
+        )
+        for s in strings
+    ]
 
 
 def get_slack_payload_for_assume_role_event(event, friendly_names):
@@ -45,7 +53,9 @@ def get_slack_payload_for_assume_role_event(event, friendly_names):
     role_arn = request_parameters.get("roleArn", "")
 
     fallback = f"Sensitive role accessed in '{recipient_account_id}'"
-    pretext_messages = [f":warning: Sensitive role in `{recipient_account_id}` assumed by"]
+    pretext_messages = [
+        f":warning: Sensitive role in `{recipient_account_id}` assumed by"
+    ]
     if principal_id.startswith("AIDA"):
         pretext_messages.append("IAM user")
     elif principal_id.startswith("AROA"):
@@ -68,7 +78,9 @@ def get_slack_payload_for_assume_role_event(event, friendly_names):
     text = "\n".join(line for line in text if line)
 
     try:
-        pretext, fallback, text = augment_strings_with_friendly_names([pretext, fallback, text], friendly_names)
+        pretext, fallback, text = augment_strings_with_friendly_names(
+            [pretext, fallback, text], friendly_names
+        )
     except:
         logger.exception("Failed to augment strings with friendly names")
     return {
@@ -134,7 +146,9 @@ def get_fallback_slack_payload_for_event(
         text = "\n".join(line for line in text if line)
 
     try:
-        pretext, fallback, text = augment_strings_with_friendly_names([pretext, fallback, text], friendly_names)
+        pretext, fallback, text = augment_strings_with_friendly_names(
+            [pretext, fallback, text], friendly_names
+        )
     except:
         logger.exception("Failed to augment strings with friendly names")
 
@@ -203,9 +217,7 @@ def handler_event_transformer(event, context):
     fallback_parse_behavior = os.environ.get("FALLBACK_PARSE_BEHAVIOR", "")
     deduplicate_events = os.environ.get("DEDUPLICATE_EVENTS", "false") == "true"
 
-    friendly_names = get_augmented_friendly_names(
-        event, friendly_names
-    )
+    friendly_names = get_augmented_friendly_names(event, friendly_names)
 
     if not event["detail-type"].endswith("via CloudTrail"):
         logger.warn("Invalid event received")
