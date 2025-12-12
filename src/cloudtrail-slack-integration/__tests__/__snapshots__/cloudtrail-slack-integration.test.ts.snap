@@ -13,7 +13,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
+          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -583,7 +583,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
+          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -1093,7 +1093,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
+          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
@@ -1337,7 +1337,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
+          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": Object {
@@ -1880,7 +1880,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "112c6d5ef2c1f9a71a19198742ea108dbdbe1bbbbfd8ce09743d822fb8b6b50a.zip",
+          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
