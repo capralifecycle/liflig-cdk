@@ -74,9 +74,6 @@ jobs:
       - name: Build project
         run: make build
 
-      - name: Update CDK and Jest snapshots
-        run: make snapshots
-
       - name: Check for snapshot changes
         id: check_changes
         run: |
@@ -92,11 +89,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # stage Jest snapshot changes
-          git add src
-
-          # stage CDK snapshot changes
-          git add __snapshots__
+          # stage snapshot changes
+          git add ':(glob)**/__snapshots__/**'
 
           git commit -m "chore: update snapshots triggered by comment"
 
