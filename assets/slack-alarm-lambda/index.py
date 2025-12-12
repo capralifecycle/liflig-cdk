@@ -25,11 +25,15 @@ def handler(event, context):
 
 def list_all_active_alarms(topic_arn: str) -> list[str]:
     try:
-        response: dict = cloudwatch.describe_alarms(AlarmTypes=["CompositeAlarm", "MetricAlarm"],
-                                                    StateValue="ALARM",
-                                                    ActionPrefix=topic_arn)
+        response: dict = cloudwatch.describe_alarms(
+            AlarmTypes=["CompositeAlarm", "MetricAlarm"],
+            StateValue="ALARM",
+            ActionPrefix=topic_arn,
+        )
         all_alarms = response["CompositeAlarms"] + response["MetricAlarms"]
-        names: list[str] = [alarm["AlarmName"] for alarm in all_alarms if alarm["ActionsEnabled"]]
+        names: list[str] = [
+            alarm["AlarmName"] for alarm in all_alarms if alarm["ActionsEnabled"]
+        ]
         return names
     except Exception as e:
         print(f"Failed to list alarms: {e}")
@@ -68,9 +72,9 @@ def send_slack_notification(message: str, region: str, active_alarms: list[str])
         {
             "color": color,
             "title_link": "https://console.aws.amazon.com/cloudwatch/home?region="
-                          + region
-                          + "#alarm:alarmFilter=ANY;name="
-                          + message["AlarmName"],
+            + region
+            + "#alarm:alarmFilter=ANY;name="
+            + message["AlarmName"],
             "fallback": f"{alarm_emojis.get(message['NewStateValue'], '')} {message['AlarmName']}: {alarm_description}",
             "fields": [
                 {"title": "Alarm Name", "value": message["AlarmName"], "short": False},
@@ -86,23 +90,26 @@ def send_slack_notification(message: str, region: str, active_alarms: list[str])
                 {
                     "title": "State Transition",
                     "value": message.get("OldStateValue", "Unknown")
-                             + " -> "
-                             + message["NewStateValue"],
+                    + " -> "
+                    + message["NewStateValue"],
                     "short": False,
                 },
                 {
                     "title": "Link to Alarm",
                     "value": "https://console.aws.amazon.com/cloudwatch/home?region="
-                             + region
-                             + "#alarm:alarmFilter=ANY;name="
-                             + message["AlarmName"],
+                    + region
+                    + "#alarm:alarmFilter=ANY;name="
+                    + message["AlarmName"],
                     "short": False,
                 },
                 {
-                    "title": "All active alarms " + (alarm_emojis["ALARM"] if len(active_alarms) else ""),
-                    "value": "\n".join(["- " + alarm for alarm in active_alarms]) if len(active_alarms) else "None",
+                    "title": "All active alarms "
+                    + (alarm_emojis["ALARM"] if len(active_alarms) else ""),
+                    "value": "\n".join(["- " + alarm for alarm in active_alarms])
+                    if len(active_alarms)
+                    else "None",
                     "short": False,
-                }
+                },
             ],
         }
     ]
