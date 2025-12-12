@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib"
-import "source-map-support/register"
 import { tagResources } from "../src"
 import { BuildArtifactsStack } from "./build-artifacts"
 import {

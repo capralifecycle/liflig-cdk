@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
+    "test": "NODE_OPTIONS='--experimental-vm-modules --enable-source-maps' jest --runInBand",
     "lint": "biome check",
     "lint:fix": "biome check --fix",
     "format": "biome format --write",
@@ -73,8 +73,7 @@
   },
   "dependencies": {
     "@capraconsulting/webapp-deploy-lambda": "2.5.2",
-    "aws-jwt-verify": "5.1.1",
-    "source-map-support": "0.5.21"
+    "aws-jwt-verify": "5.1.1"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.0.0",
