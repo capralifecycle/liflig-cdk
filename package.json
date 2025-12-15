@@ -58,7 +58,7 @@
     "@types/jest": "30.0.0",
     "@types/node": "24.10.3",
     "aws-cdk": "2.1034.0",
-    "aws-cdk-lib": "2.232.1",
+    "aws-cdk-lib": "2.232.2",
     "constructs": "10.4.4",
     "esbuild": "0.27.1",
     "jest": "30.2.0",
