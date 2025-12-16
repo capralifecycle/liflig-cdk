@@ -1,6 +1,5 @@
 export type { LifligCdkPipelineProps } from "./liflig-cdk-pipeline"
 export { LifligCdkPipeline } from "./liflig-cdk-pipeline"
-export { SlackMention } from "./slack-mention"
 export type { SlackNotificationProps } from "./slack-notification"
-export { SlackNotification } from "./slack-notification"
+export { SlackMention, SlackNotification } from "./slack-notification"
 export { getVariable } from "./variables"

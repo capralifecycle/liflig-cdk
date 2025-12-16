@@ -1,4 +1,4 @@
-import { SlackMention } from "../slack-mention"
+import { SlackMention } from "../slack-notification"
 
 describe("SlackMention.formatMention", () => {
   describe("valid cases", () => {
