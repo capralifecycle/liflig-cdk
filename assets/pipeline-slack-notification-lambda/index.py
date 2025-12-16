@@ -14,6 +14,7 @@ secrets_manager = boto3.client("secretsmanager")
 ACCOUNT_FRIENDLY_NAME = os.getenv("ACCOUNT_FRIENDLY_NAME", None)
 SLACK_URL_SECRET_NAME = os.getenv("SLACK_URL_SECRET_NAME", None)
 NOTIFICATION_LEVEL = os.getenv("NOTIFICATION_LEVEL", "WARN")
+SLACK_MENTIONS = os.getenv("SLACK_MENTIONS", None)
 
 # Example event:
 #
@@ -260,6 +261,9 @@ def handler(event, context):
         for s in [f"*Execution:* <{execution_url}|{execution_id}>", text_for_failed]
         if s
     )
+
+    mentions_str = SLACK_MENTIONS if state == "FAILED" and not previous_failed else ""
+
     pretext = " ".join(
         s
         for s in [
@@ -269,6 +273,11 @@ def handler(event, context):
         ]
         if s
     )
+
+    # Add mentions to pretext
+    if mentions_str:
+        pretext = f"{pretext} {mentions_str}"
+
     fallback = f"Pipeline {pipeline_name} {state}"
     attachments = [
         {
