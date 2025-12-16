@@ -8,6 +8,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import type * as s3 from "aws-cdk-lib/aws-s3"
 import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
+import { SlackMention } from "./slack-mention"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -51,6 +52,12 @@ export interface SlackNotificationProps {
    * @default - the Lambda function can read all objects in the artifacts bucket.
    */
   triggerObjectKey?: string
+  /**
+   * Slack mentions to include in failure notifications (only on new failures, not repeated ones).
+   * Use special mentions (@here, @channel, @everyone) or user/group IDs (e.g., 'U1234567890', 'S9876543210').
+   * @default - none
+   */
+  mentions?: string[]
 }
 
 /**
@@ -72,6 +79,10 @@ export class SlackNotification extends constructs.Construct {
 
     if (props.accountFriendlyName != null) {
       environment.ACCOUNT_FRIENDLY_NAME = props.accountFriendlyName
+    }
+
+    if (props.mentions != null && props.mentions.length > 0) {
+      environment.SLACK_MENTIONS = SlackMention.format(props.mentions)
     }
 
     const reportFunction = new lambda.Function(this, "Function", {
