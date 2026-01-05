@@ -140,6 +140,8 @@ export class SlackMention {
     "@channel",
     "@everyone",
   ] as const
+
+  // Note: Slack doesn't specify length constraints for these identifiers, leaving them unbounded
   private static readonly USER_PATTERN = /^[UW][A-Z0-9]+$/
   private static readonly USER_GROUP_PATTERN = /^S[A-Z0-9]+$/
 
