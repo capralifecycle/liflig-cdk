@@ -1060,7 +1060,7 @@ class CognitoUserPoolAuthorizer<
         __dirname,
         `authorizers/cognito-user-pool-authorizer.${authorizerFileExtension}`,
       ),
-      runtime: lambda.Runtime.NODEJS_22_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
         USER_POOL_ID: props.userPool.userPoolId,
@@ -1108,7 +1108,7 @@ class BasicAuthAuthorizer extends constructs.Construct {
       ),
       description:
         "An authorizer for API-Gateway that checks Basic Auth credentials on requests",
-      runtime: lambda.Runtime.NODEJS_22_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       environment: {
         CREDENTIALS_SECRET_NAME: props.credentialsSecretName
           ? props.credentialsSecretName
@@ -1158,7 +1158,7 @@ class CognitoUserPoolOrBasicAuthAuthorizer<
         __dirname,
         `authorizers/cognito-user-pool-or-basic-auth-authorizer.${authorizerFileExtension}`,
       ),
-      runtime: lambda.Runtime.NODEJS_22_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       timeout: cdk.Duration.seconds(5),
       environment: {
         USER_POOL_ID: props.userPool ? props.userPool.userPoolId : "",
