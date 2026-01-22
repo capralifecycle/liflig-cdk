@@ -253,7 +253,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -1564,7 +1564,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -2105,7 +2105,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -3069,7 +3069,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -4015,7 +4015,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -6107,7 +6107,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",
@@ -6440,7 +6440,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "VpcConfig": Object {
           "SecurityGroupIds": Array [
             Object {
@@ -7031,7 +7031,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": Array [
           Object {
             "Key": "service",

@@ -139,7 +139,7 @@ class SesDomainProvider extends constructs.Construct {
     this.provider = new cr.Provider(this, "Provider", {
       onEventHandler: new NodejsFunction(this, "Function", {
         entry: require.resolve(`${__dirname}/handler`),
-        runtime: lambda.Runtime.NODEJS_22_X,
+        runtime: lambda.Runtime.NODEJS_24_X,
         timeout: cdk.Duration.minutes(5),
         awsSdkConnectionReuse: false,
         initialPolicy: [
