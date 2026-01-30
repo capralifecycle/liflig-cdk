@@ -34,3 +34,18 @@ test("bastion-host with custom security group", () => {
 
   expect(stack2).toMatchCdkSnapshot()
 })
+
+test("bastion-host with custom instance name", () => {
+  const app = new App()
+  const stack1 = new Stack(app, "Stack1")
+  const stack2 = new Stack(app, "Stack2")
+
+  const vpc = new Vpc(stack1, "Vpc")
+
+  new BastionHost(stack2, "BastionHost", {
+    vpc,
+    instanceName: "CustomInstanceName",
+  })
+
+  expect(stack2).toMatchCdkSnapshot()
+})

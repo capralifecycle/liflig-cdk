@@ -23,6 +23,12 @@ interface Props {
    * @default - public subnets
    */
   subnetSelection?: ec2.SubnetSelection
+  /**
+   * Instance name for the EC2 instance.
+   *
+   * @default "Bastion"
+   */
+  instanceName?: string
 }
 
 /**
@@ -58,7 +64,7 @@ export class BastionHost extends constructs.Construct {
         subnetType: ec2.SubnetType.PUBLIC,
       },
       securityGroup: this.securityGroup,
-      instanceName: "Bastion",
+      instanceName: props.instanceName ?? "Bastion",
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,
         ec2.InstanceSize.NANO,
