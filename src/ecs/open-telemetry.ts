@@ -18,7 +18,7 @@ export interface OpenTelemetryCollectorsProps {
   /** @default 6 months **/
   logRetention?: RetentionDays
 
-  /** @default "amazon/aws-otel-collector:v0.43.3" */
+  /** @default "amazon/aws-otel-collector:v0.47.0" */
   dockerImage?: string
 
   /** Should be kept as `undefined` unless you know what you are doing.
@@ -179,7 +179,7 @@ class OpenTelemetryCollectorSidecar implements ecs.ITaskDefinitionExtension {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
-    const sidecarImage = this.dockerImage ?? "amazon/aws-otel-collector:v0.43.3"
+    const sidecarImage = this.dockerImage ?? "amazon/aws-otel-collector:v0.47.0"
     const sidecar = taskDefinition.addContainer("aws-opentelemetry-collector", {
       cpu: this.containerProps?.cpu ?? 32,
       memoryReservationMiB: this.containerProps?.memoryReservationMiB ?? 24,
