@@ -181,7 +181,7 @@ Object {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": "5% of responses from ECS service 'service-name' are taking longer than the expected duration of 500 ms.",
+        "AlarmDescription": "5% of responses from ECS service 'service-name' are taking longer than the expected duration of 1 s.",
         "ComparisonOperator": "GreaterThanThreshold",
         "Dimensions": Array [
           Object {
@@ -203,7 +203,7 @@ Object {
           },
         ],
         "Period": 300,
-        "Threshold": 0.5,
+        "Threshold": 1,
         "TreatMissingData": "ignore",
       },
       "Type": "AWS::CloudWatch::Alarm",
