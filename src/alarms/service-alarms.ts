@@ -191,7 +191,7 @@ export class ServiceAlarms extends constructs.Construct {
        */
       evaluationPeriods?: number
       /**
-       * @default 500 milliseconds
+       * @default 1s
        */
       threshold?: cdk.Duration
       description?: string
@@ -304,12 +304,12 @@ export class ServiceAlarms extends constructs.Construct {
         `5% of responses from ECS service '${
           this.serviceName
         }' are taking longer than the expected duration of ${(
-          props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.millis(500)
-        ).toMilliseconds()} ms.`,
+          props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.seconds(1)
+        ).toSeconds({ integral: false })} s.`,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       evaluationPeriods: props.targetResponseTimeAlarm?.evaluationPeriods ?? 1,
       threshold: (
-        props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.millis(500)
+        props.targetResponseTimeAlarm?.threshold ?? cdk.Duration.seconds(1)
       ).toSeconds({ integral: false }),
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
