@@ -44,6 +44,14 @@ function removeRuntimeLibraries(data: any): any {
 
 const currentVersionRegex = /^(.+CurrentVersion[0-9A-F]{8})[0-9a-f]{32}$/
 
+// Matches 64-char hex strings used as CDK asset content hashes.
+const assetContentHashRegex = /[0-9a-f]{64}/g
+
+// Matches the short 8-char hash suffix in CDK Pipelines asset identifiers,
+// e.g. "snapshot-value:123456789012-eu-west-1-0e94f9de".
+const pipelinesAssetIdSuffixRegex =
+  /(snapshot-value:\d+-[a-z0-9-]+-)[0-9a-f]{8}/g
+
 /**
  * Match a resource created by `lambda.Function.currentVersion`, which
  * will include the asset hash as part of the reousrce name and return
@@ -96,8 +104,9 @@ function removeAssetDetailsFromTemplate(data: any): any {
       return newCurrentVersion
     }
 
-    // Handle typical content hashes.
-    return data.replace(/[0-9a-f]{64}/g, "snapshot-value")
+    return data
+      .replace(assetContentHashRegex, "snapshot-value")
+      .replace(pipelinesAssetIdSuffixRegex, "$1snapshot-value")
   }
 
   return data
@@ -135,8 +144,9 @@ function removeAssetDetailsFromManifest(data: any): any {
       return newCurrentVersion
     }
 
-    // Handle typical content hashes.
-    return data.replace(/[0-9a-f]{64}/g, "snapshot-value")
+    return data
+      .replace(assetContentHashRegex, "snapshot-value")
+      .replace(pipelinesAssetIdSuffixRegex, "$1snapshot-value")
   }
 
   return data
@@ -158,7 +168,7 @@ function removeCdkMetadataResourceFromTemplate(data: any): any {
   return cp
 }
 
-function prepareManifestForSnapshot(content: string): string {
+export function prepareManifestForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
     removeVersion,
@@ -186,7 +196,7 @@ async function prepareManifestFileForSnapshot(file: string): Promise<void> {
   await fs.promises.writeFile(file, result)
 }
 
-function prepareTemplateForSnapshot(content: string): string {
+export function prepareTemplateForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
     removeCdkMetadataResourceFromTemplate,
