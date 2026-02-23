@@ -105,7 +105,7 @@ export interface WebappProps {
 export class Webapp extends constructs.Construct {
   public readonly distribution: cloudfront.Distribution
   public readonly webappBucket: s3.Bucket
-  public readonly webappOrigin: origins.S3Origin
+  public readonly webappOrigin: cloudfront.IOrigin
 
   constructor(scope: constructs.Construct, id: string, props: WebappProps) {
     super(scope, id)
@@ -144,12 +144,15 @@ export class Webapp extends constructs.Construct {
       }),
     )
 
-    this.webappOrigin = new origins.S3Origin(this.webappBucket, {
-      // webapp-deploy-lambda will upload files to this folder
-      // since it keeps some other administrative files outside.
-      originPath: "/web",
-      originAccessIdentity,
-    })
+    this.webappOrigin = origins.S3BucketOrigin.withOriginAccessIdentity(
+      this.webappBucket,
+      {
+        // webapp-deploy-lambda will upload files to this folder
+        // since it keeps some other administrative files outside.
+        originPath: "/web",
+        originAccessIdentity,
+      },
+    )
 
     const errorResponses: cloudfront.ErrorResponse[] = [
       {
