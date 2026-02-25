@@ -462,6 +462,7 @@ export async function handler(event) {
         ecrRepository,
         "exampleEcrTag",
       ),
+      alarms: { enabled: false },
     })
 
     new ListenerRule(stack, "Dns", {
