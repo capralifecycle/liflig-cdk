@@ -4,10 +4,8 @@ import type * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as constructs from "constructs"
 
 export interface DatabaseAlarmsProps {
-  /**
-   * The default action to use for CloudWatch alarm state changes
-   */
-  action: cloudwatch.IAlarmAction
+  alarmAction: cloudwatch.IAlarmAction
+  warningAction: cloudwatch.IAlarmAction
   instanceIdentifier: string
   instanceType: ec2.InstanceType
   allocatedStorage: cdk.Size
@@ -48,7 +46,8 @@ const cpuCreditBalanceByInstanceType: {
 }
 
 export class DatabaseAlarms extends constructs.Construct {
-  private readonly action: cloudwatch.IAlarmAction
+  private readonly alarmAction: cloudwatch.IAlarmAction
+  private readonly warningAction: cloudwatch.IAlarmAction
   private readonly databaseInstanceIdentifier: string
   private readonly instanceType: ec2.InstanceType
   private readonly allocatedStorage: cdk.Size
@@ -60,7 +59,8 @@ export class DatabaseAlarms extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.action = props.action
+    this.alarmAction = props.alarmAction
+    this.warningAction = props.warningAction
     this.databaseInstanceIdentifier = props.instanceIdentifier
     this.instanceType = props.instanceType
     this.allocatedStorage = props.allocatedStorage
@@ -135,13 +135,14 @@ export class DatabaseAlarms extends constructs.Construct {
         threshold: threshold,
         treatMissingData: cloudwatch.TreatMissingData.IGNORE,
       })
-      .addAlarmAction(this.action)
+      // Default to the alarm action
+      .addAlarmAction(props?.action ?? this.alarmAction)
   }
 
   /**
    * Sets up two CloudWatch Alarms for monitoring disk storage space:
    * 1) one that triggers if the available disk storage space is low.
-   * 2) one that triggers if the available disk storage space is critcally low.
+   * 2) one that triggers if the available disk storage space is critically low.
    *
    * You may want to use different alarm actions for the two alarms, e.g., one can be
    * categorized as a "warning", while the other one can be considered an "alarm".
@@ -208,12 +209,11 @@ export class DatabaseAlarms extends constructs.Construct {
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props?.lowStorageSpaceAlarm?.enabled ?? true) {
-      lowStorageSpaceAlarm.addAlarmAction(
-        props?.lowStorageSpaceAlarm?.action || this.action,
-      )
-      lowStorageSpaceAlarm.addOkAction(
-        props?.lowStorageSpaceAlarm?.action || this.action,
-      )
+      // Default to the warning action
+      const lowAction =
+        props?.lowStorageSpaceAlarm?.action ?? this.warningAction
+      lowStorageSpaceAlarm.addAlarmAction(lowAction)
+      lowStorageSpaceAlarm.addOkAction(lowAction)
     }
 
     const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
@@ -234,12 +234,11 @@ export class DatabaseAlarms extends constructs.Construct {
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props?.criticallyLowStorageSpaceAlarm?.enabled ?? true) {
-      criticallyLowStorageSpaceAlarm.addAlarmAction(
-        props?.criticallyLowStorageSpaceAlarm?.action || this.action,
-      )
-      criticallyLowStorageSpaceAlarm.addOkAction(
-        props?.criticallyLowStorageSpaceAlarm?.action || this.action,
-      )
+      // Default to the alarm action
+      const criticalAction =
+        props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
+      criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
+      criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
     }
   }
 
@@ -292,7 +291,9 @@ export class DatabaseAlarms extends constructs.Construct {
       threshold: props?.threshold ?? 80,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
-    alarm.addAlarmAction(props?.action ?? this.action)
-    alarm.addOkAction(props?.action ?? this.action)
+    // Default to the warning action
+    const cpuAction = props?.action ?? this.warningAction
+    alarm.addAlarmAction(cpuAction)
+    alarm.addOkAction(cpuAction)
   }
 }
