@@ -1,8 +1,23 @@
 import * as cdk from "aws-cdk-lib"
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
+import { DatabaseAlarms } from "../alarms"
+
+export type DatabaseAlarmsConfig =
+  | { enabled: false }
+  | {
+      /**
+       * When alarms are enabled, both actions are required
+       *
+       * You must either explicitly disable alarms with `{ enabled: false }` or
+       * provide both `alarmAction` and `warningAction`
+       */
+      alarmAction: cloudwatch.IAlarmAction
+      warningAction: cloudwatch.IAlarmAction
+    }
 
 export interface DatabaseProps extends cdk.StackProps {
   vpc: ec2.IVpc
@@ -38,6 +53,13 @@ export interface DatabaseProps extends cdk.StackProps {
    */
   usePublicSubnets?: boolean
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
+  /**
+   * Configure database alarms.
+   * This property is required and must be one of two shapes:
+   *  - `{ enabled: false }` to explicitly disable automatic alarms
+   *  - `{ alarmAction, warningAction }` to enable alarms and provide both channels
+   */
+  alarms: DatabaseAlarmsConfig
 }
 
 export class Database extends constructs.Construct {
@@ -100,6 +122,27 @@ export class Database extends constructs.Construct {
     // Override in case we have placed it in a public subnet.
     // It would default to being public accessible which we do not want.
     ;(db.node.defaultChild as rds.CfnDBInstance).publiclyAccessible = false
+
+    if ("alarmAction" in props.alarms) {
+      const a = props.alarms
+
+      const dbAlarms = new DatabaseAlarms(this, "DatabaseAlarms", {
+        instanceIdentifier: props.instanceIdentifier,
+        instanceType: props.instanceType,
+        allocatedStorage: cdk.Size.gibibytes(options.allocatedStorage!),
+        alarmAction: a.alarmAction,
+        warningAction: a.warningAction,
+      })
+
+      // Default mapping:
+      // - low CPU credits -> alarm
+      // - critically low storage -> alarm
+      // - low storage -> warning
+      // - high CPU utilization -> warning
+      dbAlarms.addCpuCreditsAlarm()
+      dbAlarms.addStorageSpaceAlarms()
+      dbAlarms.addCpuUtilizationAlarm()
+    }
   }
 
   public allowConnectionFrom(source: ec2.ISecurityGroup): void {

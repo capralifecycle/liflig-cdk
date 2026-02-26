@@ -5,9 +5,13 @@ import * as constructs from "constructs"
 
 export interface ServiceAlarmsProps extends cdk.StackProps {
   /**
-   * The default action to use for CloudWatch alarm state changes
+   * The CloudWatch Alarm action to use for high-severity alarms.
    */
-  action: cloudwatch.IAlarmAction
+  alarmAction: cloudwatch.IAlarmAction
+  /**
+   * The CloudWatch Alarm action to use for warnings.
+   */
+  warningAction: cloudwatch.IAlarmAction
   /**
    * The name of the ECS service.
    */
@@ -23,7 +27,8 @@ export interface ServiceAlarmsProps extends cdk.StackProps {
  * See SlackAlarm construct for SNS Action.
  */
 export class ServiceAlarms extends constructs.Construct {
-  private readonly action: cloudwatch.IAlarmAction
+  private readonly alarmAction: cloudwatch.IAlarmAction
+  private readonly warningAction: cloudwatch.IAlarmAction
   private readonly serviceName: string
 
   constructor(
@@ -33,7 +38,8 @@ export class ServiceAlarms extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.action = props.action
+    this.alarmAction = props.alarmAction
+    this.warningAction = props.warningAction
     this.serviceName = props.serviceName
   }
 
@@ -91,9 +97,11 @@ export class ServiceAlarms extends constructs.Construct {
         treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
       })
 
-    errorAlarm.addAlarmAction(props.action ?? this.action)
+    // Default to the warning action
+    const actionToUse = props.action ?? this.warningAction
+    errorAlarm.addAlarmAction(actionToUse)
     if (props.enableOkAction ?? true) {
-      errorAlarm.addOkAction(props.action ?? this.action)
+      errorAlarm.addOkAction(actionToUse)
     }
   }
 
@@ -251,12 +259,10 @@ export class ServiceAlarms extends constructs.Construct {
       },
     )
     if (props.targetHealthAlarm?.enabled ?? true) {
-      targetHealthAlarm.addAlarmAction(
-        props.targetHealthAlarm?.action ?? this.action,
-      )
-      targetHealthAlarm.addOkAction(
-        props.targetHealthAlarm?.action ?? this.action,
-      )
+      // Default to the alarm action
+      const thAction = props.targetHealthAlarm?.action ?? this.alarmAction
+      targetHealthAlarm.addAlarmAction(thAction)
+      targetHealthAlarm.addOkAction(thAction)
     }
 
     const tooMany5xxResponsesFromTargetsAlarm = new cloudwatch.Metric({
@@ -281,12 +287,11 @@ export class ServiceAlarms extends constructs.Construct {
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     })
     if (props.tooMany5xxResponsesFromTargetsAlarm?.enabled ?? true) {
-      tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(
-        props.tooMany5xxResponsesFromTargetsAlarm?.action ?? this.action,
-      )
-      tooMany5xxResponsesFromTargetsAlarm.addOkAction(
-        props.tooMany5xxResponsesFromTargetsAlarm?.action ?? this.action,
-      )
+      // Default to the alarm action
+      const fiveXAction =
+        props.tooMany5xxResponsesFromTargetsAlarm?.action ?? this.alarmAction
+      tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(fiveXAction)
+      tooMany5xxResponsesFromTargetsAlarm.addOkAction(fiveXAction)
     }
 
     const targetResponseTimeAlarm = new cloudwatch.Metric({
@@ -314,12 +319,11 @@ export class ServiceAlarms extends constructs.Construct {
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
     if (props.targetResponseTimeAlarm?.enabled ?? true) {
-      targetResponseTimeAlarm.addAlarmAction(
-        props.targetResponseTimeAlarm?.action ?? this.action,
-      )
-      targetResponseTimeAlarm.addOkAction(
-        props.targetResponseTimeAlarm?.action ?? this.action,
-      )
+      // Default to the warning action
+      const rtAction =
+        props.targetResponseTimeAlarm?.action ?? this.warningAction
+      targetResponseTimeAlarm.addAlarmAction(rtAction)
+      targetResponseTimeAlarm.addOkAction(rtAction)
     }
   }
 }
