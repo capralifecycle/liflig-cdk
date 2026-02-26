@@ -78,6 +78,7 @@ test("creates fargate service with parameters and listener rule", () => {
       ecrRepository,
       "exampleEcrTag",
     ),
+    alarms: { enabled: false },
     enableCircuitBreaker: true,
   })
 
