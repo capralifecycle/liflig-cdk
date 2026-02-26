@@ -22,7 +22,8 @@ test("create alarms", () => {
       ec2.InstanceSize.MICRO,
     ),
     allocatedStorage: Size.gibibytes(25),
-    action,
+    alarmAction: action,
+    warningAction: action,
   })
 
   alarms.addCpuCreditsAlarm({
@@ -56,7 +57,8 @@ test("throws on non-burstable", () => {
       ec2.InstanceSize.LARGE,
     ),
     allocatedStorage: Size.gibibytes(25),
-    action,
+    alarmAction: action,
+    warningAction: action,
   })
 
   // Then

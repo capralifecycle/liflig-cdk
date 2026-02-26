@@ -18,7 +18,8 @@ test("create alarms", () => {
 
   const alarms = new ServiceAlarms(stack, "ServiceAlarms", {
     serviceName: "service-name",
-    action,
+    alarmAction: action,
+    warningAction: action,
   })
 
   alarms.addJsonErrorAlarm({

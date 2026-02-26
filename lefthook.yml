@@ -27,7 +27,7 @@ pre-commit:
 
     - name: lint json
       glob: "*.json"
-      run: npx --no -- jsonlint {staged_files} --no-duplicate-keys --compact --quiet
+      run: jsonlint {staged_files} --no-duplicate-keys --compact --quiet
 
     - name: validate renovate config
       glob: "renovate.json*"
