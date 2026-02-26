@@ -204,7 +204,70 @@ export class ServiceAlarms extends constructs.Construct {
       threshold?: cdk.Duration
       description?: string
     }
+    /**
+     * Configuration for an alarm.
+     *
+     * @default Configured with sane defaults.
+     */
+    single5xxResponseAlarm?: {
+      /**
+       * @default true
+       */
+      enabled?: boolean
+      /**
+       * An action to use for CloudWatch alarm state changes instead of the default action
+       */
+      action?: cloudwatch.IAlarmAction
+      /**
+       * @default 60 seconds
+       */
+      period?: cdk.Duration
+      /**
+       * @default 1
+       */
+      evaluationPeriods?: number
+      /**
+       * @default 1
+       */
+      threshold?: number
+      description?: string
+    }
   }): void {
+    if (props.single5xxResponseAlarm?.enabled !== false) {
+      const single5xxMetric = new cloudwatch.Metric({
+        metricName: "HTTPCode_Target_5XX_Count",
+        namespace: "AWS/ApplicationELB",
+        statistic: "Sum",
+        period:
+          props.single5xxResponseAlarm?.period ?? cdk.Duration.seconds(60),
+        dimensionsMap: {
+          TargetGroup: props.targetGroupFullName,
+          LoadBalancer: props.loadBalancerFullName,
+        },
+      })
+
+      const single5xxAlarm = single5xxMetric.createAlarm(
+        this,
+        "AlbTargetsSingle5xxAlarm",
+        {
+          actionsEnabled: true,
+          alarmDescription:
+            props.single5xxResponseAlarm?.description ??
+            `Load balancer received a 5XX response from target(s) in ECS service '${this.serviceName}'.`,
+          evaluationPeriods:
+            props.single5xxResponseAlarm?.evaluationPeriods ?? 1,
+          threshold: props.single5xxResponseAlarm?.threshold ?? 1,
+          treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        },
+      )
+
+      // Sent to warnings channel by default
+      const single5xxAction =
+        props.single5xxResponseAlarm?.action ?? this.warningAction
+      single5xxAlarm.addAlarmAction(single5xxAction)
+      single5xxAlarm.addOkAction(single5xxAction)
+    }
+
     const targetConnectionErrorAlarm = new cloudwatch.Metric({
       metricName: "TargetConnectionErrorCount",
       namespace: "AWS/ApplicationELB",
