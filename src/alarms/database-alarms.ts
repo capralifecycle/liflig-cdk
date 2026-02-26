@@ -191,24 +191,25 @@ export class DatabaseAlarms extends constructs.Construct {
      */
     appendToAlarmDescription?: string
   }): void {
-    const lowStorageSpaceAlarm = new cloudwatch.Metric({
-      metricName: "FreeStorageSpace",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    }).createAlarm(this, "LowStorageSpaceAlarm", {
-      alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      evaluationPeriods: 1,
-      threshold:
-        props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
-        this.allocatedStorage.toBytes() * 0.25,
-      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-    })
-    if (props?.lowStorageSpaceAlarm?.enabled ?? true) {
+    if (props?.lowStorageSpaceAlarm?.enabled !== false) {
+      const lowStorageSpaceAlarm = new cloudwatch.Metric({
+        metricName: "FreeStorageSpace",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
+      }).createAlarm(this, "LowStorageSpaceAlarm", {
+        alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold:
+          props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
+          this.allocatedStorage.toBytes() * 0.25,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
+
       // Default to the warning action
       const lowAction =
         props?.lowStorageSpaceAlarm?.action ?? this.warningAction
@@ -216,24 +217,25 @@ export class DatabaseAlarms extends constructs.Construct {
       lowStorageSpaceAlarm.addOkAction(lowAction)
     }
 
-    const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
-      metricName: "FreeStorageSpace",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
-      alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      evaluationPeriods: 1,
-      threshold:
-        props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
-        this.allocatedStorage.toBytes() * 0.05,
-      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-    })
-    if (props?.criticallyLowStorageSpaceAlarm?.enabled ?? true) {
+    if (props?.criticallyLowStorageSpaceAlarm?.enabled !== false) {
+      const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
+        metricName: "FreeStorageSpace",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
+      }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
+        alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold:
+          props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
+          this.allocatedStorage.toBytes() * 0.05,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
+
       // Default to the alarm action
       const criticalAction =
         props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
