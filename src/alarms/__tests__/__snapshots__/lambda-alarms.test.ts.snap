@@ -3,7 +3,7 @@
 exports[`create alarms 1`] = `
 Object {
   "Resources": Object {
-    "LambdaAlarmsFailedInvocationAlarmF0FCB95D": Object {
+    "LambdaAlarmsInvocationSeriesAlarm7C08158F": Object {
       "Properties": Object {
         "AlarmActions": Array [
           Object {
@@ -18,7 +18,50 @@ Object {
               Object {
                 "Ref": "TestedLambdaAAAB7B55",
               },
-              "' failed. Runbook at https://liflig.no",
+              "' failed repeatedly. ",
+            ],
+          ],
+        },
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "FunctionName",
+            "Value": Object {
+              "Ref": "TestedLambdaAAAB7B55",
+            },
+          },
+        ],
+        "EvaluationPeriods": 3,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "LambdaAlarmsSingleInvocationAlarmEEBA77C7": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Invocation for '",
+              Object {
+                "Ref": "TestedLambdaAAAB7B55",
+              },
+              "' had a single failure. Runbook at https://liflig.no",
             ],
           ],
         },

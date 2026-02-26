@@ -22,12 +22,13 @@ test("create alarms", () => {
   })
 
   const alarms = new LambdaAlarms(stack, "LambdaAlarms", {
-    action: action,
+    alarmAction: action,
+    warningAction: action,
     lambdaFunction: lambdaFunction,
   })
 
   alarms.addInvocationErrorAlarm({
-    appendToAlarmDescription: "Runbook at https://liflig.no",
+    singleError: { appendToAlarmDescription: "Runbook at https://liflig.no" },
   })
 
   expect(stack).toMatchCdkSnapshot()
