@@ -2,6 +2,7 @@ import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
+import "jest-cdk-snapshot"
 import { QueueAlarms } from "../queue-alarms"
 
 test("creates messages-not-being-processed composite alarm with defaults", () => {
@@ -29,6 +30,7 @@ test("creates messages-not-being-processed composite alarm with defaults", () =>
     MetricName: "NumberOfMessagesDeleted",
     Namespace: "AWS/SQS",
   })
+  expect(stack).toMatchCdkSnapshot()
 })
 
 test("creates approximate-age alarm with defaults sent to warnings", () => {
@@ -51,4 +53,6 @@ test("creates approximate-age alarm with defaults sent to warnings", () => {
     MetricName: "ApproximateAgeOfOldestMessage",
     Namespace: "AWS/SQS",
   })
+
+  expect(stack).toMatchCdkSnapshot()
 })

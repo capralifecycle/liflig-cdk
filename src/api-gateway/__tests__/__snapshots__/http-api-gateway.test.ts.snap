@@ -6440,7 +6440,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs22.x",
         "VpcConfig": Object {
           "SecurityGroupIds": Array [
             Object {

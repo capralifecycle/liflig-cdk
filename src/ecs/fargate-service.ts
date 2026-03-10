@@ -5,6 +5,7 @@ import * as ec2 from "aws-cdk-lib/aws-ec2"
 import type { CfnService } from "aws-cdk-lib/aws-ecs"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import type * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as constructs from "constructs"
 import { ServiceAlarms } from "../alarms"
@@ -17,7 +18,17 @@ export type ServiceAlarmsConfig =
       alarmAction: cloudwatch.IAlarmAction
       warningAction: cloudwatch.IAlarmAction
       loadBalancerFullName: string
+      /** Optional Lambda function that will receive
+       * forwarded log events */
+      logHandler?: lambda.IFunction
       jsonErrorAlarm?: {
+        enabled?: boolean
+        alarmDescription?: string
+        enableOkAction?: boolean
+        action?: cloudwatch.IAlarmAction
+      }
+      /** Optional uncaught Java exception alarm (disabled by default) */
+      uncaughtJavaExceptionAlarm?: {
         enabled?: boolean
         alarmDescription?: string
         enableOkAction?: boolean
@@ -266,6 +277,7 @@ export class FargateService extends constructs.Construct {
         serviceName: props.serviceName,
         alarmAction: alarms.alarmAction,
         warningAction: alarms.warningAction,
+        logHandler: alarms.logHandler,
       })
 
       const jsonErrorOverrides = alarms.jsonErrorAlarm
@@ -275,6 +287,18 @@ export class FargateService extends constructs.Construct {
           alarmDescription: jsonErrorOverrides?.alarmDescription,
           enableOkAction: jsonErrorOverrides?.enableOkAction,
           action: jsonErrorOverrides?.action,
+        })
+      }
+
+      // Optionally enable the uncaught Java exception alarm (opt-in).
+      const javaExceptionOverrides = alarms.uncaughtJavaExceptionAlarm
+      if (javaExceptionOverrides?.enabled === true) {
+        this.serviceAlarms.addUncaughtJavaExceptionAlarm({
+          logGroup: this.logGroup,
+          alarmDescription: javaExceptionOverrides.alarmDescription,
+          enableOkAction: javaExceptionOverrides.enableOkAction,
+          action: javaExceptionOverrides.action,
+          enabled: true,
         })
       }
 
