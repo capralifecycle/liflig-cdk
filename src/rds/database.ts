@@ -1,5 +1,5 @@
 import * as cdk from "aws-cdk-lib"
-import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
+import type * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`create slack alarm 1`] = `
+exports[`create slack alarm resources 1`] = `
 Object {
   "Resources": Object {
     "SlackAlarmFunction7A980434": Object {
@@ -57,22 +57,6 @@ Object {
         "Timeout": 6,
       },
       "Type": "AWS::Lambda::Function",
-    },
-    "SlackAlarmFunctionInvokePermission99C6FD8D": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "SlackAlarmFunction7A980434",
-            "Arn",
-          ],
-        },
-        "Principal": "sns.amazonaws.com",
-        "SourceArn": Object {
-          "Ref": "SlackAlarmTopicA880F65C",
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "SlackAlarmFunctionServiceRoleC8F1C44C": Object {
       "Properties": Object {
@@ -131,6 +115,118 @@ Object {
         "Roles": Array [
           Object {
             "Ref": "SlackAlarmFunctionServiceRoleC8F1C44C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "SlackAlarmLogHandler7A652A1B": Object {
+      "DependsOn": Array [
+        "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B",
+        "SlackAlarmLogHandlerServiceRole0308E4D8",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "1c7c21ba6b1bb8aeab90b2e3e435015654433fd2b622ecd5f85a8434502a5833.zip",
+        },
+        "Description": "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
+        "Environment": Object {
+          "Variables": Object {
+            "ENVIRONMENT_NAME": "dev",
+            "PROJECT_NAME": "my-project",
+            "SLACK_URL_SECRET_NAME": Object {
+              "Fn::Select": Array [
+                0,
+                Object {
+                  "Fn::Split": Array [
+                    "-",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "TestSecret16AF87B1",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SlackAlarmLogHandlerServiceRole0308E4D8",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.14",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SlackAlarmLogHandlerServiceRole0308E4D8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "TestSecret16AF87B1",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B",
+        "Roles": Array [
+          Object {
+            "Ref": "SlackAlarmLogHandlerServiceRole0308E4D8",
           },
         ],
       },

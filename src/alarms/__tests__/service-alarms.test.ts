@@ -2,6 +2,7 @@ import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
+import "jest-cdk-snapshot"
 import { ServiceAlarms } from "../service-alarms"
 
 test("creates single 5xx alarm (enabled) with expected defaults", () => {
@@ -31,6 +32,8 @@ test("creates single 5xx alarm (enabled) with expected defaults", () => {
     EvaluationPeriods: 1,
     Threshold: 1,
   })
+
+  expect(stack).toMatchCdkSnapshot()
 })
 
 test("does not create single 5xx alarm when disabled", () => {
@@ -60,4 +63,6 @@ test("does not create single 5xx alarm when disabled", () => {
     EvaluationPeriods: 1,
     Threshold: 1,
   })
+
+  expect(stack).toMatchCdkSnapshot()
 })

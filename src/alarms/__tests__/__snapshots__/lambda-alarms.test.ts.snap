@@ -1,93 +1,87 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`create alarms 1`] = `
+exports[`no handler: metric-based error filter is created 1`] = `
 Object {
   "Resources": Object {
-    "LambdaAlarmsInvocationSeriesAlarm7C08158F": Object {
+    "LambdaAlarmsErrorLogAlarm715A94C8": Object {
       "Properties": Object {
         "AlarmActions": Array [
           Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+            "Ref": "TopicBFC7AF6E",
           },
         ],
         "AlarmDescription": Object {
           "Fn::Join": Array [
             "",
             Array [
-              "Invocation for '",
               Object {
                 "Ref": "TestedLambdaAAAB7B55",
               },
-              "' failed repeatedly. ",
+              " logged an error",
             ],
           ],
         },
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": Object {
-              "Ref": "TestedLambdaAAAB7B55",
-            },
-          },
-        ],
-        "EvaluationPeriods": 3,
+        "EvaluationPeriods": 1,
         "MetricName": "Errors",
-        "Namespace": "AWS/Lambda",
+        "Namespace": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "stack/Stack/",
+              Object {
+                "Ref": "TestedLambdaAAAB7B55",
+              },
+              "/Errors",
+            ],
+          ],
+        },
         "OKActions": Array [
           Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+            "Ref": "TopicBFC7AF6E",
           },
         ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
-        "TreatMissingData": "ignore",
+        "TreatMissingData": "notBreaching",
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "LambdaAlarmsSingleInvocationAlarmEEBA77C7": Object {
+    "LogGroupErrorMetricFilter551B92D2": Object {
       "Properties": Object {
-        "AlarmActions": Array [
-          Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
-          },
-        ],
-        "AlarmDescription": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "Invocation for '",
-              Object {
-                "Ref": "TestedLambdaAAAB7B55",
-              },
-              "' had a single failure. Runbook at https://liflig.no",
-            ],
-          ],
+        "FilterPattern": "{ ($.level = \\"ERROR\\") || ($.level = \\"FATAL\\") || ($.requestInfo.status.code = \\"INTERNAL_SERVER_ERROR\\") }",
+        "LogGroupName": Object {
+          "Ref": "LogGroupF5B46931",
         },
-        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
+        "MetricTransformations": Array [
           Object {
-            "Name": "FunctionName",
-            "Value": Object {
-              "Ref": "TestedLambdaAAAB7B55",
+            "MetricName": "Errors",
+            "MetricNamespace": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "stack/Stack/",
+                  Object {
+                    "Ref": "TestedLambdaAAAB7B55",
+                  },
+                  "/Errors",
+                ],
+              ],
             },
+            "MetricValue": "1",
           },
         ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 1,
-        "TreatMissingData": "ignore",
       },
-      "Type": "AWS::CloudWatch::Alarm",
+      "Type": "AWS::Logs::MetricFilter",
+    },
+    "LogGroupF5B46931": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "TestedLambdaAAAB7B55": Object {
       "DependsOn": Array [
@@ -97,7 +91,6 @@ Object {
         "Code": Object {
           "ZipFile": "exports.handler = async () => {}",
         },
-        "FunctionName": "lambda-function-name",
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -139,6 +132,164 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
+exports[`with handler: subscription filter is created and metric filter omitted 1`] = `
+Object {
+  "Resources": Object {
+    "Handler886CB40B": Object {
+      "DependsOn": Array [
+        "HandlerServiceRoleFCDC14AE",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "HandlerServiceRoleFCDC14AE",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "HandlerServiceRoleFCDC14AE": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogGroup2477F707C": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LogGroup2logcontenttoslackerrorsubscription32A1DFE0": Object {
+      "DependsOn": Array [
+        "LogGroup2logcontenttoslackerrorsubscriptionCanInvokeLambdaEC6CDD23",
+      ],
+      "Properties": Object {
+        "DestinationArn": Object {
+          "Fn::GetAtt": Array [
+            "Handler886CB40B",
+            "Arn",
+          ],
+        },
+        "FilterPattern": "{ ($.level = \\"ERROR\\") || ($.level = \\"FATAL\\") || ($.requestInfo.status.code = \\"INTERNAL_SERVER_ERROR\\") }",
+        "LogGroupName": Object {
+          "Ref": "LogGroup2477F707C",
+        },
+      },
+      "Type": "AWS::Logs::SubscriptionFilter",
+    },
+    "LogGroup2logcontenttoslackerrorsubscriptionCanInvokeLambdaEC6CDD23": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "Handler886CB40B",
+            "Arn",
+          ],
+        },
+        "Principal": "logs.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "LogGroup2477F707C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "TestedLambda267C519AF": Object {
+      "DependsOn": Array [
+        "TestedLambda2ServiceRole41530E20",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestedLambda2ServiceRole41530E20",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestedLambda2ServiceRole41530E20": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Topic269377B75": Object {
+      "Type": "AWS::SNS::Topic",
     },
   },
 }
