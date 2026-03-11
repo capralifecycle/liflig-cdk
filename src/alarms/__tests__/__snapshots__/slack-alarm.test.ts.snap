@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`create slack alarm resources 1`] = `
+exports[`create slack alarm 1`] = `
 Object {
   "Resources": Object {
     "SlackAlarmFunction7A980434": Object {
@@ -57,6 +57,22 @@ Object {
         "Timeout": 6,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "SlackAlarmFunctionInvokePermission99C6FD8D": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "SlackAlarmFunction7A980434",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": Object {
+          "Ref": "SlackAlarmTopicA880F65C",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "SlackAlarmFunctionServiceRoleC8F1C44C": Object {
       "Properties": Object {

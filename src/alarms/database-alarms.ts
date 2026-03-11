@@ -4,7 +4,15 @@ import type * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as constructs from "constructs"
 
 export interface DatabaseAlarmsProps {
+  /**
+   * The action to use for alarms sent to "alarms" Slack channel,
+   * e.g., critical alerts.
+   */
   alarmAction: cloudwatch.IAlarmAction
+  /**
+   * The action to use for alarms sent to "warning" Slack channel,
+   * e.g., less critical alerts.
+   */
   warningAction: cloudwatch.IAlarmAction
   instanceIdentifier: string
   instanceType: ec2.InstanceType
