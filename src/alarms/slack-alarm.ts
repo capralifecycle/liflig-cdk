@@ -1,6 +1,7 @@
 import * as path from "node:path"
 import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
+import * as iam from "aws-cdk-lib/aws-iam"
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
@@ -78,11 +79,14 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
-    // Grant the log handler permission to read the webhook secret
     props.slackWebhookUrlSecret.grantRead(this.logHandler)
-
     props.slackWebhookUrlSecret.grantRead(slackLambda)
 
+    slackLambda.addPermission("InvokePermission", {
+      action: "lambda:InvokeFunction",
+      principal: new iam.ServicePrincipal("sns.amazonaws.com"),
+      sourceArn: this.alarmTopic.topicArn,
+    })
     slackLambda.addToRolePolicy(
       new PolicyStatement({
         actions: ["cloudwatch:DescribeAlarms"],

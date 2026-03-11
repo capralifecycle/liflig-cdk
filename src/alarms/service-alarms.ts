@@ -83,8 +83,8 @@ export class ServiceAlarms extends constructs.Construct {
   }): void {
     const groupToUse = props.logGroup
 
-    // If a log handler is configured, we forward matching logs to it instead of
-    // creating the simple "ERROR" metric alarm.
+    // If no log handler is configured, we create
+    // the simple "ERROR" metric alarm.
     if (!this.logHandler) {
       const errorMetricFilter = groupToUse.addMetricFilter(
         "ErrorMetricFilter",
@@ -141,8 +141,7 @@ export class ServiceAlarms extends constructs.Construct {
     if (props.enabled === true) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
-      // If a construct-level log handler is configured, forward matching logs
-      // to it instead of creating a simple metric alarm.
+      // If no log handler is configured, create a simple metric alarm.
       if (!this.logHandler) {
         const errorMetricFilter = props.logGroup.addMetricFilter(
           "UncaughtJavaExceptionFilter",

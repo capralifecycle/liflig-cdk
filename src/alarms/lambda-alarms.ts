@@ -204,8 +204,7 @@ export class LambdaAlarms extends constructs.Construct {
      */
     action?: cloudwatch.IAlarmAction
   }): void {
-    // If a log handler is configured we forward matching logs to it instead of
-    // creating the simple "ERROR" metric alarm that only sends a warning.
+    // If no log handler is configured, create simple "ERROR" metric alarm
     if (!this.logHandler) {
       const errorMetricFilter = props.logGroup.addMetricFilter(
         "ErrorMetricFilter",
@@ -265,37 +264,42 @@ export class LambdaAlarms extends constructs.Construct {
   }): void {
     if (props.enabled === true) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
-      const errorMetricFilter = props.logGroup.addMetricFilter(
-        "UncaughtJavaExceptionFilter",
-        {
-          filterPattern: filterPattern,
-          metricName: "UncaughtJavaException",
-          metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${this.lambdaFunction.functionName}/UncaughtJavaException`,
-        },
-      )
 
-      const errorAlarm = errorMetricFilter
-        .metric()
-        .with({
-          statistic: "Sum",
-          period: cdk.Duration.seconds(60),
-        })
-        .createAlarm(this, "UncaughtJavaExceptionLogAlarm", {
-          alarmDescription:
-            props.alarmDescription ??
-            `${this.lambdaFunction.functionName} logged an uncaught Java exception`,
-          evaluationPeriods: 1,
-          threshold: 1,
-          treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
-        })
+      // If no log handler is configured, create a simple metric alarm.
+      if (!this.logHandler) {
+        const errorMetricFilter = props.logGroup.addMetricFilter(
+          "UncaughtJavaExceptionFilter",
+          {
+            filterPattern: filterPattern,
+            metricName: "UncaughtJavaException",
+            metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${this.lambdaFunction.functionName}/UncaughtJavaException`,
+          },
+        )
 
-      // Default to the warning action
-      const actionToUse = props.action ?? this.warningAction
-      errorAlarm.addAlarmAction(actionToUse)
-      if (props.enableOkAction ?? true) {
-        errorAlarm.addOkAction(actionToUse)
+        const errorAlarm = errorMetricFilter
+          .metric()
+          .with({
+            statistic: "Sum",
+            period: cdk.Duration.seconds(60),
+          })
+          .createAlarm(this, "UncaughtJavaExceptionLogAlarm", {
+            alarmDescription:
+              props.alarmDescription ??
+              `${this.lambdaFunction.functionName} logged an uncaught Java exception`,
+            evaluationPeriods: 1,
+            threshold: 1,
+            treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+          })
+
+        // Default to the warning action
+        const actionToUse = props.action ?? this.warningAction
+        errorAlarm.addAlarmAction(actionToUse)
+        if (props.enableOkAction ?? true) {
+          errorAlarm.addOkAction(actionToUse)
+        }
       }
 
+      // If a log handler is configured, forward matching logs to it.
       if (this.logHandler) {
         props.logGroup.addSubscriptionFilter(
           "log-content-to-slack-uncaught-exception-subscription",

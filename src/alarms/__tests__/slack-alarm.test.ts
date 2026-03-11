@@ -20,11 +20,9 @@ test("create slack alarm resources", () => {
 
   expect(stack).toHaveResource("AWS::SNS::Topic")
 
-  // Synthesize to obtain the packaged assets and final template
   const assembly = app.synth()
   const synthStack = assembly.getStackByName(stack.stackName)
 
-  // We expect two Lambda functions: the alarm SNS handler and the log-handler
   const lambdaFunctions = Object.values(
     synthStack.template?.Resources ?? {},
   ).filter((r: any) => r.Type === "AWS::Lambda::Function")
