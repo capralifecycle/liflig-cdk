@@ -258,7 +258,7 @@ describe("HTTP API Gateway", () => {
         `exports.handler = async(event) => { return "Hello World"; }`,
       ),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_LATEST,
+      runtime: Runtime.NODEJS_24_X,
     })
 
     new ApiGateway(stack, "TestLambdaApiGateway", {
@@ -342,7 +342,7 @@ export async function handler(event) {
 }
 `),
         handler: "handler",
-        runtime: lambda.Runtime.NODEJS_LATEST,
+        runtime: lambda.Runtime.NODEJS_24_X,
       },
     )
 

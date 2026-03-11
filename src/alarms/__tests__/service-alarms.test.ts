@@ -25,7 +25,6 @@ test("creates single 5xx alarm (enabled) with expected defaults", () => {
     single5xxResponseAlarm: {},
   })
 
-  // Assert an alarm exists for HTTPCode_Target_5XX_Count with the default sensitivity
   expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
     MetricName: "HTTPCode_Target_5XX_Count",
     Namespace: "AWS/ApplicationELB",

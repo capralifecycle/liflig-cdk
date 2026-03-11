@@ -21,20 +21,31 @@ export type ServiceAlarmsConfig =
       /** Optional Lambda function that will receive
        * forwarded log events */
       logHandler?: lambda.IFunction
+      /**
+       * Individual alarm configuration overrides defaults.
+       */
       jsonErrorAlarm?: {
+        /**
+         * @default true
+         */
         enabled?: boolean
         alarmDescription?: string
         enableOkAction?: boolean
         action?: cloudwatch.IAlarmAction
       }
-      /** Optional uncaught Java exception alarm (disabled by default) */
       uncaughtJavaExceptionAlarm?: {
+        /**
+         * @default false
+         */
         enabled?: boolean
         alarmDescription?: string
         enableOkAction?: boolean
         action?: cloudwatch.IAlarmAction
       }
       targetHealthAlarm?: {
+        /**
+         * @default true
+         */
         enabled?: boolean
         action?: cloudwatch.IAlarmAction
         period?: cdk.Duration
@@ -43,6 +54,9 @@ export type ServiceAlarmsConfig =
         description?: string
       }
       tooMany5xxResponsesFromTargetsAlarm?: {
+        /**
+         * @default true
+         */
         enabled?: boolean
         action?: cloudwatch.IAlarmAction
         period?: cdk.Duration
@@ -51,6 +65,9 @@ export type ServiceAlarmsConfig =
         description?: string
       }
       targetResponseTimeAlarm?: {
+        /**
+         * @default true
+         */
         enabled?: boolean
         action?: cloudwatch.IAlarmAction
         period?: cdk.Duration
@@ -127,8 +144,10 @@ export interface FargateServiceProps {
    *  - object with required `alarmAction`, `warningAction`, and `loadBalancerFullName`.
    *
    *  When enabled, the construct will:
-   *  - Add a log-based JSON error alarm (enabled by default).
-   *  - Add target-group related alarms (target health, 5xx responses, response time) when a target group is present.
+   *  - (By default) add a log-based JSON error alarm (enabled by default).
+   *  - (By default) add target-group related alarms (target health, 5xx responses, response time)
+   *  when a target group is present.
+   *  - (Opt-in) optionally enable the uncaught Java exception alarm
    */
   alarms: ServiceAlarmsConfig
 }
@@ -280,6 +299,7 @@ export class FargateService extends constructs.Construct {
         logHandler: alarms.logHandler,
       })
 
+      // Enabled by default (opt-out).
       const jsonErrorOverrides = alarms.jsonErrorAlarm
       if (jsonErrorOverrides?.enabled ?? true) {
         this.serviceAlarms.addJsonErrorAlarm({
@@ -290,7 +310,7 @@ export class FargateService extends constructs.Construct {
         })
       }
 
-      // Optionally enable the uncaught Java exception alarm (opt-in).
+      // Not enabled by default (opt-in).
       const javaExceptionOverrides = alarms.uncaughtJavaExceptionAlarm
       if (javaExceptionOverrides?.enabled === true) {
         this.serviceAlarms.addUncaughtJavaExceptionAlarm({
@@ -303,6 +323,7 @@ export class FargateService extends constructs.Construct {
       }
 
       if (!props.skipTargetGroup) {
+        // All alarms enabled by-default (opt-out individually)
         this.serviceAlarms.addTargetGroupAlarms({
           targetGroupFullName: this.targetGroup!.targetGroupFullName,
           loadBalancerFullName: alarms.loadBalancerFullName,
