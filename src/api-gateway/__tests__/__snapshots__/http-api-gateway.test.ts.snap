@@ -4387,7 +4387,7 @@ export async function handler(event) {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -6440,7 +6440,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "VpcConfig": Object {
           "SecurityGroupIds": Array [
             Object {
