@@ -1,18 +1,16 @@
 import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
+import * as iam from "aws-cdk-lib/aws-iam"
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import * as sns from "aws-cdk-lib/aws-sns"
 import * as constructs from "constructs"
 
-// Determine assets location in a runtime-safe way so tests that import the
-// TypeScript source directly (or compiled lib) can find the assets.
-const assetsBase =
-  typeof __dirname !== "undefined"
-    ? path.join(__dirname, "../../assets")
-    : path.join(process.cwd(), "assets")
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export interface SlackAlarmProps {
   projectName: string
@@ -47,7 +45,9 @@ export class SlackAlarm extends constructs.Construct {
     this.snsAction = new cloudwatchActions.SnsAction(this.alarmTopic)
 
     const slackLambda = new lambda.Function(this, "Function", {
-      code: lambda.Code.fromAsset(path.join(assetsBase, "slack-alarm-lambda")),
+      code: lambda.Code.fromAsset(
+        path.join(__dirname, "../../assets/slack-alarm-lambda"),
+      ),
       description:
         "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
       handler: "index.handler",
@@ -63,7 +63,7 @@ export class SlackAlarm extends constructs.Construct {
 
     this.logHandler = new lambda.Function(this, "LogHandler", {
       code: lambda.Code.fromAsset(
-        path.join(assetsBase, "slack-error-log-handler-lambda"),
+        path.join(__dirname, "../../assets", "slack-error-log-handler-lambda"),
       ),
       description:
         "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
@@ -78,11 +78,14 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
-    // Grant the log handler permission to read the webhook secret
     props.slackWebhookUrlSecret.grantRead(this.logHandler)
-
     props.slackWebhookUrlSecret.grantRead(slackLambda)
 
+    slackLambda.addPermission("InvokePermission", {
+      action: "lambda:InvokeFunction",
+      principal: new iam.ServicePrincipal("sns.amazonaws.com"),
+      sourceArn: this.alarmTopic.topicArn,
+    })
     slackLambda.addToRolePolicy(
       new PolicyStatement({
         actions: ["cloudwatch:DescribeAlarms"],

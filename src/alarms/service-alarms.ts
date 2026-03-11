@@ -83,8 +83,8 @@ export class ServiceAlarms extends constructs.Construct {
   }): void {
     const groupToUse = props.logGroup
 
-    // If a log handler is configured, we forward matching logs to it instead of
-    // creating the simple "ERROR" metric alarm.
+    // If no log handler is configured, we create
+    // the simple "ERROR" metric alarm.
     if (!this.logHandler) {
       const errorMetricFilter = groupToUse.addMetricFilter(
         "ErrorMetricFilter",
@@ -119,7 +119,7 @@ export class ServiceAlarms extends constructs.Construct {
 
     if (this.logHandler) {
       props.logGroup.addSubscriptionFilter(
-        "log-content-to-slack-error-subscription",
+        "liflig-cdk-log-content-to-slack-error-subscription",
         {
           destination: new logsDestinations.LambdaDestination(this.logHandler),
           filterPattern: jsonErrorFilterPattern(),
@@ -141,8 +141,7 @@ export class ServiceAlarms extends constructs.Construct {
     if (props.enabled === true) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
-      // If a construct-level log handler is configured, forward matching logs
-      // to it instead of creating a simple metric alarm.
+      // If no log handler is configured, create a simple metric alarm.
       if (!this.logHandler) {
         const errorMetricFilter = props.logGroup.addMetricFilter(
           "UncaughtJavaExceptionFilter",
@@ -179,7 +178,7 @@ export class ServiceAlarms extends constructs.Construct {
       // If a log handler is configured, forward matching logs to it.
       if (this.logHandler) {
         props.logGroup.addSubscriptionFilter(
-          "log-content-to-slack-uncaught-exception-subscription",
+          "liflig-cdk-log-content-to-slack-uncaught-exception-subscription",
           {
             destination: new logsDestinations.LambdaDestination(
               this.logHandler,
