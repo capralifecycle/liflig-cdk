@@ -157,7 +157,7 @@ export class FargateService extends constructs.Construct {
     this.fargateService = new ecs.FargateService(this, "Service", {
       serviceName: props.serviceName,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       taskDefinition: this.taskDefinition,
       cluster: props.cluster,
