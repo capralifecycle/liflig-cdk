@@ -14,13 +14,13 @@ interface Props {
   /**
    * The subnets to place the bastion host.
    *
-   * Note that if placed inside private subnet, the VPC must have
+   * Note that when placed inside private subnet (the default), the VPC must have
    * VPC endpoints to access relevant AWS services for Systems Manager
    * to work in order to be able to connect to the instance.
    *
    * See https://aws.amazon.com/premiumsupport/knowledge-center/ec2-systems-manager-vpc-endpoints/
    *
-   * @default - public subnets
+   * @default - private subnets
    */
   subnetSelection?: ec2.SubnetSelection
   /**
@@ -61,7 +61,7 @@ export class BastionHost extends constructs.Construct {
     const instance = new ec2.Instance(this, "Instance", {
       vpc: props.vpc,
       vpcSubnets: props.subnetSelection ?? {
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroup: this.securityGroup,
       instanceName: props.instanceName ?? "Bastion",
