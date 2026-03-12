@@ -29,7 +29,7 @@ export class LoadBalancer extends constructs.Construct {
       vpc: props.vpc,
       internetFacing: true,
       vpcSubnets: props.vpc.selectSubnets({
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       }),
       ...props.overrideLoadBalancerProps,
     })
