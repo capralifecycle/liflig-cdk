@@ -33,10 +33,6 @@ export interface DatabaseProps extends cdk.StackProps {
    * the new instance name will crash with the existing instance.
    */
   snapshotIdentifier?: string
-  /**
-   * @default false
-   */
-  usePublicSubnets?: boolean
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
 }
 
@@ -63,11 +59,9 @@ export class Database extends constructs.Construct {
       instanceIdentifier: props.instanceIdentifier,
       instanceType: props.instanceType,
       vpc: props.vpc,
-      vpcSubnets: props.usePublicSubnets
-        ? {
-            subnetType: ec2.SubnetType.PUBLIC,
-          }
-        : undefined,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
       multiAz: props.isMultiAz ?? true,
       // We default to 25 GiB storage instead of 100 GiB
       // if we do not specify.
