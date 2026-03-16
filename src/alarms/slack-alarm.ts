@@ -26,12 +26,16 @@ export interface SlackAlarmProps {
 }
 
 /**
- * SNS Topic that can be used to action alarms, with a Lambda
+ * Creates
+ * - SNS Topic that can be used to action alarms, with a Lambda
  * that will send a message to Slack for the alarm.
+ * - A reusable Lambda that accepts CloudWatch Logs subscription events and posts
+ * formatted error messages to Slack.
  */
 export class SlackAlarm extends constructs.Construct {
   public readonly alarmTopic: sns.Topic
   public readonly snsAction: cloudwatchActions.SnsAction
+  public readonly logHandler: lambda.Function
 
   constructor(scope: constructs.Construct, id: string, props: SlackAlarmProps) {
     super(scope, id)
@@ -57,6 +61,24 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
+    this.logHandler = new lambda.Function(this, "LogHandler", {
+      code: lambda.Code.fromAsset(
+        path.join(__dirname, "../../assets", "slack-error-log-handler-lambda"),
+      ),
+      description:
+        "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
+      handler: "index.handler",
+      memorySize: 128,
+      runtime: lambda.Runtime.PYTHON_3_14,
+      timeout: Duration.seconds(10),
+      environment: {
+        SLACK_URL_SECRET_NAME: props.slackWebhookUrlSecret.secretName,
+        PROJECT_NAME: props.projectName,
+        ENVIRONMENT_NAME: props.envName,
+      },
+    })
+
+    props.slackWebhookUrlSecret.grantRead(this.logHandler)
     props.slackWebhookUrlSecret.grantRead(slackLambda)
 
     slackLambda.addPermission("InvokePermission", {
