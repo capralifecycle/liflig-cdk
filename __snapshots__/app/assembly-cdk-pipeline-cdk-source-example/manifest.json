@@ -33,38 +33,7 @@
       "dependencies": [
         "cdkpipelinecdksourceexample06670C59.assets"
       ],
-      "metadata": {
-        "/cdk-pipeline-cdk-source/example/example/ExampleOutput": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExampleOutput"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/example/example/CDKMetadata/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadata"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/example/example/CDKMetadata/Condition": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadataAvailable"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/example/example/BootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "BootstrapVersion"
-          }
-        ],
-        "/cdk-pipeline-cdk-source/example/example/CheckBootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CheckBootstrapVersion"
-          }
-        ]
-      },
+      "additionalMetadataFile": "cdkpipelinecdksourceexample06670C59.metadata.json",
       "displayName": "cdk-pipeline-cdk-source/example/example"
     },
     "aws-cdk-lib/feature-flag-report": {
@@ -496,5 +465,5 @@
       }
     }
   },
-  "minimumCliVersion": "2.1105.0"
+  "minimumCliVersion": "2.1107.0"
 }

@@ -9,7 +9,7 @@ all: build
 build: clean install fmt lint-fix npm-build snapshots
 
 .PHONY: ci
-ci: install lint fmt-check npm-build snapshots-check test
+ci: install lint fmt-check npm-build snapshots snapshots-check test
 
 
 ######################
