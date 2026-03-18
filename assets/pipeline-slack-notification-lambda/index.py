@@ -227,10 +227,21 @@ def handler(event, context):
         and previous_pipeline_execution["status"] == "Failed"
     )
 
+    # An execution attempt > 1 means this execution had a prior failed attempt
+    # that was retried. The overall execution status may be "Succeeded" after retry,
+    # but we should communicate it as a recovery from failure.
+    execution_attempt = int(event["detail"].get("pipeline-execution-attempt", 1))
+    retried_after_failure = execution_attempt > 1
+
+    if previous_failed or retried_after_failure:
+        had_prior_failure = True
+    else:
+        had_prior_failure = False
+
     # We still show succeeded for the first event or when
     # the previous execution was not success.
     if state == "SUCCEEDED" and (NOTIFICATION_LEVEL == "WARN"):
-        if previous_pipeline_execution is not None and not previous_failed:
+        if not had_prior_failure:
             print("Ignoring succeeded event")
             return
 
@@ -240,7 +251,7 @@ def handler(event, context):
     account_friendly_name = f"in {ACCOUNT_FRIENDLY_NAME or account_id}"
 
     state_text = state
-    if previous_failed and state == "SUCCEEDED":
+    if had_prior_failure and state == "SUCCEEDED":
         state_text += " (previously failed)"
 
     ci_metadata = get_metadata_from_trigger(pipeline_name, execution_id)
