@@ -33,38 +33,7 @@
       "dependencies": [
         "cdkpipelinecloudassemblyexample34A10B9D.assets"
       ],
-      "metadata": {
-        "/cdk-pipeline-cloud-assembly/example/example/ExampleOutput": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExampleOutput"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/example/example/CDKMetadata/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadata"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/example/example/CDKMetadata/Condition": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadataAvailable"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/example/example/BootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "BootstrapVersion"
-          }
-        ],
-        "/cdk-pipeline-cloud-assembly/example/example/CheckBootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CheckBootstrapVersion"
-          }
-        ]
-      },
+      "additionalMetadataFile": "cdkpipelinecloudassemblyexample34A10B9D.metadata.json",
       "displayName": "cdk-pipeline-cloud-assembly/example/example"
     },
     "aws-cdk-lib/feature-flag-report": {
@@ -496,5 +465,5 @@
       }
     }
   },
-  "minimumCliVersion": "2.1105.0"
+  "minimumCliVersion": "2.1107.0"
 }

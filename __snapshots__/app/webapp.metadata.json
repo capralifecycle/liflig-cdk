@@ -1,0 +1,69 @@
+{
+  "/webapp": [
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Project",
+          "value": "my-project"
+        },
+        {
+          "key": "SourceRepo",
+          "value": "github/capralifecycle/liflig-cdk"
+        },
+        {
+          "key": "StackName",
+          "value": "webapp"
+        }
+      ]
+    }
+  ],
+  "/webapp/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/webapp/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/webapp/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/webapp/Webapp/Bucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebappBucketD38541E4"
+    }
+  ],
+  "/webapp/Webapp/OriginAccessIdentity/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebappOriginAccessIdentityA216A4CF"
+    }
+  ],
+  "/webapp/Webapp/Distribution/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebappDistribution43D777AD"
+    }
+  ],
+  "/webapp/Webapp/Bucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebappBucketPolicy4224ABFE"
+    }
+  ],
+  "/webapp/Webapp/SecurityHeaders/ResponseHeadersPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebappSecurityHeadersResponseHeadersPolicyF5614597"
+    }
+  ]
+}
