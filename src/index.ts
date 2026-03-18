@@ -25,16 +25,16 @@ export { WebappDeployViaRole } from "./webapp-deploy-via-role"
 
 export {
   alarms,
+  apigw,
   cdkPipelines,
-  ses,
-  webapp,
+  cloudTrailSlackIntegration,
   configureParameters,
   ecs,
   loadBalancer,
-  rds,
   platform,
-  cloudTrailSlackIntegration,
-  apigw,
+  rds,
+  ses,
+  webapp,
 }
 
 /**
