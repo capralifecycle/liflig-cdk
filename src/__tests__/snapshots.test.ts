@@ -1,13 +1,13 @@
 import {
-  prepareManifestForSnapshot,
-  prepareMetadataForSnapshot,
-  prepareTemplateForSnapshot,
+  sanitizeManifest,
+  sanitizeMetadata,
+  sanitizeTemplate,
 } from "../snapshots"
 
 const hash64 = "a".repeat(64)
 const otherHash64 = "b".repeat(64)
 
-describe("prepareTemplateForSnapshot", () => {
+describe("sanitizeTemplate", () => {
   it("replaces 64-char asset content hashes", () => {
     const template = JSON.stringify({
       Resources: {
@@ -21,7 +21,7 @@ describe("prepareTemplateForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareTemplateForSnapshot(template))
+    const result = JSON.parse(sanitizeTemplate(template))
     expect(result.Resources.MyResource.Properties.Code.S3Key).toBe(
       "snapshot-value.zip",
     )
@@ -47,7 +47,7 @@ describe("prepareTemplateForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareTemplateForSnapshot(template))
+    const result = JSON.parse(sanitizeTemplate(template))
     const resultBuildSpec =
       result.Resources.PublishAssets.Properties.Source.BuildSpec
 
@@ -67,7 +67,7 @@ describe("prepareTemplateForSnapshot", () => {
       Resources: { R: { Properties: { Value: value } } },
     })
 
-    const result = JSON.parse(prepareTemplateForSnapshot(template))
+    const result = JSON.parse(sanitizeTemplate(template))
     const resultValue = result.Resources.R.Properties.Value
 
     expect(resultValue).toBe(
@@ -87,7 +87,7 @@ describe("prepareTemplateForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareTemplateForSnapshot(template))
+    const result = JSON.parse(sanitizeTemplate(template))
     expect(result.Resources.R.Properties.SomeId).toBe("aabbccdd")
     expect(result.Resources.R.Properties.TagValue).toBe("prefix-aabbccdd")
   })
@@ -100,13 +100,13 @@ describe("prepareTemplateForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareTemplateForSnapshot(template))
+    const result = JSON.parse(sanitizeTemplate(template))
     expect(result.Resources.CDKMetadata).toBeUndefined()
     expect(result.Resources.MyBucket).toBeDefined()
   })
 })
 
-describe("prepareMetadataForSnapshot", () => {
+describe("sanitizeMetadata", () => {
   it("removes trace entries", () => {
     const metadata = JSON.stringify({
       "/stack/Resource": [
@@ -118,7 +118,7 @@ describe("prepareMetadataForSnapshot", () => {
       ],
     })
 
-    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    const result = JSON.parse(sanitizeMetadata(metadata))
     expect(result["/stack/Resource"][0].trace).toBeUndefined()
     expect(result["/stack/Resource"][0].data).toBe("MyResource")
   })
@@ -137,7 +137,7 @@ describe("prepareMetadataForSnapshot", () => {
       ],
     })
 
-    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    const result = JSON.parse(sanitizeMetadata(metadata))
     expect(result["/stack/Resource"][0].type).toBe("aws:cdk:asset")
     expect(result["/stack/Resource"][0].data).toBe("snapshot-value")
     expect(result["/stack/Resource"][1].data).toBe("MyResource")
@@ -153,14 +153,14 @@ describe("prepareMetadataForSnapshot", () => {
       ],
     })
 
-    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    const result = JSON.parse(sanitizeMetadata(metadata))
     expect(result["/stack/Resource"][0].data).toBe(
       "Somethingsnapshot-valueElse",
     )
   })
 })
 
-describe("prepareManifestForSnapshot", () => {
+describe("sanitizeManifest", () => {
   it("replaces CDK Pipelines short asset hash suffix in manifest strings", () => {
     const manifest = JSON.stringify({
       version: "30.0.0",
@@ -174,7 +174,7 @@ describe("prepareManifestForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareManifestForSnapshot(manifest))
+    const result = JSON.parse(sanitizeManifest(manifest))
     expect(result.version).toBeUndefined()
     expect(result.artifacts.stack.properties.stackTemplateAssetObjectUrl).toBe(
       "s3://cdk-assets/snapshot-value.json",
@@ -193,7 +193,7 @@ describe("prepareManifestForSnapshot", () => {
       },
     })
 
-    const result = JSON.parse(prepareManifestForSnapshot(manifest))
+    const result = JSON.parse(sanitizeManifest(manifest))
     expect(result.artifacts.stack.properties.value).toBe(
       "snapshot-value:123456789012-eu-west-1-snapshot-value",
     )

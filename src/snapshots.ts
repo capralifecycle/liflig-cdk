@@ -62,6 +62,21 @@ function rewriteCurrentVersionIfFound(value: string): string | null {
   return match ? `${match[1]}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` : null
 }
 
+/**
+ * Replace asset hashes in a string value with stable placeholders.
+ * Shared by both template and manifest/metadata asset stripping.
+ */
+function replaceAssetHashesInString(value: string): string {
+  const newCurrentVersion = rewriteCurrentVersionIfFound(value)
+  if (newCurrentVersion) {
+    return newCurrentVersion
+  }
+
+  return value
+    .replace(assetContentHashRegex, "snapshot-value")
+    .replace(pipelinesAssetIdSuffixRegex, "$1snapshot-value")
+}
+
 function removeAssetDetailsFromTemplate(data: any): any {
   if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromTemplate)
@@ -99,14 +114,7 @@ function removeAssetDetailsFromTemplate(data: any): any {
   }
 
   if (typeof data === "string") {
-    const newCurrentVersion = rewriteCurrentVersionIfFound(data)
-    if (newCurrentVersion) {
-      return newCurrentVersion
-    }
-
-    return data
-      .replace(assetContentHashRegex, "snapshot-value")
-      .replace(pipelinesAssetIdSuffixRegex, "$1snapshot-value")
+    return replaceAssetHashesInString(data)
   }
 
   return data
@@ -144,14 +152,7 @@ function removeAssetDetailsFromManifest(data: any): any {
   }
 
   if (typeof data === "string") {
-    const newCurrentVersion = rewriteCurrentVersionIfFound(data)
-    if (newCurrentVersion) {
-      return newCurrentVersion
-    }
-
-    return data
-      .replace(assetContentHashRegex, "snapshot-value")
-      .replace(pipelinesAssetIdSuffixRegex, "$1snapshot-value")
+    return replaceAssetHashesInString(data)
   }
 
   return data
@@ -178,10 +179,10 @@ function removeCdkMetadataResourceFromTemplate(data: any): any {
  *
  * On CDK < 2.242.0 the manifest contains inline metadata per stack artifact.
  * On CDK >= 2.242.0 that metadata is extracted into separate files (handled
- * by {@link prepareMetadataForSnapshot}), but the manifest still needs version,
+ * by {@link sanitizeMetadata}), but the manifest still needs version,
  * runtime, trace, and asset detail stripping.
  */
-export function prepareManifestForSnapshot(content: string): string {
+export function sanitizeManifest(content: string): string {
   const input = JSON.parse(content)
   const output = [
     removeVersion,
@@ -197,18 +198,6 @@ export function prepareManifestForSnapshot(content: string): string {
 }
 
 /**
- * Transform the Cloud Assembly manifest file so that it can be persisted
- * as a snapshot without causing invalidations for every synthesize.
- */
-async function prepareManifestFileForSnapshot(file: string): Promise<void> {
-  const result = prepareManifestForSnapshot(
-    await fs.promises.readFile(file, "utf8"),
-  )
-
-  await fs.promises.writeFile(file, result)
-}
-
-/**
  * Sanitize an extracted metadata JSON file for snapshot use.
  *
  * CDK >= 2.242.0 extracts per-stack metadata into separate *.metadata.json
@@ -216,7 +205,7 @@ async function prepareManifestFileForSnapshot(file: string): Promise<void> {
  * applies the same sanitization (trace removal, asset detail stripping) so
  * snapshots remain stable across synthesizes.
  */
-export function prepareMetadataForSnapshot(content: string): string {
+export function sanitizeMetadata(content: string): string {
   const input = JSON.parse(content)
   const output = [removeTrace, removeAssetDetailsFromManifest].reduce(
     (acc, fn) => fn(acc),
@@ -226,19 +215,7 @@ export function prepareMetadataForSnapshot(content: string): string {
   return JSON.stringify(output, undefined, "  ")
 }
 
-/**
- * Transform an extracted metadata file (CDK >= 2.242.0) so that it can be
- * persisted as a snapshot without causing invalidations for every synthesize.
- */
-async function prepareMetadataFileForSnapshot(file: string): Promise<void> {
-  const result = prepareMetadataForSnapshot(
-    await fs.promises.readFile(file, "utf8"),
-  )
-
-  await fs.promises.writeFile(file, result)
-}
-
-export function prepareTemplateForSnapshot(content: string): string {
+export function sanitizeTemplate(content: string): string {
   const input = JSON.parse(content)
   const output = [
     removeCdkMetadataResourceFromTemplate,
@@ -250,14 +227,13 @@ export function prepareTemplateForSnapshot(content: string): string {
 }
 
 /**
- * Transform a Cloud Assembly template file so that it can be persisted
- * as a snapshot without causing invalidations for minor changes.
+ * Read a file, apply a transform, and write the result back.
  */
-async function prepareTemplateFileForSnapshot(file: string): Promise<void> {
-  const result = prepareTemplateForSnapshot(
-    await fs.promises.readFile(file, "utf8"),
-  )
-
+async function transformFileInPlace(
+  file: string,
+  transform: (content: string) => string,
+): Promise<void> {
+  const result = transform(await fs.promises.readFile(file, "utf8"))
   await fs.promises.writeFile(file, result)
 }
 
@@ -304,30 +280,19 @@ export async function createCloudAssemblySnapshot(
     ),
   )
 
-  const manifestFiles = [
-    // Transform the manifest to be more snapshot friendly.
-    "**/manifest.json",
-  ].flatMap((g) => expandGlob(g, destAbs))
-
-  for (const file of manifestFiles) {
-    await prepareManifestFileForSnapshot(file)
+  const fileTransforms: Record<string, (content: string) => string> = {
+    "**/manifest.json": sanitizeManifest,
+    // CDK >= 2.242.0 extracts per-stack metadata into separate files.
+    // No matches on older CDK — safe to process unconditionally.
+    "**/*.metadata.json": sanitizeMetadata,
+    "**/*.template.json": sanitizeTemplate,
   }
 
-  // Transform extracted metadata files (CDK >= 2.242.0).
-  // These contain the same data that was previously inline in manifest.json,
-  // so they need the same sanitization. Safe to run when no files match (older CDK).
-  const metadataFiles = expandGlob("**/*.metadata.json", destAbs)
-
-  for (const file of metadataFiles) {
-    await prepareMetadataFileForSnapshot(file)
-  }
-
-  const templateFiles = [
-    // Transform all templates.
-    "**/*.template.json",
-  ].flatMap((g) => expandGlob(g, destAbs))
-
-  for (const file of templateFiles) {
-    await prepareTemplateFileForSnapshot(file)
-  }
+  await Promise.all(
+    Object.entries(fileTransforms).flatMap(([pattern, transform]) =>
+      expandGlob(pattern, destAbs).map((f) =>
+        transformFileInPlace(f, transform),
+      ),
+    ),
+  )
 }
