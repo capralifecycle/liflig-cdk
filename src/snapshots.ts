@@ -112,6 +112,11 @@ function removeAssetDetailsFromTemplate(data: any): any {
   return data
 }
 
+/**
+ * Recursively strip asset-related details (hashes, parameters) from a JSON
+ * structure. Used for both manifest.json (CDK < 2.242.0 with inline metadata)
+ * and standalone *.metadata.json files (CDK >= 2.242.0).
+ */
 function removeAssetDetailsFromManifest(data: any): any {
   if (Array.isArray(data)) {
     return data.map(removeAssetDetailsFromManifest)
@@ -168,6 +173,14 @@ function removeCdkMetadataResourceFromTemplate(data: any): any {
   return cp
 }
 
+/**
+ * Sanitize a Cloud Assembly manifest.json for snapshot use.
+ *
+ * On CDK < 2.242.0 the manifest contains inline metadata per stack artifact.
+ * On CDK >= 2.242.0 that metadata is extracted into separate files (handled
+ * by {@link prepareMetadataForSnapshot}), but the manifest still needs version,
+ * runtime, trace, and asset detail stripping.
+ */
 export function prepareManifestForSnapshot(content: string): string {
   const input = JSON.parse(content)
   const output = [
@@ -175,7 +188,6 @@ export function prepareManifestForSnapshot(content: string): string {
     // Remove the runtime version information so it don't conflict with CI
     // or other users generating the snapshots.
     removeRuntimeLibraries,
-    // Remove the trace from manifest for now.
     removeTrace,
     // Avoid details (hashes) from assets.
     removeAssetDetailsFromManifest,
@@ -190,6 +202,36 @@ export function prepareManifestForSnapshot(content: string): string {
  */
 async function prepareManifestFileForSnapshot(file: string): Promise<void> {
   const result = prepareManifestForSnapshot(
+    await fs.promises.readFile(file, "utf8"),
+  )
+
+  await fs.promises.writeFile(file, result)
+}
+
+/**
+ * Sanitize an extracted metadata JSON file for snapshot use.
+ *
+ * CDK >= 2.242.0 extracts per-stack metadata into separate *.metadata.json
+ * files (previously this data was inline in manifest.json). This function
+ * applies the same sanitization (trace removal, asset detail stripping) so
+ * snapshots remain stable across synthesizes.
+ */
+export function prepareMetadataForSnapshot(content: string): string {
+  const input = JSON.parse(content)
+  const output = [removeTrace, removeAssetDetailsFromManifest].reduce(
+    (acc, fn) => fn(acc),
+    input,
+  )
+
+  return JSON.stringify(output, undefined, "  ")
+}
+
+/**
+ * Transform an extracted metadata file (CDK >= 2.242.0) so that it can be
+ * persisted as a snapshot without causing invalidations for every synthesize.
+ */
+async function prepareMetadataFileForSnapshot(file: string): Promise<void> {
+  const result = prepareMetadataForSnapshot(
     await fs.promises.readFile(file, "utf8"),
   )
 
@@ -269,6 +311,15 @@ export async function createCloudAssemblySnapshot(
 
   for (const file of manifestFiles) {
     await prepareManifestFileForSnapshot(file)
+  }
+
+  // Transform extracted metadata files (CDK >= 2.242.0).
+  // These contain the same data that was previously inline in manifest.json,
+  // so they need the same sanitization. Safe to run when no files match (older CDK).
+  const metadataFiles = expandGlob("**/*.metadata.json", destAbs)
+
+  for (const file of metadataFiles) {
+    await prepareMetadataFileForSnapshot(file)
   }
 
   const templateFiles = [

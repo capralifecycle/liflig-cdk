@@ -1,5 +1,6 @@
 import {
   prepareManifestForSnapshot,
+  prepareMetadataForSnapshot,
   prepareTemplateForSnapshot,
 } from "../snapshots"
 
@@ -102,6 +103,60 @@ describe("prepareTemplateForSnapshot", () => {
     const result = JSON.parse(prepareTemplateForSnapshot(template))
     expect(result.Resources.CDKMetadata).toBeUndefined()
     expect(result.Resources.MyBucket).toBeDefined()
+  })
+})
+
+describe("prepareMetadataForSnapshot", () => {
+  it("removes trace entries", () => {
+    const metadata = JSON.stringify({
+      "/stack/Resource": [
+        {
+          type: "aws:cdk:logicalId",
+          data: "MyResource",
+          trace: ["at Object.<anonymous> (file.ts:1:1)"],
+        },
+      ],
+    })
+
+    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    expect(result["/stack/Resource"][0].trace).toBeUndefined()
+    expect(result["/stack/Resource"][0].data).toBe("MyResource")
+  })
+
+  it("strips aws:cdk:asset entries", () => {
+    const metadata = JSON.stringify({
+      "/stack/Resource": [
+        {
+          type: "aws:cdk:asset",
+          data: { path: "asset.abc123", packaging: "zip" },
+        },
+        {
+          type: "aws:cdk:logicalId",
+          data: "MyResource",
+        },
+      ],
+    })
+
+    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    expect(result["/stack/Resource"][0].type).toBe("aws:cdk:asset")
+    expect(result["/stack/Resource"][0].data).toBe("snapshot-value")
+    expect(result["/stack/Resource"][1].data).toBe("MyResource")
+  })
+
+  it("replaces 64-char asset hashes in strings", () => {
+    const metadata = JSON.stringify({
+      "/stack/Resource": [
+        {
+          type: "aws:cdk:logicalId",
+          data: `Something${hash64}Else`,
+        },
+      ],
+    })
+
+    const result = JSON.parse(prepareMetadataForSnapshot(metadata))
+    expect(result["/stack/Resource"][0].data).toBe(
+      "Somethingsnapshot-valueElse",
+    )
   })
 })
 
