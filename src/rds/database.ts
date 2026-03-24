@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
-import { DEFAULT_PASSWORD_EXCLUDE_CHARS } from "aws-cdk-lib/aws-rds/lib/private/util"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 
@@ -40,6 +39,12 @@ export interface DatabaseProps extends cdk.StackProps {
   usePublicSubnets?: boolean
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
 }
+
+/**
+ * These are taken from the default excluded chars in the RdsDatabaseSecret
+ * @see https://github.com/aws/aws-cdk/blob/f0b6da82b49da6611f871b67497db8d5004738a2/packages/aws-cdk-lib/aws-rds/lib/private/util.ts#L20
+ */
+declare const DEFAULT_PASSWORD_EXCLUDE_CHARS = " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
 
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
