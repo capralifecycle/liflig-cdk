@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
+import { DEFAULT_PASSWORD_EXCLUDE_CHARS } from "aws-cdk-lib/aws-rds/lib/private/util"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 
@@ -55,6 +56,7 @@ export class Database extends constructs.Construct {
 
     const secret = new rds.DatabaseSecret(this, "Secret", {
       username: masterUsername,
+      excludeCharacters: `${DEFAULT_PASSWORD_EXCLUDE_CHARS},`, // Add comma to default excluded characters
     })
 
     const options: rds.DatabaseInstanceSourceProps = {
