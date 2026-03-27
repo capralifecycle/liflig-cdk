@@ -19,16 +19,24 @@ def make_event(log_messages):
         "logGroup": "test-log-group",
         "logStream": "test-log-stream",
         "logEvents": [
-            {"id": "1", "timestamp": 1620000000000, "message": json.dumps(log_messages[0])}
-        ]
+            {
+                "id": "1",
+                "timestamp": 1620000000000,
+                "message": json.dumps(log_messages[0]),
+            }
+        ],
     }
-    compressed = base64.b64encode(gzip.compress(json.dumps(payload).encode("utf-8"))).decode("utf-8")
+    compressed = base64.b64encode(
+        gzip.compress(json.dumps(payload).encode("utf-8"))
+    ).decode("utf-8")
     return {"awslogs": {"data": compressed}}
 
 
 def test_create_slack_message_from_cloudwatch_log_defaults():
     events = [{"service": "svc", "message": "err", "stack_trace": "trace"}]
-    slack = create_slack_message_from_cloudwatch_log(events, "lg", 123456, project_name="proj", environment_name="env")
+    slack = create_slack_message_from_cloudwatch_log(
+        events, "lg", 123456, project_name="proj", environment_name="env"
+    )
     assert "blocks" in slack
     # header contains the title with service
     header_text = slack["blocks"][0]["text"]["text"]
@@ -69,7 +77,9 @@ def test_process_event_calls_urlopen(monkeypatch):
         return DummyResp()
 
     # Should not raise when provided with functional secrets client and urlopen
-    process_event(ev, None, secrets_client=DummySecretsClient(), urlopen_func=dummy_urlopen)
+    process_event(
+        ev, None, secrets_client=DummySecretsClient(), urlopen_func=dummy_urlopen
+    )
     assert called["count"] == 1
 
 
@@ -90,16 +100,21 @@ def test_send_slack_notification_uses_secret_and_urlopen(monkeypatch):
         # basic checks on request body (headers may not be accessible in this
         # test environment in the same way across Python versions).
         data = None
-        if hasattr(req, 'data') and req.data is not None:
+        if hasattr(req, "data") and req.data is not None:
             data = req.data
-        elif hasattr(req, 'get_data'):
+        elif hasattr(req, "get_data"):
             data = req.get_data()
         assert data is not None
-        payload = json.loads(data.decode('utf-8'))
-        assert payload.get('foo') == 'bar'
+        payload = json.loads(data.decode("utf-8"))
+        assert payload.get("foo") == "bar"
         return DummyResp()
 
-    send_slack_notification({"foo": "bar"}, secrets_client=DummySecretsClient(), urlopen_func=dummy_urlopen, slack_secret_name="unused")
+    send_slack_notification(
+        {"foo": "bar"},
+        secrets_client=DummySecretsClient(),
+        urlopen_func=dummy_urlopen,
+        slack_secret_name="unused",
+    )
     assert called["c"] == 1
 
 
@@ -112,10 +127,14 @@ def test_create_slack_message_more_than_three_events():
         {"service": "svc4", "message": "m4", "stack_trace": "t4"},
         {"service": "svc5", "message": "m5", "stack_trace": "t5"},
     ]
-    slack = create_slack_message_from_cloudwatch_log(events, "lg", 123456, project_name="proj", environment_name="env")
+    slack = create_slack_message_from_cloudwatch_log(
+        events, "lg", 123456, project_name="proj", environment_name="env"
+    )
     # Collect text from blocks and assert the summary mentions extra messages
     text_join = " ".join(
-        b.get("text", {}).get("text", "") for b in slack.get("blocks", []) if "text" in b
+        b.get("text", {}).get("text", "")
+        for b in slack.get("blocks", [])
+        if "text" in b
     )
     # Be permissive about the exact wording; the handler may say "And 4 other logs"
     # or similar. Ensure some "other" summary appears.
@@ -125,13 +144,21 @@ def test_create_slack_message_more_than_three_events():
 def test_create_slack_message_no_stack_trace():
     # event without stack_trace should include a fallback such as "No stack trace."
     events = [{"service": "svc", "message": "err"}]  # no stack_trace key
-    slack = create_slack_message_from_cloudwatch_log(events, "lg", 123456, project_name="proj", environment_name="env")
+    slack = create_slack_message_from_cloudwatch_log(
+        events, "lg", 123456, project_name="proj", environment_name="env"
+    )
     text_join = " ".join(
-        b.get("text", {}).get("text", "") for b in slack.get("blocks", []) if "text" in b
+        b.get("text", {}).get("text", "")
+        for b in slack.get("blocks", [])
+        if "text" in b
     )
     # The handler may omit an explicit "No stack trace" message and instead
     # include a CloudWatch Logs Insights link; accept either behavior.
-    assert ("no stack trace" in text_join.lower()) or ("logs insights" in text_join.lower()) or ("cloudwatch" in text_join.lower())
+    assert (
+        ("no stack trace" in text_join.lower())
+        or ("logs insights" in text_join.lower())
+        or ("cloudwatch" in text_join.lower())
+    )
 
 
 def test_process_event_with_broken_secrets_client_raises():
@@ -142,4 +169,6 @@ def test_process_event_with_broken_secrets_client_raises():
             raise Exception("boom-secret")
 
     with pytest.raises(Exception):
-        process_event(ev, None, secrets_client=BrokenSecretsClient(), urlopen_func=lambda r: None)
+        process_event(
+            ev, None, secrets_client=BrokenSecretsClient(), urlopen_func=lambda r: None
+        )
