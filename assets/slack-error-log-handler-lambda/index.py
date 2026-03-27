@@ -86,7 +86,9 @@ def process_event(
     except Exception:
         logged_ts_int = current_timestamp
     timestamp_in_seconds = (
-        logged_ts_int if logged_ts_int < 1_000_000_000_000 else int(logged_ts_int / 1000)
+        logged_ts_int
+        if logged_ts_int < 1_000_000_000_000
+        else int(logged_ts_int / 1000)
     )
 
     log_group = decoded_message.get("logGroup", "undefined")
@@ -224,7 +226,6 @@ def create_slack_message_from_cloudwatch_log(
     return slack_message
 
 
-
 def create_slack_message(
     title,
     project,
@@ -258,14 +259,12 @@ def create_slack_message(
         },
     ]
 
-
     if stack_trace:
         blocks.extend(
             [
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "*Stack trace*:"
-                    },
+                    "text": {"type": "mrkdwn", "text": "*Stack trace*:"},
                 },
                 {
                     "type": "rich_text",
