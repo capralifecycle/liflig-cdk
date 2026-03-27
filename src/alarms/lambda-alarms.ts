@@ -262,7 +262,7 @@ export class LambdaAlarms extends constructs.Construct {
     enableOkAction?: boolean
     action?: cloudwatch.IAlarmAction
   }): void {
-    if (props.enabled === true) {
+    if (props.enabled) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
       // If no log handler is configured, create a simple metric alarm.
