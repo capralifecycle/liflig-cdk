@@ -1,0 +1,135 @@
+{
+  "/build-artifacts": [
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Project",
+          "value": "my-project"
+        },
+        {
+          "key": "SourceRepo",
+          "value": "github/capralifecycle/liflig-cdk"
+        },
+        {
+          "key": "StackName",
+          "value": "build-artifacts"
+        }
+      ]
+    }
+  ],
+  "/build-artifacts/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/build-artifacts/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/OpenIdConnectProvider": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsOpenIdConnectProviderD0DD3330"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/EcrRepoUri": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsEcrRepoUri8E98C2C4"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/BucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsBucketNameFFDA2A82"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/RoleArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsRoleArn13F92F8C"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/LimitedRoleArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsLimitedRoleArnBDBFBD73"
+    }
+  ],
+  "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+    }
+  ],
+  "/build-artifacts/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/S3Bucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsS3BucketF34A0F91"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/EcrRepository/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsEcrRepository58C90D9A"
+    }
+  ],
+  "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/S3Bucket/Notifications/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsS3BucketNotifications8F606582"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsS3BucketPolicy963F6593"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/GithubActionsRole/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsGithubActionsRole57AE9876"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsGithubActionsLimitedRole15AAC240"
+    }
+  ],
+  "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/GithubActionsRole/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsGithubActionsRoleDefaultPolicyBFBC12F6"
+    }
+  ],
+  "/build-artifacts/BuildArtifacts/GithubActionsLimitedRole/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildArtifactsGithubActionsLimitedRoleDefaultPolicyE701FA68"
+    }
+  ]
+}

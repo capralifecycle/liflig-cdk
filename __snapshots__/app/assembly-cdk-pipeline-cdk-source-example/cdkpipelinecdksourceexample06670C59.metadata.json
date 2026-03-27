@@ -1,0 +1,32 @@
+{
+  "/cdk-pipeline-cdk-source/example/example/ExampleOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExampleOutput"
+    }
+  ],
+  "/cdk-pipeline-cdk-source/example/example/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/cdk-pipeline-cdk-source/example/example/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/cdk-pipeline-cdk-source/example/example/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/cdk-pipeline-cdk-source/example/example/CDKMetadata/Condition": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadataAvailable"
+    }
+  ]
+}
