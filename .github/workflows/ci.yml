@@ -25,9 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: capralifecycle/actions-lib/check-runtime-dependencies@0ce63296cc44accd75acd8d0c56e73014b937e83 # v1.6.3
+      - uses: capralifecycle/actions-lib/check-runtime-dependencies@47562e75012b60f0fa5a40bf18d12ede746660d8 # v1.7.0
 
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -37,6 +37,22 @@ jobs:
 
       - name: build project
         run: make ci
+
+      # We need a separate installation step for each python version because the
+      # Makefile creates venvs for each lambda and needs the interpreters to be pre-installed.
+      # Add new setup-python steps here for any new python versions needed for lambda tests.
+      - name: Setup Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Run auto-discovered lambda Python tests
+        # This invokes the Makefile py-test target which auto-discovers
+        # all `assets/*` folders containing `requirements-dev.txt` and runs
+        # tests in a per-lambda venv.
+        # The job pre-installs Python interpreters using `actions/setup-python`
+        # so the Makefile can create venvs.
+        run: make py-test
 
       - name: conditionally semantic release
         run: make release

@@ -32,10 +32,10 @@ fmt: npm-fmt py-fmt
 fmt-check: npm-fmt-check py-fmt-check
 
 .PHONY: test
-test: npm-test
+test: npm-test py-test
 
 .PHONY: snapshots
-snapshots: npm-snapshots
+snapshots: npm-cdk-snapshots npm-jest-snapshots
 
 .PHONY: snapshots-check
 snapshots-check: npm-snapshots-check
@@ -142,3 +142,10 @@ py-fmt:
 .PHONY: py-fmt-check
 py-fmt-check:
 	ruff format --check
+
+# Python test runner for the lambda assets
+PYTHON_DEFAULT ?= python3
+.PHONY: py-test
+py-test:
+	@echo "Auto-discovering asset lambdas with tests..."
+	@scripts/run_py_tests.sh $(PYTHON_DEFAULT)
