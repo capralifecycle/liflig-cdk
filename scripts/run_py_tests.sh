@@ -52,10 +52,9 @@ for d in assets/*; do
       "$VENV/bin/python" -m ensurepip --upgrade >/dev/null 2>&1 || true
     fi
 
-    # If pip is still missing, skip this asset (fail-safe for CI)
     if [ ! -x "$VENV/bin/pip" ]; then
-      echo "pip still missing in $VENV; skipping tests for $d"
-      continue
+      echo "pip still missing in $VENV; aborting"
+      exit 1
     fi
 
     "$VENV/bin/python" -m pip install --upgrade pip setuptools wheel -q
