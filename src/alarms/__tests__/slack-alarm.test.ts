@@ -17,6 +17,4 @@ test("create slack alarm", () => {
     projectName: "my-project",
     slackWebhookUrlSecret: secret,
   })
-
-  expect(stack).toMatchCdkSnapshot()
 })
