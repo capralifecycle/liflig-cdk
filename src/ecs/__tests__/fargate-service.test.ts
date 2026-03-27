@@ -6,6 +6,8 @@ import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
+import * as sns from "aws-cdk-lib/aws-sns"
+import * as cwActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import "jest-cdk-snapshot"
 import type { Parameter } from "../../configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
@@ -91,5 +93,48 @@ test("creates fargate service with parameters and listener rule", () => {
     targetGroup: service.targetGroup!,
   })
 
+  expect(stack).toMatchCdkSnapshot()
+})
+
+// Happy-path test: when alarm and warning actions are provided, alarms are created
+test("creates alarms when alarm and warning actions provided (happy path)", () => {
+  const app = new App()
+  const supportStack = new Stack(app, "SupportStack2", {
+    env: { region: "eu-west-1" },
+  })
+  const stack = new Stack(app, "Stack2", {
+    env: { region: "eu-west-1" },
+  })
+
+  const vpc = new ec2.Vpc(supportStack, "Vpc2")
+  const ecsCluster = new ecs.Cluster(supportStack, "Cluster2", { vpc })
+  const ecrRepository = new ecr.Repository(supportStack, "Repository2", {
+    repositoryName: "example-repository-2",
+  })
+
+  const alarmTopic = new sns.Topic(stack, "AlarmTopic")
+  const warningTopic = new sns.Topic(stack, "WarningTopic")
+
+  const parameters: Parameter[] = [
+    { key: "ExamplePlainTextParameter", value: "ExamplePlainTextParameter" },
+  ]
+
+  new FargateService(stack, "ServiceWithAlarms", {
+    serviceName: "example-service-alarms",
+    vpc,
+    cluster: ecsCluster,
+    desiredCount: 1,
+    parameters,
+    ecsImage: ecs.ContainerImage.fromEcrRepository(ecrRepository, "latest"),
+    alarms: {
+      alarmAction: new cwActions.SnsAction(alarmTopic),
+      warningAction: new cwActions.SnsAction(warningTopic),
+      loadBalancerFullName: "load-balancer-placeholder",
+    },
+  })
+
+  // Expect at least one CloudWatch Alarm and SNS topic in the template
+  expect(stack).toHaveResource("AWS::CloudWatch::Alarm")
+  expect(stack).toHaveResource("AWS::SNS::Topic")
   expect(stack).toMatchCdkSnapshot()
 })

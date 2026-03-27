@@ -1,9 +1,25 @@
+/**
+ * QueueAlarms construct
+ *
+ * This construct provides a thin wrapper that creates two common alarms for
+ * SQS queues:
+ *  - `MessagesNotBeingProcessedAlarm` (composite alarm combining Visible and Deleted metrics)
+ *  - `ApproximateAgeOfOldestMessageAlarm`
+ *
+ * Unlike other alarm constructs in this package, `QueueAlarms` is typically
+ * set up manually by consumers (it doesn't auto-wire to resources).
+ *
+ * Defaults:
+ *  - Messages-not-being-processed alarm -> sent to `alarmAction` by default
+ *  - Approximate-age alarm -> sent to `warningAction` by default
+ */
+
 import * as cdk from "aws-cdk-lib"
 import type { IAlarmAction } from "aws-cdk-lib/aws-cloudwatch"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as constructs from "constructs"
 
-export interface Props {
+export interface QueueAlarmsProps {
   // Action to use for high-severity alarms
   alarmAction: cloudwatch.IAlarmAction
   // Action to use for warnings
@@ -16,7 +32,7 @@ export class QueueAlarms extends constructs.Construct {
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly queueName: string
 
-  constructor(scope: constructs.Construct, id: string, props: Props) {
+  constructor(scope: constructs.Construct, id: string, props: QueueAlarmsProps) {
     super(scope, id)
 
     this.alarmAction = props.alarmAction
@@ -108,7 +124,6 @@ export class QueueAlarms extends constructs.Construct {
       this,
       "MessagesNotBeingProcessedAlarm",
       {
-        compositeAlarmName: `${this.queueName}-messages-not-being-processed-alarm`,
         alarmRule: cloudwatch.AlarmRule.allOf(
           messagesVisibleAlarm,
           messagesNotBeingDeletedAlarm,
