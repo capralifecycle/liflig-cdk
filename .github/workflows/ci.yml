@@ -35,9 +35,6 @@ jobs:
       - name: install python linter
         uses: astral-sh/ruff-action@4919ec5cf1f49eff0871dbcea0da843445b837e6 # v3.6.1
 
-      - name: build project
-        run: make ci
-
       # We need a separate installation step for each python version because the
       # Makefile creates venvs for each lambda and needs the interpreters to be pre-installed.
       # Add new setup-python steps here for any new python versions needed for lambda tests.
@@ -46,13 +43,8 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Run auto-discovered lambda Python tests
-        # This invokes the Makefile py-test target which auto-discovers
-        # all `assets/*` folders containing `requirements-dev.txt` and runs
-        # tests in a per-lambda venv.
-        # The job pre-installs Python interpreters using `actions/setup-python`
-        # so the Makefile can create venvs.
-        run: make py-test
+      - name: build project
+        run: make ci
 
       - name: conditionally semantic release
         run: make release
