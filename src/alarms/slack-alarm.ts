@@ -1,5 +1,7 @@
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
+import * as cdk from "aws-cdk-lib"
+import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
