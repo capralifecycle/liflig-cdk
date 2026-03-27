@@ -147,5 +147,5 @@ py-fmt-check:
 PYTHON_DEFAULT ?= python3
 .PHONY: py-test
 py-test:
-	@echo "\nAuto-discovering asset lambdas with tests..."
+	@printf '\nAuto-discovering asset lambdas with tests...\n'
 	@scripts/run_py_tests.sh $(PYTHON_DEFAULT)
