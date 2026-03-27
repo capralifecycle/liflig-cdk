@@ -138,7 +138,7 @@ export class ServiceAlarms extends constructs.Construct {
     enableOkAction?: boolean
     action?: cloudwatch.IAlarmAction
   }): void {
-    if (props.enabled === true) {
+    if (props.enabled) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
       // If no log handler is configured, create a simple metric alarm.
@@ -191,10 +191,11 @@ export class ServiceAlarms extends constructs.Construct {
   }
 
   /**
-   * Sets up three CloudWatch Alarms for monitoring an ECS service behind a target group:
-   * 1) one that triggers if the target is responding with too many 5xx errors.
+   * Sets up CloudWatch alarms for monitoring an ECS service behind a target group:
+   * 1) one that triggers if the target is responding with too many 5xx errors (aggregate 5xx count).
    * 2) one that triggers if the 95% percentile of response times from the target is too high.
    * 3) one that triggers if there are no healthy targets or if the load balancer fails to connect to targets.
+   * 4) a single5xxResponseAlarm which triggers on a single 5xx response from a target.
    */
   addTargetGroupAlarms(props: {
     /**

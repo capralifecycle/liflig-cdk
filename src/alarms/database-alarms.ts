@@ -107,44 +107,41 @@ export class DatabaseAlarms extends constructs.Construct {
       appendToAlarmDescription?: string
     },
   ): void {
-    if (!this.instanceType.isBurstable()) {
-      throw new Error(
-        "CPU credits are only relevant for burstable instance types.",
-      )
-    }
-
-    const defaultThreshold =
-      cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
-    const threshold = props?.threshold ?? defaultThreshold
-    if (!threshold) {
-      throw new Error(
-        `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
-      )
-    }
-    new cloudwatch.Metric({
-      metricName: "CPUCreditBalance",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    })
-      .createAlarm(this, "CreditsAlarm", {
-        alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${
-          this.databaseInstanceIdentifier
-        }'. ${
-          this.instanceType.toString().startsWith("t2.")
-            ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
-            : "If the balance is depleted, AWS adds additional charges."
-        } ${props?.appendToAlarmDescription ?? ""}`,
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold: threshold,
-        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    // Only create the CPU credits alarm body when the instance type is burstable
+    if (this.instanceType.isBurstable()) {
+      const defaultThreshold =
+        cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
+      const threshold = props?.threshold ?? defaultThreshold
+      if (!threshold) {
+        throw new Error(
+          `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
+        )
+      }
+      new cloudwatch.Metric({
+        metricName: "CPUCreditBalance",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
       })
-      // Default to the alarm action
-      .addAlarmAction(props?.action ?? this.alarmAction)
+        .createAlarm(this, "CreditsAlarm", {
+          alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${
+            this.databaseInstanceIdentifier
+          }'. ${
+            this.instanceType.toString().startsWith("t2.")
+              ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
+              : "If the balance is depleted, AWS adds additional charges."
+          } ${props?.appendToAlarmDescription ?? ""}`,
+          comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+          evaluationPeriods: 1,
+          threshold: threshold,
+          treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+        })
+        // Default to the alarm action
+        .addAlarmAction(props?.action ?? this.alarmAction)
+    }
   }
 
   /**
@@ -157,15 +154,11 @@ export class DatabaseAlarms extends constructs.Construct {
    */
   addStorageSpaceAlarms(props?: {
     /**
-     * Configuration for an alarm.
-     *
-     * @default Configured with sane defaults.
+     * Set to `false` to disable both storage space alarms (low + critically low).
+     * @default true
      */
+    enabled?: boolean
     lowStorageSpaceAlarm?: {
-      /**
-       * @default true
-       */
-      enabled?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -176,15 +169,9 @@ export class DatabaseAlarms extends constructs.Construct {
       threshold?: cdk.Size
     }
     /**
-     * Configuration for an alarm.
-     *
-     * @default Configured with sane defaults.
+     * Configuration for critically low storage alarm.
      */
     criticallyLowStorageSpaceAlarm?: {
-      /**
-       * @default true
-       */
-      enabled?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -199,57 +186,57 @@ export class DatabaseAlarms extends constructs.Construct {
      */
     appendToAlarmDescription?: string
   }): void {
-    if (props?.lowStorageSpaceAlarm?.enabled !== false) {
-      const lowStorageSpaceAlarm = new cloudwatch.Metric({
-        metricName: "FreeStorageSpace",
-        namespace: "AWS/RDS",
-        statistic: "Minimum",
-        period: cdk.Duration.minutes(5),
-        dimensionsMap: {
-          DBInstanceIdentifier: this.databaseInstanceIdentifier,
-        },
-      }).createAlarm(this, "LowStorageSpaceAlarm", {
-        alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold:
-          props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
-          this.allocatedStorage.toBytes() * 0.25,
-        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-      })
+    // If the top-level enabled flag is explicitly false, do nothing
+    if (props?.enabled === false) return
 
-      // Default to the warning action
-      const lowAction =
-        props?.lowStorageSpaceAlarm?.action ?? this.warningAction
-      lowStorageSpaceAlarm.addAlarmAction(lowAction)
-      lowStorageSpaceAlarm.addOkAction(lowAction)
-    }
+    // Create Low Storage Space alarm
+    const lowStorageSpaceAlarm = new cloudwatch.Metric({
+      metricName: "FreeStorageSpace",
+      namespace: "AWS/RDS",
+      statistic: "Minimum",
+      period: cdk.Duration.minutes(5),
+      dimensionsMap: {
+        DBInstanceIdentifier: this.databaseInstanceIdentifier,
+      },
+    }).createAlarm(this, "LowStorageSpaceAlarm", {
+      alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+      evaluationPeriods: 1,
+      threshold:
+        props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
+        this.allocatedStorage.toBytes() * 0.25,
+      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    })
 
-    if (props?.criticallyLowStorageSpaceAlarm?.enabled !== false) {
-      const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
-        metricName: "FreeStorageSpace",
-        namespace: "AWS/RDS",
-        statistic: "Minimum",
-        period: cdk.Duration.minutes(5),
-        dimensionsMap: {
-          DBInstanceIdentifier: this.databaseInstanceIdentifier,
-        },
-      }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
-        alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold:
-          props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
-          this.allocatedStorage.toBytes() * 0.05,
-        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-      })
+    // Default to the warning action
+    const lowAction = props?.lowStorageSpaceAlarm?.action ?? this.warningAction
+    lowStorageSpaceAlarm.addAlarmAction(lowAction)
+    lowStorageSpaceAlarm.addOkAction(lowAction)
 
-      // Default to the alarm action
-      const criticalAction =
-        props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
-      criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
-      criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
-    }
+    // Create Critically Low Storage Space alarm
+    const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
+      metricName: "FreeStorageSpace",
+      namespace: "AWS/RDS",
+      statistic: "Minimum",
+      period: cdk.Duration.minutes(5),
+      dimensionsMap: {
+        DBInstanceIdentifier: this.databaseInstanceIdentifier,
+      },
+    }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
+      alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+      evaluationPeriods: 1,
+      threshold:
+        props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
+        this.allocatedStorage.toBytes() * 0.05,
+      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    })
+
+    // Default to the alarm action
+    const criticalAction =
+      props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
+    criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
+    criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
   }
 
   /**

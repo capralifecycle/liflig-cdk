@@ -1,5 +1,6 @@
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
+import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -9,8 +10,8 @@ import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import * as sns from "aws-cdk-lib/aws-sns"
 import * as constructs from "constructs"
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __file = fileURLToPath(import.meta.url)
+const __dir = path.dirname(__file)
 
 export interface SlackAlarmProps {
   projectName: string
@@ -46,7 +47,7 @@ export class SlackAlarm extends constructs.Construct {
 
     const slackLambda = new lambda.Function(this, "Function", {
       code: lambda.Code.fromAsset(
-        path.join(__dirname, "../../assets/slack-alarm-lambda"),
+          path.join(__dir, "../../assets/slack-alarm-lambda"),
       ),
       description:
         "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
@@ -63,7 +64,7 @@ export class SlackAlarm extends constructs.Construct {
 
     this.logHandler = new lambda.Function(this, "LogHandler", {
       code: lambda.Code.fromAsset(
-        path.join(__dirname, "../../assets", "slack-error-log-handler-lambda"),
+        path.join(__dir, "../../assets", "slack-error-log-handler-lambda"),
       ),
       description:
         "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",

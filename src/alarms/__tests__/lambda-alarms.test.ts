@@ -115,3 +115,86 @@ test("creates invocation error alarms (single and multiple) with defaults", () =
 
   expect(stack).toMatchCdkSnapshot()
 })
+
+test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack-UJ-1")
+
+  const topic = new sns.Topic(stack, "Topic-UJ-1")
+  const action = new cloudwatchActions.SnsAction(topic)
+
+  const fn = new lambda.Function(stack, "TestedLambda-UJ-1", {
+    runtime: lambda.Runtime.NODEJS_24_X,
+    handler: "index.handler",
+    code: lambda.Code.fromInline("exports.handler = async () => {}"),
+  })
+
+  const logGroup = new logs.LogGroup(stack, "LogGroup-UJ-1")
+
+  const alarms = new LambdaAlarms(stack, "LambdaAlarms-UJ-1", {
+    alarmAction: action,
+    warningAction: action,
+    lambdaFunction: fn,
+  })
+
+  alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
+
+  // Should create a metric filter specifically for UncaughtJavaException
+  expect(stack).toHaveResourceLike("AWS::Logs::MetricFilter", {
+    MetricTransformations: [
+      {
+        MetricName: "UncaughtJavaException",
+      },
+    ],
+  })
+
+  // Should create a CloudWatch alarm for that metric
+  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+    MetricName: "UncaughtJavaException",
+  })
+
+  // No subscription filter when logHandler is not set
+  expect(stack).not.toHaveResource("AWS::Logs::SubscriptionFilter")
+
+  expect(stack).toMatchCdkSnapshot()
+})
+
+test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack-UJ-2")
+
+  const topic = new sns.Topic(stack, "Topic-UJ-2")
+  const action = new cloudwatchActions.SnsAction(topic)
+
+  const fn = new lambda.Function(stack, "TestedLambda-UJ-2", {
+    runtime: lambda.Runtime.NODEJS_24_X,
+    handler: "index.handler",
+    code: lambda.Code.fromInline("exports.handler = async () => {}"),
+  })
+
+  const handlerFn = new lambda.Function(stack, "Handler-UJ-2", {
+    runtime: lambda.Runtime.NODEJS_24_X,
+    handler: "index.handler",
+    code: lambda.Code.fromInline("exports.handler = async () => {}"),
+  })
+
+  const logGroup = new logs.LogGroup(stack, "LogGroup-UJ-2")
+
+  const alarms = new LambdaAlarms(stack, "LambdaAlarms-UJ-2", {
+    alarmAction: action,
+    warningAction: action,
+    lambdaFunction: fn,
+    logHandler: handlerFn,
+  })
+
+  alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
+
+  // Should create a subscription filter forwarding logs to handlerFn
+  expect(stack).toHaveResource("AWS::Logs::SubscriptionFilter")
+
+  // Should not create a metric filter when handler exists
+  expect(stack).not.toHaveResource("AWS::Logs::MetricFilter")
+
+  expect(stack).toMatchCdkSnapshot()
+})
+
