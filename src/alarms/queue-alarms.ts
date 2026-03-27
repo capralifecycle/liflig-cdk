@@ -32,7 +32,11 @@ export class QueueAlarms extends constructs.Construct {
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly queueName: string
 
-  constructor(scope: constructs.Construct, id: string, props: QueueAlarmsProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: QueueAlarmsProps,
+  ) {
     super(scope, id)
 
     this.alarmAction = props.alarmAction

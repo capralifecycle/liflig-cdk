@@ -1,6 +1,5 @@
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
-import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -47,7 +46,7 @@ export class SlackAlarm extends constructs.Construct {
 
     const slackLambda = new lambda.Function(this, "Function", {
       code: lambda.Code.fromAsset(
-          path.join(__dir, "../../assets/slack-alarm-lambda"),
+        path.join(__dir, "../../assets/slack-alarm-lambda"),
       ),
       description:
         "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",

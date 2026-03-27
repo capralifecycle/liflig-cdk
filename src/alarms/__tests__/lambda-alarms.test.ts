@@ -197,4 +197,3 @@ test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter
 
   expect(stack).toMatchCdkSnapshot()
 })
-
