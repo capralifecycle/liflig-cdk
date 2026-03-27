@@ -198,15 +198,20 @@ export class Database extends constructs.Construct {
       // - low storage -> warning
       // - high CPU utilization -> warning
       // Only create the CPU credits alarm if the instance type is burstable.
-      if (this.instanceType.isBurstable() && alarms.cpuCreditsAlarm?.enabled !== false) {
+      if (
+        this.instanceType.isBurstable() &&
+        alarms.cpuCreditsAlarm?.enabled !== false
+      ) {
         dbAlarms.addCpuCreditsAlarm({
           action: alarms.cpuCreditsAlarm?.action,
           threshold: alarms.cpuCreditsAlarm?.threshold,
-          appendToAlarmDescription: alarms.cpuCreditsAlarm?.appendToAlarmDescription,
+          appendToAlarmDescription:
+            alarms.cpuCreditsAlarm?.appendToAlarmDescription,
         })
       }
 
-      if (alarms.storageSpaceAlarms?.enabled !== false) dbAlarms.addStorageSpaceAlarms(alarms.storageSpaceAlarms)
+      if (alarms.storageSpaceAlarms?.enabled !== false)
+        dbAlarms.addStorageSpaceAlarms(alarms.storageSpaceAlarms)
 
       if (alarms.cpuUtilizationAlarm?.enabled !== false) {
         dbAlarms.addCpuUtilizationAlarm({
@@ -214,7 +219,8 @@ export class Database extends constructs.Construct {
           threshold: alarms.cpuUtilizationAlarm?.threshold,
           evaluationPeriods: alarms.cpuUtilizationAlarm?.evaluationPeriods,
           period: alarms.cpuUtilizationAlarm?.period,
-          appendToAlarmDescription: alarms.cpuUtilizationAlarm?.appendToAlarmDescription,
+          appendToAlarmDescription:
+            alarms.cpuUtilizationAlarm?.appendToAlarmDescription,
         })
       }
     }
