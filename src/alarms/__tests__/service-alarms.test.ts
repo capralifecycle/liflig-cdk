@@ -3,9 +3,9 @@ import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
-import { ServiceAlarms } from "../service-alarms"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
+import { ServiceAlarms } from "../service-alarms"
 
 test("creates single 5xx alarm (enabled) with expected defaults", () => {
   const app = new App()
@@ -95,7 +95,9 @@ test("log group receives exactly two subscription filters when logHandler is pre
   alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
 
   const template = app.synth().getStackByName(stack.stackName).template
-  const subs = Object.values(template.Resources).filter((r: any) => r.Type === "AWS::Logs::SubscriptionFilter")
+  const subs = Object.values(template.Resources).filter(
+    (r: any) => r.Type === "AWS::Logs::SubscriptionFilter",
+  )
 
   expect(subs.length).toBe(2)
 })

@@ -1,6 +1,6 @@
 import "@aws-cdk/assert/jest"
-import { App, Stack } from "aws-cdk-lib"
 import * as cdk from "aws-cdk-lib"
+import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
@@ -57,4 +57,3 @@ test("queue alarms custom overrides", () => {
 
   expect(stack).toMatchCdkSnapshot()
 })
-
