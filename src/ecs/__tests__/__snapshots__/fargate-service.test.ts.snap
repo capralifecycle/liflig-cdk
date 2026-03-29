@@ -1,5 +1,634 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`creates alarms when alarm and warning actions provided (happy path) 1`] = `
+Object {
+  "Resources": Object {
+    "AlarmTopicD01E77F9": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "ServiceWithAlarmsAlbTargets5xxAlarmB4707090": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Ref": "AlarmTopicD01E77F9",
+          },
+        ],
+        "AlarmDescription": "Load balancer received too many 5XX responses from target(s) in ECS service 'example-service-alarms'.",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "load-balancer-placeholder",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "ServiceWithAlarmsTargetGroup749DF9C8",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 3,
+        "MetricName": "HTTPCode_Target_5XX_Count",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": Array [
+          Object {
+            "Ref": "AlarmTopicD01E77F9",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsAlbTargetsSingle5xxAlarmC1290A5E": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "AlarmDescription": "Load balancer received a 5XX response from target(s) in ECS service 'example-service-alarms'.",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "load-balancer-placeholder",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "ServiceWithAlarmsTargetGroup749DF9C8",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "HTTPCode_Target_5XX_Count",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsConfigExamplePlainTextParameter8AFE2A31": Object {
+      "Properties": Object {
+        "Name": "/liflig-cdk/Stack2/c8267a0b2fd307ab19027a1d7aeaf66a99e5857576/parameters/config/ExamplePlainTextParameter",
+        "Type": "String",
+        "Value": "ExamplePlainTextParameter",
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+    "ServiceWithAlarmsConnectionAlarmAE928DBD": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmDescription": "Load balancer is failing to connect to target(s) in ECS service 'example-service-alarms'.",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "load-balancer-placeholder",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "ServiceWithAlarmsTargetGroup749DF9C8",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "TargetConnectionErrorCount",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsErrorLogAlarm204BB19D": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "AlarmDescription": "example-service-alarms logged an error",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "stack/Stack2/example-service-alarms/Errors",
+        "OKActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsHealthAlarm243B8FC5": Object {
+      "Properties": Object {
+        "AlarmDescription": "There are no healthy target(s) in ECS service 'example-service-alarms'.",
+        "ComparisonOperator": "LessThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "load-balancer-placeholder",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "ServiceWithAlarmsTargetGroup749DF9C8",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "HealthyHostCount",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 60,
+        "Statistic": "Minimum",
+        "Threshold": 1,
+        "TreatMissingData": "breaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsLogGroup4EAFA347": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceWithAlarmsLogGroupErrorMetricFilter2A404051": Object {
+      "Properties": Object {
+        "FilterPattern": "{ ($.level = \\"ERROR\\") || ($.level = \\"FATAL\\") || ($.requestInfo.status.code = \\"INTERNAL_SERVER_ERROR\\") }",
+        "LogGroupName": Object {
+          "Ref": "ServiceWithAlarmsLogGroup4EAFA347",
+        },
+        "MetricTransformations": Array [
+          Object {
+            "MetricName": "Errors",
+            "MetricNamespace": "stack/Stack2/example-service-alarms/Errors",
+            "MetricValue": "1",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::MetricFilter",
+    },
+    "ServiceWithAlarmsSecurityGroup6100FE5F": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack2/ServiceWithAlarms/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack2:ExportsOutputRefVpc299FDBC5F1838AC11",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceWithAlarmsService051551D6": Object {
+      "DependsOn": Array [
+        "ServiceWithAlarmsConfigExamplePlainTextParameter8AFE2A31",
+        "ServiceWithAlarmsTaskDefinitionTaskRoleDefaultPolicyB2330E9F",
+        "ServiceWithAlarmsTaskDefinitionTaskRole36BF926F",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Fn::ImportValue": "SupportStack2:ExportsOutputRefCluster2720FF3512E6CDFC3",
+        },
+        "DeploymentConfiguration": Object {
+          "Alarms": Object {
+            "AlarmNames": Array [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": Object {
+              "Ref": "ServiceWithAlarmsTargetGroup749DF9C8",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceWithAlarmsSecurityGroup6100FE5F",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Fn::ImportValue": "SupportStack2:ExportsOutputRefVpc2PublicSubnet1Subnet758D49A9A26BB82C",
+              },
+              Object {
+                "Fn::ImportValue": "SupportStack2:ExportsOutputRefVpc2PublicSubnet2Subnet0BF8C291C2E35B30",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service-alarms",
+        "TaskDefinition": Object {
+          "Ref": "ServiceWithAlarmsTaskDefinition7835CB9D",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceWithAlarmsTargetGroup749DF9C8": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Fn::ImportValue": "SupportStack2:ExportsOutputRefVpc299FDBC5F1838AC11",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceWithAlarmsTargetHealthAlarmFAAA23B3": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "AlarmTopicD01E77F9",
+          },
+        ],
+        "AlarmDescription": "The load balancer is either receiving bad health checks from or is unable to connect to target(s) in ECS service 'example-service-alarms'",
+        "AlarmName": "Stack2ServiceWithAlarmsTargetHealthAlarm29CDAFE3",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceWithAlarmsConnectionAlarmAE928DBD",
+                  "Arn",
+                ],
+              },
+              "\\") OR ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceWithAlarmsHealthAlarm243B8FC5",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+        "OKActions": Array [
+          Object {
+            "Ref": "AlarmTopicD01E77F9",
+          },
+        ],
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "ServiceWithAlarmsTargetResponseTimeAlarmE90772D9": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "AlarmDescription": "5% of responses from ECS service 'example-service-alarms' are taking longer than the expected duration of 1 s.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": "load-balancer-placeholder",
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "ServiceWithAlarmsTargetGroup749DF9C8",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "ExtendedStatistic": "p95",
+        "MetricName": "TargetResponseTime",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": Array [
+          Object {
+            "Ref": "WarningTopicE070F32B",
+          },
+        ],
+        "Period": 300,
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ServiceWithAlarmsTaskDefinition7835CB9D": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack2/c8267a0b2fd307ab19027a1d7aeaf66a99e5857576/parameters",
+              },
+              Object {
+                "Name": "PARAMS_HASH",
+                "Value": "d750f952f98dcbcb8cac0bf6e1609560cdb5ae0a9551a3dc88ba1c327b685124",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack2:ExportsOutputFnGetAttRepository25C81E63BArn7946D9F5",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::ImportValue": "SupportStack2:ExportsOutputFnGetAttRepository25C81E63BArn7946D9F5",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Fn::ImportValue": "SupportStack2:ExportsOutputRefRepository25C81E63BD9B664E4",
+                  },
+                  ":latest",
+                ],
+              ],
+            },
+            "LinuxParameters": Object {
+              "Capabilities": Object {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": Object {
+                  "Ref": "ServiceWithAlarmsLogGroup4EAFA347",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceWithAlarmsTaskDefinitionExecutionRoleB2A6D19C",
+            "Arn",
+          ],
+        },
+        "Family": "Stack2ServiceWithAlarmsTaskDefinition102C3D77",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceWithAlarmsTaskDefinitionTaskRole36BF926F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceWithAlarmsTaskDefinitionExecutionRoleB2A6D19C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceWithAlarmsTaskDefinitionExecutionRoleDefaultPolicy2D0EBD17": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::ImportValue": "SupportStack2:ExportsOutputFnGetAttRepository25C81E63BArn7946D9F5",
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ServiceWithAlarmsLogGroup4EAFA347",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceWithAlarmsTaskDefinitionExecutionRoleDefaultPolicy2D0EBD17",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceWithAlarmsTaskDefinitionExecutionRoleB2A6D19C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceWithAlarmsTaskDefinitionTaskRole36BF926F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceWithAlarmsTaskDefinitionTaskRoleDefaultPolicyB2330E9F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack2/c8267a0b2fd307ab19027a1d7aeaf66a99e5857576/parameters/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceWithAlarmsTaskDefinitionTaskRoleDefaultPolicyB2330E9F",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceWithAlarmsTaskDefinitionTaskRole36BF926F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WarningTopicE070F32B": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
 exports[`creates fargate service with parameters and listener rule 1`] = `
 Object {
   "Resources": Object {

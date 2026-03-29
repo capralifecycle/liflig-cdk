@@ -51,6 +51,11 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "CPUCreditBalance",
         "Namespace": "AWS/RDS",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
         "Period": 300,
         "Statistic": "Minimum",
         "Threshold": 28.8,
