@@ -9,3 +9,12 @@ cdk.out/
 .idea
 docs/
 .DS_Store
+# Python virtualenvs and caches
+.venv*/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+# Per-lambda test virtualenvs created by scripts/run_py_tests.sh
+assets/*/.venv-test*

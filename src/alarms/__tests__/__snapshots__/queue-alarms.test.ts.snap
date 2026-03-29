@@ -1,0 +1,235 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`queue alarms custom overrides 1`] = `
+Object {
+  "Resources": Object {
+    "QueueAlarmsApproximateAgeOfOldestMessageAlarmA7229608": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "my-queue has an oldest message older than 60 seconds",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 60,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "QueueAlarmsMessagesNotBeingDeleted13ECF351": Object {
+      "Properties": Object {
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "ComparisonOperator": "LessThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "NumberOfMessagesDeleted",
+        "Namespace": "AWS/SQS",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "QueueAlarmsMessagesNotBeingProcessedAlarm0DD1C192": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "AlarmName": "StackQueueAlarmsMessagesNotBeingProcessedAlarm35B34DF6",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "QueueAlarmsMessagesVisibleAlarm147BDC1F",
+                  "Arn",
+                ],
+              },
+              "\\") AND ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "QueueAlarmsMessagesNotBeingDeleted13ECF351",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "QueueAlarmsMessagesVisibleAlarm147BDC1F": Object {
+      "Properties": Object {
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS",
+        "Period": 60,
+        "Statistic": "Minimum",
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+  },
+}
+`;
+
+exports[`queue alarms default setup 1`] = `
+Object {
+  "Resources": Object {
+    "QueueAlarmsApproximateAgeOfOldestMessageAlarmA7229608": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "my-queue has an oldest message older than 900 seconds",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "Period": 900,
+        "Statistic": "Maximum",
+        "Threshold": 900,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "QueueAlarmsMessagesNotBeingDeleted13ECF351": Object {
+      "Properties": Object {
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "ComparisonOperator": "LessThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 4,
+        "MetricName": "NumberOfMessagesDeleted",
+        "Namespace": "AWS/SQS",
+        "Period": 300,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "QueueAlarmsMessagesNotBeingProcessedAlarm0DD1C192": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "AlarmName": "StackQueueAlarmsMessagesNotBeingProcessedAlarm35B34DF6",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "QueueAlarmsMessagesVisibleAlarm147BDC1F",
+                  "Arn",
+                ],
+              },
+              "\\") AND ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "QueueAlarmsMessagesNotBeingDeleted13ECF351",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "QueueAlarmsMessagesVisibleAlarm147BDC1F": Object {
+      "Properties": Object {
+        "AlarmDescription": "Service might be unavailable! It has available messages on the SQS queue, but these messages are not being deleted (processed).",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS",
+        "Period": 300,
+        "Statistic": "Minimum",
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+  },
+}
+`;

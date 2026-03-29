@@ -5,9 +5,15 @@ import * as constructs from "constructs"
 
 export interface DatabaseAlarmsProps {
   /**
-   * The default action to use for CloudWatch alarm state changes
+   * The action to use for alarms sent to "alarms" Slack channel,
+   * e.g., critical alerts.
    */
-  action: cloudwatch.IAlarmAction
+  alarmAction: cloudwatch.IAlarmAction
+  /**
+   * The action to use for alarms sent to "warning" Slack channel,
+   * e.g., less critical alerts.
+   */
+  warningAction: cloudwatch.IAlarmAction
   instanceIdentifier: string
   instanceType: ec2.InstanceType
   allocatedStorage: cdk.Size
@@ -48,7 +54,8 @@ const cpuCreditBalanceByInstanceType: {
 }
 
 export class DatabaseAlarms extends constructs.Construct {
-  private readonly action: cloudwatch.IAlarmAction
+  private readonly alarmAction: cloudwatch.IAlarmAction
+  private readonly warningAction: cloudwatch.IAlarmAction
   private readonly databaseInstanceIdentifier: string
   private readonly instanceType: ec2.InstanceType
   private readonly allocatedStorage: cdk.Size
@@ -60,7 +67,8 @@ export class DatabaseAlarms extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.action = props.action
+    this.alarmAction = props.alarmAction
+    this.warningAction = props.warningAction
     this.databaseInstanceIdentifier = props.instanceIdentifier
     this.instanceType = props.instanceType
     this.allocatedStorage = props.allocatedStorage
@@ -94,69 +102,69 @@ export class DatabaseAlarms extends constructs.Construct {
        */
       threshold?: number
       /**
+       * @default true
+       */
+      enableOkAlarm?: boolean
+      /**
        * Add extra information to the alarm description, like Runbook URL or steps to triage.
        */
       appendToAlarmDescription?: string
     },
   ): void {
-    if (!this.instanceType.isBurstable()) {
-      throw new Error(
-        "CPU credits are only relevant for burstable instance types.",
-      )
-    }
-
-    const defaultThreshold =
-      cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
-    const threshold = props?.threshold ?? defaultThreshold
-    if (!threshold) {
-      throw new Error(
-        `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
-      )
-    }
-    new cloudwatch.Metric({
-      metricName: "CPUCreditBalance",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    })
-      .createAlarm(this, "CreditsAlarm", {
-        alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${
-          this.databaseInstanceIdentifier
-        }'. ${
-          this.instanceType.toString().startsWith("t2.")
-            ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
-            : "If the balance is depleted, AWS adds additional charges."
-        } ${props?.appendToAlarmDescription ?? ""}`,
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold: threshold,
-        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    // Only create the CPU credits alarm body when the instance type is burstable
+    if (this.instanceType.isBurstable()) {
+      const defaultThreshold =
+        cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
+      const threshold = props?.threshold ?? defaultThreshold
+      if (!threshold) {
+        throw new Error(
+          `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
+        )
+      }
+      const creditsAlarm = new cloudwatch.Metric({
+        metricName: "CPUCreditBalance",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
       })
-      .addAlarmAction(this.action)
+        .createAlarm(this, "CreditsAlarm", {
+          alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${this.databaseInstanceIdentifier}'. ${
+            this.instanceType.toString().startsWith("t2.")
+              ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
+              : "If the balance is depleted, AWS adds additional charges."
+          } ${props?.appendToAlarmDescription ?? ""}`,
+          comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+          evaluationPeriods: 1,
+          threshold: threshold,
+          treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+        })
+
+      // Default to the alarm action
+      creditsAlarm.addAlarmAction(props?.action ?? this.alarmAction)
+      if (props?.enableOkAlarm ?? true) {
+        creditsAlarm.addOkAction(props?.action ?? this.alarmAction)
+      }
+    }
   }
 
   /**
    * Sets up two CloudWatch Alarms for monitoring disk storage space:
    * 1) one that triggers if the available disk storage space is low.
-   * 2) one that triggers if the available disk storage space is critcally low.
+   * 2) one that triggers if the available disk storage space is critically low.
    *
    * You may want to use different alarm actions for the two alarms, e.g., one can be
    * categorized as a "warning", while the other one can be considered an "alarm".
    */
   addStorageSpaceAlarms(props?: {
     /**
-     * Configuration for an alarm.
-     *
-     * @default Configured with sane defaults.
+     * Set to `false` to disable both storage space alarms (low + critically low).
+     * @default true
      */
+    enabled?: boolean
     lowStorageSpaceAlarm?: {
-      /**
-       * @default true
-       */
-      enabled?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -165,17 +173,15 @@ export class DatabaseAlarms extends constructs.Construct {
        * @default 25% of the allocated storage.
        */
       threshold?: cdk.Size
+      /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
     }
     /**
-     * Configuration for an alarm.
-     *
-     * @default Configured with sane defaults.
+     * Configuration for critically low storage alarm.
      */
     criticallyLowStorageSpaceAlarm?: {
-      /**
-       * @default true
-       */
-      enabled?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -184,12 +190,20 @@ export class DatabaseAlarms extends constructs.Construct {
        * @default 5% of the allocated storage.
        */
       threshold?: cdk.Size
+      /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
     }
     /**
      * Add extra information to the alarm description, like Runbook URL or steps to triage.
      */
     appendToAlarmDescription?: string
   }): void {
+    // If the top-level enabled flag is explicitly false, do nothing
+    if (props?.enabled === false) return
+
+    // Create Low Storage Space alarm
     const lowStorageSpaceAlarm = new cloudwatch.Metric({
       metricName: "FreeStorageSpace",
       namespace: "AWS/RDS",
@@ -207,15 +221,15 @@ export class DatabaseAlarms extends constructs.Construct {
         this.allocatedStorage.toBytes() * 0.25,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
-    if (props?.lowStorageSpaceAlarm?.enabled ?? true) {
-      lowStorageSpaceAlarm.addAlarmAction(
-        props?.lowStorageSpaceAlarm?.action || this.action,
-      )
-      lowStorageSpaceAlarm.addOkAction(
-        props?.lowStorageSpaceAlarm?.action || this.action,
-      )
+
+    // Default to the warning action
+    const lowAction = props?.lowStorageSpaceAlarm?.action ?? this.warningAction
+    lowStorageSpaceAlarm.addAlarmAction(lowAction)
+    if (props?.lowStorageSpaceAlarm?.enableOkAlarm ?? true) {
+      lowStorageSpaceAlarm.addOkAction(lowAction)
     }
 
+    // Create Critically Low Storage Space alarm
     const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
       metricName: "FreeStorageSpace",
       namespace: "AWS/RDS",
@@ -233,13 +247,13 @@ export class DatabaseAlarms extends constructs.Construct {
         this.allocatedStorage.toBytes() * 0.05,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
-    if (props?.criticallyLowStorageSpaceAlarm?.enabled ?? true) {
-      criticallyLowStorageSpaceAlarm.addAlarmAction(
-        props?.criticallyLowStorageSpaceAlarm?.action || this.action,
-      )
-      criticallyLowStorageSpaceAlarm.addOkAction(
-        props?.criticallyLowStorageSpaceAlarm?.action || this.action,
-      )
+
+    // Default to the alarm action
+    const criticalAction =
+      props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
+    criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
+    if (props?.criticallyLowStorageSpaceAlarm?.enableOkAlarm ?? true) {
+      criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
     }
   }
 
@@ -272,6 +286,10 @@ export class DatabaseAlarms extends constructs.Construct {
        */
       period?: cdk.Duration
       /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
+      /**
        * Add extra information to the alarm description, like Runbook URL or steps to triage.
        */
       appendToAlarmDescription?: string
@@ -292,7 +310,11 @@ export class DatabaseAlarms extends constructs.Construct {
       threshold: props?.threshold ?? 80,
       treatMissingData: cloudwatch.TreatMissingData.IGNORE,
     })
-    alarm.addAlarmAction(props?.action ?? this.action)
-    alarm.addOkAction(props?.action ?? this.action)
+    // Default to the warning action
+    const cpuAction = props?.action ?? this.warningAction
+    alarm.addAlarmAction(cpuAction)
+    if (props?.enableOkAlarm ?? true) {
+      alarm.addOkAction(cpuAction)
+    }
   }
 }

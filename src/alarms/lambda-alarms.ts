@@ -1,17 +1,29 @@
 import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import type * as lambda from "aws-cdk-lib/aws-lambda"
+import * as logs from "aws-cdk-lib/aws-logs"
+import * as logsDestinations from "aws-cdk-lib/aws-logs-destinations"
+import { jsonErrorFilterPattern } from "./log-filter-patterns"
 import * as constructs from "constructs"
 
 export interface LambdaAlarmsProps {
   /**
-   * The default action to use for CloudWatch alarm state changes.
+   * The CloudWatch alarm action to use for high-severity alarms (ALARM channel).
    */
-  action: cloudwatch.IAlarmAction
+  alarmAction: cloudwatch.IAlarmAction
+  /**
+   * The CloudWatch alarm action to use for lower-severity warnings (WARNING channel).
+   */
+  warningAction: cloudwatch.IAlarmAction
   /**
    * The Lambda to add alarms to.
    */
   lambdaFunction: lambda.IFunction
+  /**
+   * Optional Lambda function that will receive forwarded log events.
+   * If provided, subscription filters will be created to forward matching logs
+   */
+  logHandler?: lambda.IFunction
 }
 
 /**
@@ -19,13 +31,12 @@ export interface LambdaAlarmsProps {
  *
  * By itself, no alarms are created. Use the methods available
  * to add alarms.
- *
- * Create multiple instances of {@link LambdaAlarms} with different `action`
- * if you need an alarm to do multiple things.
  */
 export class LambdaAlarms extends constructs.Construct {
-  private readonly action: cloudwatch.IAlarmAction
+  private readonly alarmAction: cloudwatch.IAlarmAction
+  private readonly warningAction: cloudwatch.IAlarmAction
   private readonly lambdaFunction: lambda.IFunction
+  private readonly logHandler?: lambda.IFunction
 
   constructor(
     scope: constructs.Construct,
@@ -34,43 +45,264 @@ export class LambdaAlarms extends constructs.Construct {
   ) {
     super(scope, id)
 
-    this.action = props.action
+    this.alarmAction = props.alarmAction
+    this.warningAction = props.warningAction
     this.lambdaFunction = props.lambdaFunction
+    this.logHandler = props.logHandler
   }
 
   /**
-   * Sets up a CloudWatch Alarm that triggers if the Lambda fails invocations.
-   * This usually happens from uncaught exceptions in the lambda.
+   * Creates both the single-invocation warning and the
+   * multiple invocations alarm with reasonable defaults.
+   *
+   * Each created alarm can be overridden via the per-alarm props.
    */
-  addInvocationErrorAlarm(
-    /**
-     * Configuration for an alarm.
-     */
-    props?: {
-      /**
-       * Add extra information to the alarm description, like Runbook URL or steps to triage.
-       */
+    addInvocationErrorAlarm(props?: {
+      singleError?: {
       appendToAlarmDescription?: string
-    },
-  ): void {
-    const alarm = new cloudwatch.Metric({
-      metricName: "Errors",
-      namespace: "AWS/Lambda",
-      statistic: "Sum",
-      period: cdk.Duration.seconds(60),
-      dimensionsMap: {
-        FunctionName: this.lambdaFunction.functionName,
-      },
-    }).createAlarm(this, "FailedInvocationAlarm", {
-      alarmDescription: `Invocation for '${this.lambdaFunction.functionName}' failed. ${props?.appendToAlarmDescription ?? ""}`,
-      comparisonOperator:
-        cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
-      evaluationPeriods: 1,
-      threshold: 1,
-      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-    })
+      enabled?: boolean
+      action?: cloudwatch.IAlarmAction
+      /**
+       * @default true
+       */
+      enableOkAlarm?: boolean
+    }
+    multipleErrors?: {
+      appendToAlarmDescription?: string
+      enabled?: boolean
+      action?: cloudwatch.IAlarmAction
+      /**
+       * @default true
+       */
+      enableOkAlarm?: boolean
+      /**
+       * @default 3
+       */
+      evaluationPeriods?: number
+      /**
+       * @default 1
+       */
+      threshold?: number
+      /**
+       * @default 60
+       */
+      periodSeconds?: number
+    }
+  }): void {
+    this.addSingleInvocationAlarm(props?.singleError)
+    this.addMultipleInvocationAlarms(props?.multipleErrors)
+  }
 
-    alarm.addAlarmAction(this.action)
-    alarm.addOkAction(this.action)
+  /**
+   * Sets up a CloudWatch Alarm that triggers on a single invocation failure.
+   */
+  addSingleInvocationAlarm(props?: {
+    appendToAlarmDescription?: string
+    enabled?: boolean
+    action?: cloudwatch.IAlarmAction
+    enableOkAlarm?: boolean
+  }): void {
+    if (props?.enabled !== false) {
+      // Sent to warnings channel by default
+      const action = props?.action ?? this.warningAction
+
+      const alarm = new cloudwatch.Metric({
+        metricName: "Errors",
+        namespace: "AWS/Lambda",
+        statistic: "Sum",
+        period: cdk.Duration.seconds(60),
+        dimensionsMap: {
+          FunctionName: this.lambdaFunction.functionName,
+        },
+      }).createAlarm(this, "SingleInvocationAlarm", {
+        alarmDescription: `Invocation for '${this.lambdaFunction.functionName}' had a single failure. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator:
+          cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold: 1,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
+
+      alarm.addAlarmAction(action)
+      if (props?.enableOkAlarm ?? true) alarm.addOkAction(action)
+    }
+  }
+
+  /**
+   * Sets up a CloudWatch Alarm that triggers when there is a short series of
+   * invocation failures.
+   */
+  addMultipleInvocationAlarms(props?: {
+    appendToAlarmDescription?: string
+    enabled?: boolean
+    action?: cloudwatch.IAlarmAction
+    /**
+     * @default true
+     */
+    enableOkAlarm?: boolean
+    /**
+     * @default 3
+     */
+    evaluationPeriods?: number
+    /**
+     * @default 1
+     */
+    threshold?: number
+    /**
+     * @default 60
+     */
+    periodSeconds?: number
+  }): void {
+    if (props?.enabled !== false) {
+      const alarm = new cloudwatch.Metric({
+        metricName: "Errors",
+        namespace: "AWS/Lambda",
+        statistic: "Sum",
+        period: cdk.Duration.seconds(props?.periodSeconds ?? 60),
+        dimensionsMap: {
+          FunctionName: this.lambdaFunction.functionName,
+        },
+      }).createAlarm(this, "InvocationSeriesAlarm", {
+        alarmDescription: `Invocation for '${this.lambdaFunction.functionName}' failed repeatedly. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator:
+          cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        evaluationPeriods: props?.evaluationPeriods ?? 3,
+        threshold: props?.threshold ?? 1,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
+
+      // Sent to alarm channel by default
+      const multipleAction = props?.action ?? this.alarmAction
+      alarm.addAlarmAction(multipleAction)
+      if (props?.enableOkAlarm ?? true) {
+        alarm.addOkAction(multipleAction)
+      }
+    }
+  }
+
+  /**
+   * Alerts when ERROR is logged from lambda.
+   */
+  addErrorAlarm(props: {
+    logGroup: logs.ILogGroup
+    alarmDescription?: string
+    /**
+     * @default true
+     */
+    enableOkAlarm?: boolean
+    /**
+     * An action to use for CloudWatch alarm state changes
+     * instead of the default warning action
+     */
+    action?: cloudwatch.IAlarmAction
+  }): void {
+    // If no log handler is configured, create simple "ERROR" metric alarm
+    if (!this.logHandler) {
+      const errorMetricFilter = props.logGroup.addMetricFilter(
+        "ErrorMetricFilter",
+        {
+          filterPattern: jsonErrorFilterPattern(),
+          metricName: "Errors",
+          metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${this.lambdaFunction.functionName}/Errors`,
+        },
+      )
+
+      const errorAlarm = errorMetricFilter
+        .metric()
+        .with({
+          statistic: "Sum",
+          period: cdk.Duration.seconds(60),
+        })
+        .createAlarm(this, "ErrorLogAlarm", {
+          alarmDescription:
+            props.alarmDescription ??
+            `${this.lambdaFunction.functionName} logged an error`,
+          evaluationPeriods: 1,
+          threshold: 1,
+          treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        })
+
+      // Sent to warnings channel by default
+      const action = props.action ?? this.warningAction
+      errorAlarm.addAlarmAction(action)
+      if (props.enableOkAlarm ?? true) {
+        errorAlarm.addOkAction(action)
+      }
+    }
+
+    if (this.logHandler) {
+      props.logGroup.addSubscriptionFilter(
+        "liflig-cdk-log-content-to-slack-error-subscription",
+        {
+          destination: new logsDestinations.LambdaDestination(this.logHandler),
+          filterPattern: jsonErrorFilterPattern(),
+        },
+      )
+    }
+  }
+
+  /**
+   * Adds an alarm for uncaught Java exceptions in the Lambda function's logs.
+   */
+  addUncaughtJavaExceptionAlarm(props: {
+    logGroup: logs.ILogGroup
+    alarmDescription?: string
+    /**
+     * @default false
+     */
+    enabled?: boolean
+    enableOkAlarm?: boolean
+    action?: cloudwatch.IAlarmAction
+  }): void {
+    if (props.enabled) {
+      const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
+
+      // If no log handler is configured, create a simple metric alarm.
+      if (!this.logHandler) {
+        const errorMetricFilter = props.logGroup.addMetricFilter(
+          "UncaughtJavaExceptionFilter",
+          {
+            filterPattern: filterPattern,
+            metricName: "UncaughtJavaException",
+            metricNamespace: `stack/${cdk.Stack.of(this).stackName}/${this.lambdaFunction.functionName}/UncaughtJavaException`,
+          },
+        )
+
+        const errorAlarm = errorMetricFilter
+          .metric()
+          .with({
+            statistic: "Sum",
+            period: cdk.Duration.seconds(60),
+          })
+          .createAlarm(this, "UncaughtJavaExceptionLogAlarm", {
+            alarmDescription:
+              props.alarmDescription ??
+              `${this.lambdaFunction.functionName} logged an uncaught Java exception`,
+            evaluationPeriods: 1,
+            threshold: 1,
+            treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+          })
+
+        // Default to the warning action
+        const actionToUse = props.action ?? this.warningAction
+        errorAlarm.addAlarmAction(actionToUse)
+        if (props.enableOkAlarm ?? true) {
+          errorAlarm.addOkAction(actionToUse)
+        }
+      }
+
+      // If a log handler is configured, forward matching logs to it.
+      if (this.logHandler) {
+        props.logGroup.addSubscriptionFilter(
+          "liflig-cdk-log-content-to-slack-uncaught-exception-subscription",
+          {
+            destination: new logsDestinations.LambdaDestination(
+              this.logHandler,
+            ),
+            filterPattern: filterPattern,
+          },
+        )
+      }
+    }
   }
 }

@@ -37,6 +37,7 @@ describe("OpenTelemetryCollectors", () => {
         }),
         "exampleEcrTag",
       ),
+      alarms: { enabled: false },
     })
 
     return { service, stack }
