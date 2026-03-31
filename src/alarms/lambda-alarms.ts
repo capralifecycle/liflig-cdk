@@ -4,17 +4,7 @@ import type * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as logsDestinations from "aws-cdk-lib/aws-logs-destinations"
 import * as constructs from "constructs"
-
-const jsonErrorFilterPattern = () =>
-  logs.FilterPattern.any(
-    logs.FilterPattern.stringValue("$.level", "=", "ERROR"),
-    logs.FilterPattern.stringValue("$.level", "=", "FATAL"),
-    logs.FilterPattern.stringValue(
-      "$.requestInfo.status.code",
-      "=",
-      "INTERNAL_SERVER_ERROR",
-    ),
-  )
+import { jsonErrorFilterPattern } from "./log-filter-patterns"
 
 export interface LambdaAlarmsProps {
   /**
@@ -39,8 +29,14 @@ export interface LambdaAlarmsProps {
 /**
  * Alarms for Lambda functions.
  *
- * By itself, no alarms are created. Use the methods available
- * to add alarms.
+ * Unlike RDS and ECS alarm constructs in this package, `LambdaAlarms` is
+ * set up manually by consumers.
+ *
+ * Defaults:
+ * - single invocation (singleError) -> sent to `warningAction` by default
+ * - multiple invocation (multipleErrors) -> sent to `alarmAction` by default
+ * - error log alarm (ERROR/FATAL JSON logs) -> sent to `warningAction` by default
+ * - uncaught Java exception alarm -> sent to `warningAction` by default (disabled by default)
  */
 export class LambdaAlarms extends constructs.Construct {
   private readonly alarmAction: cloudwatch.IAlarmAction
@@ -75,7 +71,7 @@ export class LambdaAlarms extends constructs.Construct {
       /**
        * @default true
        */
-      enableOkAction?: boolean
+      enableOkAlarm?: boolean
     }
     multipleErrors?: {
       appendToAlarmDescription?: string
@@ -84,7 +80,7 @@ export class LambdaAlarms extends constructs.Construct {
       /**
        * @default true
        */
-      enableOkAction?: boolean
+      enableOkAlarm?: boolean
       /**
        * @default 3
        */
@@ -110,7 +106,7 @@ export class LambdaAlarms extends constructs.Construct {
     appendToAlarmDescription?: string
     enabled?: boolean
     action?: cloudwatch.IAlarmAction
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
   }): void {
     if (props?.enabled !== false) {
       // Sent to warnings channel by default
@@ -134,7 +130,7 @@ export class LambdaAlarms extends constructs.Construct {
       })
 
       alarm.addAlarmAction(action)
-      if (props?.enableOkAction ?? true) alarm.addOkAction(action)
+      if (props?.enableOkAlarm ?? true) alarm.addOkAction(action)
     }
   }
 
@@ -149,7 +145,7 @@ export class LambdaAlarms extends constructs.Construct {
     /**
      * @default true
      */
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     /**
      * @default 3
      */
@@ -182,9 +178,11 @@ export class LambdaAlarms extends constructs.Construct {
       })
 
       // Sent to alarm channel by default
-      alarm.addAlarmAction(props?.action ?? this.alarmAction)
-      if (props?.enableOkAction ?? true)
-        alarm.addOkAction(props?.action ?? this.alarmAction)
+      const multipleAction = props?.action ?? this.alarmAction
+      alarm.addAlarmAction(multipleAction)
+      if (props?.enableOkAlarm ?? true) {
+        alarm.addOkAction(multipleAction)
+      }
     }
   }
 
@@ -197,7 +195,7 @@ export class LambdaAlarms extends constructs.Construct {
     /**
      * @default true
      */
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     /**
      * An action to use for CloudWatch alarm state changes
      * instead of the default warning action
@@ -233,7 +231,7 @@ export class LambdaAlarms extends constructs.Construct {
       // Sent to warnings channel by default
       const action = props.action ?? this.warningAction
       errorAlarm.addAlarmAction(action)
-      if (props.enableOkAction ?? true) {
+      if (props.enableOkAlarm ?? true) {
         errorAlarm.addOkAction(action)
       }
     }
@@ -259,10 +257,10 @@ export class LambdaAlarms extends constructs.Construct {
      * @default false
      */
     enabled?: boolean
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     action?: cloudwatch.IAlarmAction
   }): void {
-    if (props.enabled === true) {
+    if (props.enabled) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
       // If no log handler is configured, create a simple metric alarm.
@@ -294,7 +292,7 @@ export class LambdaAlarms extends constructs.Construct {
         // Default to the warning action
         const actionToUse = props.action ?? this.warningAction
         errorAlarm.addAlarmAction(actionToUse)
-        if (props.enableOkAction ?? true) {
+        if (props.enableOkAlarm ?? true) {
           errorAlarm.addOkAction(actionToUse)
         }
       }

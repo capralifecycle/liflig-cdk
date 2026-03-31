@@ -12,6 +12,13 @@ import { ServiceAlarms } from "../alarms"
 import type { Parameter } from "../configure-parameters"
 import { ConfigureParameters } from "../configure-parameters"
 
+/**
+ * Configure service alarms.
+ *
+ * Alarms are enabled by default when a config object with `alarmAction` and
+ * `warningAction` is provided. To explicitly disable automatic alarms use
+ * `{ enabled: false }`.
+ */
 export type ServiceAlarmsConfig =
   | { enabled: false }
   | {
@@ -30,7 +37,7 @@ export type ServiceAlarmsConfig =
          */
         enabled?: boolean
         alarmDescription?: string
-        enableOkAction?: boolean
+        enableOkAlarm?: boolean
         action?: cloudwatch.IAlarmAction
       }
       uncaughtJavaExceptionAlarm?: {
@@ -39,7 +46,7 @@ export type ServiceAlarmsConfig =
          */
         enabled?: boolean
         alarmDescription?: string
-        enableOkAction?: boolean
+        enableOkAlarm?: boolean
         action?: cloudwatch.IAlarmAction
       }
       targetHealthAlarm?: {
@@ -73,6 +80,29 @@ export type ServiceAlarmsConfig =
         period?: cdk.Duration
         evaluationPeriods?: number
         threshold?: cdk.Duration
+        description?: string
+      }
+      single5xxResponseAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        /**
+         * An action to use for CloudWatch alarm state changes instead of the default action
+         */
+        action?: cloudwatch.IAlarmAction
+        /**
+         * @default 60 seconds
+         */
+        period?: cdk.Duration
+        /**
+         * @default 1
+         */
+        evaluationPeriods?: number
+        /**
+         * @default 1
+         */
+        threshold?: number
         description?: string
       }
     }
@@ -158,7 +188,7 @@ export class FargateService extends constructs.Construct {
   public readonly taskDefinition: ecs.TaskDefinition
   public readonly targetGroup: elb.ApplicationTargetGroup | undefined
   public readonly logGroup: logs.LogGroup
-  public readonly serviceAlarms: ServiceAlarms
+  public readonly serviceAlarms: ServiceAlarms | undefined
 
   constructor(
     scope: constructs.Construct,
@@ -305,18 +335,18 @@ export class FargateService extends constructs.Construct {
         this.serviceAlarms.addJsonErrorAlarm({
           logGroup: this.logGroup,
           alarmDescription: jsonErrorOverrides?.alarmDescription,
-          enableOkAction: jsonErrorOverrides?.enableOkAction,
+          enableOkAlarm: jsonErrorOverrides?.enableOkAlarm,
           action: jsonErrorOverrides?.action,
         })
       }
 
       // Not enabled by default (opt-in).
       const javaExceptionOverrides = alarms.uncaughtJavaExceptionAlarm
-      if (javaExceptionOverrides?.enabled === true) {
+      if (javaExceptionOverrides?.enabled) {
         this.serviceAlarms.addUncaughtJavaExceptionAlarm({
           logGroup: this.logGroup,
           alarmDescription: javaExceptionOverrides.alarmDescription,
-          enableOkAction: javaExceptionOverrides.enableOkAction,
+          enableOkAlarm: javaExceptionOverrides.enableOkAlarm,
           action: javaExceptionOverrides.action,
           enabled: true,
         })
@@ -328,6 +358,7 @@ export class FargateService extends constructs.Construct {
           targetGroupFullName: this.targetGroup!.targetGroupFullName,
           loadBalancerFullName: alarms.loadBalancerFullName,
           targetHealthAlarm: alarms.targetHealthAlarm,
+          single5xxResponseAlarm: alarms.single5xxResponseAlarm,
           tooMany5xxResponsesFromTargetsAlarm:
             alarms.tooMany5xxResponsesFromTargetsAlarm,
           targetResponseTimeAlarm: alarms.targetResponseTimeAlarm,

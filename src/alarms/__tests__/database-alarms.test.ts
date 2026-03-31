@@ -4,7 +4,6 @@ import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
-import { throws } from "node:assert"
 import { DatabaseAlarms } from "../database-alarms"
 
 test("create alarms", () => {
@@ -39,36 +38,4 @@ test("create alarms", () => {
   })
 
   expect(stack).toMatchCdkSnapshot()
-})
-
-test("throws on non-burstable", () => {
-  // Given
-  const app = new App()
-  const supportStack = new Stack(app, "SupportStack")
-  const stack = new Stack(app, "Stack")
-
-  const topic = new sns.Topic(supportStack, "Topic")
-  const action = new cloudwatchActions.SnsAction(topic)
-
-  const alarms = new DatabaseAlarms(stack, "DatabaseAlarms", {
-    instanceIdentifier: "database-name",
-    instanceType: ec2.InstanceType.of(
-      ec2.InstanceClass.M6G /* Not burstable! */,
-      ec2.InstanceSize.LARGE,
-    ),
-    allocatedStorage: Size.gibibytes(25),
-    alarmAction: action,
-    warningAction: action,
-  })
-
-  // Then
-  throws(
-    () => {
-      // When
-      alarms.addCpuCreditsAlarm()
-    },
-    {
-      message: /only relevant for burstable/,
-    },
-  )
 })

@@ -6,17 +6,72 @@ import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 import { DatabaseAlarms } from "../alarms"
 
+/**
+ * Configure database alarms.
+ *
+ * Alarms are enabled by default (when you supply an `alarmAction` and
+ * `warningAction`). To explicitly disable automatic alarms use
+ * `{ enabled: false }`.
+ */
 export type DatabaseAlarmsConfig =
   | { enabled: false }
   | {
       /**
-       * When alarms are enabled, both actions are required
-       *
-       * You must either explicitly disable alarms with `{ enabled: false }` or
-       * provide both `alarmAction` and `warningAction`
+       * When alarms are enabled, both actions are required.
        */
       alarmAction: cloudwatch.IAlarmAction
       warningAction: cloudwatch.IAlarmAction
+
+      /**
+       * CPU credits alarm config
+       */
+      cpuCreditsAlarm?: {
+        /**
+         * @default true if instance type is burstable
+         */
+        enabled?: boolean
+        action?: cloudwatch.IAlarmAction
+        /** @default 10% of maximum earned credits for instance type */
+        threshold?: number
+        appendToAlarmDescription?: string
+      }
+
+      /**
+       * Storage space alarm overrides
+       */
+      storageSpaceAlarms?: {
+        /**
+         * Set to `false` to disable all storage space alarms (both low and critically low).
+         * @default true
+         */
+        enabled?: boolean
+        lowStorageSpaceAlarm?: {
+          action?: cloudwatch.IAlarmAction
+          /** @default 25% of allocated storage */
+          threshold?: cdk.Size
+        }
+        criticallyLowStorageSpaceAlarm?: {
+          action?: cloudwatch.IAlarmAction
+          /** @default 5% of allocated storage */
+          threshold?: cdk.Size
+        }
+        appendToAlarmDescription?: string
+      }
+
+      /**
+       * CPU utilization alarm overrides.
+       */
+      cpuUtilizationAlarm?: {
+        enabled?: boolean
+        action?: cloudwatch.IAlarmAction
+        /** @default 80 */
+        threshold?: number
+        /** @default 5 */
+        evaluationPeriods?: number
+        /** @default 2 minutes */
+        period?: cdk.Duration
+        appendToAlarmDescription?: string
+      }
     }
 
 export interface DatabaseProps extends cdk.StackProps {
@@ -55,9 +110,12 @@ export interface DatabaseProps extends cdk.StackProps {
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
   /**
    * Configure database alarms.
+   *
    * This property is required and must be one of two shapes:
    *  - `{ enabled: false }` to explicitly disable automatic alarms
    *  - `{ alarmAction, warningAction }` to enable alarms and provide both channels
+   *
+   * Default: enabled.
    */
   alarms: DatabaseAlarmsConfig
 }
@@ -124,14 +182,14 @@ export class Database extends constructs.Construct {
     ;(db.node.defaultChild as rds.CfnDBInstance).publiclyAccessible = false
 
     if ("alarmAction" in props.alarms) {
-      const a = props.alarms
+      const alarms = props.alarms
 
       const dbAlarms = new DatabaseAlarms(this, "DatabaseAlarms", {
         instanceIdentifier: props.instanceIdentifier,
         instanceType: props.instanceType,
         allocatedStorage: cdk.Size.gibibytes(options.allocatedStorage!),
-        alarmAction: a.alarmAction,
-        warningAction: a.warningAction,
+        alarmAction: alarms.alarmAction,
+        warningAction: alarms.warningAction,
       })
 
       // Default mapping:
@@ -139,9 +197,32 @@ export class Database extends constructs.Construct {
       // - critically low storage -> alarm
       // - low storage -> warning
       // - high CPU utilization -> warning
-      dbAlarms.addCpuCreditsAlarm()
-      dbAlarms.addStorageSpaceAlarms()
-      dbAlarms.addCpuUtilizationAlarm()
+      // Only create the CPU credits alarm if the instance type is burstable.
+      if (
+        this.instanceType.isBurstable() &&
+        alarms.cpuCreditsAlarm?.enabled !== false
+      ) {
+        dbAlarms.addCpuCreditsAlarm({
+          action: alarms.cpuCreditsAlarm?.action,
+          threshold: alarms.cpuCreditsAlarm?.threshold,
+          appendToAlarmDescription:
+            alarms.cpuCreditsAlarm?.appendToAlarmDescription,
+        })
+      }
+
+      if (alarms.storageSpaceAlarms?.enabled !== false)
+        dbAlarms.addStorageSpaceAlarms(alarms.storageSpaceAlarms)
+
+      if (alarms.cpuUtilizationAlarm?.enabled !== false) {
+        dbAlarms.addCpuUtilizationAlarm({
+          action: alarms.cpuUtilizationAlarm?.action,
+          threshold: alarms.cpuUtilizationAlarm?.threshold,
+          evaluationPeriods: alarms.cpuUtilizationAlarm?.evaluationPeriods,
+          period: alarms.cpuUtilizationAlarm?.period,
+          appendToAlarmDescription:
+            alarms.cpuUtilizationAlarm?.appendToAlarmDescription,
+        })
+      }
     }
   }
 
