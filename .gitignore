@@ -9,3 +9,10 @@ cdk.out/
 .idea
 docs/
 .DS_Store
+# Python virtualenvs and caches
+.venv*/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
