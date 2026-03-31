@@ -1,5 +1,300 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter 1`] = `
+Object {
+  "Resources": Object {
+    "HandlerUJ2EE2E5D99": Object {
+      "DependsOn": Array [
+        "HandlerUJ2ServiceRole65D1C30E",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "HandlerUJ2ServiceRole65D1C30E",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "HandlerUJ2ServiceRole65D1C30E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogGroupUJ23A78E572": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionCanInvokeLambdaBD8CA9BD": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "HandlerUJ2EE2E5D99",
+            "Arn",
+          ],
+        },
+        "Principal": "logs.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "LogGroupUJ23A78E572",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionF0227099": Object {
+      "DependsOn": Array [
+        "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionCanInvokeLambdaBD8CA9BD",
+      ],
+      "Properties": Object {
+        "DestinationArn": Object {
+          "Fn::GetAtt": Array [
+            "HandlerUJ2EE2E5D99",
+            "Arn",
+          ],
+        },
+        "FilterPattern": "\\"Exception in thread\\"",
+        "LogGroupName": Object {
+          "Ref": "LogGroupUJ23A78E572",
+        },
+      },
+      "Type": "AWS::Logs::SubscriptionFilter",
+    },
+    "TestedLambdaUJ26B4E6C6C": Object {
+      "DependsOn": Array [
+        "TestedLambdaUJ2ServiceRole1FC8A7B8",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestedLambdaUJ2ServiceRole1FC8A7B8",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestedLambdaUJ2ServiceRole1FC8A7B8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TopicUJ287624DBD": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
+exports[`addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm 1`] = `
+Object {
+  "Resources": Object {
+    "LambdaAlarmsUJ1UncaughtJavaExceptionLogAlarmFAECCDAD": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "TopicUJ1EE39CBE9",
+          },
+        ],
+        "AlarmDescription": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "TestedLambdaUJ18777A436",
+              },
+              " logged an uncaught Java exception",
+            ],
+          ],
+        },
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "UncaughtJavaException",
+        "Namespace": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "stack/Stack-UJ-1/",
+              Object {
+                "Ref": "TestedLambdaUJ18777A436",
+              },
+              "/UncaughtJavaException",
+            ],
+          ],
+        },
+        "OKActions": Array [
+          Object {
+            "Ref": "TopicUJ1EE39CBE9",
+          },
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "LogGroupUJ185C77CFA": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LogGroupUJ1UncaughtJavaExceptionFilter8F8A9A47": Object {
+      "Properties": Object {
+        "FilterPattern": "\\"Exception in thread\\"",
+        "LogGroupName": Object {
+          "Ref": "LogGroupUJ185C77CFA",
+        },
+        "MetricTransformations": Array [
+          Object {
+            "MetricName": "UncaughtJavaException",
+            "MetricNamespace": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "stack/Stack-UJ-1/",
+                  Object {
+                    "Ref": "TestedLambdaUJ18777A436",
+                  },
+                  "/UncaughtJavaException",
+                ],
+              ],
+            },
+            "MetricValue": "1",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::MetricFilter",
+    },
+    "TestedLambdaUJ18777A436": Object {
+      "DependsOn": Array [
+        "TestedLambdaUJ1ServiceRole83D4668E",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "exports.handler = async () => {}",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestedLambdaUJ1ServiceRole83D4668E",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestedLambdaUJ1ServiceRole83D4668E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TopicUJ1EE39CBE9": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+}
+`;
+
 exports[`creates invocation error alarms (single and multiple) with defaults 1`] = `
 Object {
   "Resources": Object {

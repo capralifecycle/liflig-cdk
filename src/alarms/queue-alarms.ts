@@ -3,7 +3,7 @@ import type { IAlarmAction } from "aws-cdk-lib/aws-cloudwatch"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as constructs from "constructs"
 
-export interface Props {
+export interface QueueAlarmsProps {
   // Action to use for high-severity alarms
   alarmAction: cloudwatch.IAlarmAction
   // Action to use for warnings
@@ -11,12 +11,27 @@ export interface Props {
   queueName: string
 }
 
+/**
+ * This construct provides a thin wrapper that creates two alarms for
+ * SQS queues.
+ *
+ * Unlike RDS and ECS alarm constructs in this package, `QueueAlarms` is
+ * set up manually by consumers (it doesn't auto-wire to resources).
+ *
+ * Defaults:
+ *  - Messages-not-being-processed alarm -> sent to `alarmAction` by default
+ *  - Approximate-age alarm -> sent to `warningAction` by default
+ */
 export class QueueAlarms extends constructs.Construct {
   private readonly alarmAction: cloudwatch.IAlarmAction
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly queueName: string
 
-  constructor(scope: constructs.Construct, id: string, props: Props) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: QueueAlarmsProps,
+  ) {
     super(scope, id)
 
     this.alarmAction = props.alarmAction
@@ -56,7 +71,7 @@ export class QueueAlarms extends constructs.Construct {
     /**
      * @default true
      */
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     /** Per-alarm override of the action to use instead of the construct alarmAction */
     action?: IAlarmAction
   }): void {
@@ -108,7 +123,6 @@ export class QueueAlarms extends constructs.Construct {
       this,
       "MessagesNotBeingProcessedAlarm",
       {
-        compositeAlarmName: `${this.queueName}-messages-not-being-processed-alarm`,
         alarmRule: cloudwatch.AlarmRule.allOf(
           messagesVisibleAlarm,
           messagesNotBeingDeletedAlarm,
@@ -122,7 +136,7 @@ export class QueueAlarms extends constructs.Construct {
     // Sent to alarm channel by default
     const action = props?.action ?? this.alarmAction
     messagesNotBeingProcessedAlarm.addAlarmAction(action)
-    if (props?.enableOkAction ?? true) {
+    if (props?.enableOkAlarm ?? true) {
       messagesNotBeingProcessedAlarm.addOkAction(action)
     }
   }
@@ -148,7 +162,7 @@ export class QueueAlarms extends constructs.Construct {
     /**
      * @default true
      */
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     /** An action to use for CloudWatch alarm state changes instead of the default warningAction */
     action?: IAlarmAction
   }): void {
@@ -184,7 +198,7 @@ export class QueueAlarms extends constructs.Construct {
     // Sent to warnings channel by default
     const action = props?.action ?? this.warningAction
     ageAlarm.addAlarmAction(action)
-    if (props?.enableOkAction ?? true) {
+    if (props?.enableOkAlarm ?? true) {
       ageAlarm.addOkAction(action)
     }
   }

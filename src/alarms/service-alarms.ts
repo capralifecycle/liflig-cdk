@@ -4,17 +4,7 @@ import type * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as logsDestinations from "aws-cdk-lib/aws-logs-destinations"
 import * as constructs from "constructs"
-
-const jsonErrorFilterPattern = () =>
-  logs.FilterPattern.any(
-    logs.FilterPattern.stringValue("$.level", "=", "ERROR"),
-    logs.FilterPattern.stringValue("$.level", "=", "FATAL"),
-    logs.FilterPattern.stringValue(
-      "$.requestInfo.status.code",
-      "=",
-      "INTERNAL_SERVER_ERROR",
-    ),
-  )
+import { jsonErrorFilterPattern } from "./log-filter-patterns"
 
 export interface ServiceAlarmsProps extends cdk.StackProps {
   /**
@@ -75,7 +65,7 @@ export class ServiceAlarms extends constructs.Construct {
      * Set to `false` to stop the alarm from sending OK events.
      * @default true
      */
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     /**
      * An action to use for CloudWatch alarm state changes instead of the default action
      */
@@ -112,7 +102,7 @@ export class ServiceAlarms extends constructs.Construct {
       // Default to the warning action
       const actionToUse = props.action ?? this.warningAction
       errorAlarm.addAlarmAction(actionToUse)
-      if (props.enableOkAction ?? true) {
+      if (props.enableOkAlarm ?? true) {
         errorAlarm.addOkAction(actionToUse)
       }
     }
@@ -135,10 +125,10 @@ export class ServiceAlarms extends constructs.Construct {
      * @default false
      */
     enabled?: boolean
-    enableOkAction?: boolean
+    enableOkAlarm?: boolean
     action?: cloudwatch.IAlarmAction
   }): void {
-    if (props.enabled === true) {
+    if (props.enabled) {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
       // If no log handler is configured, create a simple metric alarm.
@@ -170,7 +160,7 @@ export class ServiceAlarms extends constructs.Construct {
         // Default to the warning action
         const actionToUse = props.action ?? this.warningAction
         errorAlarm.addAlarmAction(actionToUse)
-        if (props.enableOkAction ?? true) {
+        if (props.enableOkAlarm ?? true) {
           errorAlarm.addOkAction(actionToUse)
         }
       }
@@ -191,10 +181,11 @@ export class ServiceAlarms extends constructs.Construct {
   }
 
   /**
-   * Sets up three CloudWatch Alarms for monitoring an ECS service behind a target group:
-   * 1) one that triggers if the target is responding with too many 5xx errors.
+   * Sets up CloudWatch alarms for monitoring an ECS service behind a target group:
+   * 1) one that triggers if the target is responding with too many 5xx errors (aggregate 5xx count).
    * 2) one that triggers if the 95% percentile of response times from the target is too high.
    * 3) one that triggers if there are no healthy targets or if the load balancer fails to connect to targets.
+   * 4) a single5xxResponseAlarm which triggers on a single 5xx response from a target.
    */
   addTargetGroupAlarms(props: {
     /**
@@ -215,6 +206,10 @@ export class ServiceAlarms extends constructs.Construct {
        * @default true
        */
       enabled?: boolean
+      /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -244,6 +239,10 @@ export class ServiceAlarms extends constructs.Construct {
        */
       enabled?: boolean
       /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
+      /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
       action?: cloudwatch.IAlarmAction
@@ -272,6 +271,10 @@ export class ServiceAlarms extends constructs.Construct {
        */
       enabled?: boolean
       /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
+      /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
       action?: cloudwatch.IAlarmAction
@@ -299,6 +302,10 @@ export class ServiceAlarms extends constructs.Construct {
        * @default true
        */
       enabled?: boolean
+      /**
+       * Whether to attach OK actions for this alarm. @default true
+       */
+      enableOkAlarm?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -350,7 +357,9 @@ export class ServiceAlarms extends constructs.Construct {
       const single5xxAction =
         props.single5xxResponseAlarm?.action ?? this.warningAction
       single5xxAlarm.addAlarmAction(single5xxAction)
-      single5xxAlarm.addOkAction(single5xxAction)
+      if (props.single5xxResponseAlarm?.enableOkAlarm ?? true) {
+        single5xxAlarm.addOkAction(single5xxAction)
+      }
     }
 
     const targetConnectionErrorAlarm = new cloudwatch.Metric({
@@ -410,7 +419,9 @@ export class ServiceAlarms extends constructs.Construct {
       // Default to the alarm action
       const thAction = props.targetHealthAlarm?.action ?? this.alarmAction
       targetHealthAlarm.addAlarmAction(thAction)
-      targetHealthAlarm.addOkAction(thAction)
+      if (props.targetHealthAlarm?.enableOkAlarm ?? true) {
+        targetHealthAlarm.addOkAction(thAction)
+      }
     }
 
     const tooMany5xxResponsesFromTargetsAlarm = new cloudwatch.Metric({
@@ -439,7 +450,9 @@ export class ServiceAlarms extends constructs.Construct {
       const fiveXAction =
         props.tooMany5xxResponsesFromTargetsAlarm?.action ?? this.alarmAction
       tooMany5xxResponsesFromTargetsAlarm.addAlarmAction(fiveXAction)
-      tooMany5xxResponsesFromTargetsAlarm.addOkAction(fiveXAction)
+      if (props.tooMany5xxResponsesFromTargetsAlarm?.enableOkAlarm ?? true) {
+        tooMany5xxResponsesFromTargetsAlarm.addOkAction(fiveXAction)
+      }
     }
 
     const targetResponseTimeAlarm = new cloudwatch.Metric({
@@ -471,7 +484,9 @@ export class ServiceAlarms extends constructs.Construct {
       const rtAction =
         props.targetResponseTimeAlarm?.action ?? this.warningAction
       targetResponseTimeAlarm.addAlarmAction(rtAction)
-      targetResponseTimeAlarm.addOkAction(rtAction)
+      if (props.targetResponseTimeAlarm?.enableOkAlarm ?? true) {
+        targetResponseTimeAlarm.addOkAction(rtAction)
+      }
     }
   }
 }
