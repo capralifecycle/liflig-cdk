@@ -14,8 +14,6 @@ from typing import TypedDict, Optional
 from urllib.request import Request, urlopen
 import base64
 import gzip
-from typing import TypedDict, Optional
-from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import time
 import boto3
@@ -23,6 +21,7 @@ import boto3
 # Module-level cached Secrets Manager client. Stored as a global variable and
 # lazily created by _get_secrets_client when a client is not injected.
 _secrets_client = None
+
 
 # Lazily-created cached Secrets Manager client. Don't create a boto3 client at
 # import time (it may raise NoRegionError during test import or create network
@@ -46,6 +45,7 @@ def _get_secrets_client(secrets_client=None):
         _secrets_client = boto3.client("secretsmanager")
 
     return _secrets_client
+
 
 SLACK_URL_SECRET_NAME = os.getenv("SLACK_URL_SECRET_NAME", None)
 PROJECT_NAME = os.getenv("PROJECT_NAME", "undefined")
@@ -334,7 +334,7 @@ def create_slack_message(
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"<https://{use_region}.console.aws.amazon.com/cloudwatch/home?region={use_region}#logsV2:logs-insights$3FqueryDetail$3D~(end~0~start~-1800~timeType~'RELATIVE~tz~'LOCAL~unit~'seconds~editorString~'fields*20timestamp*2c*20message*0a*7c*20filter*20level*20*3d*20*22ERROR*22*0a*7c*20sort*20timestamp*20desc*0a*7c*20limit*20100~queryId~'21977150-6b0f-4abd-9c88-9767c4ba1919~source~(~'{log_group})~lang~'CWLI)|Logs insights>",
+                    "text": f"<https://{use_region}.console.aws.amazon.com/cloudwatch/home?region={use_region}#logsV2:logs-insights$3FqueryDetail$3D~(end~0~start~-1800~timeType~'RELATIVE~tz~'LOCAL~unit~'seconds~editorString~'fields*20timestamp*2c*20message*0a*7c*20filter*20level*20*3d*20*22ERROR*22*0a*7c*20sort*20timestamp*20desc*0a*7c*20limit*20100~source~(~'{log_group})~lang~'CWLI)|Logs insights>",
                 },
             },
             {"type": "divider"},
