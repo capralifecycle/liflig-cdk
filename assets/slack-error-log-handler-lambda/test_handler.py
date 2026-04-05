@@ -69,7 +69,10 @@ def test_create_slack_message_from_cloudwatch_log_defaults():
 
 
 def test_get_secret_success_and_failure():
-    assert get_secret("id", secrets_client=SimpleSecretsClient("super-secret")) == "super-secret"
+    assert (
+        get_secret("id", secrets_client=SimpleSecretsClient("super-secret"))
+        == "super-secret"
+    )
 
     class BrokenSecretsClient:
         def get_secret_value(self, SecretId):
@@ -78,6 +81,7 @@ def test_get_secret_success_and_failure():
     with pytest.raises(Exception) as exc:
         get_secret("id", secrets_client=BrokenSecretsClient())
     assert "Error retrieving secret" in str(exc.value)
+
 
 def test_send_slack_notification_uses_secret_and_urlopen(dummy_resp):
     # send_slack_notification uses get_secret and urlopen; inject both
@@ -164,6 +168,7 @@ def test_injected_client_does_not_pollute_cache(monkeypatch):
     monkeypatch.setattr(handler_module.boto3, "client", lambda svc: "sentinel")
     assert handler_module._get_secrets_client() == "sentinel"
     assert handler_module._secrets_client == "sentinel"
+
 
 def test_process_event_json_decode_error_fallback(dummy_resp):
     # Build compressed payload with a raw non-JSON first message to trigger

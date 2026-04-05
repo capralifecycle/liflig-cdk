@@ -144,8 +144,7 @@ py-fmt-check:
 	ruff format --check
 
 # Python test runner for the lambda assets
-PYTHON_DEFAULT ?= python3
 .PHONY: py-test
 py-test:
 	@echo "Auto-discovering asset lambdas with tests..."
-	@scripts/run_py_tests.sh $(PYTHON_DEFAULT)
+	@scripts/run_py_tests.sh

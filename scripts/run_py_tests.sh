@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PYTHON_DEFAULT=${1:-python3}
 found=0
 
 for d in assets/*/; do
@@ -9,15 +8,18 @@ for d in assets/*/; do
   [ -f "$d/requirements-dev.txt" ] || continue
   found=1
 
+  # Require an explicit .python-version file in each asset directory.
+  # The requested interpreter must be available on the machine running the tests (CI or developer machine).
   if [ -f "$d/.python-version" ]; then
     INTERP="$(tr -d '\r\n' <"$d/.python-version")"
+    if ! command -v "$INTERP" >/dev/null 2>&1; then
+      echo "Interpreter '$INTERP' requested by $d/.python-version was not found."
+      echo "Install the requested interpreter (e.g. via actions/setup-python in CI or your system package manager)."
+      exit 1
+    fi
   else
-    INTERP="$PYTHON_DEFAULT"
-  fi
-
-  if ! command -v "$INTERP" >/dev/null 2>&1; then
-    echo "Interpreter '$INTERP' not found; falling back to '$PYTHON_DEFAULT' for $d"
-    INTERP="$PYTHON_DEFAULT"
+    echo "Asset directory '$d' is missing .python-version. Please add a .python-version file with the desired interpreter (e.g. 'python3.14')."
+    exit 1
   fi
 
   INTERP_VERSION=$(
