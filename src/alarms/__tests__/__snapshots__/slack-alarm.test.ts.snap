@@ -146,7 +146,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "cc25e13b3c5648a4ee30b7d56171c9285a94dd3061c9fae7bc2f2d36109b31f9.zip",
+          "S3Key": "356eb8543f0a739583e202b23bc1441fe68dda6ddc39db17003f9d613b5cdd09.zip",
         },
         "Description": "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
         "Environment": Object {
