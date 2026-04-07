@@ -43,6 +43,9 @@ jobs:
         with:
           python-version: "3.14"
 
+      - name: Install uv via pip
+        run: pip install uv
+
       - name: build project
         run: make ci
 
