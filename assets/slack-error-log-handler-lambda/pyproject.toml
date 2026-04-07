@@ -1,0 +1,13 @@
+[project]
+name = "slack-error-log-handler-lambda"
+version = "0.0.0"
+requires-python = ">=3.14"
+
+[dependency-groups]
+dev = [
+  "pytest>=7.0",
+  "pytest-mock>=3.0",
+  # boto3 should match the version used in the lambda runtime
+  # https://docs.aws.amazon.com/lambda/latest/dg/lambda-python.html#python-sdk-included
+  "boto3>=1.26",
+]

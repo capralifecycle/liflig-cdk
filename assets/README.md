@@ -1,8 +1,8 @@
-Lambda assets testing convention
+**Lambda assets testing convention**
 
 Each lambda under `assets/` can include a small test setup and development dependencies. To make tests reproducible and isolated we follow this convention:
 
-- Each lambda that has tests exposes a `requirements-dev.txt` file listing the Python test dependencies (pytest, pytest-mock, etc.).
+Each lambda that has tests exposes a `pyproject.toml` declaring its test/dev dependencies.
 - Tests are inside the lambda folder (e.g. `assets/slack-error-log-handler-lambda/test_handler.py`).
 - To run all lambda tests locally or in CI, run the project Makefile target:
 
@@ -10,23 +10,22 @@ Each lambda under `assets/` can include a small test setup and development depen
 make py-test
 ```
 
-This target will auto-discover all `assets/*` directories that contain `requirements-dev.txt`, create a per-lambda virtualenv (named `.venv-test-<major>_<minor>` inside each lambda folder), install the listed dev dependencies, and run `pytest` in that folder.
+This target will auto-discover all `assets/*` directories that contain tests (via a `pyproject.toml`), and run `pytest` in each folder using the interpreter(s) provided on your machine or CI runner.
 
-Interpreter selection
+***Interpreter selection***
 
-- By default the Makefile uses `python3` as the interpreter to create venvs. If a lambda requires a specific interpreter version, add a file named either `.python-version` or `python-version` inside the lambda folder containing the interpreter command to use (for example `python3.14`). The Makefile will use that interpreter when creating the venv for that lambda.
-- On CI you must ensure that the requested interpreter is available on the runner (use `actions/setup-python` in GitHub Actions).
+- The repository declares supported Python interpreters in the top-level `mise.toml` (used by CI). 
+- Each asset should include a `.python-version` containing the desired interpreter for tests (for example `3.14`). 
+- If present, the test runner will prefer that interpreter; if the interpreter isn't available on the runner the CI job will fail (this helps surface missing interpreter versions early).
 
-Notes
-
-- Per-lambda `requirements-dev.txt` keeps each lambda's test dependencies isolated and avoids clashes across assets.
-- The test runner creates per-lambda virtualenvs whose names include the interpreter major/minor, for example `.venv-test-3_14` or `.venv-test-3_12`.
+Per-lambda `pyproject.toml` keeps each lambda's test/dev dependencies isolated and avoids clashes across assets. Tests run using the interpreter installed on the runner (see `mise.toml` and CI configuration).
+- boto3 should match the version used in the lambda runtime - https://docs.aws.amazon.com/lambda/latest/dg/lambda-python.html#python-sdk-included
 - If a lambda requires system packages or compiled native extensions, CI needs to provide those system dependencies (e.g., apt packages) or you should run tests inside a suitable container.
 
-Adding a new lambda with tests
+***Adding a new lambda with tests***
 
 1. Add your lambda folder under `assets/`.
-2. Add `requirements-dev.txt` with your test dependencies.
+2. Add `pyproject.toml` declaring your test/dev dependencies.
 3. Add test files inside the folder and ensure they import the lambda code relative to that folder.
 4. Run `make py-test` locally to verify.
 

@@ -111,41 +111,47 @@ export class DatabaseAlarms extends constructs.Construct {
       appendToAlarmDescription?: string
     },
   ): void {
-    // Only create the CPU credits alarm body when the instance type is burstable
-    if (this.instanceType.isBurstable()) {
-      const defaultThreshold =
-        cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
-      const threshold = props?.threshold ?? defaultThreshold
-      if (!threshold) {
-        throw new Error(
-          `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
-        )
-      }
-      const creditsAlarm = new cloudwatch.Metric({
-        metricName: "CPUCreditBalance",
-        namespace: "AWS/RDS",
-        statistic: "Minimum",
-        period: cdk.Duration.minutes(5),
-        dimensionsMap: {
-          DBInstanceIdentifier: this.databaseInstanceIdentifier,
-        },
-      }).createAlarm(this, "CreditsAlarm", {
-        alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${this.databaseInstanceIdentifier}'. ${
-          this.instanceType.toString().startsWith("t2.")
-            ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
-            : "If the balance is depleted, AWS adds additional charges."
-        } ${props?.appendToAlarmDescription ?? ""}`,
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold: threshold,
-        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-      })
+    // CPU credits alarms are only applicable to burstable instance types.
+    // Explicitly throw if a caller tries to create this alarm for a
+    // non-burstable instance.
+    if (!this.instanceType.isBurstable()) {
+      throw new Error(
+        `addCpuCreditsAlarm: instance type '${this.instanceType.toString()}' is not burstable; this alarm is only applicable to burstable instance types.`,
+      )
+    }
 
-      // Default to the alarm action
-      creditsAlarm.addAlarmAction(props?.action ?? this.alarmAction)
-      if (props?.enableOkAlarm ?? true) {
-        creditsAlarm.addOkAction(props?.action ?? this.alarmAction)
-      }
+    const defaultThreshold =
+      cpuCreditBalanceByInstanceType[this.instanceType.toString()] * 0.1
+    const threshold = props?.threshold ?? defaultThreshold
+    if (!threshold) {
+      throw new Error(
+        `No threshold supplied, and unable to determine a default value for instance type '${this.instanceType.toString()}'`,
+      )
+    }
+    const creditsAlarm = new cloudwatch.Metric({
+      metricName: "CPUCreditBalance",
+      namespace: "AWS/RDS",
+      statistic: "Minimum",
+      period: cdk.Duration.minutes(5),
+      dimensionsMap: {
+        DBInstanceIdentifier: this.databaseInstanceIdentifier,
+      },
+    }).createAlarm(this, "CreditsAlarm", {
+      alarmDescription: `Less than ${threshold} CPU credits remaining for RDS database '${this.databaseInstanceIdentifier}'. ${
+        this.instanceType.toString().startsWith("t2.")
+          ? "If this reaches 0, the instance will be limited to a baseline CPU utilization."
+          : "If the balance is depleted, AWS adds additional charges."
+      } ${props?.appendToAlarmDescription ?? ""}`,
+      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+      evaluationPeriods: 1,
+      threshold: threshold,
+      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+    })
+
+    // Default to the alarm action
+    creditsAlarm.addAlarmAction(props?.action ?? this.alarmAction)
+    if (props?.enableOkAlarm ?? true) {
+      creditsAlarm.addOkAction(props?.action ?? this.alarmAction)
     }
   }
 

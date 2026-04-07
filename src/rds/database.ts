@@ -30,6 +30,8 @@ export type DatabaseAlarmsConfig =
          * @default true if instance type is burstable
          */
         enabled?: boolean
+        /** Whether to attach OK actions for this alarm. @default true */
+        enableOkAlarm?: boolean
         action?: cloudwatch.IAlarmAction
         /** @default 10% of maximum earned credits for instance type */
         threshold?: number
@@ -47,11 +49,15 @@ export type DatabaseAlarmsConfig =
         enabled?: boolean
         lowStorageSpaceAlarm?: {
           action?: cloudwatch.IAlarmAction
+          /** Whether to attach OK actions for this alarm. @default true */
+          enableOkAlarm?: boolean
           /** @default 25% of allocated storage */
           threshold?: cdk.Size
         }
         criticallyLowStorageSpaceAlarm?: {
           action?: cloudwatch.IAlarmAction
+          /** Whether to attach OK actions for this alarm. @default true */
+          enableOkAlarm?: boolean
           /** @default 5% of allocated storage */
           threshold?: cdk.Size
         }
@@ -63,6 +69,8 @@ export type DatabaseAlarmsConfig =
        */
       cpuUtilizationAlarm?: {
         enabled?: boolean
+        /** Whether to attach OK actions for this alarm. @default true */
+        enableOkAlarm?: boolean
         action?: cloudwatch.IAlarmAction
         /** @default 80 */
         threshold?: number
@@ -205,13 +213,16 @@ export class Database extends constructs.Construct {
         dbAlarms.addCpuCreditsAlarm({
           action: alarms.cpuCreditsAlarm?.action,
           threshold: alarms.cpuCreditsAlarm?.threshold,
+          enableOkAlarm: alarms.cpuCreditsAlarm?.enableOkAlarm,
           appendToAlarmDescription:
             alarms.cpuCreditsAlarm?.appendToAlarmDescription,
         })
       }
 
       if (alarms.storageSpaceAlarms?.enabled !== false)
-        dbAlarms.addStorageSpaceAlarms(alarms.storageSpaceAlarms)
+        dbAlarms.addStorageSpaceAlarms({
+          ...alarms.storageSpaceAlarms,
+        })
 
       if (alarms.cpuUtilizationAlarm?.enabled !== false) {
         dbAlarms.addCpuUtilizationAlarm({
@@ -219,6 +230,7 @@ export class Database extends constructs.Construct {
           threshold: alarms.cpuUtilizationAlarm?.threshold,
           evaluationPeriods: alarms.cpuUtilizationAlarm?.evaluationPeriods,
           period: alarms.cpuUtilizationAlarm?.period,
+          enableOkAlarm: alarms.cpuUtilizationAlarm?.enableOkAlarm,
           appendToAlarmDescription:
             alarms.cpuUtilizationAlarm?.appendToAlarmDescription,
         })
