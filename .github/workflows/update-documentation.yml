@@ -33,6 +33,17 @@ jobs:
       - name: install python linter
         uses: astral-sh/ruff-action@4919ec5cf1f49eff0871dbcea0da843445b837e6 # v3.6.1
 
+      # Add NEW setup-python step here for any new python version needed for lambda tests
+      # We need a separate installation step for each python version because the
+      # Makefile creates venvs for each lambda and needs the interpreters to be pre-installed
+      - name: Setup Python 3.14
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.14"
+
+      - name: Install uv via pip
+        run: pip install uv
+
       - name: install dependencies
         run: make ci
 
