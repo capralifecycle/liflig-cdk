@@ -32,6 +32,7 @@ test("create database", () => {
     instanceIdentifier: "example-database-v1",
     snapshotIdentifier: undefined,
     usePublicSubnets: true,
+    alarms: { enabled: false },
   })
 
   database.allowConnectionFrom(otherSecurityGroup)
@@ -59,6 +60,7 @@ test("should set publiclyAccessible also when in private subnets", () => {
     instanceIdentifier: "example-database-v1",
     snapshotIdentifier: undefined,
     usePublicSubnets: false,
+    alarms: { enabled: false },
   })
 
   expect(stack).toHaveResourceLike("AWS::RDS::DBInstance", {

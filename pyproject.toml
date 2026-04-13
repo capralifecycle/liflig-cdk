@@ -1,8 +1,9 @@
+[tool.ruff]
 target-version = "py313"
 include = [
   "assets/**/*.py",
   "src/**/*.py"
 ]
 
-[lint]
+[tool.ruff.lint]
 ignore = ["E722"] # ignore during initial linter introduction

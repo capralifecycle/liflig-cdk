@@ -1,13 +1,111 @@
 import * as cdk from "aws-cdk-lib"
 import { Duration } from "aws-cdk-lib"
+import type * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import type { CfnService } from "aws-cdk-lib/aws-ecs"
 import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as elb from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import type * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as constructs from "constructs"
+import { ServiceAlarms } from "../alarms"
+import type { Parameter } from "../configure-parameters"
 import { ConfigureParameters } from "../configure-parameters"
-import type { Parameter } from "../configure-parameters/configure-parameters"
+
+/**
+ * Configure service alarms.
+ *
+ * Alarms are enabled by default when a config object with `alarmAction` and
+ * `warningAction` is provided. To explicitly disable automatic alarms use
+ * `{ enabled: false }`.
+ */
+export type ServiceAlarmsConfig =
+  | { enabled: false }
+  | {
+      alarmAction: cloudwatch.IAlarmAction
+      warningAction: cloudwatch.IAlarmAction
+      loadBalancerFullName: string
+      /** Optional Lambda function that will receive
+       * forwarded log events */
+      logHandler?: lambda.IFunction
+      /**
+       * Individual alarm configuration overrides defaults.
+       */
+      jsonErrorAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        alarmDescription?: string
+        enableOkAlarm?: boolean
+        action?: cloudwatch.IAlarmAction
+      }
+      uncaughtJavaExceptionAlarm?: {
+        /**
+         * @default false
+         */
+        enabled?: boolean
+        alarmDescription?: string
+        enableOkAlarm?: boolean
+        action?: cloudwatch.IAlarmAction
+      }
+      targetHealthAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        action?: cloudwatch.IAlarmAction
+        period?: cdk.Duration
+        evaluationPeriods?: number
+        threshold?: number
+        description?: string
+      }
+      tooMany5xxResponsesFromTargetsAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        action?: cloudwatch.IAlarmAction
+        period?: cdk.Duration
+        evaluationPeriods?: number
+        threshold?: number
+        description?: string
+      }
+      targetResponseTimeAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        action?: cloudwatch.IAlarmAction
+        period?: cdk.Duration
+        evaluationPeriods?: number
+        threshold?: cdk.Duration
+        description?: string
+      }
+      single5xxResponseAlarm?: {
+        /**
+         * @default true
+         */
+        enabled?: boolean
+        /**
+         * An action to use for CloudWatch alarm state changes instead of the default action
+         */
+        action?: cloudwatch.IAlarmAction
+        /**
+         * @default 60 seconds
+         */
+        period?: cdk.Duration
+        /**
+         * @default 1
+         */
+        evaluationPeriods?: number
+        /**
+         * @default 1
+         */
+        threshold?: number
+        description?: string
+      }
+    }
 
 export interface FargateServiceProps {
   serviceName: string
@@ -70,6 +168,18 @@ export interface FargateServiceProps {
    * @default false
    */
   enableCircuitBreaker?: boolean
+  /**
+   *  Either
+   *  - `{ enabled: false }` to disable all alarms.
+   *  - object with required `alarmAction`, `warningAction`, and `loadBalancerFullName`.
+   *
+   *  When enabled, the construct will:
+   *  - (By default) add a log-based JSON error alarm (enabled by default).
+   *  - (By default) add target-group related alarms (target health, 5xx responses, response time)
+   *  when a target group is present.
+   *  - (Opt-in) optionally enable the uncaught Java exception alarm
+   */
+  alarms: ServiceAlarmsConfig
 }
 
 export class FargateService extends constructs.Construct {
@@ -78,6 +188,7 @@ export class FargateService extends constructs.Construct {
   public readonly taskDefinition: ecs.TaskDefinition
   public readonly targetGroup: elb.ApplicationTargetGroup | undefined
   public readonly logGroup: logs.LogGroup
+  public readonly serviceAlarms: ServiceAlarms | undefined
 
   constructor(
     scope: constructs.Construct,
@@ -124,7 +235,7 @@ export class FargateService extends constructs.Construct {
     parameters.grantRead(this.taskDefinition.taskRole)
 
     const port = props.containerPort ?? 8080
-    const container = this.taskDefinition.addContainer("Container", {
+    this.taskDefinition.addContainer("Container", {
       logging: ecs.LogDriver.awsLogs({
         logGroup: this.logGroup,
         streamPrefix: "ecs",
@@ -205,6 +316,54 @@ export class FargateService extends constructs.Construct {
         healthyThresholdCount: 2,
         ...props.overrideHealthCheck,
       })
+    }
+
+    // Require explicit alarmAction and warningAction when enabled.
+    if (props.alarms && "alarmAction" in props.alarms) {
+      const alarms = props.alarms
+
+      this.serviceAlarms = new ServiceAlarms(this, "Alarms", {
+        serviceName: props.serviceName,
+        alarmAction: alarms.alarmAction,
+        warningAction: alarms.warningAction,
+        logHandler: alarms.logHandler,
+      })
+
+      // Enabled by default (opt-out).
+      const jsonErrorOverrides = alarms.jsonErrorAlarm
+      if (jsonErrorOverrides?.enabled ?? true) {
+        this.serviceAlarms.addJsonErrorAlarm({
+          logGroup: this.logGroup,
+          alarmDescription: jsonErrorOverrides?.alarmDescription,
+          enableOkAlarm: jsonErrorOverrides?.enableOkAlarm,
+          action: jsonErrorOverrides?.action,
+        })
+      }
+
+      // Not enabled by default (opt-in).
+      const javaExceptionOverrides = alarms.uncaughtJavaExceptionAlarm
+      if (javaExceptionOverrides?.enabled) {
+        this.serviceAlarms.addUncaughtJavaExceptionAlarm({
+          logGroup: this.logGroup,
+          alarmDescription: javaExceptionOverrides.alarmDescription,
+          enableOkAlarm: javaExceptionOverrides.enableOkAlarm,
+          action: javaExceptionOverrides.action,
+          enabled: true,
+        })
+      }
+
+      if (!props.skipTargetGroup) {
+        // All alarms enabled by-default (opt-out individually)
+        this.serviceAlarms.addTargetGroupAlarms({
+          targetGroupFullName: this.targetGroup!.targetGroupFullName,
+          loadBalancerFullName: alarms.loadBalancerFullName,
+          targetHealthAlarm: alarms.targetHealthAlarm,
+          single5xxResponseAlarm: alarms.single5xxResponseAlarm,
+          tooMany5xxResponsesFromTargetsAlarm:
+            alarms.tooMany5xxResponsesFromTargetsAlarm,
+          targetResponseTimeAlarm: alarms.targetResponseTimeAlarm,
+        })
+      }
     }
   }
 }

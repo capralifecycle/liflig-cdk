@@ -342,7 +342,7 @@ export async function handler(event) {
 }
 `),
         handler: "handler",
-        runtime: lambda.Runtime.NODEJS_LATEST,
+        runtime: lambda.Runtime.NODEJS_24_X,
       },
     )
 
@@ -462,6 +462,7 @@ export async function handler(event) {
         ecrRepository,
         "exampleEcrTag",
       ),
+      alarms: { enabled: false },
     })
 
     new ListenerRule(stack, "Dns", {

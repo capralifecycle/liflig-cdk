@@ -60,7 +60,7 @@ export class LoadBalancer extends constructs.Construct {
     )
 
     this.httpsListener = this.loadBalancer.addListener("HttpsListener", {
-      sslPolicy: elb.SslPolicy.TLS12,
+      sslPolicy: elb.SslPolicy.RECOMMENDED_TLS,
       protocol: elb.ApplicationProtocol.HTTPS,
       port: 443,
       certificates: props.certificates,
