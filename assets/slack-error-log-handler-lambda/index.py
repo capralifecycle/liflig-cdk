@@ -91,6 +91,7 @@ def process_event(
     Network and secrets access are injectable for testing.
     """
     pprint("Dump: " + json.dumps(event))
+    print(f"boto3 version: {boto3.__version__}")
 
     data = event["awslogs"]["data"]
     decoded_message: CloudWatchEvent = json.loads(

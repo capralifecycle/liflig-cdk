@@ -192,7 +192,7 @@ export class Database extends constructs.Construct {
     if ("alarmAction" in props.alarms) {
       const alarms = props.alarms
 
-      const dbAlarms = new DatabaseAlarms(this, "DatabaseAlarms", {
+      const dbAlarms = new DatabaseAlarms(this, "Alarms", {
         instanceIdentifier: props.instanceIdentifier,
         instanceType: props.instanceType,
         allocatedStorage: cdk.Size.gibibytes(options.allocatedStorage!),
