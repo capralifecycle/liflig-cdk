@@ -62,8 +62,9 @@ export class ServiceAlarms extends constructs.Construct {
     logGroup: logs.ILogGroup
     alarmDescription?: string
     /**
-     * Set to `false` to stop the alarm from sending OK events.
-     * @default true
+     * Set to `true` to attach OK actions when the alarm returns to OK.
+     * By default OK actions are NOT attached.
+     * @default false
      */
     enableOkAlarm?: boolean
     /**
@@ -102,7 +103,8 @@ export class ServiceAlarms extends constructs.Construct {
       // Default to the warning action
       const actionToUse = props.action ?? this.warningAction
       errorAlarm.addAlarmAction(actionToUse)
-      if (props.enableOkAlarm ?? true) {
+      // By default do NOT attach OK actions for this alarm.
+      if (props.enableOkAlarm ?? false) {
         errorAlarm.addOkAction(actionToUse)
       }
     }
