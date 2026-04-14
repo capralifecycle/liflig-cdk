@@ -115,25 +115,6 @@ export interface DatabaseProps extends cdk.StackProps {
    * @default false
    */
   usePublicSubnets?: boolean
-  /**
-   * Whether to enable automatic minor version upgrades for the database engine.
-   *
-   * Note: enabling this means the actual database version may drift from
-   * what is specified in the IaC, as AWS applies upgrades outside of deployments.
-   *
-   * When enabled, consider also setting `preferredMaintenanceWindow`
-   * to control when upgrades are applied.
-   *
-   * @default false
-   */
-  autoMinorVersionUpgrade?: boolean
-  /**
-   * Weekly time range during which system maintenance can occur,
-   * in UTC (e.g. "sun:03:00-sun:04:00").
-   *
-   * If not specified, AWS will choose a default window.
-   */
-  preferredMaintenanceWindow?: string
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
   /**
    * Configure database alarms.
@@ -175,8 +156,6 @@ export class Database extends constructs.Construct {
             subnetType: ec2.SubnetType.PUBLIC,
           }
         : undefined,
-      autoMinorVersionUpgrade: props.autoMinorVersionUpgrade ?? false,
-      preferredMaintenanceWindow: props.preferredMaintenanceWindow,
       multiAz: props.isMultiAz ?? true,
       // We default to 25 GiB storage instead of 100 GiB
       // if we do not specify.
@@ -187,16 +166,6 @@ export class Database extends constructs.Construct {
     }
     this.allocatedStorage = cdk.Size.gibibytes(options.allocatedStorage!)
     this.instanceType = options.instanceType!
-
-    if (
-      options.autoMinorVersionUpgrade &&
-      !options.preferredMaintenanceWindow
-    ) {
-      cdk.Annotations.of(this).addWarningV2(
-        "@liflig/cdk:autoMinorVersionUpgradeWithoutMaintenanceWindow",
-        "Auto minor version upgrade is enabled but no maintenance window is specified. AWS will choose a default maintenance window which may not suit your availability requirements.",
-      )
-    }
 
     const db = props.snapshotIdentifier
       ? new rds.DatabaseInstanceFromSnapshot(this, "Resource", {
