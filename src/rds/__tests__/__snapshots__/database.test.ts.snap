@@ -8,7 +8,6 @@ Object {
       "Properties": Object {
         "AllocatedStorage": "25",
         "AllowMajorVersionUpgrade": true,
-        "AutoMinorVersionUpgrade": false,
         "BackupRetentionPeriod": 35,
         "CopyTagsToSnapshot": true,
         "DBInstanceClass": "db.t3.micro",
