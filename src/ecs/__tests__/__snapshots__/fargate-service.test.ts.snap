@@ -136,11 +136,6 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "stack/Stack2/example-service-alarms/Errors",
-        "OKActions": Array [
-          Object {
-            "Ref": "WarningTopicE070F32B",
-          },
-        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
