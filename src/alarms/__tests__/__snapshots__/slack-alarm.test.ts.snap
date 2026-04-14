@@ -9,12 +9,7 @@ Object {
         "SlackAlarmFunctionServiceRoleC8F1C44C",
       ],
       "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "58d0554bef374568e8bae3560f2115c74abfd6f0b544f908bbd73d09b80a9f46.zip",
-        },
+        "Code": Any<Object>,
         "Description": "Receives CloudWatch Alarms through SNS and sends a formatted version to Slack",
         "Environment": Object {
           "Variables": Object {
@@ -142,12 +137,7 @@ Object {
         "SlackAlarmLogHandlerServiceRole0308E4D8",
       ],
       "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "2bbd1d1041b0a2826e928659aaff9e4aedcd71b59d549427eacb8deaa2692dc8.zip",
-        },
+        "Code": Any<Object>,
         "Description": "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
         "Environment": Object {
           "Variables": Object {
