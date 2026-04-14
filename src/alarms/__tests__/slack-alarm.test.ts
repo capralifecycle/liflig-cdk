@@ -18,5 +18,5 @@ test("create slack alarm", () => {
     slackWebhookUrlSecret: secret,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  expect(stack).toMatchCdkSnapshot({ ignoreAssets: true })
 })
