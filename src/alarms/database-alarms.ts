@@ -165,11 +165,17 @@ export class DatabaseAlarms extends constructs.Construct {
    */
   addStorageSpaceAlarms(props?: {
     /**
-     * Set to `false` to disable both storage space alarms (low + critically low).
+     * Set to `false` to disable all storage space alarms (both low and critically low).
+     * Individual alarms can still be disabled even when this is true.
      * @default true
      */
     enabled?: boolean
     lowStorageSpaceAlarm?: {
+      /**
+       * Set to `false` to disable the low storage space alarm.
+       * @default true
+       */
+      enabled?: boolean
       /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
@@ -188,6 +194,11 @@ export class DatabaseAlarms extends constructs.Construct {
      */
     criticallyLowStorageSpaceAlarm?: {
       /**
+       * Set to `false` to disable the critically low storage space alarm.
+       * @default true
+       */
+      enabled?: boolean
+      /**
        * An action to use for CloudWatch alarm state changes instead of the default action
        */
       action?: cloudwatch.IAlarmAction
@@ -205,60 +216,63 @@ export class DatabaseAlarms extends constructs.Construct {
      */
     appendToAlarmDescription?: string
   }): void {
-    // If the top-level enabled flag is explicitly false, do nothing
-    if (props?.enabled === false) return
-
-    // Create Low Storage Space alarm
-    const lowStorageSpaceAlarm = new cloudwatch.Metric({
-      metricName: "FreeStorageSpace",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    }).createAlarm(this, "LowStorageSpaceAlarm", {
-      alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      evaluationPeriods: 1,
-      threshold:
-        props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
-        this.allocatedStorage.toBytes() * 0.25,
-      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-    })
-
-    // Default to the warning action
-    const lowAction = props?.lowStorageSpaceAlarm?.action ?? this.warningAction
-    lowStorageSpaceAlarm.addAlarmAction(lowAction)
-    if (props?.lowStorageSpaceAlarm?.enableOkAlarm ?? true) {
-      lowStorageSpaceAlarm.addOkAction(lowAction)
+    // If top-level enabled is explicitly false, skip all storage alarms
+    if (props?.enabled === false) {
+      return
     }
+    if (props?.lowStorageSpaceAlarm?.enabled !== false) {
+      const lowStorageSpaceAlarm = new cloudwatch.Metric({
+        metricName: "FreeStorageSpace",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
+      }).createAlarm(this, "LowStorageSpaceAlarm", {
+        alarmDescription: `Low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold:
+          props?.lowStorageSpaceAlarm?.threshold?.toBytes() ??
+          this.allocatedStorage.toBytes() * 0.25,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
 
-    // Create Critically Low Storage Space alarm
-    const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
-      metricName: "FreeStorageSpace",
-      namespace: "AWS/RDS",
-      statistic: "Minimum",
-      period: cdk.Duration.minutes(5),
-      dimensionsMap: {
-        DBInstanceIdentifier: this.databaseInstanceIdentifier,
-      },
-    }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
-      alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
-      comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-      evaluationPeriods: 1,
-      threshold:
-        props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
-        this.allocatedStorage.toBytes() * 0.05,
-      treatMissingData: cloudwatch.TreatMissingData.IGNORE,
-    })
+      // Default to the warning action
+      const lowAction =
+        props?.lowStorageSpaceAlarm?.action ?? this.warningAction
+      lowStorageSpaceAlarm.addAlarmAction(lowAction)
+      if (props?.lowStorageSpaceAlarm?.enableOkAlarm ?? true) {
+        lowStorageSpaceAlarm.addOkAction(lowAction)
+      }
+    }
+    if (props?.criticallyLowStorageSpaceAlarm?.enabled !== false) {
+      const criticallyLowStorageSpaceAlarm = new cloudwatch.Metric({
+        metricName: "FreeStorageSpace",
+        namespace: "AWS/RDS",
+        statistic: "Minimum",
+        period: cdk.Duration.minutes(5),
+        dimensionsMap: {
+          DBInstanceIdentifier: this.databaseInstanceIdentifier,
+        },
+      }).createAlarm(this, "CriticallyLowStorageSpaceAlarm", {
+        alarmDescription: `Critically low storage space available on RDS database '${this.databaseInstanceIdentifier}'. ${props?.appendToAlarmDescription ?? ""}`,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold:
+          props?.criticallyLowStorageSpaceAlarm?.threshold?.toBytes() ??
+          this.allocatedStorage.toBytes() * 0.05,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      })
 
-    // Default to the alarm action
-    const criticalAction =
-      props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
-    criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
-    if (props?.criticallyLowStorageSpaceAlarm?.enableOkAlarm ?? true) {
-      criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
+      // Default to the alarm action
+      const criticalAction =
+        props?.criticallyLowStorageSpaceAlarm?.action ?? this.alarmAction
+      criticallyLowStorageSpaceAlarm.addAlarmAction(criticalAction)
+      if (props?.criticallyLowStorageSpaceAlarm?.enableOkAlarm ?? true) {
+        criticallyLowStorageSpaceAlarm.addOkAction(criticalAction)
+      }
     }
   }
 

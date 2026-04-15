@@ -44,10 +44,16 @@ export type DatabaseAlarmsConfig =
       storageSpaceAlarms?: {
         /**
          * Set to `false` to disable all storage space alarms (both low and critically low).
+         * Individual alarms can still be disabled even when this is true.
          * @default true
          */
         enabled?: boolean
         lowStorageSpaceAlarm?: {
+          /**
+           * Set to `false` to disable the low storage space alarm.
+           * @default true
+           */
+          enabled?: boolean
           action?: cloudwatch.IAlarmAction
           /** Whether to attach OK actions for this alarm. @default true */
           enableOkAlarm?: boolean
@@ -55,6 +61,11 @@ export type DatabaseAlarmsConfig =
           threshold?: cdk.Size
         }
         criticallyLowStorageSpaceAlarm?: {
+          /**
+           * Set to `false` to disable the critically low storage space alarm.
+           * @default true
+           */
+          enabled?: boolean
           action?: cloudwatch.IAlarmAction
           /** Whether to attach OK actions for this alarm. @default true */
           enableOkAlarm?: boolean
@@ -219,10 +230,16 @@ export class Database extends constructs.Construct {
         })
       }
 
-      if (alarms.storageSpaceAlarms?.enabled !== false)
+      if (alarms.storageSpaceAlarms) {
         dbAlarms.addStorageSpaceAlarms({
-          ...alarms.storageSpaceAlarms,
+          enabled: alarms.storageSpaceAlarms.enabled,
+          lowStorageSpaceAlarm: alarms.storageSpaceAlarms.lowStorageSpaceAlarm,
+          criticallyLowStorageSpaceAlarm:
+            alarms.storageSpaceAlarms.criticallyLowStorageSpaceAlarm,
+          appendToAlarmDescription:
+            alarms.storageSpaceAlarms.appendToAlarmDescription,
         })
+      }
 
       if (alarms.cpuUtilizationAlarm?.enabled !== false) {
         dbAlarms.addCpuUtilizationAlarm({
