@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter 1`] = `
+exports[`addUncaughtJavaExceptionAlarm: with logForwardingHandler creates subscription filter and no metric filter 1`] = `
 Object {
   "Resources": Object {
     "HandlerUJ2EE2E5D99": Object {
@@ -155,7 +155,7 @@ Object {
 }
 `;
 
-exports[`addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm 1`] = `
+exports[`addUncaughtJavaExceptionAlarm: without logForwardingHandler creates metric filter and alarm 1`] = `
 Object {
   "Resources": Object {
     "LambdaAlarmsUJ1UncaughtJavaExceptionLogAlarmFAECCDAD": Object {

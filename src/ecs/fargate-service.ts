@@ -27,7 +27,7 @@ export type ServiceAlarmsConfig =
       loadBalancerFullName: string
       /** Optional Lambda function that will receive
        * forwarded log events */
-      logHandler?: lambda.IFunction
+      logForwardingHandler?: lambda.IFunction
       /**
        * Individual alarm configuration overrides defaults.
        */
@@ -326,7 +326,7 @@ export class FargateService extends constructs.Construct {
         serviceName: props.serviceName,
         alarmAction: alarms.alarmAction,
         warningAction: alarms.warningAction,
-        logHandler: alarms.logHandler,
+        logForwardingHandler: alarms.logForwardingHandler,
       })
 
       // Enabled by default (opt-out).

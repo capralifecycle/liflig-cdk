@@ -68,7 +68,7 @@ test("with handler: subscription filter is created and metric filter omitted", (
     alarmAction: action,
     warningAction: action,
     lambdaFunction: fn,
-    logHandler: handlerFn,
+    logForwardingHandler: handlerFn,
   })
 
   alarms.addErrorAlarm({ logGroup })
@@ -116,7 +116,7 @@ test("creates invocation error alarms (single and multiple) with defaults", () =
   expect(stack).toMatchCdkSnapshot()
 })
 
-test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm", () => {
+test("addUncaughtJavaExceptionAlarm: without logForwardingHandler creates metric filter and alarm", () => {
   const app = new App()
   const stack = new Stack(app, "Stack-UJ-1")
 
@@ -153,13 +153,13 @@ test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter an
     MetricName: "UncaughtJavaException",
   })
 
-  // No subscription filter when logHandler is not set
+  // No subscription filter when logForwardingHandler is not set
   expect(stack).not.toHaveResource("AWS::Logs::SubscriptionFilter")
 
   expect(stack).toMatchCdkSnapshot()
 })
 
-test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter", () => {
+test("addUncaughtJavaExceptionAlarm: with logForwardingHandler creates subscription filter and no metric filter", () => {
   const app = new App()
   const stack = new Stack(app, "Stack-UJ-2")
 
@@ -184,7 +184,7 @@ test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter
     alarmAction: action,
     warningAction: action,
     lambdaFunction: fn,
-    logHandler: handlerFn,
+    logForwardingHandler: handlerFn,
   })
 
   alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })

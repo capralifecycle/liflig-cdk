@@ -68,7 +68,7 @@ test("does not create single 5xx alarm when disabled", () => {
   expect(stack).toMatchCdkSnapshot()
 })
 
-test("log group receives exactly two subscription filters when logHandler is present", () => {
+test("log group receives exactly two subscription filters when logForwardingHandler is present", () => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack-SubCount")
   const stack = new Stack(app, "Stack-SubCount")
@@ -86,7 +86,7 @@ test("log group receives exactly two subscription filters when logHandler is pre
     alarmAction: action,
     warningAction: action,
     serviceName: "svc-subcount",
-    logHandler: handlerFn,
+    logForwardingHandler: handlerFn,
   })
 
   const logGroup = new logs.LogGroup(stack, "LogGroup-SubCount")

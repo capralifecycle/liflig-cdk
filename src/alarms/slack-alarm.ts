@@ -35,7 +35,7 @@ export interface SlackAlarmProps {
 export class SlackAlarm extends constructs.Construct {
   public readonly alarmTopic: sns.Topic
   public readonly snsAction: cloudwatchActions.SnsAction
-  public readonly logHandler: lambda.Function
+  public readonly logForwardingHandler: lambda.Function
 
   constructor(scope: constructs.Construct, id: string, props: SlackAlarmProps) {
     super(scope, id)
@@ -61,9 +61,9 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
-    this.logHandler = new lambda.Function(this, "LogHandler", {
+    this.logForwardingHandler = new lambda.Function(this, "LogForwardingHandler", {
       code: lambda.Code.fromAsset(
-        path.join(__dir, "../../assets", "slack-error-log-handler-lambda"),
+        path.join(__dir, "../../assets", "slack-error-log-forwarding-handler-lambda"),
       ),
       description:
         "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
@@ -78,7 +78,7 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
-    props.slackWebhookUrlSecret.grantRead(this.logHandler)
+    props.slackWebhookUrlSecret.grantRead(this.logForwardingHandler)
     props.slackWebhookUrlSecret.grantRead(slackLambda)
 
     slackLambda.addPermission("InvokePermission", {

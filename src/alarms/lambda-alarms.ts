@@ -23,7 +23,7 @@ export interface LambdaAlarmsProps {
    * Optional Lambda function that will receive forwarded log events.
    * If provided, subscription filters will be created to forward matching logs
    */
-  logHandler?: lambda.IFunction
+  logForwardingHandler?: lambda.IFunction
 }
 
 /**
@@ -42,7 +42,7 @@ export class LambdaAlarms extends constructs.Construct {
   private readonly alarmAction: cloudwatch.IAlarmAction
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly lambdaFunction: lambda.IFunction
-  private readonly logHandler?: lambda.IFunction
+  private readonly logForwardingHandler?: lambda.IFunction
 
   constructor(
     scope: constructs.Construct,
@@ -54,7 +54,7 @@ export class LambdaAlarms extends constructs.Construct {
     this.alarmAction = props.alarmAction
     this.warningAction = props.warningAction
     this.lambdaFunction = props.lambdaFunction
-    this.logHandler = props.logHandler
+    this.logForwardingHandler = props.logForwardingHandler
   }
 
   /**
@@ -203,7 +203,7 @@ export class LambdaAlarms extends constructs.Construct {
     action?: cloudwatch.IAlarmAction
   }): void {
     // If no log handler is configured, create simple "ERROR" metric alarm
-    if (!this.logHandler) {
+    if (!this.logForwardingHandler) {
       const errorMetricFilter = props.logGroup.addMetricFilter(
         "ErrorMetricFilter",
         {
@@ -236,11 +236,11 @@ export class LambdaAlarms extends constructs.Construct {
       }
     }
 
-    if (this.logHandler) {
+    if (this.logForwardingHandler) {
       props.logGroup.addSubscriptionFilter(
         "liflig-cdk-log-content-to-slack-error-subscription",
         {
-          destination: new logsDestinations.LambdaDestination(this.logHandler),
+          destination: new logsDestinations.LambdaDestination(this.logForwardingHandler),
           filterPattern: jsonErrorFilterPattern(),
         },
       )
@@ -264,7 +264,7 @@ export class LambdaAlarms extends constructs.Construct {
       const filterPattern = logs.FilterPattern.allTerms("Exception in thread")
 
       // If no log handler is configured, create a simple metric alarm.
-      if (!this.logHandler) {
+      if (!this.logForwardingHandler) {
         const errorMetricFilter = props.logGroup.addMetricFilter(
           "UncaughtJavaExceptionFilter",
           {
@@ -298,12 +298,12 @@ export class LambdaAlarms extends constructs.Construct {
       }
 
       // If a log handler is configured, forward matching logs to it.
-      if (this.logHandler) {
+      if (this.logForwardingHandler) {
         props.logGroup.addSubscriptionFilter(
           "liflig-cdk-log-content-to-slack-uncaught-exception-subscription",
           {
             destination: new logsDestinations.LambdaDestination(
-              this.logHandler,
+              this.logForwardingHandler,
             ),
             filterPattern: filterPattern,
           },

@@ -131,10 +131,10 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "SlackAlarmLogHandler7A652A1B": Object {
+    "SlackAlarmLogForwardingHandlerC1DB30BF": Object {
       "DependsOn": Array [
-        "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B",
-        "SlackAlarmLogHandlerServiceRole0308E4D8",
+        "SlackAlarmLogForwardingHandlerServiceRoleDefaultPolicy6D489FDB",
+        "SlackAlarmLogForwardingHandlerServiceRole3921BE9B",
       ],
       "Properties": Object {
         "Code": Any<Object>,
@@ -172,7 +172,7 @@ Object {
         "MemorySize": 128,
         "Role": Object {
           "Fn::GetAtt": Array [
-            "SlackAlarmLogHandlerServiceRole0308E4D8",
+            "SlackAlarmLogForwardingHandlerServiceRole3921BE9B",
             "Arn",
           ],
         },
@@ -181,7 +181,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "SlackAlarmLogHandlerServiceRole0308E4D8": Object {
+    "SlackAlarmLogForwardingHandlerServiceRole3921BE9B": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -212,7 +212,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B": Object {
+    "SlackAlarmLogForwardingHandlerServiceRoleDefaultPolicy6D489FDB": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -229,10 +229,10 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "SlackAlarmLogHandlerServiceRoleDefaultPolicyD5AFBD4B",
+        "PolicyName": "SlackAlarmLogForwardingHandlerServiceRoleDefaultPolicy6D489FDB",
         "Roles": Array [
           Object {
-            "Ref": "SlackAlarmLogHandlerServiceRole0308E4D8",
+            "Ref": "SlackAlarmLogForwardingHandlerServiceRole3921BE9B",
           },
         ],
       },
