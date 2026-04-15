@@ -230,14 +230,9 @@ export class Database extends constructs.Construct {
         })
       }
 
-      if (alarms.storageSpaceAlarms) {
+      if (alarms.storageSpaceAlarms?.enabled !== false) {
         dbAlarms.addStorageSpaceAlarms({
-          enabled: alarms.storageSpaceAlarms.enabled,
-          lowStorageSpaceAlarm: alarms.storageSpaceAlarms.lowStorageSpaceAlarm,
-          criticallyLowStorageSpaceAlarm:
-            alarms.storageSpaceAlarms.criticallyLowStorageSpaceAlarm,
-          appendToAlarmDescription:
-            alarms.storageSpaceAlarms.appendToAlarmDescription,
+          ...alarms.storageSpaceAlarms,
         })
       }
 
