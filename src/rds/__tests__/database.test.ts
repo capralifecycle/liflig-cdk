@@ -109,4 +109,3 @@ test("creates storage space and CPU utilization alarms by default when alarms en
     ComparisonOperator: "LessThanThreshold",
   })
 })
-
