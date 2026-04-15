@@ -61,22 +61,30 @@ export class SlackAlarm extends constructs.Construct {
       },
     })
 
-    this.logForwardingHandler = new lambda.Function(this, "LogForwardingHandler", {
-      code: lambda.Code.fromAsset(
-        path.join(__dir, "../../assets", "slack-error-log-forwarding-handler-lambda"),
-      ),
-      description:
-        "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
-      handler: "index.handler",
-      memorySize: 128,
-      runtime: lambda.Runtime.PYTHON_3_14,
-      timeout: Duration.seconds(10),
-      environment: {
-        SLACK_URL_SECRET_NAME: props.slackWebhookUrlSecret.secretName,
-        PROJECT_NAME: props.projectName,
-        ENVIRONMENT_NAME: props.envName,
+    this.logForwardingHandler = new lambda.Function(
+      this,
+      "LogForwardingHandler",
+      {
+        code: lambda.Code.fromAsset(
+          path.join(
+            __dir,
+            "../../assets",
+            "slack-error-log-handler-lambda",
+          ),
+        ),
+        description:
+          "Receives CloudWatch Logs subscription events and sends formatted errors to Slack",
+        handler: "index.handler",
+        memorySize: 128,
+        runtime: lambda.Runtime.PYTHON_3_14,
+        timeout: Duration.seconds(10),
+        environment: {
+          SLACK_URL_SECRET_NAME: props.slackWebhookUrlSecret.secretName,
+          PROJECT_NAME: props.projectName,
+          ENVIRONMENT_NAME: props.envName,
+        },
       },
-    })
+    )
 
     props.slackWebhookUrlSecret.grantRead(this.logForwardingHandler)
     props.slackWebhookUrlSecret.grantRead(slackLambda)

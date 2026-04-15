@@ -240,7 +240,9 @@ export class LambdaAlarms extends constructs.Construct {
       props.logGroup.addSubscriptionFilter(
         "liflig-cdk-log-content-to-slack-error-subscription",
         {
-          destination: new logsDestinations.LambdaDestination(this.logForwardingHandler),
+          destination: new logsDestinations.LambdaDestination(
+            this.logForwardingHandler,
+          ),
           filterPattern: jsonErrorFilterPattern(),
         },
       )
