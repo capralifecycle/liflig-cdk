@@ -22,6 +22,7 @@ test("queue alarms default setup", () => {
 
   alarms.addMessagesNotBeingProcessedAlarm()
   alarms.addApproximateAgeOfOldestMessageAlarm()
+  alarms.addTooManyMessagesExistAlarm({ messageAmountLimit: 1 })
 
   expect(stack).toMatchCdkSnapshot()
 })
@@ -53,6 +54,14 @@ test("queue alarms custom overrides", () => {
     period: cdk.Duration.seconds(60),
     evaluationPeriods: 1,
     thresholdSeconds: 60,
+  })
+
+  alarms.addTooManyMessagesExistAlarm({
+    messageAmountLimit: 500,
+    period: cdk.Duration.seconds(120),
+    evaluationPeriods: 2,
+    enableOkAlarm: false,
+    alarmDescription: "Custom alarm for too many messages",
   })
 
   expect(stack).toMatchCdkSnapshot()
