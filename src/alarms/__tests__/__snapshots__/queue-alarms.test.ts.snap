@@ -21,11 +21,6 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "ApproximateAgeOfOldestMessage",
         "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
-          },
-        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 60,
@@ -113,6 +108,31 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
+    "QueueAlarmsTooManyMessagesExist500Alarm61A048ED": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "Custom alarm for too many messages",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS",
+        "Period": 120,
+        "Statistic": "Sum",
+        "Threshold": 500,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
   },
 }
 `;
@@ -138,11 +158,6 @@ Object {
         "EvaluationPeriods": 2,
         "MetricName": "ApproximateAgeOfOldestMessage",
         "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
-          },
-        ],
         "Period": 900,
         "Statistic": "Maximum",
         "Threshold": 900,
@@ -225,6 +240,36 @@ Object {
         "Namespace": "AWS/SQS",
         "Period": 300,
         "Statistic": "Minimum",
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "QueueAlarmsTooManyMessagesExist1Alarm4678D080": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "AlarmDescription": "my-queue has too many messages (>1)",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": "my-queue",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS",
+        "OKActions": Array [
+          Object {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
+          },
+        ],
+        "Period": 300,
+        "Statistic": "Sum",
         "Threshold": 1,
         "TreatMissingData": "ignore",
       },

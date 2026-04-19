@@ -160,7 +160,7 @@ export class QueueAlarms extends constructs.Construct {
      */
     thresholdSeconds?: number
     /**
-     * @default true
+     * @default false
      */
     enableOkAlarm?: boolean
     /** An action to use for CloudWatch alarm state changes instead of the default warningAction */
@@ -198,8 +198,66 @@ export class QueueAlarms extends constructs.Construct {
     // Sent to warnings channel by default
     const action = props?.action ?? this.warningAction
     ageAlarm.addAlarmAction(action)
-    if (props?.enableOkAlarm ?? true) {
+    if (props?.enableOkAlarm) {
       ageAlarm.addOkAction(action)
+    }
+  }
+
+  /**
+   * Alerts when too many messages exist on the queue.
+   */
+  addTooManyMessagesExistAlarm(props: {
+    /**
+     * Maximum number of visible messages before triggering the alarm
+     */
+    messageAmountLimit: number
+    alarmDescription?: string
+    /**
+     * @default cdk.Duration.seconds(300)
+     */
+    period?: cdk.Duration
+    /**
+     * @default 1
+     */
+    evaluationPeriods?: number
+    /**
+     * @default true
+     */
+    enableOkAlarm?: boolean
+    /** An action to use for CloudWatch alarm state changes instead of the default warningAction */
+    action?: IAlarmAction
+  }): void {
+    const period = props.period ?? cdk.Duration.seconds(300)
+    const evaluationPeriods = props.evaluationPeriods ?? 1
+
+    const alarm = new cloudwatch.Metric({
+      metricName: "ApproximateNumberOfMessagesVisible",
+      namespace: "AWS/SQS",
+      statistic: "Sum",
+      period,
+      dimensionsMap: {
+        QueueName: this.queueName,
+      },
+    }).createAlarm(
+      this,
+      `TooManyMessagesExist${props.messageAmountLimit}Alarm`,
+      {
+        alarmDescription:
+          props.alarmDescription ??
+          `${this.queueName} has too many messages (>${props.messageAmountLimit})`,
+        comparisonOperator:
+          cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        evaluationPeriods,
+        threshold: props.messageAmountLimit,
+        treatMissingData: cloudwatch.TreatMissingData.IGNORE,
+      },
+    )
+
+    // Sent to warnings channel by default
+    const action = props.action ?? this.warningAction
+    alarm.addAlarmAction(action)
+    if (props.enableOkAlarm ?? true) {
+      alarm.addOkAction(action)
     }
   }
 }
