@@ -33,7 +33,7 @@ jobs:
           cache: "npm"
 
       - name: install python linter
-        uses: astral-sh/ruff-action@4919ec5cf1f49eff0871dbcea0da843445b837e6 # v3.6.1
+        uses: astral-sh/ruff-action@0ce1b0bf8b818ef400413f810f8a11cdbda0034b # v4.0.0
 
       # Add NEW setup-python step here for any new python version needed for lambda tests
       # We need a separate installation step for each python version because the
