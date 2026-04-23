@@ -210,6 +210,15 @@ export class Database extends constructs.Construct {
       parseBackupWindow(preferredBackupWindow)
     }
 
+    warnOnPinnedMinorWithAutoUpgrade(
+      this,
+      props.engine,
+      // AWS default is true.
+      props.overrideDbOptions?.autoMinorVersionUpgrade ??
+        props.autoMinorVersionUpgrade ??
+        true,
+    )
+
     const options: rds.DatabaseInstanceSourceProps = {
       engine: props.engine,
       allowMajorVersionUpgrade: true,
@@ -310,4 +319,20 @@ export class Database extends constructs.Construct {
   public allowConnectionFrom(source: ec2.ISecurityGroup): void {
     this.connections.allowDefaultPortFrom(source)
   }
+}
+
+function warnOnPinnedMinorWithAutoUpgrade(
+  scope: constructs.Construct,
+  engine: rds.IInstanceEngine,
+  autoMinorVersionUpgrade: boolean,
+): void {
+  if (!autoMinorVersionUpgrade) return
+  const version = engine.engineVersion
+  if (!version) return
+  if (version.fullVersion === version.majorVersion) return
+  cdk.Annotations.of(scope).addWarning(
+    `Engine version "${version.fullVersion}" pins a specific minor, but autoMinorVersionUpgrade is true. ` +
+      "AWS may upgrade past this pin during the maintenance window. " +
+      "Either use a major-only version (e.g. PostgresEngineVersion.VER_17) or set autoMinorVersionUpgrade to false.",
+  )
 }

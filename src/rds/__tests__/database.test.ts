@@ -1,5 +1,6 @@
 import "@aws-cdk/assert/jest"
 import { App, Stack } from "aws-cdk-lib"
+import * as assertions from "aws-cdk-lib/assertions"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
@@ -138,6 +139,58 @@ function synth(opts: {
   })
   return stack
 }
+
+describe("autoMinorVersionUpgrade warning", () => {
+  const matcher = assertions.Match.stringLikeRegexp(
+    "pins a specific minor, but autoMinorVersionUpgrade is true",
+  )
+
+  test("warns when pinned minor + autoMinorVersionUpgrade explicitly true", () => {
+    const stack = synth({
+      version: rds.PostgresEngineVersion.VER_17_5,
+      autoMinorVersionUpgrade: true,
+    })
+    assertions.Annotations.fromStack(stack).hasWarning("*", matcher)
+  })
+
+  test("warns when pinned minor + autoMinorVersionUpgrade defaulted", () => {
+    const stack = synth({ version: rds.PostgresEngineVersion.VER_17_5 })
+    assertions.Annotations.fromStack(stack).hasWarning("*", matcher)
+  })
+
+  test("no warning when pinned minor + autoMinorVersionUpgrade false", () => {
+    const stack = synth({
+      version: rds.PostgresEngineVersion.VER_17_5,
+      autoMinorVersionUpgrade: false,
+    })
+    assertions.Annotations.fromStack(stack).hasNoWarning("*", matcher)
+  })
+
+  test("no warning when major-only version + autoMinorVersionUpgrade true", () => {
+    const stack = synth({
+      version: rds.PostgresEngineVersion.VER_17,
+      autoMinorVersionUpgrade: true,
+    })
+    assertions.Annotations.fromStack(stack).hasNoWarning("*", matcher)
+  })
+
+  test("no warning when overrideDbOptions disables auto-minor-upgrade", () => {
+    const stack = synth({
+      version: rds.PostgresEngineVersion.VER_17_5,
+      overrideDbOptions: { autoMinorVersionUpgrade: false },
+    })
+    assertions.Annotations.fromStack(stack).hasNoWarning("*", matcher)
+  })
+
+  test("overrideDbOptions wins over autoMinorVersionUpgrade prop", () => {
+    const stack = synth({
+      version: rds.PostgresEngineVersion.VER_17_5,
+      autoMinorVersionUpgrade: false,
+      overrideDbOptions: { autoMinorVersionUpgrade: true },
+    })
+    assertions.Annotations.fromStack(stack).hasWarning("*", matcher)
+  })
+})
 
 describe("window validation via overrideDbOptions", () => {
   test("throws when overrideDbOptions windows overlap", () => {
