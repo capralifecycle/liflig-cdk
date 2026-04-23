@@ -5,6 +5,7 @@ import * as rds from "aws-cdk-lib/aws-rds"
 import type * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as constructs from "constructs"
 import { DatabaseAlarms } from "../alarms"
+import { overlaps, parseBackupWindow, parseMaintenanceWindow } from "./windows"
 
 /**
  * Configure database alarms.
@@ -126,6 +127,33 @@ export interface DatabaseProps extends cdk.StackProps {
    * @default false
    */
   usePublicSubnets?: boolean
+  /**
+   * Weekly maintenance window in UTC, format `ddd:hh:mm-ddd:hh:mm`.
+   * Minimum 30 minutes; must not overlap `preferredBackupWindow`.
+   *
+   * @default AWS-assigned
+   * @example "sun:03:00-sun:04:00"
+   */
+  preferredMaintenanceWindow?: string
+  /**
+   * Daily backup window in UTC, format `hh:mm-hh:mm`.
+   * Minimum 30 minutes; must not overlap `preferredMaintenanceWindow`.
+   *
+   * @default AWS-assigned
+   * @example "01:00-02:00"
+   */
+  preferredBackupWindow?: string
+  /**
+   * Whether AWS automatically applies minor engine version upgrades
+   * during the maintenance window.
+   *
+   * @default AWS default (true)
+   */
+  autoMinorVersionUpgrade?: boolean
+  /**
+   * Escape hatch for RDS option combinations the construct doesn't expose
+   * directly. Overrides any value set via the typed props above.
+   */
   overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
   /**
    * Configure database alarms.
@@ -156,9 +184,38 @@ export class Database extends constructs.Construct {
       username: masterUsername,
     })
 
+    const preferredMaintenanceWindow =
+      props.overrideDbOptions?.preferredMaintenanceWindow ??
+      props.preferredMaintenanceWindow
+    const preferredBackupWindow =
+      props.overrideDbOptions?.preferredBackupWindow ??
+      props.preferredBackupWindow
+
+    if (
+      preferredMaintenanceWindow !== undefined &&
+      preferredBackupWindow !== undefined
+    ) {
+      const mw = parseMaintenanceWindow(preferredMaintenanceWindow)
+      const bw = parseBackupWindow(preferredBackupWindow)
+      if (overlaps(mw, bw)) {
+        throw new Error(
+          `preferredBackupWindow "${preferredBackupWindow}" overlaps ` +
+            `preferredMaintenanceWindow "${preferredMaintenanceWindow}". ` +
+            "AWS requires these windows to be disjoint.",
+        )
+      }
+    } else if (preferredMaintenanceWindow !== undefined) {
+      parseMaintenanceWindow(preferredMaintenanceWindow)
+    } else if (preferredBackupWindow !== undefined) {
+      parseBackupWindow(preferredBackupWindow)
+    }
+
     const options: rds.DatabaseInstanceSourceProps = {
       engine: props.engine,
       allowMajorVersionUpgrade: true,
+      autoMinorVersionUpgrade: props.autoMinorVersionUpgrade,
+      preferredMaintenanceWindow: props.preferredMaintenanceWindow,
+      preferredBackupWindow: props.preferredBackupWindow,
       instanceIdentifier: props.instanceIdentifier,
       instanceType: props.instanceType,
       vpc: props.vpc,

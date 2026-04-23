@@ -109,3 +109,70 @@ test("creates storage space and CPU utilization alarms by default when alarms en
     ComparisonOperator: "LessThanThreshold",
   })
 })
+
+function synth(opts: {
+  version?: rds.PostgresEngineVersion
+  autoMinorVersionUpgrade?: boolean
+  preferredMaintenanceWindow?: string
+  preferredBackupWindow?: string
+  overrideDbOptions?: Partial<rds.DatabaseInstanceSourceProps>
+}) {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  const vpc = new ec2.Vpc(stack, "Vpc")
+  new Database(stack, "Database", {
+    vpc,
+    engine: rds.DatabaseInstanceEngine.postgres({
+      version: opts.version ?? rds.PostgresEngineVersion.VER_17,
+    }),
+    instanceType: ec2.InstanceType.of(
+      ec2.InstanceClass.BURSTABLE3,
+      ec2.InstanceSize.MICRO,
+    ),
+    instanceIdentifier: "example-database-v1",
+    autoMinorVersionUpgrade: opts.autoMinorVersionUpgrade,
+    preferredMaintenanceWindow: opts.preferredMaintenanceWindow,
+    preferredBackupWindow: opts.preferredBackupWindow,
+    overrideDbOptions: opts.overrideDbOptions,
+    alarms: { enabled: false },
+  })
+  return stack
+}
+
+describe("window validation via overrideDbOptions", () => {
+  test("throws when overrideDbOptions windows overlap", () => {
+    expect(() =>
+      synth({
+        overrideDbOptions: {
+          preferredMaintenanceWindow: "sun:03:00-sun:04:00",
+          preferredBackupWindow: "03:30-04:30",
+        },
+      }),
+    ).toThrow(/overlaps/)
+  })
+
+  test("throws when override backup window overlaps typed maintenance window", () => {
+    expect(() =>
+      synth({
+        preferredMaintenanceWindow: "sun:03:00-sun:04:00",
+        overrideDbOptions: { preferredBackupWindow: "03:30-04:30" },
+      }),
+    ).toThrow(/overlaps/)
+  })
+
+  test("throws when override maintenance window is malformed", () => {
+    expect(() =>
+      synth({
+        overrideDbOptions: { preferredMaintenanceWindow: "not-a-window" },
+      }),
+    ).toThrow()
+  })
+
+  test("throws when override backup window is malformed", () => {
+    expect(() =>
+      synth({
+        overrideDbOptions: { preferredBackupWindow: "not-a-window" },
+      }),
+    ).toThrow()
+  })
+})
