@@ -167,6 +167,12 @@ export interface DatabaseProps extends cdk.StackProps {
   alarms: DatabaseAlarmsConfig
 }
 
+/**
+ * These are taken from the default excluded chars in the RdsDatabaseSecret
+ * @see https://github.com/aws/aws-cdk/blob/f0b6da82b49da6611f871b67497db8d5004738a2/packages/aws-cdk-lib/aws-rds/lib/private/util.ts#L20
+ */
+declare const DEFAULT_PASSWORD_EXCLUDE_CHARS = " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
+
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
@@ -182,6 +188,7 @@ export class Database extends constructs.Construct {
 
     const secret = new rds.DatabaseSecret(this, "Secret", {
       username: masterUsername,
+      excludeCharacters: `${DEFAULT_PASSWORD_EXCLUDE_CHARS},`, // Add comma to default excluded characters
     })
 
     const preferredMaintenanceWindow =
