@@ -120,7 +120,7 @@ Object {
       },
       "Properties": Object {
         "Create": "{\\"service\\":\\"SSM\\",\\"action\\":\\"getParameter\\",\\"parameters\\":{\\"Name\\":\\"/cf/hosted-zone-id/example.com-public\\"},\\"region\\":\\"eu-west-1\\",\\"physicalResourceId\\":{\\"id\\":\\"/cf/hosted-zone-id/example.com-public\\"}}",
-        "InstallLatestAwsSdk": true,
+        "InstallLatestAwsSdk": false,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",

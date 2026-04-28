@@ -18,6 +18,11 @@ export class CrossRegionSsmParameter extends constructs.Construct {
 
     // TODO: Can we somehow propagate tags as well?
     new cr.AwsCustomResource(this, "Resoure", {
+      // Use SDK bundled with the Lambda runtime instead of installing the
+      // latest at execution time. Avoids ~60s npm install on every invocation
+      // and removes a runtime dependency on npmjs.com availability.
+      // https://constructs.dev/packages/aws-cdk-lib/v/2.251.0?submodule=custom_resources&lang=typescript
+      installLatestAwsSdk: false,
       onUpdate: {
         service: "SSM",
         action: "putParameter",

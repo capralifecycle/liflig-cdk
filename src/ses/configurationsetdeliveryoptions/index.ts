@@ -35,6 +35,11 @@ export class ConfigurationSetDeliveryOptions extends constructs.Construct {
     super(scope, id)
 
     new cr.AwsCustomResource(this, "Resource", {
+      // Use SDK bundled with the Lambda runtime instead of installing the
+      // latest at execution time. Avoids ~60s npm install on every invocation
+      // and removes a runtime dependency on npmjs.com availability.
+      // https://constructs.dev/packages/aws-cdk-lib/v/2.251.0?submodule=custom_resources&lang=typescript
+      installLatestAwsSdk: false,
       policy: cr.AwsCustomResourcePolicy.fromStatements([
         new iam.PolicyStatement({
           actions: ["ses:PutConfigurationSetDeliveryOptions"],
