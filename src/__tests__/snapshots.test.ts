@@ -158,6 +158,49 @@ describe("sanitizeMetadata", () => {
       "Somethingsnapshot-valueElse",
     )
   })
+
+  it("strips aws:cdk:creationStack entries", () => {
+    const metadata = JSON.stringify({
+      "/stack/Resource": [
+        {
+          type: "aws:cdk:logicalId",
+          data: "MyResource",
+        },
+        {
+          type: "aws:cdk:creationStack",
+          data: [
+            "<anonymous> (/Users/someone/dev/proj/app.ts:31:1)",
+            "...node internals...",
+          ],
+        },
+      ],
+    })
+
+    const result = JSON.parse(sanitizeMetadata(metadata))
+    expect(result["/stack/Resource"]).toHaveLength(1)
+    expect(result["/stack/Resource"][0].type).toBe("aws:cdk:logicalId")
+  })
+
+  it("drops construct paths whose only metadata was a creation stack", () => {
+    const metadata = JSON.stringify({
+      "/stack/CreationStackOnly": [
+        {
+          type: "aws:cdk:creationStack",
+          data: ["<anonymous> (/Users/someone/dev/proj/app.ts:1:1)"],
+        },
+      ],
+      "/stack/Real": [
+        {
+          type: "aws:cdk:logicalId",
+          data: "Real",
+        },
+      ],
+    })
+
+    const result = JSON.parse(sanitizeMetadata(metadata))
+    expect(result["/stack/CreationStackOnly"]).toBeUndefined()
+    expect(result["/stack/Real"]).toBeDefined()
+  })
 })
 
 describe("sanitizeManifest", () => {
