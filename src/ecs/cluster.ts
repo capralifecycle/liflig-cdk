@@ -52,7 +52,16 @@ export class Cluster extends constructs.Construct {
           clusterArn: [this.cluster.clusterArn],
         },
       },
-      targets: [new targets.CloudWatchLogGroup(this.clusterEventLogs)],
+      targets: [
+        new targets.CloudWatchLogGroup(this.clusterEventLogs, {
+          // Use SDK bundled with the Lambda runtime instead of installing the
+          // latest at execution time. Avoids ~60s npm install on every
+          // invocation and removes a runtime dependency on npmjs.com
+          // availability.
+          // https://constructs.dev/packages/aws-cdk-lib/v/2.251.0?submodule=custom_resources&lang=typescript
+          installLatestAwsSdk: false,
+        }),
+      ],
     })
 
     if (props.alarmAction) {

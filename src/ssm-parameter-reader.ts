@@ -24,6 +24,11 @@ function removeLeadingSlash(value: string): string {
 export class SsmParameterReader extends cr.AwsCustomResource {
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id, {
+      // Use SDK bundled with the Lambda runtime instead of installing the
+      // latest at execution time. Avoids ~60s npm install on every invocation
+      // and removes a runtime dependency on npmjs.com availability.
+      // https://constructs.dev/packages/aws-cdk-lib/v/2.251.0?submodule=custom_resources&lang=typescript
+      installLatestAwsSdk: false,
       onUpdate: {
         service: "SSM",
         action: "getParameter",
