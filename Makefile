@@ -9,8 +9,15 @@ all: build
 build: clean install fmt lint-fix npm-build snapshots
 
 .PHONY: ci
-# `snapshots` runs jest with --updateSnapshot, then `snapshots-check` fails on any drift.
-ci: install lint fmt-check npm-build snapshots snapshots-check py-test
+ci: install verify
+
+.PHONY: verify
+# Run independent checks in parallel, then ensure snapshots haven't drifted.
+# `snapshots` runs jest with --updateSnapshot; under -j, `npm-cdk-snapshots`
+# is serialized after `npm-jest-snapshots` (see comment there).
+verify:
+	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots py-test
+	@$(MAKE) --no-print-directory snapshots-check
 
 
 ######################
@@ -77,7 +84,10 @@ npm-fmt-check:
 	npm run format:check
 
 .PHONY: npm-cdk-snapshots
-npm-cdk-snapshots:
+# Needs `lib/` because create-snapshots.sh runs the compiled cdk-create-snapshots.js.
+# Also serialized after npm-jest-snapshots: both contend on cdk.out, and the CDK CLI's
+# lock blocks jest's in-process synth (Template.fromStack) when they run concurrently.
+npm-cdk-snapshots: npm-build npm-jest-snapshots
 	npm run snapshots
 
 .PHONY: npm-jest-snapshots
