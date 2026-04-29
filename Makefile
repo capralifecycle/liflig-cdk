@@ -9,7 +9,8 @@ all: build
 build: clean install fmt lint-fix npm-build snapshots
 
 .PHONY: ci
-ci: install lint fmt-check npm-build snapshots snapshots-check test
+# `snapshots` runs jest with --updateSnapshot, then `snapshots-check` fails on any drift.
+ci: install lint fmt-check npm-build snapshots snapshots-check py-test
 
 
 ######################
@@ -30,9 +31,6 @@ fmt: npm-fmt py-fmt
 
 .PHONY: fmt-check
 fmt-check: npm-fmt-check py-fmt-check
-
-.PHONY: test
-test: npm-test py-test
 
 .PHONY: snapshots
 snapshots: npm-cdk-snapshots npm-jest-snapshots
@@ -78,9 +76,6 @@ npm-fmt:
 npm-fmt-check:
 	npm run format:check
 
-.PHONY: npm-snapshots
-npm-snapshots: npm-cdk-snapshots npm-jest-snapshots
-
 .PHONY: npm-cdk-snapshots
 npm-cdk-snapshots:
 	npm run snapshots
@@ -96,10 +91,6 @@ npm-snapshots-check:
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	npx --yes --package renovate@latest -- renovate-config-validator --strict renovate.json5
-
-.PHONY: npm-test
-npm-test:
-	npm test
 
 .PHONY: release
 release:
