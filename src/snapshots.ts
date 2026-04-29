@@ -26,6 +26,33 @@ function removeTrace(data: any): any {
   return data
 }
 
+// CDK >= 2.251.0 emits `aws:cdk:creationStack` metadata entries containing
+// construct creation stack traces. These include absolute paths from the
+// machine that ran `cdk synth`, so they are not stable across environments.
+function removeCreationStack(data: any): any {
+  if (Array.isArray(data)) {
+    return data
+      .filter(
+        (item) =>
+          !(
+            item === Object(item) &&
+            (item as { type?: unknown }).type === "aws:cdk:creationStack"
+          ),
+      )
+      .map(removeCreationStack)
+  }
+
+  if (data === Object(data)) {
+    return Object.fromEntries(
+      Object.entries(data as Record<string, unknown>)
+        .map(([key, value]) => [key, removeCreationStack(value)])
+        .filter(([, value]) => !(Array.isArray(value) && value.length === 0)),
+    )
+  }
+
+  return data
+}
+
 function removeRuntimeLibraries(data: any): any {
   const cp = {
     ...data,
@@ -190,6 +217,7 @@ export function sanitizeManifest(content: string): string {
     // or other users generating the snapshots.
     removeRuntimeLibraries,
     removeTrace,
+    removeCreationStack,
     // Avoid details (hashes) from assets.
     removeAssetDetailsFromManifest,
   ].reduce((acc, fn) => fn(acc), input)
@@ -207,10 +235,11 @@ export function sanitizeManifest(content: string): string {
  */
 export function sanitizeMetadata(content: string): string {
   const input = JSON.parse(content)
-  const output = [removeTrace, removeAssetDetailsFromManifest].reduce(
-    (acc, fn) => fn(acc),
-    input,
-  )
+  const output = [
+    removeTrace,
+    removeCreationStack,
+    removeAssetDetailsFromManifest,
+  ].reduce((acc, fn) => fn(acc), input)
 
   return JSON.stringify(output, undefined, "  ")
 }
