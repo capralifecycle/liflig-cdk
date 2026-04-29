@@ -12,12 +12,11 @@ build: clean install fmt lint-fix npm-build snapshots
 ci: install verify
 
 .PHONY: verify
-# Run independent checks in parallel, then ensure snapshots haven't drifted.
-# `snapshots` runs jest with --updateSnapshot; under -j, `npm-cdk-snapshots`
-# is serialized after `npm-jest-snapshots` (see comment there).
+# `snapshots-check` pulls in `snapshots` via the dep graph, so a single -j
+# invocation schedules everything correctly: lint, fmt-check, py-test and the
+# snapshots → snapshots-check chain run in parallel.
 verify:
-	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots py-test
-	@$(MAKE) --no-print-directory snapshots-check
+	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots-check py-test
 
 
 ######################
@@ -95,7 +94,7 @@ npm-jest-snapshots:
 	npm test -- --updateSnapshot
 
 .PHONY: npm-snapshots-check
-npm-snapshots-check:
+npm-snapshots-check: snapshots
 	git status ':(glob)**/__snapshots__/**' && git add --intent-to-add ':(glob)**/__snapshots__/**' && git diff --exit-code ':(glob)**/__snapshots__/**'
 
 .PHONY: validate-renovate-config
