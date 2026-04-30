@@ -12,9 +12,6 @@ build: clean install fmt lint-fix npm-build snapshots
 ci: install verify
 
 .PHONY: verify
-# `snapshots-check` pulls in `snapshots` via the dep graph, so a single -j
-# invocation schedules everything correctly: lint, fmt-check, py-test and the
-# snapshots → snapshots-check chain run in parallel.
 verify:
 	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots-check py-test
 
