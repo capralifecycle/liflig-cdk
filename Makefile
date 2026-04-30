@@ -9,7 +9,11 @@ all: build
 build: clean install fmt lint-fix npm-build snapshots
 
 .PHONY: ci
-ci: install lint fmt-check npm-build snapshots snapshots-check test
+ci: install verify
+
+.PHONY: verify
+verify:
+	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots-check py-test
 
 
 ######################
@@ -30,9 +34,6 @@ fmt: npm-fmt py-fmt
 
 .PHONY: fmt-check
 fmt-check: npm-fmt-check py-fmt-check
-
-.PHONY: test
-test: npm-test py-test
 
 .PHONY: snapshots
 snapshots: npm-cdk-snapshots npm-jest-snapshots
@@ -78,11 +79,11 @@ npm-fmt:
 npm-fmt-check:
 	npm run format:check
 
-.PHONY: npm-snapshots
-npm-snapshots: npm-cdk-snapshots npm-jest-snapshots
-
 .PHONY: npm-cdk-snapshots
-npm-cdk-snapshots:
+# Needs `lib/` because create-snapshots.sh runs the compiled cdk-create-snapshots.js.
+# Also serialized after npm-jest-snapshots: both contend on cdk.out, and the CDK CLI's
+# lock blocks jest's in-process synth (Template.fromStack) when they run concurrently.
+npm-cdk-snapshots: npm-build npm-jest-snapshots
 	npm run snapshots
 
 .PHONY: npm-jest-snapshots
@@ -90,16 +91,12 @@ npm-jest-snapshots:
 	npm test -- --updateSnapshot
 
 .PHONY: npm-snapshots-check
-npm-snapshots-check:
+npm-snapshots-check: snapshots
 	git status ':(glob)**/__snapshots__/**' && git add --intent-to-add ':(glob)**/__snapshots__/**' && git diff --exit-code ':(glob)**/__snapshots__/**'
 
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	npx --yes --package renovate@latest -- renovate-config-validator --strict renovate.json5
-
-.PHONY: npm-test
-npm-test:
-	npm test
 
 .PHONY: release
 release:

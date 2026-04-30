@@ -36,7 +36,7 @@ export const handler = async (
   event: APIGatewayRequestAuthorizerEventV2,
 ): Promise<AuthorizerResult> => {
   const authHeader = event.headers?.authorization
-  if (!authHeader || !authHeader.startsWith("Basic ")) {
+  if (!authHeader?.startsWith("Basic ")) {
     return { isAuthorized: false }
   }
 

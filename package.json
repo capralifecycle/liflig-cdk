@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --enable-source-maps' jest --runInBand",
+    "test": "NODE_OPTIONS='--experimental-vm-modules --enable-source-maps' jest",
     "lint": "biome check",
     "lint:fix": "biome check --fix",
     "format": "biome format --write",
