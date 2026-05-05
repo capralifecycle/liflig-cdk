@@ -8,7 +8,7 @@ import {
 import { validateProps as validateGithubActionsRoleProps } from "../build-artifacts/github-actions-role"
 
 test("should fail validation on invalid default branch", () => {
-  const valid = validateBuildArtifactsProps({
+  const errors = validateBuildArtifactsProps({
     bucketName: "my-bucket",
     ecrRepositoryName: "my-ecr-repo",
     githubActions: {
@@ -21,13 +21,13 @@ test("should fail validation on invalid default branch", () => {
       ],
     },
   })
-  expect(valid).toBe(false)
+  expect(errors).toEqual(["Default branch * contains invalid characters"])
 })
 
 test("should fail validation on invalid trusted owner", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
-  const valid = validateGithubActionsRoleProps({
+  const errors = validateGithubActionsRoleProps({
     oidcProvider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       stack,
       "Provider",
@@ -41,13 +41,13 @@ test("should fail validation on invalid trusted owner", () => {
       },
     ],
   })
-  expect(valid).toBe(false)
+  expect(errors).toContain("Trusted owner * contains invalid characters")
 })
 
 test("should fail validation on missing trusted owner", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
-  const valid = validateGithubActionsRoleProps({
+  const errors = validateGithubActionsRoleProps({
     oidcProvider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       stack,
       "Provider",
@@ -61,13 +61,15 @@ test("should fail validation on missing trusted owner", () => {
       },
     ],
   })
-  expect(valid).toBe(false)
+  expect(errors).toContain(
+    "Owner capralifecycel of repository my-repository not configured as a trusted owner",
+  )
 })
 
 test("should fail validation on empty list of repositories", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
-  const valid = validateGithubActionsRoleProps({
+  const errors = validateGithubActionsRoleProps({
     repositories: [],
     oidcProvider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       stack,
@@ -76,13 +78,15 @@ test("should fail validation on empty list of repositories", () => {
     ),
     trustedOwners: ["capralifecycle"],
   })
-  expect(valid).toBe(false)
+  expect(errors).toContain(
+    "At least 1 repository must be supplied, but 0 were given",
+  )
 })
 
 test("should fail validation on empty list of trusted owners", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
-  const valid = validateGithubActionsRoleProps({
+  const errors = validateGithubActionsRoleProps({
     repositories: [
       {
         name: "my-repository",
@@ -96,7 +100,9 @@ test("should fail validation on empty list of trusted owners", () => {
     ),
     trustedOwners: [],
   })
-  expect(valid).toBe(false)
+  expect(errors).toContain(
+    "At least 1 trusted owner must be supplied, but 0 were given",
+  )
 })
 
 test("should support creation of only 1 role", () => {

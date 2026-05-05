@@ -124,19 +124,20 @@ const policyStatements = {
 
 /**
  * Utility function for validating the construct properties.
+ *
+ * Returns a list of validation error messages. An empty list means the props are valid.
  */
-export const validateProps = (props: Props) => {
-  let valid = true
+export const validateProps = (props: Props): string[] => {
+  const errors: string[] = []
   if (
     props.githubActions?.defaultBranch &&
     !props.githubActions.defaultBranch.match(/^[a-zA-Z0-9-]+$/)
   ) {
-    console.error(
+    errors.push(
       `Default branch ${props.githubActions.defaultBranch} contains invalid characters`,
     )
-    valid = false
   }
-  return valid
+  return errors
 }
 
 /**
@@ -162,8 +163,9 @@ export class BuildArtifacts extends constructs.Construct {
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
 
-    if (!validateProps(props)) {
-      throw new Error("Invalid props were supplied")
+    const errors = validateProps(props)
+    if (errors.length > 0) {
+      throw new Error(`Invalid props were supplied: ${errors.join("; ")}`)
     }
 
     this.bucketName = props.bucketName

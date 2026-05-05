@@ -58,33 +58,31 @@ export interface Props {
 
 /**
  * Utility function for validating the construct properties.
+ *
+ * Returns a list of validation error messages. An empty list means the props are valid.
  */
-export const validateProps = (props: Props) => {
-  let valid = true
+export const validateProps = (props: Props): string[] => {
+  const errors: string[] = []
   if (props.trustedOwners.length === 0) {
-    console.error("At least 1 trusted owner must be supplied, but 0 were given")
-    valid = false
+    errors.push("At least 1 trusted owner must be supplied, but 0 were given")
   }
   if (props.repositories.length === 0) {
-    console.error("At least 1 repository must be supplied, but 0 were given")
-    valid = false
+    errors.push("At least 1 repository must be supplied, but 0 were given")
   }
   props.trustedOwners.forEach((owner) => {
     if (!owner.match(/^[a-zA-Z0-9-]+$/)) {
-      console.error(`Trusted owner ${owner} contains invalid characters`)
-      valid = false
+      errors.push(`Trusted owner ${owner} contains invalid characters`)
     }
   })
 
   props.repositories.forEach((repository) => {
     if (!props.trustedOwners.includes(repository.owner)) {
-      console.error(
+      errors.push(
         `Owner ${repository.owner} of repository ${repository.name} not configured as a trusted owner`,
       )
-      valid = false
     }
   })
-  return valid
+  return errors
 }
 
 /**
@@ -96,8 +94,9 @@ export class GithubActionsRole extends constructs.Construct {
 
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
-    if (!validateProps(props)) {
-      throw new Error("Invalid props were supplied")
+    const errors = validateProps(props)
+    if (errors.length > 0) {
+      throw new Error(`Invalid props were supplied: ${errors.join("; ")}`)
     }
 
     const subjects = props.repositories.map(
