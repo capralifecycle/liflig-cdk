@@ -6,7 +6,7 @@ import * as cdk from "aws-cdk-lib"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs"
-import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import * as logs from "aws-cdk-lib/aws-logs"
 import type * as sns from "aws-cdk-lib/aws-sns"
 import * as snsSubscriptions from "aws-cdk-lib/aws-sns-subscriptions"
 import * as cr from "aws-cdk-lib/custom-resources"
@@ -79,7 +79,9 @@ export class ConfigurationSetSnsDestination extends constructs.Construct {
       ),
       handler: "index.handler",
       runtime: lambda.Runtime.NODEJS_24_X,
-      logRetention: RetentionDays.THREE_MONTHS,
+      logGroup: new logs.LogGroup(this, "EventsHandlerLogGroup", {
+        retention: logs.RetentionDays.THREE_MONTHS,
+      }),
     })
 
     if (props.logEvents ?? true) {
