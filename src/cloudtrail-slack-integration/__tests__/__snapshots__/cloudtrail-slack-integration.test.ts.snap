@@ -25,6 +25,11 @@ Object {
           },
         },
         "Handler": "main.handler_event_transformer",
+        "LoggingConfig": Object {
+          "LogGroup": Object {
+            "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
+          },
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
@@ -36,28 +41,13 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogRetention3FD60AEB": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
-        "LogGroupName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "/aws/lambda/",
-              Object {
-                "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
-              },
-            ],
-          ],
-        },
         "RetentionInDays": 180,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn",
-          ],
-        },
       },
-      "Type": "Custom::LogRetention",
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
       "Properties": Object {
@@ -487,85 +477,6 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
-      "DependsOn": Array [
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
-          },
-          "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip",
-        },
-        "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs22.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:PutRetentionPolicy",
-                "logs:DeleteRetentionPolicy",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "Roles": Array [
-          Object {
-            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
   },
 }
 `;
@@ -598,6 +509,11 @@ Object {
           },
         },
         "Handler": "main.handler_event_transformer",
+        "LoggingConfig": Object {
+          "LogGroup": Object {
+            "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
+          },
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
@@ -609,28 +525,13 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogRetention3FD60AEB": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
-        "LogGroupName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "/aws/lambda/",
-              Object {
-                "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
-              },
-            ],
-          ],
-        },
         "RetentionInDays": 180,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn",
-          ],
-        },
       },
-      "Type": "Custom::LogRetention",
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
       "Properties": Object {
@@ -1097,6 +998,11 @@ Object {
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
+        "LoggingConfig": Object {
+          "LogGroup": Object {
+            "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB",
+          },
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
@@ -1108,28 +1014,13 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaLogRetention72708236": Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
-        "LogGroupName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "/aws/lambda/",
-              Object {
-                "Ref": "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40",
-              },
-            ],
-          ],
-        },
         "RetentionInDays": 14,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn",
-          ],
-        },
       },
-      "Type": "Custom::LogRetention",
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": Object {
       "Properties": Object {
@@ -1208,85 +1099,6 @@ Object {
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
-      "DependsOn": Array [
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
-          },
-          "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip",
-        },
-        "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs22.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:PutRetentionPolicy",
-                "logs:DeleteRetentionPolicy",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "Roles": Array [
-          Object {
-            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
   },
 }
 `;
@@ -1352,6 +1164,11 @@ Object {
           },
         },
         "Handler": "main.handler_event_transformer",
+        "LoggingConfig": Object {
+          "LogGroup": Object {
+            "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
+          },
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
@@ -1363,28 +1180,13 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogRetention3FD60AEB": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
-        "LogGroupName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "/aws/lambda/",
-              Object {
-                "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
-              },
-            ],
-          ],
-        },
         "RetentionInDays": 180,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn",
-          ],
-        },
       },
-      "Type": "Custom::LogRetention",
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
       "Properties": Object {
@@ -1884,6 +1686,11 @@ Object {
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
+        "LoggingConfig": Object {
+          "LogGroup": Object {
+            "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB",
+          },
+        },
         "Role": Object {
           "Fn::GetAtt": Array [
             "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
@@ -1895,28 +1702,13 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaLogRetention72708236": Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
-        "LogGroupName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "/aws/lambda/",
-              Object {
-                "Ref": "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40",
-              },
-            ],
-          ],
-        },
         "RetentionInDays": 14,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn",
-          ],
-        },
       },
-      "Type": "Custom::LogRetention",
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": Object {
       "Properties": Object {
@@ -1994,85 +1786,6 @@ Object {
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
-      "DependsOn": Array [
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
-          },
-          "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip",
-        },
-        "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs22.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:PutRetentionPolicy",
-                "logs:DeleteRetentionPolicy",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "Roles": Array [
-          Object {
-            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "TopicBFC7AF6E": Object {
       "Type": "AWS::SNS::Topic",
