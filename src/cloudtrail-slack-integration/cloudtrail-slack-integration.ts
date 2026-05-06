@@ -79,7 +79,9 @@ export class CloudTrailSlackIntegration extends constructs.Construct {
         handler: "main.handler_event_transformer",
         runtime: lambda.Runtime.PYTHON_3_13,
         timeout: cdk.Duration.seconds(15),
-        logRetention: logs.RetentionDays.SIX_MONTHS,
+        logGroup: new logs.LogGroup(this, "EventTransformerLambdaLogGroup", {
+          retention: logs.RetentionDays.SIX_MONTHS,
+        }),
         environment: {
           SLACK_CHANNEL: props.slackChannel,
           DEDUPLICATE_EVENTS: JSON.stringify(!!props.deduplicateEvents),
@@ -136,7 +138,9 @@ export class CloudTrailSlackIntegration extends constructs.Construct {
         handler: "main.handler_slack_forwarder",
         runtime: lambda.Runtime.PYTHON_3_13,
         timeout: cdk.Duration.seconds(15),
-        logRetention: logs.RetentionDays.TWO_WEEKS,
+        logGroup: new logs.LogGroup(this, "SlackForwarderLambdaLogGroup", {
+          retention: logs.RetentionDays.TWO_WEEKS,
+        }),
       })
 
       if (props.infrastructureAlarmAction) {
