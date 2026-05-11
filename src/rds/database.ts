@@ -173,6 +173,13 @@ export interface DatabaseProps extends cdk.StackProps {
  */
 const DEFAULT_PASSWORD_EXCLUDE_CHARS = " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
 
+/**
+ * Comma is additionally excluded because common env-var configuration
+ * libraries (e.g. http4k) treat `,` as a list separator, which causes
+ * failures when a generated password happens to contain a comma.
+ */
+const PASSWORD_EXCLUDE_CHARS = `${DEFAULT_PASSWORD_EXCLUDE_CHARS},`
+
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
@@ -188,7 +195,7 @@ export class Database extends constructs.Construct {
 
     const secret = new rds.DatabaseSecret(this, "Secret", {
       username: masterUsername,
-      excludeCharacters: `${DEFAULT_PASSWORD_EXCLUDE_CHARS},`, // Add comma to default excluded characters
+      excludeCharacters: PASSWORD_EXCLUDE_CHARS,
     })
 
     const preferredMaintenanceWindow =
