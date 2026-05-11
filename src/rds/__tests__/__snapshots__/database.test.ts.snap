@@ -73,7 +73,7 @@ Object {
           ],
         },
         "GenerateSecretString": Object {
-          "ExcludeCharacters": " %+~\`#$&*()|[]{}:;<>?!'/@\\"\\\\",
+          "ExcludeCharacters": " %+~\`#$&*()|[]{}:;<>?!'/@\\"\\\\,",
           "GenerateStringKey": "password",
           "PasswordLength": 30,
           "SecretStringTemplate": "{\\"username\\":\\"master\\"}",

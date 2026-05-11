@@ -167,6 +167,20 @@ export interface DatabaseProps extends cdk.StackProps {
   alarms: DatabaseAlarmsConfig
 }
 
+/**
+ * These are taken from the default excluded chars in the RdsDatabaseSecret
+ * @see https://github.com/aws/aws-cdk/blob/f0b6da82b49da6611f871b67497db8d5004738a2/packages/aws-cdk-lib/aws-rds/lib/private/util.ts#L20
+ */
+export const DEFAULT_PASSWORD_EXCLUDE_CHARS = " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
+
+/**
+ * Common env-var configuration libraries (e.g. http4k) treat `,` as a list
+ * separator, which causes failures when a generated password happens to
+ * contain a comma.
+ */
+const HTTP4K_LIST_SEPARATOR_SYMBOL = ","
+const PASSWORD_EXCLUDE_CHARS = `${DEFAULT_PASSWORD_EXCLUDE_CHARS}${HTTP4K_LIST_SEPARATOR_SYMBOL}`
+
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
   public readonly connections: ec2.Connections
@@ -182,6 +196,7 @@ export class Database extends constructs.Construct {
 
     const secret = new rds.DatabaseSecret(this, "Secret", {
       username: masterUsername,
+      excludeCharacters: PASSWORD_EXCLUDE_CHARS,
     })
 
     const preferredMaintenanceWindow =

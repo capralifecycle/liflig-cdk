@@ -7,6 +7,7 @@ import * as rds from "aws-cdk-lib/aws-rds"
 import * as sns from "aws-cdk-lib/aws-sns"
 import "jest-cdk-snapshot"
 import { Database } from ".."
+import { DEFAULT_PASSWORD_EXCLUDE_CHARS } from "../database"
 
 test("create database", () => {
   const app = new App()
@@ -190,6 +191,24 @@ describe("autoMinorVersionUpgrade warning", () => {
     })
     assertions.Annotations.fromStack(stack).hasWarning("*", matcher)
   })
+})
+
+test("local DEFAULT_PASSWORD_EXCLUDE_CHARS tracks aws-cdk's DatabaseSecret default", () => {
+  // Guards against silent drift from aws-cdk-lib's internal default.
+  // If this fails after an aws-cdk-lib bump, reconcile the local constant
+  // with the new upstream value.
+  //
+  // See docstring for DEFAULT_PASSWORD_EXCLUDE_CHARS for upstream link
+  const stack = new Stack(new App(), "Stack")
+  new rds.DatabaseSecret(stack, "Secret", { username: "master" })
+
+  const secrets = assertions.Template.fromStack(stack).findResources(
+    "AWS::SecretsManager::Secret",
+  )
+  const [secret] = Object.values(secrets)
+  expect(secret.Properties.GenerateSecretString.ExcludeCharacters).toBe(
+    DEFAULT_PASSWORD_EXCLUDE_CHARS,
+  )
 })
 
 describe("window validation via overrideDbOptions", () => {
