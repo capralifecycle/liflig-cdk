@@ -174,11 +174,12 @@ export interface DatabaseProps extends cdk.StackProps {
 export const DEFAULT_PASSWORD_EXCLUDE_CHARS = " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
 
 /**
- * Comma is additionally excluded because common env-var configuration
- * libraries (e.g. http4k) treat `,` as a list separator, which causes
- * failures when a generated password happens to contain a comma.
+ * Common env-var configuration libraries (e.g. http4k) treat `,` as a list
+ * separator, which causes failures when a generated password happens to
+ * contain a comma.
  */
-const PASSWORD_EXCLUDE_CHARS = `${DEFAULT_PASSWORD_EXCLUDE_CHARS},`
+const HTTP4K_LIST_SEPARATOR_SYMBOL = ","
+const PASSWORD_EXCLUDE_CHARS = `${DEFAULT_PASSWORD_EXCLUDE_CHARS}${HTTP4K_LIST_SEPARATOR_SYMBOL}`
 
 export class Database extends constructs.Construct {
   public readonly secret: sm.ISecret
