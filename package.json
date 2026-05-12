@@ -61,7 +61,7 @@
     "aws-cdk-lib": "2.251.0",
     "constructs": "10.6.0",
     "esbuild": "0.28.0",
-    "jest": "30.4.1",
+    "jest": "30.4.2",
     "jest-cdk-snapshot": "2.3.6",
     "lefthook": "2.1.6",
     "npm-check-updates": "22.1.1",
