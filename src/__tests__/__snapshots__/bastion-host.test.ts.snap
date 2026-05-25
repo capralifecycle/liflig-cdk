@@ -10,8 +10,8 @@ Object {
     },
   },
   "Parameters": Object {
-    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
-      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+    "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
     },
   },
@@ -34,7 +34,7 @@ Object {
           "Ref": "BastionHostInstanceInstanceProfileB1DB546D",
         },
         "ImageId": Object {
-          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter",
         },
         "InstanceType": "t3.nano",
         "SecurityGroupIds": Array [
@@ -60,11 +60,13 @@ Object {
               "",
               Array [
                 "#!/bin/bash
-yum install -y https://amazon-ssm-",
+PG_PKG=$(dnf repoquery -q --qf='%{name}' 'postgresql[0-9]*' | grep -v '-' | sort -V | tail -1)
+MARIA_PKG=$(dnf repoquery -q --qf='%{name}' 'mariadb[0-9]*' | grep -v '-' | sort -V | tail -1)
+dnf install -y https://amazon-ssm-",
                 Object {
                   "Ref": "AWS::Region",
                 },
-                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat postgresql mariadb",
+                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat \\"\${PG_PKG:-postgresql18}\\" \\"\${MARIA_PKG:-mariadb1011}\\"",
               ],
             ],
           },
@@ -172,8 +174,8 @@ Object {
     },
   },
   "Parameters": Object {
-    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
-      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+    "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
     },
   },
@@ -196,7 +198,7 @@ Object {
           "Ref": "BastionHostInstanceInstanceProfileB1DB546D",
         },
         "ImageId": Object {
-          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter",
         },
         "InstanceType": "t3.nano",
         "SecurityGroupIds": Array [
@@ -219,11 +221,13 @@ Object {
               "",
               Array [
                 "#!/bin/bash
-yum install -y https://amazon-ssm-",
+PG_PKG=$(dnf repoquery -q --qf='%{name}' 'postgresql[0-9]*' | grep -v '-' | sort -V | tail -1)
+MARIA_PKG=$(dnf repoquery -q --qf='%{name}' 'mariadb[0-9]*' | grep -v '-' | sort -V | tail -1)
+dnf install -y https://amazon-ssm-",
                 Object {
                   "Ref": "AWS::Region",
                 },
-                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat postgresql mariadb",
+                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat \\"\${PG_PKG:-postgresql18}\\" \\"\${MARIA_PKG:-mariadb1011}\\"",
               ],
             ],
           },
@@ -315,8 +319,8 @@ Object {
     },
   },
   "Parameters": Object {
-    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
-      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+    "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+      "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
     },
   },
@@ -339,7 +343,7 @@ Object {
           "Ref": "BastionHostInstanceInstanceProfileB1DB546D",
         },
         "ImageId": Object {
-          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter",
         },
         "InstanceType": "t3.nano",
         "SecurityGroupIds": Array [
@@ -365,11 +369,13 @@ Object {
               "",
               Array [
                 "#!/bin/bash
-yum install -y https://amazon-ssm-",
+PG_PKG=$(dnf repoquery -q --qf='%{name}' 'postgresql[0-9]*' | grep -v '-' | sort -V | tail -1)
+MARIA_PKG=$(dnf repoquery -q --qf='%{name}' 'mariadb[0-9]*' | grep -v '-' | sort -V | tail -1)
+dnf install -y https://amazon-ssm-",
                 Object {
                   "Ref": "AWS::Region",
                 },
-                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat postgresql mariadb",
+                ".s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat \\"\${PG_PKG:-postgresql18}\\" \\"\${MARIA_PKG:-mariadb1011}\\"",
               ],
             ],
           },

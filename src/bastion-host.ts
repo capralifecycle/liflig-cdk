@@ -69,13 +69,13 @@ export class BastionHost extends constructs.Construct {
         ec2.InstanceClass.T3,
         ec2.InstanceSize.NANO,
       ),
-      machineImage: ec2.MachineImage.latestAmazonLinux({
-        generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
-      }),
+      machineImage: ec2.MachineImage.latestAmazonLinux2023(),
     })
 
     instance.addUserData(
-      `yum install -y https://amazon-ssm-${region}.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat postgresql mariadb`,
+      "PG_PKG=$(dnf repoquery -q --qf='%{name}' 'postgresql[0-9]*' | grep -v '-' | sort -V | tail -1)",
+      "MARIA_PKG=$(dnf repoquery -q --qf='%{name}' 'mariadb[0-9]*' | grep -v '-' | sort -V | tail -1)",
+      `dnf install -y https://amazon-ssm-${region}.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm socat "\${PG_PKG:-postgresql18}" "\${MARIA_PKG:-mariadb1011}"`,
     )
 
     // SSM support.
