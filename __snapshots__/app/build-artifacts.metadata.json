@@ -114,10 +114,10 @@
       "data": "BuildArtifactsGithubActionsLimitedRole15AAC240"
     }
   ],
-  "/build-artifacts/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+  "/build-artifacts/BuildArtifacts/S3Bucket/Notifications/HandlerPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+      "data": "BuildArtifactsS3BucketNotificationsHandlerPolicy27CE37D8"
     }
   ],
   "/build-artifacts/BuildArtifacts/GithubActionsRole/Role/DefaultPolicy/Resource": [
