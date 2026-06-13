@@ -3,4 +3,4 @@ idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
 ruff = "0.15.16"
-python = ["3.14.5"]
+python = ["3.14.6"]
