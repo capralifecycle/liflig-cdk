@@ -23,7 +23,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - uses: capralifecycle/actions-lib/check-runtime-dependencies@720c52304c0cbc65a26c18f55a8f182cc0d33d84 # v1.7.1
 
