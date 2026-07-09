@@ -98,6 +98,12 @@ npm-snapshots-check: snapshots
 validate-renovate-config:
 	npx --yes --package renovate@latest -- renovate-config-validator --strict renovate.json5
 
+# Opt-in; requires Docker. Runs in CI (.github/workflows/validate-otel-config.yml),
+# not part of `make ci`, so local builds have no Docker dependency.
+.PHONY: validate-otel-config
+validate-otel-config:
+	scripts/validate-otel-config.sh
+
 .PHONY: release
 release:
 	npm run semantic-release

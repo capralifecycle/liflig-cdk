@@ -1,0 +1,31 @@
+name: validate-otel-config
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "src/ecs/open-telemetry.ts"
+      - "assets/open-telemetry/**"
+      - "scripts/validate-otel-config.sh"
+      - ".github/workflows/validate-otel-config.yml"
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+concurrency: validate-otel-config-${{ github.ref }}
+
+permissions:
+  contents: read
+
+jobs:
+  validate-otel-config:
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: validate OpenTelemetry collector config against pinned image
+        run: ./scripts/validate-otel-config.sh
