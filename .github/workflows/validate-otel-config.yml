@@ -3,11 +3,6 @@ on:
   push:
     branches:
       - "**"
-    paths:
-      - "src/ecs/open-telemetry.ts"
-      - "assets/open-telemetry/**"
-      - "scripts/validate-otel-config.sh"
-      - ".github/workflows/validate-otel-config.yml"
 
 defaults:
   run:
