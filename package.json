@@ -56,7 +56,7 @@
     "@commitlint/config-conventional": "21.2.0",
     "@types/aws-lambda": "8.10.162",
     "@types/jest": "30.0.0",
-    "@types/node": "24.13.2",
+    "@types/node": "24.13.3",
     "aws-cdk": "2.1129.0",
     "aws-cdk-lib": "2.261.0",
     "constructs": "10.6.0",
