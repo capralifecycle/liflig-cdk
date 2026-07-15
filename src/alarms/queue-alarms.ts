@@ -213,11 +213,11 @@ export class QueueAlarms extends constructs.Construct {
     messageAmountLimit: number
     alarmDescription?: string
     /**
-     * @default cdk.Duration.seconds(300)
+     * @default cdk.Duration.seconds(60)
      */
     period?: cdk.Duration
     /**
-     * @default 1
+     * @default 5
      */
     evaluationPeriods?: number
     /**
@@ -227,13 +227,13 @@ export class QueueAlarms extends constructs.Construct {
     /** An action to use for CloudWatch alarm state changes instead of the default warningAction */
     action?: IAlarmAction
   }): void {
-    const period = props.period ?? cdk.Duration.seconds(300)
-    const evaluationPeriods = props.evaluationPeriods ?? 1
+    const period = props.period ?? cdk.Duration.seconds(60)
+    const evaluationPeriods = props.evaluationPeriods ?? 5
 
     const alarm = new cloudwatch.Metric({
       metricName: "ApproximateNumberOfMessagesVisible",
       namespace: "AWS/SQS",
-      statistic: "Sum",
+      statistic: "Average",
       period,
       dimensionsMap: {
         QueueName: this.queueName,
