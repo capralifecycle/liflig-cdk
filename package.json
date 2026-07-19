@@ -72,7 +72,7 @@
     "typescript": "6.0.3"
   },
   "dependencies": {
-    "@capraconsulting/webapp-deploy-lambda": "2.5.136",
+    "@capraconsulting/webapp-deploy-lambda": "2.5.137",
     "aws-jwt-verify": "5.2.1"
   },
   "peerDependencies": {
