@@ -19,12 +19,12 @@ describe("SlackMention.formatMention", () => {
       { mention: "SABCDEFGHIJ", expected: "<!subteam^SABCDEFGHIJ>" },
       { mention: "S0", expected: "<!subteam^S0>" },
     ]
-    test.each(validCases)("formats $mention to $expected", ({
-      mention,
-      expected,
-    }) => {
-      expect(SlackMention.formatMention(mention)).toBe(expected)
-    })
+    test.each(validCases)(
+      "formats $mention to $expected",
+      ({ mention, expected }) => {
+        expect(SlackMention.formatMention(mention)).toBe(expected)
+      },
+    )
   })
 
   describe("invalid cases", () => {
