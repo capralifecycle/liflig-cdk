@@ -513,7 +513,7 @@ service:
               },
             ],
             "Essential": true,
-            "Image": "amazon/aws-otel-collector:v0.48.0",
+            "Image": "amazon/aws-otel-collector:v0.49.0",
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
               "Options": Object {
