@@ -76,12 +76,12 @@ describe("parseMaintenanceWindow", () => {
     },
   ]
 
-  test.each(invalidCases)("rejects $description ($input)", ({
-    input,
-    messageMatches,
-  }) => {
-    expect(() => parseMaintenanceWindow(input)).toThrow(messageMatches)
-  })
+  test.each(invalidCases)(
+    "rejects $description ($input)",
+    ({ input, messageMatches }) => {
+      expect(() => parseMaintenanceWindow(input)).toThrow(messageMatches)
+    },
+  )
 })
 
 describe("parseBackupWindow", () => {
@@ -143,12 +143,12 @@ describe("parseBackupWindow", () => {
     },
   ]
 
-  test.each(invalidCases)("rejects $description ($input)", ({
-    input,
-    messageMatches,
-  }) => {
-    expect(() => parseBackupWindow(input)).toThrow(messageMatches)
-  })
+  test.each(invalidCases)(
+    "rejects $description ($input)",
+    ({ input, messageMatches }) => {
+      expect(() => parseBackupWindow(input)).toThrow(messageMatches)
+    },
+  )
 })
 
 describe("overlaps", () => {
