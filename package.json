@@ -67,7 +67,7 @@
     "npm-check-updates": "23.0.1",
     "semantic-release": "25.0.9",
     "ts-jest": "29.4.12",
-    "tsx": "4.23.8",
+    "tsx": "4.23.9",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"
   },
