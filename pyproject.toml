@@ -6,4 +6,7 @@ include = [
 ]
 
 [tool.ruff.lint]
+# Ruff's implicit default rule set widens between releases, so state it
+# explicitly to keep upgrades from turning into lint failures.
+select = ["E4", "E7", "E9", "F"]
 ignore = ["E722"] # ignore during initial linter introduction
