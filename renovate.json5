@@ -15,6 +15,16 @@
       "depNameTemplate": "amazon/aws-otel-collector",
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
+    },
+    {
+      // Keeps ruff in the workflows in step with the version in mise.toml.
+      // The github-actions manager does not look inside an action's `with:`
+      // inputs, so the ruff-action pin needs an explicit marker comment.
+      "customType": "regex",
+      "managerFilePatterns": [".github/workflows/*.yml"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+)\\s+version: \"(?<currentValue>[^\"]+)\""
+      ]
     }
   ],
   // We don't trust the "AWS Distro of OpenTelemetry Collector" enough to automerge.
