@@ -168,8 +168,6 @@ test("should trust both the original and the immutable subject claim format", ()
     },
   })
   const template = Template.fromStack(stack)
-  // Asserted per role name: both roles are created from the same props, so an
-  // assertion that does not name one passes on the strength of the other.
   template.hasResourceProperties("AWS::IAM::Role", {
     RoleName: "github-actions-role",
     AssumeRolePolicyDocument: {
@@ -177,15 +175,9 @@ test("should trust both the original and the immutable subject claim format", ()
         {
           Action: "sts:AssumeRoleWithWebIdentity",
           Condition: {
-            // The original format carries no wildcard, so it stays an exact match.
-            StringEquals: {
-              "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/master",
-              ],
-            },
-            // The immutable format leaves the IDs open when they are not pinned.
             StringLike: {
               "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle/my-repository:ref:refs/heads/master",
                 "repo:capralifecycle@*/my-repository@*:ref:refs/heads/master",
               ],
             },
@@ -342,4 +334,29 @@ test("should leave trust policies untouched by default", () => {
       ],
     },
   })
+})
+
+test("should never split subjects across two condition operators", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    ecrRepositoryName: "some-ecr-repo-name",
+    bucketName: "bucket-name",
+    githubActions: {
+      defaultBranch: "master",
+      trustImmutableSubjectClaim: true,
+      repositories: [{ name: "my-repository", owner: "capralifecycle" }],
+    },
+  })
+  const roles = Template.fromStack(stack).findResources("AWS::IAM::Role")
+  const trustConditions = Object.values(roles)
+    .map(
+      (role) => role.Properties.AssumeRolePolicyDocument.Statement[0].Condition,
+    )
+    .filter((condition) => condition !== undefined)
+
+  expect(trustConditions).not.toHaveLength(0)
+  for (const condition of trustConditions) {
+    expect(Object.keys(condition)).toHaveLength(1)
+  }
 })
