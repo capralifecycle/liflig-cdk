@@ -120,8 +120,6 @@ export const validateProps = (props: Props): string[] => {
         `Owner ${repository.owner} of repository ${repository.name} not configured as a trusted owner`,
       )
     }
-    // A malformed ID renders straight into the subject claim, where it matches
-    // nothing and leaves deployments failing to assume the role.
     Object.entries({
       ownerId: repository.ownerId,
       repositoryId: repository.repositoryId,
@@ -139,15 +137,6 @@ export const validateProps = (props: Props): string[] => {
 /**
  * The repository segment of a GitHub Actions OIDC subject claim, in each
  * trusted format.
- *
- * Unpinned IDs become `@*`, which IAM matches with `StringLike`. Note that an
- * IAM `*` also matches `/` and `:`, so an unpinned owner ID lets the wildcard
- * span into the rest of the subject: the trailing `:ref:refs/heads/<branch>`
- * that the pattern looks for need not be the one GitHub put there. Git rejects
- * `:` in branch names, but other subject shapes (`:environment:<name>`) offer
- * no such guarantee. Pinning {@link Props.repositories.ownerId} makes the
- * pattern literal up to and including the repository name, which removes that
- * freedom entirely, and is worth doing wherever the ID is known.
  */
 const repositoryClaims = (
   repository: Props["repositories"][number],
@@ -184,46 +173,28 @@ export class GithubActionsRole extends constructs.Construct {
         (repositoryClaim) => `repo:${repositoryClaim}:ref:refs/heads/${branch}`,
       ),
     )
-    const fullyQualifiedSubjects = subjects.filter(
-      (subject) => !(subject.includes("?") || subject.includes("*")),
-    )
-
-    const wildcardSubjects = subjects.filter(
-      (subject) => subject.includes("?") || subject.includes("*"),
-    )
-    const principalConditions = {
-      ...(fullyQualifiedSubjects.length && {
-        StringEquals: {
-          "token.actions.githubusercontent.com:sub": fullyQualifiedSubjects,
-        },
-      }),
-      ...(wildcardSubjects.length && {
-        StringLike: {
-          "token.actions.githubusercontent.com:sub": wildcardSubjects,
-        },
-      }),
+    if (subjects.length === 0) {
+      throw new Error(
+        "The principal's trust policy needs to be configured with at least one IAM condition",
+      )
     }
+
+    // IAM combines multiple condition operators with a logical AND, so all
+    // subjects must share one operator to be alternatives rather than
+    // requirements.
+    const containsWildcard = (subject: string) =>
+      subject.includes("?") || subject.includes("*")
+    const principalConditions = subjects.some(containsWildcard)
+      ? { StringLike: { "token.actions.githubusercontent.com:sub": subjects } }
+      : {
+          StringEquals: { "token.actions.githubusercontent.com:sub": subjects },
+        }
 
     const principal = new iam.FederatedPrincipal(
       props.oidcProvider.openIdConnectProviderArn,
       principalConditions,
       "sts:AssumeRoleWithWebIdentity",
     )
-
-    // Verify that the principal is configured with a trust relationship
-    // that contains at least one IAM condition with a context key and values
-    if (
-      !Object.values(principalConditions).some((conditionElement) =>
-        Object.entries(conditionElement).some(
-          ([conditionKey, conditionValue]) =>
-            conditionKey && conditionValue.length,
-        ),
-      )
-    ) {
-      throw new Error(
-        "The principal's trust policy needs to be configured with at least one IAM condition",
-      )
-    }
     this.role = new iam.Role(this, "Role", {
       roleName: props.roleName ?? "github-actions-role",
       assumedBy: principal,
