@@ -155,6 +155,127 @@ test("should support creation of only 1 role", () => {
   })
 })
 
+test("should trust both the original and the immutable subject claim format", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    ecrRepositoryName: "some-ecr-repo-name",
+    bucketName: "bucket-name",
+    githubActions: {
+      defaultBranch: "master",
+      trustImmutableSubjectClaim: true,
+      repositories: [{ name: "my-repository", owner: "capralifecycle" }],
+    },
+  })
+  const template = Template.fromStack(stack)
+  // Asserted per role name: both roles are created from the same props, so an
+  // assertion that does not name one passes on the strength of the other.
+  template.hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "github-actions-role",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Action: "sts:AssumeRoleWithWebIdentity",
+          Condition: {
+            // The original format carries no wildcard, so it stays an exact match.
+            StringEquals: {
+              "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle/my-repository:ref:refs/heads/master",
+              ],
+            },
+            // The immutable format leaves the IDs open when they are not pinned.
+            StringLike: {
+              "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle@*/my-repository@*:ref:refs/heads/master",
+              ],
+            },
+          },
+        },
+      ],
+    },
+  })
+  template.hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "github-actions-limited-role",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Action: "sts:AssumeRoleWithWebIdentity",
+          Condition: {
+            StringLike: {
+              "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle/my-repository:ref:refs/heads/*",
+                "repo:capralifecycle@*/my-repository@*:ref:refs/heads/*",
+              ],
+            },
+          },
+        },
+      ],
+    },
+  })
+})
+
+test("should fail validation on a malformed repository ID", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  const errors = validateGithubActionsRoleProps({
+    oidcProvider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+      stack,
+      "Provider",
+      "arn:aws:iam::12345789012:oidc-provider/token.actions.githubusercontent.com",
+    ),
+    trustedOwners: ["capralifecycle"],
+    repositories: [
+      {
+        owner: "capralifecycle",
+        name: "my-repository",
+        repositoryId: -1,
+      },
+    ],
+  })
+  expect(errors).toEqual([
+    "repositoryId -1 of repository my-repository must be a positive integer",
+  ])
+})
+
+test("should match the immutable subject claim exactly when the IDs are pinned", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    ecrRepositoryName: "some-ecr-repo-name",
+    bucketName: "bucket-name",
+    githubActions: {
+      defaultBranch: "master",
+      trustImmutableSubjectClaim: true,
+      repositories: [
+        {
+          name: "my-repository",
+          owner: "capralifecycle",
+          ownerId: 13219542,
+          repositoryId: 845069697,
+        },
+      ],
+    },
+  })
+  const template = Template.fromStack(stack)
+  template.hasResourceProperties("AWS::IAM::Role", {
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Action: "sts:AssumeRoleWithWebIdentity",
+          Condition: {
+            StringEquals: {
+              "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle/my-repository:ref:refs/heads/master",
+                "repo:capralifecycle@13219542/my-repository@845069697:ref:refs/heads/master",
+              ],
+            },
+          },
+        },
+      ],
+    },
+  })
+})
+
 test("should support creation of role for Liflig Jenkins", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
@@ -191,4 +312,34 @@ test("should throw on empty list of repositories", () => {
       },
     })
   }).toThrow()
+})
+
+test("should leave trust policies untouched by default", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    ecrRepositoryName: "some-ecr-repo-name",
+    bucketName: "bucket-name",
+    githubActions: {
+      defaultBranch: "master",
+      repositories: [{ name: "my-repository", owner: "capralifecycle" }],
+    },
+  })
+  const template = Template.fromStack(stack)
+  template.hasResourceProperties("AWS::IAM::Role", {
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Action: "sts:AssumeRoleWithWebIdentity",
+          Condition: {
+            StringEquals: {
+              "token.actions.githubusercontent.com:sub": [
+                "repo:capralifecycle/my-repository:ref:refs/heads/master",
+              ],
+            },
+          },
+        },
+      ],
+    },
+  })
 })
