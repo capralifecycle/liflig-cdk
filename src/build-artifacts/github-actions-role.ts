@@ -49,7 +49,46 @@ export interface Props {
      * NOTE: The owner must explicitly be whitelisted in {@link trustedOwners}.
      */
     owner: string
+    /**
+     * The numeric ID of the GitHub repository, as used by the immutable
+     * subject claim format.
+     *
+     * When omitted, any repository ID is trusted for this repository name.
+     * Supply it to pin the trust policy to this exact repository, so that a
+     * future repository reusing the name is not trusted.
+     *
+     * @example 845069697
+     */
+    repositoryId?: number
+    /**
+     * The numeric ID of the owner of the GitHub repository, as used by the
+     * immutable subject claim format.
+     *
+     * When omitted, any owner ID is trusted for this owner name. Supply it to
+     * pin the trust policy to this exact owner.
+     *
+     * @example 13219542
+     */
+    ownerId?: number
   }[]
+  /**
+   * Whether to trust the immutable subject claim format in addition to the
+   * original one.
+   *
+   * GitHub issues the repository segment of the `sub` claim either as
+   * `owner/repo`, or in an immutable format that appends the numeric owner and
+   * repository IDs, `owner@1234/repo@5678`. Which one a repository gets depends
+   * on a per-repository Actions setting, so a role has to trust both formats
+   * for the duration of the migration to let the repositories it trusts opt in
+   * one at a time.
+   *
+   * Once every repository has opted in, the original format stops being issued
+   * and support for it is dropped, along with this property.
+   *
+   * @default false
+   * @see https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens/
+   */
+  trustImmutableSubjectClaim?: boolean
   /**
    * An existing OpenID Connect Provider for GitHub Actions.
    */
@@ -81,9 +120,46 @@ export const validateProps = (props: Props): string[] => {
         `Owner ${repository.owner} of repository ${repository.name} not configured as a trusted owner`,
       )
     }
+    // A malformed ID renders straight into the subject claim, where it matches
+    // nothing and leaves deployments failing to assume the role.
+    Object.entries({
+      ownerId: repository.ownerId,
+      repositoryId: repository.repositoryId,
+    }).forEach(([prop, id]) => {
+      if (id !== undefined && !(Number.isInteger(id) && id > 0)) {
+        errors.push(
+          `${prop} ${id} of repository ${repository.name} must be a positive integer`,
+        )
+      }
+    })
   })
   return errors
 }
+
+/**
+ * The repository segment of a GitHub Actions OIDC subject claim, in each
+ * trusted format.
+ *
+ * Unpinned IDs become `@*`, which IAM matches with `StringLike`. Note that an
+ * IAM `*` also matches `/` and `:`, so an unpinned owner ID lets the wildcard
+ * span into the rest of the subject: the trailing `:ref:refs/heads/<branch>`
+ * that the pattern looks for need not be the one GitHub put there. Git rejects
+ * `:` in branch names, but other subject shapes (`:environment:<name>`) offer
+ * no such guarantee. Pinning {@link Props.repositories.ownerId} makes the
+ * pattern literal up to and including the repository name, which removes that
+ * freedom entirely, and is worth doing wherever the ID is known.
+ */
+const repositoryClaims = (
+  repository: Props["repositories"][number],
+  trustImmutableSubjectClaim: boolean,
+) => [
+  `${repository.owner}/${repository.name}`,
+  ...(trustImmutableSubjectClaim
+    ? [
+        `${repository.owner}@${repository.ownerId ?? "*"}/${repository.name}@${repository.repositoryId ?? "*"}`,
+      ]
+    : []),
+]
 
 /**
  * Creates an IAM role that can be assumed by GitHub Actions workflows
@@ -99,9 +175,14 @@ export class GithubActionsRole extends constructs.Construct {
       throw new Error(`Invalid props were supplied: ${errors.join("; ")}`)
     }
 
-    const subjects = props.repositories.map(
-      (repository) =>
-        `repo:${repository.owner}/${repository.name}:ref:refs/heads/${props.trustedBranch ?? "master"}`,
+    const branch = props.trustedBranch ?? "master"
+    const subjects = props.repositories.flatMap((repository) =>
+      repositoryClaims(
+        repository,
+        props.trustImmutableSubjectClaim ?? false,
+      ).map(
+        (repositoryClaim) => `repo:${repositoryClaim}:ref:refs/heads/${branch}`,
+      ),
     )
     const fullyQualifiedSubjects = subjects.filter(
       (subject) => !(subject.includes("?") || subject.includes("*")),
