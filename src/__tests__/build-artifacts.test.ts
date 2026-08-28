@@ -1,3 +1,5 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import { App, Stack } from "aws-cdk-lib"
 import { Match, Template } from "aws-cdk-lib/assertions"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -21,7 +23,9 @@ test("should fail validation on invalid default branch", () => {
       ],
     },
   })
-  expect(errors).toEqual(["Default branch * contains invalid characters"])
+  assert.deepStrictEqual(errors, [
+    "Default branch * contains invalid characters",
+  ])
 })
 
 test("should fail validation on invalid trusted owner", () => {
@@ -41,7 +45,7 @@ test("should fail validation on invalid trusted owner", () => {
       },
     ],
   })
-  expect(errors).toContain("Trusted owner * contains invalid characters")
+  assert.ok(errors.includes("Trusted owner * contains invalid characters"))
 })
 
 test("should fail validation on missing trusted owner", () => {
@@ -61,8 +65,10 @@ test("should fail validation on missing trusted owner", () => {
       },
     ],
   })
-  expect(errors).toContain(
-    "Owner capralifecycel of repository my-repository not configured as a trusted owner",
+  assert.ok(
+    errors.includes(
+      "Owner capralifecycel of repository my-repository not configured as a trusted owner",
+    ),
   )
 })
 
@@ -78,8 +84,8 @@ test("should fail validation on empty list of repositories", () => {
     ),
     trustedOwners: ["capralifecycle"],
   })
-  expect(errors).toContain(
-    "At least 1 repository must be supplied, but 0 were given",
+  assert.ok(
+    errors.includes("At least 1 repository must be supplied, but 0 were given"),
   )
 })
 
@@ -100,8 +106,10 @@ test("should fail validation on empty list of trusted owners", () => {
     ),
     trustedOwners: [],
   })
-  expect(errors).toContain(
-    "At least 1 trusted owner must be supplied, but 0 were given",
+  assert.ok(
+    errors.includes(
+      "At least 1 trusted owner must be supplied, but 0 were given",
+    ),
   )
 })
 
@@ -224,7 +232,7 @@ test("should fail validation on a malformed repository ID", () => {
       },
     ],
   })
-  expect(errors).toEqual([
+  assert.deepStrictEqual(errors, [
     "repositoryId -1 of repository my-repository must be a positive integer",
   ])
 })
@@ -295,7 +303,7 @@ test("should support creation of role for Liflig Jenkins", () => {
 test("should throw on empty list of repositories", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
-  expect(() => {
+  assert.throws(() => {
     new BuildArtifacts(stack, "BuildArtifacts", {
       ecrRepositoryName: "some-ecr-repo-name",
       bucketName: "bucket-name",
@@ -303,7 +311,7 @@ test("should throw on empty list of repositories", () => {
         repositories: [],
       },
     })
-  }).toThrow()
+  })
 })
 
 test("should leave trust policies untouched by default", () => {
@@ -355,8 +363,8 @@ test("should never split subjects across two condition operators", () => {
     )
     .filter((condition) => condition !== undefined)
 
-  expect(trustConditions).not.toHaveLength(0)
+  assert.notStrictEqual(trustConditions.length, 0)
   for (const condition of trustConditions) {
-    expect(Object.keys(condition)).toHaveLength(1)
+    assert.strictEqual(Object.keys(condition).length, 1)
   }
 })

@@ -1,19 +1,17 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`create alarms 1`] = `
-Object {
-  "Resources": Object {
-    "DatabaseAlarmsCpuUtilizationAlarmA27F08F4": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+{
+  "Resources": {
+    "DatabaseAlarmsCpuUtilizationAlarmA27F08F4": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "RDS database 'database-name' has a higher than expected CPU utilization. Runbook at https://liflig.no",
         "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "DBInstanceIdentifier",
             "Value": "database-name",
           },
@@ -21,8 +19,8 @@ Object {
         "EvaluationPeriods": 5,
         "MetricName": "CPUUtilization",
         "Namespace": "AWS/RDS",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -33,17 +31,17 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "DatabaseAlarmsCreditsAlarm9AA09CB7": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "DatabaseAlarmsCreditsAlarm9AA09CB7": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "Less than 28.8 CPU credits remaining for RDS database 'database-name'. If the balance is depleted, AWS adds additional charges. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "DBInstanceIdentifier",
             "Value": "database-name",
           },
@@ -51,8 +49,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "CPUCreditBalance",
         "Namespace": "AWS/RDS",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -63,17 +61,17 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "DatabaseAlarmsCriticallyLowStorageSpaceAlarm3F2C7F66": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "DatabaseAlarmsCriticallyLowStorageSpaceAlarm3F2C7F66": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "Critically low storage space available on RDS database 'database-name'. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "DBInstanceIdentifier",
             "Value": "database-name",
           },
@@ -81,8 +79,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "FreeStorageSpace",
         "Namespace": "AWS/RDS",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -93,17 +91,17 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "DatabaseAlarmsLowStorageSpaceAlarm99A98D32": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "DatabaseAlarmsLowStorageSpaceAlarm99A98D32": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "Low storage space available on RDS database 'database-name'. Runbook at https://liflig.no",
         "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "DBInstanceIdentifier",
             "Value": "database-name",
           },
@@ -111,8 +109,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "FreeStorageSpace",
         "Namespace": "AWS/RDS",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],

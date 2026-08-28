@@ -1,5 +1,8 @@
-import "@aws-cdk/assert/jest"
+import assert from "node:assert/strict"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
+import { Template } from "aws-cdk-lib/assertions"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cwActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
@@ -8,12 +11,13 @@ import * as ecs from "aws-cdk-lib/aws-ecs"
 import * as route53 from "aws-cdk-lib/aws-route53"
 import * as sm from "aws-cdk-lib/aws-secretsmanager"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import type { Parameter } from "../../configure-parameters"
 import { LoadBalancer } from "../../load-balancer"
 import { FargateService, ListenerRule } from ".."
 
-test("creates fargate service with parameters and listener rule", () => {
+configureCdkSnapshots()
+
+test("creates fargate service with parameters and listener rule", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack", {
     env: {
@@ -93,11 +97,11 @@ test("creates fargate service with parameters and listener rule", () => {
     targetGroup: service.targetGroup!,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
 // Happy-path test: when alarm and warning actions are provided, alarms are created
-test("creates alarms when alarm and warning actions provided (happy path)", () => {
+test("creates alarms when alarm and warning actions provided (happy path)", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack2", {
     env: { region: "eu-west-1" },
@@ -133,8 +137,15 @@ test("creates alarms when alarm and warning actions provided (happy path)", () =
     },
   })
 
-  // Expect at least one CloudWatch Alarm and SNS topic in the template
-  expect(stack).toHaveResource("AWS::CloudWatch::Alarm")
-  expect(stack).toHaveResource("AWS::SNS::Topic")
-  expect(stack).toMatchCdkSnapshot()
+  const template = Template.fromStack(stack)
+
+  assert.ok(
+    Object.keys(template.findResources("AWS::CloudWatch::Alarm")).length > 0,
+    "expected at least one alarm",
+  )
+  assert.ok(
+    Object.keys(template.findResources("AWS::SNS::Topic")).length > 0,
+    "expected at least one SNS topic",
+  )
+  t.assert.snapshot(cdkTemplate(stack))
 })

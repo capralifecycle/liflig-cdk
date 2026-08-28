@@ -1,10 +1,13 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import { Distribution } from "aws-cdk-lib/aws-cloudfront"
 import { Bucket } from "aws-cdk-lib/aws-s3"
-import "jest-cdk-snapshot"
 import { WebappDeployViaRole } from "../webapp-deploy-via-role"
 
-test("webapp-deploy-via-role", () => {
+configureCdkSnapshots()
+
+test("webapp-deploy-via-role", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1")
 
@@ -35,5 +38,5 @@ test("webapp-deploy-via-role", () => {
     },
   })
 
-  expect(stack1).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
 })

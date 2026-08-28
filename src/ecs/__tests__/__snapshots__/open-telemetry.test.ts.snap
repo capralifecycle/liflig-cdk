@@ -1,28 +1,26 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
-exports[`OpenTelemetryCollectors creates OpenTelemetry collector sidecar 1`] = `
-Object {
-  "Resources": Object {
-    "OpenTelemetryCollectorsCollectorLogGroup9161858D": Object {
+exports[`OpenTelemetryCollectors > creates OpenTelemetry collector sidecar 1`] = `
+{
+  "Resources": {
+    "OpenTelemetryCollectorsCollectorLogGroup9161858D": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 180,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "Service9571FDD8": Object {
-      "DependsOn": Array [
+    "Service9571FDD8": {
+      "DependsOn": [
         "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
         "ServiceTaskDefinitionTaskRole3BD32B0F",
       ],
-      "Properties": Object {
-        "Cluster": Object {
+      "Properties": {
+        "Cluster": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
         },
-        "DeploymentConfiguration": Object {
-          "Alarms": Object {
-            "AlarmNames": Array [],
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
             "Enable": false,
             "Rollback": false,
           },
@@ -34,31 +32,31 @@ Object {
         "EnableExecuteCommand": true,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
-        "LoadBalancers": Array [
-          Object {
+        "LoadBalancers": [
+          {
             "ContainerName": "Container",
             "ContainerPort": 8080,
-            "TargetGroupArn": Object {
+            "TargetGroupArn": {
               "Ref": "ServiceTargetGroupE74A3394",
             },
           },
         ],
-        "NetworkConfiguration": Object {
-          "AwsvpcConfiguration": Object {
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
             "AssignPublicIp": "ENABLED",
-            "SecurityGroups": Array [
-              Object {
-                "Fn::GetAtt": Array [
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
                   "ServiceSecurityGroupC96ED6A7",
                   "GroupId",
                 ],
               },
             ],
-            "Subnets": Array [
-              Object {
+            "Subnets": [
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
               },
-              Object {
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
               },
             ],
@@ -66,104 +64,104 @@ Object {
         },
         "PlatformVersion": "1.4.0",
         "ServiceName": "example-service",
-        "TaskDefinition": Object {
+        "TaskDefinition": {
           "Ref": "ServiceTaskDefinition55FA0F15",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "ServiceLogGroupB910EE76": Object {
+    "ServiceLogGroupB910EE76": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 14,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "ServiceSecurityGroupC96ED6A7": Object {
-      "Properties": Object {
+    "ServiceSecurityGroupC96ED6A7": {
+      "Properties": {
         "GroupDescription": "Stack/Service/SecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow all outbound traffic by default",
             "IpProtocol": "-1",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ServiceTargetGroupE74A3394": Object {
-      "Properties": Object {
+    "ServiceTargetGroupE74A3394": {
+      "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/health",
         "HealthyThresholdCount": 2,
         "Port": 8080,
         "Protocol": "HTTP",
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "15",
           },
-          Object {
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "ip",
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "ServiceTaskDefinition55FA0F15": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "DependsOn": Array [
-              Object {
+    "ServiceTaskDefinition55FA0F15": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "DependsOn": [
+              {
                 "Condition": "START",
                 "ContainerName": "aws-opentelemetry-collector",
               },
             ],
-            "Environment": Array [
-              Object {
+            "Environment": [
+              {
                 "Name": "SSM_PREFIX",
                 "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
               },
-              Object {
+              {
                 "Name": "PARAMS_HASH",
                 "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
               },
-              Object {
+              {
                 "Name": "AWS_XRAY_DAEMON_ADDRESS",
                 "Value": "http://localhost:2000",
               },
-              Object {
+              {
                 "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
                 "Value": "http://localhost:4317",
               },
-              Object {
+              {
                 "Name": "OTEL_JAVAAGENT_ENABLED",
                 "Value": "true",
               },
             ],
             "Essential": true,
-            "Image": Object {
-              "Fn::Join": Array [
+            "Image": {
+              "Fn::Join": [
                 "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
+                [
+                  {
+                    "Fn::Select": [
                       4,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -171,13 +169,13 @@ Object {
                     ],
                   },
                   ".dkr.ecr.",
-                  Object {
-                    "Fn::Select": Array [
+                  {
+                    "Fn::Select": [
                       3,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -185,26 +183,26 @@ Object {
                     ],
                   },
                   ".",
-                  Object {
+                  {
                     "Ref": "AWS::URLSuffix",
                   },
                   "/",
-                  Object {
+                  {
                     "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
                   },
                   ":exampleEcrTag",
                 ],
               ],
             },
-            "LinuxParameters": Object {
-              "Capabilities": Object {},
+            "LinuxParameters": {
+              "Capabilities": {},
               "InitProcessEnabled": true,
             },
-            "LogConfiguration": Object {
+            "LogConfiguration": {
               "LogDriver": "awslogs",
-              "Options": Object {
+              "Options": {
                 "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
-                "awslogs-group": Object {
+                "awslogs-group": {
                   "Ref": "ServiceLogGroupB910EE76",
                 },
                 "awslogs-region": "eu-west-1",
@@ -213,21 +211,21 @@ Object {
               },
             },
             "Name": "Container",
-            "PortMappings": Array [
-              Object {
+            "PortMappings": [
+              {
                 "ContainerPort": 8080,
                 "HostPort": 8080,
                 "Protocol": "tcp",
               },
             ],
           },
-          Object {
-            "Command": Array [
+          {
+            "Command": [
               "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Cpu": 32,
-            "Environment": Array [
-              Object {
+            "Environment": [
+              {
                 "Name": "AOT_CONFIG_CONTENT",
                 "Value": "extensions:
   health_check:
@@ -294,15 +292,15 @@ processors:
     error_mode: ignore
     metrics:
       metric:
-        - 'resource.attributes[\\"http.target\\"] == \\"/health\\"'
-        - 'resource.attributes[\\"net.peer.name\\"] == \\"169.254.170.2\\"' # EC2 Metadata Endpoint
+        - 'resource.attributes["http.target"] == "/health"'
+        - 'resource.attributes["net.peer.name"] == "169.254.170.2"' # EC2 Metadata Endpoint
   filter/traces:
     error_mode: ignore
     traces:
       span:
-        - 'attributes[\\"http.route\\"] == \\"health\\"'
-        - 'attributes[\\"http.url\\"] == \\"/health\\"'
-        - 'name == \\"GET health\\"'
+        - 'attributes["http.route"] == "health"'
+        - 'attributes["http.url"] == "/health"'
+        - 'name == "GET health"'
   attributes/application:
     actions:
       # Http adds lots of high cardinality, which xray creates 1 metric per. Expensive.
@@ -465,7 +463,7 @@ processors:
 
 exporters:
   awsxray:
-    indexed_attributes: [\\"otel.resource.service.name\\"] # Max 50 attributes
+    indexed_attributes: ["otel.resource.service.name"] # Max 50 attributes
   awsemf/application:
     namespace: ECS/AWSOTel/Application
     log_group_name: '/aws/ecs/application/metrics'
@@ -514,10 +512,10 @@ service:
             ],
             "Essential": true,
             "Image": "amazon/aws-otel-collector:v0.49.0",
-            "LogConfiguration": Object {
+            "LogConfiguration": {
               "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": Object {
+              "Options": {
+                "awslogs-group": {
                   "Ref": "OpenTelemetryCollectorsCollectorLogGroup9161858D",
                 },
                 "awslogs-region": "eu-west-1",
@@ -530,8 +528,8 @@ service:
           },
         ],
         "Cpu": "256",
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionExecutionRole5D3DB197",
             "Arn",
           ],
@@ -539,11 +537,11 @@ service:
         "Family": "StackServiceTaskDefinition81B5CCD5",
         "Memory": "512",
         "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": Array [
+        "RequiresCompatibilities": [
           "FARGATE",
         ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionTaskRole3BD32B0F",
             "Arn",
           ],
@@ -551,39 +549,39 @@ service:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionExecutionRole5D3DB197": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/CloudWatchLogsFullAccess",
               ],
             ],
           },
-          Object {
-            "Fn::Join": Array [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/AmazonSSMReadOnlyAccess",
@@ -594,41 +592,41 @@ service:
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
               ],
               "Effect": "Allow",
-              "Resource": Object {
+              "Resource": {
                 "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
               },
             },
-            Object {
+            {
               "Action": "ecr:GetAuthorizationToken",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "ServiceLogGroupB910EE76",
                   "Arn",
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:PutLogEvents",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -648,14 +646,14 @@ service:
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "OpenTelemetryCollectorsCollectorLogGroup9161858D",
                   "Arn",
                 ],
@@ -665,22 +663,22 @@ service:
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRole3BD32B0F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
@@ -690,19 +688,19 @@ service:
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
@@ -710,8 +708,8 @@ service:
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssmmessages:CreateControlChannel",
                 "ssmmessages:CreateDataChannel",
                 "ssmmessages:OpenControlChannel",
@@ -720,13 +718,13 @@ service:
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
+            {
               "Action": "logs:DescribeLogGroups",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:PutLogEvents",
@@ -734,8 +732,8 @@ service:
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:PutLogEvents",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -759,8 +757,8 @@ service:
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
           },
         ],
@@ -771,21 +769,21 @@ service:
 }
 `;
 
-exports[`OpenTelemetryCollectors disables OpenTelemetry Java agent 1`] = `
-Object {
-  "Resources": Object {
-    "Service9571FDD8": Object {
-      "DependsOn": Array [
+exports[`OpenTelemetryCollectors > disables OpenTelemetry Java agent 1`] = `
+{
+  "Resources": {
+    "Service9571FDD8": {
+      "DependsOn": [
         "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
         "ServiceTaskDefinitionTaskRole3BD32B0F",
       ],
-      "Properties": Object {
-        "Cluster": Object {
+      "Properties": {
+        "Cluster": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
         },
-        "DeploymentConfiguration": Object {
-          "Alarms": Object {
-            "AlarmNames": Array [],
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
             "Enable": false,
             "Rollback": false,
           },
@@ -797,31 +795,31 @@ Object {
         "EnableExecuteCommand": true,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
-        "LoadBalancers": Array [
-          Object {
+        "LoadBalancers": [
+          {
             "ContainerName": "Container",
             "ContainerPort": 8080,
-            "TargetGroupArn": Object {
+            "TargetGroupArn": {
               "Ref": "ServiceTargetGroupE74A3394",
             },
           },
         ],
-        "NetworkConfiguration": Object {
-          "AwsvpcConfiguration": Object {
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
             "AssignPublicIp": "ENABLED",
-            "SecurityGroups": Array [
-              Object {
-                "Fn::GetAtt": Array [
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
                   "ServiceSecurityGroupC96ED6A7",
                   "GroupId",
                 ],
               },
             ],
-            "Subnets": Array [
-              Object {
+            "Subnets": [
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
               },
-              Object {
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
               },
             ],
@@ -829,90 +827,90 @@ Object {
         },
         "PlatformVersion": "1.4.0",
         "ServiceName": "example-service",
-        "TaskDefinition": Object {
+        "TaskDefinition": {
           "Ref": "ServiceTaskDefinition55FA0F15",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "ServiceLogGroupB910EE76": Object {
+    "ServiceLogGroupB910EE76": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 14,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "ServiceSecurityGroupC96ED6A7": Object {
-      "Properties": Object {
+    "ServiceSecurityGroupC96ED6A7": {
+      "Properties": {
         "GroupDescription": "Stack/Service/SecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow all outbound traffic by default",
             "IpProtocol": "-1",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ServiceTargetGroupE74A3394": Object {
-      "Properties": Object {
+    "ServiceTargetGroupE74A3394": {
+      "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/health",
         "HealthyThresholdCount": 2,
         "Port": 8080,
         "Protocol": "HTTP",
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "15",
           },
-          Object {
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "ip",
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "ServiceTaskDefinition55FA0F15": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "Environment": Array [
-              Object {
+    "ServiceTaskDefinition55FA0F15": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Environment": [
+              {
                 "Name": "SSM_PREFIX",
                 "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
               },
-              Object {
+              {
                 "Name": "PARAMS_HASH",
                 "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
               },
-              Object {
+              {
                 "Name": "OTEL_JAVAAGENT_ENABLED",
                 "Value": "false",
               },
             ],
             "Essential": true,
-            "Image": Object {
-              "Fn::Join": Array [
+            "Image": {
+              "Fn::Join": [
                 "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
+                [
+                  {
+                    "Fn::Select": [
                       4,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -920,13 +918,13 @@ Object {
                     ],
                   },
                   ".dkr.ecr.",
-                  Object {
-                    "Fn::Select": Array [
+                  {
+                    "Fn::Select": [
                       3,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -934,26 +932,26 @@ Object {
                     ],
                   },
                   ".",
-                  Object {
+                  {
                     "Ref": "AWS::URLSuffix",
                   },
                   "/",
-                  Object {
+                  {
                     "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
                   },
                   ":exampleEcrTag",
                 ],
               ],
             },
-            "LinuxParameters": Object {
-              "Capabilities": Object {},
+            "LinuxParameters": {
+              "Capabilities": {},
               "InitProcessEnabled": true,
             },
-            "LogConfiguration": Object {
+            "LogConfiguration": {
               "LogDriver": "awslogs",
-              "Options": Object {
+              "Options": {
                 "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
-                "awslogs-group": Object {
+                "awslogs-group": {
                   "Ref": "ServiceLogGroupB910EE76",
                 },
                 "awslogs-region": "eu-west-1",
@@ -962,8 +960,8 @@ Object {
               },
             },
             "Name": "Container",
-            "PortMappings": Array [
-              Object {
+            "PortMappings": [
+              {
                 "ContainerPort": 8080,
                 "HostPort": 8080,
                 "Protocol": "tcp",
@@ -972,8 +970,8 @@ Object {
           },
         ],
         "Cpu": "256",
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionExecutionRole5D3DB197",
             "Arn",
           ],
@@ -981,11 +979,11 @@ Object {
         "Family": "StackServiceTaskDefinition81B5CCD5",
         "Memory": "512",
         "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": Array [
+        "RequiresCompatibilities": [
           "FARGATE",
         ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionTaskRole3BD32B0F",
             "Arn",
           ],
@@ -993,14 +991,14 @@ Object {
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionExecutionRole5D3DB197": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
@@ -1010,34 +1008,34 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
               ],
               "Effect": "Allow",
-              "Resource": Object {
+              "Resource": {
                 "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
               },
             },
-            Object {
+            {
               "Action": "ecr:GetAuthorizationToken",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "ServiceLogGroupB910EE76",
                   "Arn",
                 ],
@@ -1047,22 +1045,22 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRole3BD32B0F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
@@ -1072,19 +1070,19 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
@@ -1092,8 +1090,8 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssmmessages:CreateControlChannel",
                 "ssmmessages:CreateDataChannel",
                 "ssmmessages:OpenControlChannel",
@@ -1102,13 +1100,13 @@ Object {
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
+            {
               "Action": "logs:DescribeLogGroups",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:PutLogEvents",
@@ -1120,8 +1118,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
           },
         ],
@@ -1132,29 +1130,29 @@ Object {
 }
 `;
 
-exports[`OpenTelemetryCollectors sets all options on OpenTelemetry collector sidecar 1`] = `
-Object {
-  "Resources": Object {
-    "OpenTelemetryCollectorsCollectorLogGroup9161858D": Object {
+exports[`OpenTelemetryCollectors > sets all options on OpenTelemetry collector sidecar 1`] = `
+{
+  "Resources": {
+    "OpenTelemetryCollectorsCollectorLogGroup9161858D": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 5,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "Service9571FDD8": Object {
-      "DependsOn": Array [
+    "Service9571FDD8": {
+      "DependsOn": [
         "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
         "ServiceTaskDefinitionTaskRole3BD32B0F",
       ],
-      "Properties": Object {
-        "Cluster": Object {
+      "Properties": {
+        "Cluster": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
         },
-        "DeploymentConfiguration": Object {
-          "Alarms": Object {
-            "AlarmNames": Array [],
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
             "Enable": false,
             "Rollback": false,
           },
@@ -1166,31 +1164,31 @@ Object {
         "EnableExecuteCommand": true,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
-        "LoadBalancers": Array [
-          Object {
+        "LoadBalancers": [
+          {
             "ContainerName": "Container",
             "ContainerPort": 8080,
-            "TargetGroupArn": Object {
+            "TargetGroupArn": {
               "Ref": "ServiceTargetGroupE74A3394",
             },
           },
         ],
-        "NetworkConfiguration": Object {
-          "AwsvpcConfiguration": Object {
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
             "AssignPublicIp": "ENABLED",
-            "SecurityGroups": Array [
-              Object {
-                "Fn::GetAtt": Array [
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
                   "ServiceSecurityGroupC96ED6A7",
                   "GroupId",
                 ],
               },
             ],
-            "Subnets": Array [
-              Object {
+            "Subnets": [
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
               },
-              Object {
+              {
                 "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
               },
             ],
@@ -1198,104 +1196,104 @@ Object {
         },
         "PlatformVersion": "1.4.0",
         "ServiceName": "example-service",
-        "TaskDefinition": Object {
+        "TaskDefinition": {
           "Ref": "ServiceTaskDefinition55FA0F15",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "ServiceLogGroupB910EE76": Object {
+    "ServiceLogGroupB910EE76": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 14,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "ServiceSecurityGroupC96ED6A7": Object {
-      "Properties": Object {
+    "ServiceSecurityGroupC96ED6A7": {
+      "Properties": {
         "GroupDescription": "Stack/Service/SecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow all outbound traffic by default",
             "IpProtocol": "-1",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ServiceTargetGroupE74A3394": Object {
-      "Properties": Object {
+    "ServiceTargetGroupE74A3394": {
+      "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/health",
         "HealthyThresholdCount": 2,
         "Port": 8080,
         "Protocol": "HTTP",
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "15",
           },
-          Object {
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "ip",
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "ServiceTaskDefinition55FA0F15": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "DependsOn": Array [
-              Object {
+    "ServiceTaskDefinition55FA0F15": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "DependsOn": [
+              {
                 "Condition": "START",
                 "ContainerName": "aws-opentelemetry-collector",
               },
             ],
-            "Environment": Array [
-              Object {
+            "Environment": [
+              {
                 "Name": "SSM_PREFIX",
                 "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
               },
-              Object {
+              {
                 "Name": "PARAMS_HASH",
                 "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
               },
-              Object {
+              {
                 "Name": "AWS_XRAY_DAEMON_ADDRESS",
                 "Value": "http://localhost:2000",
               },
-              Object {
+              {
                 "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
                 "Value": "http://localhost:4317",
               },
-              Object {
+              {
                 "Name": "OTEL_JAVAAGENT_ENABLED",
                 "Value": "true",
               },
             ],
             "Essential": true,
-            "Image": Object {
-              "Fn::Join": Array [
+            "Image": {
+              "Fn::Join": [
                 "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
+                [
+                  {
+                    "Fn::Select": [
                       4,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -1303,13 +1301,13 @@ Object {
                     ],
                   },
                   ".dkr.ecr.",
-                  Object {
-                    "Fn::Select": Array [
+                  {
+                    "Fn::Select": [
                       3,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           ":",
-                          Object {
+                          {
                             "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
                           },
                         ],
@@ -1317,26 +1315,26 @@ Object {
                     ],
                   },
                   ".",
-                  Object {
+                  {
                     "Ref": "AWS::URLSuffix",
                   },
                   "/",
-                  Object {
+                  {
                     "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
                   },
                   ":exampleEcrTag",
                 ],
               ],
             },
-            "LinuxParameters": Object {
-              "Capabilities": Object {},
+            "LinuxParameters": {
+              "Capabilities": {},
               "InitProcessEnabled": true,
             },
-            "LogConfiguration": Object {
+            "LogConfiguration": {
               "LogDriver": "awslogs",
-              "Options": Object {
+              "Options": {
                 "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
-                "awslogs-group": Object {
+                "awslogs-group": {
                   "Ref": "ServiceLogGroupB910EE76",
                 },
                 "awslogs-region": "eu-west-1",
@@ -1345,31 +1343,31 @@ Object {
               },
             },
             "Name": "Container",
-            "PortMappings": Array [
-              Object {
+            "PortMappings": [
+              {
                 "ContainerPort": 8080,
                 "HostPort": 8080,
                 "Protocol": "tcp",
               },
             ],
           },
-          Object {
-            "Command": Array [
+          {
+            "Command": [
               "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Cpu": 128,
-            "Environment": Array [
-              Object {
+            "Environment": [
+              {
                 "Name": "AOT_CONFIG_CONTENT",
                 "Value": "myCustomYaml: true",
               },
             ],
             "Essential": true,
             "Image": "example-image:latest",
-            "LogConfiguration": Object {
+            "LogConfiguration": {
               "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": Object {
+              "Options": {
+                "awslogs-group": {
                   "Ref": "OpenTelemetryCollectorsCollectorLogGroup9161858D",
                 },
                 "awslogs-region": "eu-west-1",
@@ -1382,8 +1380,8 @@ Object {
           },
         ],
         "Cpu": "256",
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionExecutionRole5D3DB197",
             "Arn",
           ],
@@ -1391,11 +1389,11 @@ Object {
         "Family": "StackServiceTaskDefinition81B5CCD5",
         "Memory": "512",
         "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": Array [
+        "RequiresCompatibilities": [
           "FARGATE",
         ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
             "ServiceTaskDefinitionTaskRole3BD32B0F",
             "Arn",
           ],
@@ -1403,39 +1401,39 @@ Object {
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "ServiceTaskDefinitionExecutionRole5D3DB197": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionExecutionRole5D3DB197": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/CloudWatchLogsFullAccess",
               ],
             ],
           },
-          Object {
-            "Fn::Join": Array [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/AmazonSSMReadOnlyAccess",
@@ -1446,41 +1444,41 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
               ],
               "Effect": "Allow",
-              "Resource": Object {
+              "Resource": {
                 "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
               },
             },
-            Object {
+            {
               "Action": "ecr:GetAuthorizationToken",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "ServiceLogGroupB910EE76",
                   "Arn",
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:PutLogEvents",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -1500,14 +1498,14 @@ Object {
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "OpenTelemetryCollectorsCollectorLogGroup9161858D",
                   "Arn",
                 ],
@@ -1517,22 +1515,22 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceTaskDefinitionTaskRole3BD32B0F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRole3BD32B0F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ecs-tasks.amazonaws.com",
               },
             },
@@ -1542,19 +1540,19 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
@@ -1562,8 +1560,8 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssmmessages:CreateControlChannel",
                 "ssmmessages:CreateDataChannel",
                 "ssmmessages:OpenControlChannel",
@@ -1572,13 +1570,13 @@ Object {
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
+            {
               "Action": "logs:DescribeLogGroups",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:PutLogEvents",
@@ -1586,8 +1584,8 @@ Object {
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "logs:PutLogEvents",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
@@ -1611,8 +1609,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
           },
         ],

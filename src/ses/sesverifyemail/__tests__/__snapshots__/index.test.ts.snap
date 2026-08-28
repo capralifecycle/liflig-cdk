@@ -1,14 +1,12 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`ses-verify-email 1`] = `
-Object {
-  "Resources": Object {
-    "SesVerifyEmail41583370": Object {
+{
+  "Resources": {
+    "SesVerifyEmail41583370": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "EmailAddress": "example@example.com",
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "lifligcdksesverifyemailproviderProviderframeworkonEventA83D9BF0",
             "Arn",
           ],
@@ -17,16 +15,16 @@ Object {
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
-    "lifligcdksesverifyemailproviderFunction7D5F58AF": Object {
-      "DependsOn": Array [
+    "lifligcdksesverifyemailproviderFunction7D5F58AF": {
+      "DependsOn": [
         "lifligcdksesverifyemailproviderFunctionServiceRoleDefaultPolicyF5D78D0B",
         "lifligcdksesverifyemailproviderFunctionServiceRole337D98A1",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesverifyemailproviderFunctionServiceRole337D98A1",
             "Arn",
           ],
@@ -36,27 +34,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesverifyemailproviderFunctionServiceRole337D98A1": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesverifyemailproviderFunctionServiceRole337D98A1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -67,12 +65,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesverifyemailproviderFunctionServiceRoleDefaultPolicyF5D78D0B": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lifligcdksesverifyemailproviderFunctionServiceRoleDefaultPolicyF5D78D0B": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ses:DeleteIdentity",
                 "ses:VerifyEmailIdentity",
               ],
@@ -83,26 +81,26 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesverifyemailproviderFunctionServiceRoleDefaultPolicyF5D78D0B",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesverifyemailproviderFunctionServiceRole337D98A1",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lifligcdksesverifyemailproviderProviderframeworkonEventA83D9BF0": Object {
-      "DependsOn": Array [
+    "lifligcdksesverifyemailproviderProviderframeworkonEventA83D9BF0": {
+      "DependsOn": [
         "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleDefaultPolicyC87308CB",
         "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleD5D1F2EA",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-verify-email.provider/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "lifligcdksesverifyemailproviderFunction7D5F58AF",
                 "Arn",
               ],
@@ -110,12 +108,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleD5D1F2EA",
             "Arn",
           ],
@@ -125,27 +123,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleD5D1F2EA": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleD5D1F2EA": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -156,26 +154,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleDefaultPolicyC87308CB": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleDefaultPolicyC87308CB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "lifligcdksesverifyemailproviderFunction7D5F58AF",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "lifligcdksesverifyemailproviderFunction7D5F58AF",
                           "Arn",
                         ],
@@ -186,11 +184,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "lifligcdksesverifyemailproviderFunction7D5F58AF",
                   "Arn",
                 ],
@@ -200,8 +198,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleDefaultPolicyC87308CB",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesverifyemailproviderProviderframeworkonEventServiceRoleD5D1F2EA",
           },
         ],

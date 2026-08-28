@@ -1,18 +1,16 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`consume example platform 1`] = `
-Object {
-  "Parameters": Object {
-    "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
+{
+  "Parameters": {
+    "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter": {
       "Default": "/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "ExampleParam05F8FCAC": Object {
-      "Properties": Object {
+  "Resources": {
+    "ExampleParam05F8FCAC": {
+      "Properties": {
         "Type": "String",
-        "Value": Object {
+        "Value": {
           "Ref": "SsmParameterValuelifligcdkplatformNamespaceTestplatformplatformNameTestalarmtopicarnC96584B6F00A464EAD1953AFF4B05118Parameter",
         },
       },
@@ -23,20 +21,20 @@ Object {
 `;
 
 exports[`produce example plaform 1`] = `
-Object {
-  "Resources": Object {
-    "PlatformProduceralarmtopicarnC48B2B79": Object {
-      "Properties": Object {
+{
+  "Resources": {
+    "PlatformProduceralarmtopicarnC48B2B79": {
+      "Properties": {
         "Name": "/liflig-cdk/platformNamespaceTest/platform/platformNameTest/alarm-topic-arn",
         "Type": "String",
-        "Value": Object {
+        "Value": {
           "Ref": "TopicBFC7AF6E",
         },
       },
       "Type": "AWS::SSM::Parameter",
     },
-    "TopicBFC7AF6E": Object {
-      "Properties": Object {
+    "TopicBFC7AF6E": {
+      "Properties": {
         "DisplayName": "Alarm topic",
         "TopicName": "alarmtopic",
       },

@@ -1,37 +1,35 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`setup new cloudtrail to slack integration 1`] = `
-Object {
-  "Resources": Object {
-    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": {
+      "DependsOn": [
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
           "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "DEDUPLICATE_EVENTS": "false",
-            "FRIENDLY_NAMES": "{\\"123456789012\\":\\"example-friendly-name\\"}",
+            "FRIENDLY_NAMES": "{"123456789012":"example-friendly-name"}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
           },
         },
         "Handler": "main.handler_event_transformer",
-        "LoggingConfig": Object {
-          "LogGroup": Object {
+        "LoggingConfig": {
+          "LogGroup": {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
           },
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
             "Arn",
           ],
@@ -41,35 +39,35 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 180,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -80,11 +78,11 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "iam:ListAccountAliases",
               "Effect": "Allow",
               "Resource": "*",
@@ -93,33 +91,33 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "AssumeRole",
             ],
-            "requestParameters": Object {
-              "roleArn": Array [
+            "requestParameters": {
+              "roleArn": [
                 "arn:aws:iam::123456789012:role/example-role",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -130,18 +128,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6",
             "Arn",
           ],
@@ -149,30 +147,30 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "EnableMFADevice",
             ],
-            "requestParameters": Object {
-              "userName": Array [
+            "requestParameters": {
+              "userName": [
                 "AWS ROOT USER",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -183,18 +181,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08",
             "Arn",
           ],
@@ -202,28 +200,28 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordUpdated",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -234,18 +232,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9",
             "Arn",
           ],
@@ -253,33 +251,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryCompleted",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryCompleted": Array [
+            "responseElements": {
+              "PasswordRecoveryCompleted": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -290,18 +288,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9",
             "Arn",
           ],
@@ -309,33 +307,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryRequested",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryRequested": Array [
+            "responseElements": {
+              "PasswordRecoveryRequested": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -346,18 +344,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3",
             "Arn",
           ],
@@ -365,18 +363,18 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08",
             "Arn",
           ],
@@ -384,33 +382,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -421,18 +419,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C",
             "Arn",
           ],
@@ -440,33 +438,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Failure",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -482,40 +480,40 @@ Object {
 `;
 
 exports[`setup new cloudtrail to slack integration with event deduplication 1`] = `
-Object {
-  "Resources": Object {
-    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": {
+      "DependsOn": [
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
           "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "DEDUPLICATE_EVENTS": "true",
             "FRIENDLY_NAMES": "{}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
-            "SQS_QUEUE_URL": Object {
+            "SQS_QUEUE_URL": {
               "Ref": "CloudTrailSlackIntegrationQueue28060435",
             },
           },
         },
         "Handler": "main.handler_event_transformer",
-        "LoggingConfig": Object {
-          "LogGroup": Object {
+        "LoggingConfig": {
+          "LogGroup": {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
           },
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
             "Arn",
           ],
@@ -525,35 +523,35 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 180,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -564,24 +562,24 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "iam:ListAccountAliases",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "sqs:SendMessage",
                 "sqs:GetQueueAttributes",
                 "sqs:GetQueueUrl",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudTrailSlackIntegrationQueue28060435",
                   "Arn",
                 ],
@@ -591,42 +589,42 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudTrailSlackIntegrationQueue28060435": Object {
+    "CloudTrailSlackIntegrationQueue28060435": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "FifoQueue": true,
         "QueueName": "CloudTrailSlackIntegrationc84e46f579ec6021ca77656851fd48e3a36ec4aad0.fifo",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "AssumeRole",
             ],
-            "requestParameters": Object {
-              "roleArn": Array [
+            "requestParameters": {
+              "roleArn": [
                 "arn:aws:iam::123456789012:role/example-role",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -637,18 +635,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6",
             "Arn",
           ],
@@ -656,30 +654,30 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "EnableMFADevice",
             ],
-            "requestParameters": Object {
-              "userName": Array [
+            "requestParameters": {
+              "userName": [
                 "AWS ROOT USER",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -690,18 +688,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08",
             "Arn",
           ],
@@ -709,28 +707,28 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordUpdated",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -741,18 +739,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9",
             "Arn",
           ],
@@ -760,33 +758,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryCompleted",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryCompleted": Array [
+            "responseElements": {
+              "PasswordRecoveryCompleted": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -797,18 +795,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9",
             "Arn",
           ],
@@ -816,33 +814,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryRequested",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryRequested": Array [
+            "responseElements": {
+              "PasswordRecoveryRequested": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -853,18 +851,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3",
             "Arn",
           ],
@@ -872,18 +870,18 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08",
             "Arn",
           ],
@@ -891,33 +889,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -928,18 +926,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C",
             "Arn",
           ],
@@ -947,33 +945,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Failure",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -984,27 +982,27 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40": Object {
-      "DependsOn": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40": {
+      "DependsOn": [
         "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C",
         "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
           "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
-        "LoggingConfig": Object {
-          "LogGroup": Object {
+        "LoggingConfig": {
+          "LogGroup": {
             "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB",
           },
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
             "Arn",
           ],
@@ -1014,35 +1012,35 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 14,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -1053,12 +1051,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -1066,8 +1064,8 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudTrailSlackIntegrationQueue28060435",
                   "Arn",
                 ],
@@ -1077,23 +1075,23 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaSqsEventSourceStackCloudTrailSlackIntegrationQueue877234B7B399CD08": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambdaSqsEventSourceStackCloudTrailSlackIntegrationQueue877234B7B399CD08": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationQueue28060435",
             "Arn",
           ],
         },
-        "FunctionName": Object {
+        "FunctionName": {
           "Ref": "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40",
         },
       },
@@ -1104,22 +1102,22 @@ Object {
 `;
 
 exports[`setup new cloudtrail to slack integration with event deduplication and infrastructure slack alarms 1`] = `
-Object {
-  "Resources": Object {
-    "CloudTrailSlackIntegrationEventTransformerErrorAlarmFC759383": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+{
+  "Resources": {
+    "CloudTrailSlackIntegrationEventTransformerErrorAlarmFC759383": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Ref": "TopicBFC7AF6E",
           },
         ],
         "AlarmDescription": "Triggers if the Lambda function that transforms CloudTrail API calls received through EventBridge fails (e.g., it fails to process the event)",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "DatapointsToAlarm": 1,
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "FunctionName",
-            "Value": Object {
+            "Value": {
               "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             },
           },
@@ -1127,8 +1125,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Ref": "TopicBFC7AF6E",
           },
         ],
@@ -1139,38 +1137,38 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": Object {
-      "DependsOn": Array [
+    "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E": {
+      "DependsOn": [
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
         "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
           "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "DEDUPLICATE_EVENTS": "true",
             "FRIENDLY_NAMES": "{}",
             "SLACK_CHANNEL": "#example-channel",
             "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
-            "SQS_QUEUE_URL": Object {
+            "SQS_QUEUE_URL": {
               "Ref": "CloudTrailSlackIntegrationQueue28060435",
             },
           },
         },
         "Handler": "main.handler_event_transformer",
-        "LoggingConfig": Object {
-          "LogGroup": Object {
+        "LoggingConfig": {
+          "LogGroup": {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6",
           },
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
             "Arn",
           ],
@@ -1180,35 +1178,35 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaLogGroup747BA2D6": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 180,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -1219,24 +1217,24 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "iam:ListAccountAliases",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "sqs:SendMessage",
                 "sqs:GetQueueAttributes",
                 "sqs:GetQueueUrl",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudTrailSlackIntegrationQueue28060435",
                   "Arn",
                 ],
@@ -1246,42 +1244,42 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRoleDefaultPolicy5382BB7D",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "CloudTrailSlackIntegrationEventTransformerLambdaServiceRole9B83CFED",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudTrailSlackIntegrationQueue28060435": Object {
+    "CloudTrailSlackIntegrationQueue28060435": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "FifoQueue": true,
         "QueueName": "CloudTrailSlackIntegrationc84e46f579ec6021ca77656851fd48e3a36ec4aad0.fifo",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "AssumeRole",
             ],
-            "requestParameters": Object {
-              "roleArn": Array [
+            "requestParameters": {
+              "roleArn": [
                 "arn:aws:iam::123456789012:role/example-role",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1292,18 +1290,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForAssumeRoleAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D45963B23": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForAssumeRole04E292A6",
             "Arn",
           ],
@@ -1311,30 +1309,30 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "EnableMFADevice",
             ],
-            "requestParameters": Object {
-              "userName": Array [
+            "requestParameters": {
+              "userName": [
                 "AWS ROOT USER",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1345,18 +1343,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserMfaChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1C9BFBAF": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserMfaChange09DBDB08",
             "Arn",
           ],
@@ -1364,28 +1362,28 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordUpdated",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1396,18 +1394,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordChangeAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DC24B899C": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordChange02856AF9",
             "Arn",
           ],
@@ -1415,33 +1413,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryCompleted",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryCompleted": Array [
+            "responseElements": {
+              "PasswordRecoveryCompleted": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1452,18 +1450,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryCompleteAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D16A728E1": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryComplete944DA8F9",
             "Arn",
           ],
@@ -1471,33 +1469,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "PasswordRecoveryRequested",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "PasswordRecoveryRequested": Array [
+            "responseElements": {
+              "PasswordRecoveryRequested": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1508,18 +1506,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequestAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D5454E1A0": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserPasswordRecoveryRequest4D62C0C3",
             "Arn",
           ],
@@ -1527,18 +1525,18 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974DDEDC5EC7": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08",
             "Arn",
           ],
@@ -1546,33 +1544,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserSuccessfulLoginB9122E08": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Success",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1583,18 +1581,18 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": Object {
-      "Properties": Object {
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginAllowEventRuleStackCloudTrailSlackIntegrationEventTransformerLambda2063974D1D9D2291": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C",
             "Arn",
           ],
@@ -1602,33 +1600,33 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "eventName": Array [
+    "CloudTrailSlackIntegrationRuleForRootUserUnsuccessfulLoginB3DD368C": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
               "ConsoleLogin",
             ],
-            "eventType": Array [
+            "eventType": [
               "AwsConsoleSignIn",
             ],
-            "responseElements": Object {
-              "ConsoleLogin": Array [
+            "responseElements": {
+              "ConsoleLogin": [
                 "Failure",
               ],
             },
-            "userIdentity": Object {
-              "type": Array [
+            "userIdentity": {
+              "type": [
                 "Root",
               ],
             },
           },
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "CloudTrailSlackIntegrationEventTransformerLambdaD3A0C95E",
                 "Arn",
               ],
@@ -1639,20 +1637,20 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudTrailSlackIntegrationSlackForwarderErrorAlarmA231478E": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "CloudTrailSlackIntegrationSlackForwarderErrorAlarmA231478E": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Ref": "TopicBFC7AF6E",
           },
         ],
         "AlarmDescription": "Triggers if the Lambda function that polls from SQS and posts deduplicated CloudTrail API calls received through EventBridge to Slack fails (e.g., invalid Slack webhook URL)",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "DatapointsToAlarm": 1,
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "FunctionName",
-            "Value": Object {
+            "Value": {
               "Ref": "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40",
             },
           },
@@ -1660,8 +1658,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Ref": "TopicBFC7AF6E",
           },
         ],
@@ -1672,27 +1670,27 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40": Object {
-      "DependsOn": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40": {
+      "DependsOn": [
         "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C",
         "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
           "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
         "Handler": "main.handler_slack_forwarder",
-        "LoggingConfig": Object {
-          "LogGroup": Object {
+        "LoggingConfig": {
+          "LogGroup": {
             "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB",
           },
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
             "Arn",
           ],
@@ -1702,35 +1700,35 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaLogGroup958A35FB": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 14,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -1741,12 +1739,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -1754,8 +1752,8 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudTrailSlackIntegrationQueue28060435",
                   "Arn",
                 ],
@@ -1765,29 +1763,29 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleDefaultPolicy1A9FAB2C",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "CloudTrailSlackIntegrationSlackForwarderLambdaServiceRoleAFAA799A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudTrailSlackIntegrationSlackForwarderLambdaSqsEventSourceStackCloudTrailSlackIntegrationQueue877234B7B399CD08": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
+    "CloudTrailSlackIntegrationSlackForwarderLambdaSqsEventSourceStackCloudTrailSlackIntegrationQueue877234B7B399CD08": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
             "CloudTrailSlackIntegrationQueue28060435",
             "Arn",
           ],
         },
-        "FunctionName": Object {
+        "FunctionName": {
           "Ref": "CloudTrailSlackIntegrationSlackForwarderLambda313A2B40",
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "TopicBFC7AF6E": Object {
+    "TopicBFC7AF6E": {
       "Type": "AWS::SNS::Topic",
     },
   },

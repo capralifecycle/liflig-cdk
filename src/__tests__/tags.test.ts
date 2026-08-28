@@ -1,6 +1,6 @@
-import { ABSENT } from "@aws-cdk/assert"
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
 import { App, Stack } from "aws-cdk-lib"
+import { Match, Template } from "aws-cdk-lib/assertions"
 import * as acm from "aws-cdk-lib/aws-certificatemanager"
 import * as r53 from "aws-cdk-lib/aws-route53"
 import { Bucket } from "aws-cdk-lib/aws-s3"
@@ -16,7 +16,7 @@ test("should tag a taggable resource", () => {
     TestTag: "abc",
   }))
 
-  expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
+  Template.fromStack(stack).hasResourceProperties("AWS::S3::Bucket", {
     Tags: [
       {
         Key: "TestTag",
@@ -42,8 +42,10 @@ test("should not tag DnsValidatedCertificate", () => {
     TestTag: "abc",
   }))
 
-  expect(stack).toHaveResourceLike("AWS::CloudFormation::CustomResource", {
-    // No tags.
-    Tags: ABSENT,
-  })
+  Template.fromStack(stack).hasResourceProperties(
+    "AWS::CloudFormation::CustomResource",
+    {
+      Tags: Match.absent(),
+    },
+  )
 })

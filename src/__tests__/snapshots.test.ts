@@ -1,3 +1,5 @@
+import assert from "node:assert/strict"
+import { describe, it } from "node:test"
 import {
   sanitizeManifest,
   sanitizeMetadata,
@@ -22,7 +24,8 @@ describe("sanitizeTemplate", () => {
     })
 
     const result = JSON.parse(sanitizeTemplate(template))
-    expect(result.Resources.MyResource.Properties.Code.S3Key).toBe(
+    assert.strictEqual(
+      result.Resources.MyResource.Properties.Code.S3Key,
       "snapshot-value.zip",
     )
   })
@@ -51,10 +54,12 @@ describe("sanitizeTemplate", () => {
     const resultBuildSpec =
       result.Resources.PublishAssets.Properties.Source.BuildSpec
 
-    expect(resultBuildSpec).toContain(
-      "snapshot-value:001112238813-eu-west-1-snapshot-value",
+    assert.ok(
+      resultBuildSpec.includes(
+        "snapshot-value:001112238813-eu-west-1-snapshot-value",
+      ),
     )
-    expect(resultBuildSpec).not.toMatch(/[0-9a-f]{8}"/)
+    assert.doesNotMatch(resultBuildSpec, /[0-9a-f]{8}"/)
   })
 
   it("replaces multiple short hash suffixes in the same string", () => {
@@ -70,7 +75,8 @@ describe("sanitizeTemplate", () => {
     const result = JSON.parse(sanitizeTemplate(template))
     const resultValue = result.Resources.R.Properties.Value
 
-    expect(resultValue).toBe(
+    assert.strictEqual(
+      resultValue,
       "snapshot-value:001112238813-eu-west-1-snapshot-value snapshot-value:001112238813-us-east-1-snapshot-value",
     )
   })
@@ -88,8 +94,11 @@ describe("sanitizeTemplate", () => {
     })
 
     const result = JSON.parse(sanitizeTemplate(template))
-    expect(result.Resources.R.Properties.SomeId).toBe("aabbccdd")
-    expect(result.Resources.R.Properties.TagValue).toBe("prefix-aabbccdd")
+    assert.strictEqual(result.Resources.R.Properties.SomeId, "aabbccdd")
+    assert.strictEqual(
+      result.Resources.R.Properties.TagValue,
+      "prefix-aabbccdd",
+    )
   })
 
   it("removes CDKMetadata resource", () => {
@@ -101,8 +110,8 @@ describe("sanitizeTemplate", () => {
     })
 
     const result = JSON.parse(sanitizeTemplate(template))
-    expect(result.Resources.CDKMetadata).toBeUndefined()
-    expect(result.Resources.MyBucket).toBeDefined()
+    assert.strictEqual(result.Resources.CDKMetadata, undefined)
+    assert.notStrictEqual(result.Resources.MyBucket, undefined)
   })
 })
 
@@ -119,8 +128,8 @@ describe("sanitizeMetadata", () => {
     })
 
     const result = JSON.parse(sanitizeMetadata(metadata))
-    expect(result["/stack/Resource"][0].trace).toBeUndefined()
-    expect(result["/stack/Resource"][0].data).toBe("MyResource")
+    assert.strictEqual(result["/stack/Resource"][0].trace, undefined)
+    assert.strictEqual(result["/stack/Resource"][0].data, "MyResource")
   })
 
   it("strips aws:cdk:asset entries", () => {
@@ -138,9 +147,9 @@ describe("sanitizeMetadata", () => {
     })
 
     const result = JSON.parse(sanitizeMetadata(metadata))
-    expect(result["/stack/Resource"][0].type).toBe("aws:cdk:asset")
-    expect(result["/stack/Resource"][0].data).toBe("snapshot-value")
-    expect(result["/stack/Resource"][1].data).toBe("MyResource")
+    assert.strictEqual(result["/stack/Resource"][0].type, "aws:cdk:asset")
+    assert.strictEqual(result["/stack/Resource"][0].data, "snapshot-value")
+    assert.strictEqual(result["/stack/Resource"][1].data, "MyResource")
   })
 
   it("replaces 64-char asset hashes in strings", () => {
@@ -154,7 +163,8 @@ describe("sanitizeMetadata", () => {
     })
 
     const result = JSON.parse(sanitizeMetadata(metadata))
-    expect(result["/stack/Resource"][0].data).toBe(
+    assert.strictEqual(
+      result["/stack/Resource"][0].data,
       "Somethingsnapshot-valueElse",
     )
   })
@@ -177,8 +187,8 @@ describe("sanitizeMetadata", () => {
     })
 
     const result = JSON.parse(sanitizeMetadata(metadata))
-    expect(result["/stack/Resource"]).toHaveLength(1)
-    expect(result["/stack/Resource"][0].type).toBe("aws:cdk:logicalId")
+    assert.strictEqual(result["/stack/Resource"].length, 1)
+    assert.strictEqual(result["/stack/Resource"][0].type, "aws:cdk:logicalId")
   })
 
   it("drops construct paths whose only metadata was a creation stack", () => {
@@ -198,8 +208,8 @@ describe("sanitizeMetadata", () => {
     })
 
     const result = JSON.parse(sanitizeMetadata(metadata))
-    expect(result["/stack/CreationStackOnly"]).toBeUndefined()
-    expect(result["/stack/Real"]).toBeDefined()
+    assert.strictEqual(result["/stack/CreationStackOnly"], undefined)
+    assert.notStrictEqual(result["/stack/Real"], undefined)
   })
 })
 
@@ -218,8 +228,9 @@ describe("sanitizeManifest", () => {
     })
 
     const result = JSON.parse(sanitizeManifest(manifest))
-    expect(result.version).toBeUndefined()
-    expect(result.artifacts.stack.properties.stackTemplateAssetObjectUrl).toBe(
+    assert.strictEqual(result.version, undefined)
+    assert.strictEqual(
+      result.artifacts.stack.properties.stackTemplateAssetObjectUrl,
       "s3://cdk-assets/snapshot-value.json",
     )
   })
@@ -237,7 +248,8 @@ describe("sanitizeManifest", () => {
     })
 
     const result = JSON.parse(sanitizeManifest(manifest))
-    expect(result.artifacts.stack.properties.value).toBe(
+    assert.strictEqual(
+      result.artifacts.stack.properties.value,
       "snapshot-value:123456789012-eu-west-1-snapshot-value",
     )
   })

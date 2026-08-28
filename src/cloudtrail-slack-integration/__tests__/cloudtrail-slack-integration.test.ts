@@ -1,11 +1,13 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { CloudTrailSlackIntegration } from ".."
 
-test("setup new cloudtrail to slack integration", () => {
+configureCdkSnapshots()
+
+test("setup new cloudtrail to slack integration", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack", {
     env: {
@@ -23,10 +25,10 @@ test("setup new cloudtrail to slack integration", () => {
     },
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("setup new cloudtrail to slack integration with event deduplication", () => {
+test("setup new cloudtrail to slack integration with event deduplication", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack", {
     env: {
@@ -42,10 +44,10 @@ test("setup new cloudtrail to slack integration with event deduplication", () =>
     deduplicateEvents: true,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("setup new cloudtrail to slack integration with event deduplication and infrastructure slack alarms", () => {
+test("setup new cloudtrail to slack integration with event deduplication and infrastructure slack alarms", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack", {
     env: {
@@ -64,5 +66,5 @@ test("setup new cloudtrail to slack integration with event deduplication and inf
     infrastructureAlarmAction: action,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

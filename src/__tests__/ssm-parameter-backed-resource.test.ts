@@ -1,9 +1,12 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import { Bucket } from "aws-cdk-lib/aws-s3"
-import "jest-cdk-snapshot"
 import { SsmParameterBackedResource } from "../ssm-parameter-backed-resource"
 
-test("ssm-parameter-backed-resource in same region", () => {
+configureCdkSnapshots()
+
+test("ssm-parameter-backed-resource in same region", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1", {
     env: {
@@ -29,11 +32,11 @@ test("ssm-parameter-backed-resource in same region", () => {
 
   s.get(stack2, "Bucket")
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
+  t.assert.snapshot(cdkTemplate(stack2))
 })
 
-test("ssm-parameter-backed-resource in different region", () => {
+test("ssm-parameter-backed-resource in different region", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1", {
     env: {
@@ -59,6 +62,6 @@ test("ssm-parameter-backed-resource in different region", () => {
 
   s.get(stack2, "Bucket")
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
+  t.assert.snapshot(cdkTemplate(stack2))
 })

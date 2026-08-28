@@ -1,14 +1,17 @@
-import "@aws-cdk/assert/jest"
+import assert from "node:assert/strict"
+import { describe, test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as assertions from "aws-cdk-lib/assertions"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as rds from "aws-cdk-lib/aws-rds"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { Database } from ".."
 
-test("create database", () => {
+configureCdkSnapshots()
+
+test("create database", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
@@ -40,7 +43,7 @@ test("create database", () => {
 
   database.allowConnectionFrom(otherSecurityGroup)
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
 test("should set publiclyAccessible also when in private subnets", () => {
@@ -66,9 +69,12 @@ test("should set publiclyAccessible also when in private subnets", () => {
     alarms: { enabled: false },
   })
 
-  expect(stack).toHaveResourceLike("AWS::RDS::DBInstance", {
-    PubliclyAccessible: false,
-  })
+  assertions.Template.fromStack(stack).hasResourceProperties(
+    "AWS::RDS::DBInstance",
+    {
+      PubliclyAccessible: false,
+    },
+  )
 })
 
 test("creates storage space and CPU utilization alarms by default when alarms enabled", () => {
@@ -99,13 +105,15 @@ test("creates storage space and CPU utilization alarms by default when alarms en
   })
 
   // Should have CPU utilization alarm (sent to warnings by default)
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  const template = assertions.Template.fromStack(stack)
+
+  template.hasResourceProperties("AWS::CloudWatch::Alarm", {
     MetricName: "CPUUtilization",
     Namespace: "AWS/RDS",
   })
 
   // Should have storage space alarms (critically low -> alarms, low -> warnings)
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  template.hasResourceProperties("AWS::CloudWatch::Alarm", {
     MetricName: "FreeStorageSpace",
     ComparisonOperator: "LessThanThreshold",
   })
@@ -194,38 +202,42 @@ describe("autoMinorVersionUpgrade warning", () => {
 
 describe("window validation via overrideDbOptions", () => {
   test("throws when overrideDbOptions windows overlap", () => {
-    expect(() =>
-      synth({
-        overrideDbOptions: {
-          preferredMaintenanceWindow: "sun:03:00-sun:04:00",
-          preferredBackupWindow: "03:30-04:30",
-        },
-      }),
-    ).toThrow(/overlaps/)
+    assert.throws(
+      () =>
+        synth({
+          overrideDbOptions: {
+            preferredMaintenanceWindow: "sun:03:00-sun:04:00",
+            preferredBackupWindow: "03:30-04:30",
+          },
+        }),
+      /overlaps/,
+    )
   })
 
   test("throws when override backup window overlaps typed maintenance window", () => {
-    expect(() =>
-      synth({
-        preferredMaintenanceWindow: "sun:03:00-sun:04:00",
-        overrideDbOptions: { preferredBackupWindow: "03:30-04:30" },
-      }),
-    ).toThrow(/overlaps/)
+    assert.throws(
+      () =>
+        synth({
+          preferredMaintenanceWindow: "sun:03:00-sun:04:00",
+          overrideDbOptions: { preferredBackupWindow: "03:30-04:30" },
+        }),
+      /overlaps/,
+    )
   })
 
   test("throws when override maintenance window is malformed", () => {
-    expect(() =>
+    assert.throws(() =>
       synth({
         overrideDbOptions: { preferredMaintenanceWindow: "not-a-window" },
       }),
-    ).toThrow()
+    )
   })
 
   test("throws when override backup window is malformed", () => {
-    expect(() =>
+    assert.throws(() =>
       synth({
         overrideDbOptions: { preferredBackupWindow: "not-a-window" },
       }),
-    ).toThrow()
+    )
   })
 })

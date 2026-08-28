@@ -1,13 +1,17 @@
-import "@aws-cdk/assert/jest"
+import assert from "node:assert/strict"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
+import { Template } from "aws-cdk-lib/assertions"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { LambdaAlarms } from "../lambda-alarms"
 
-test("no handler: metric-based error filter is created", () => {
+configureCdkSnapshots()
+
+test("no handler: metric-based error filter is created", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
 
@@ -30,7 +34,9 @@ test("no handler: metric-based error filter is created", () => {
 
   alarms.addErrorAlarm({ logGroup })
 
-  expect(stack).toHaveResourceLike("AWS::Logs::MetricFilter", {
+  const template = Template.fromStack(stack)
+
+  template.hasResourceProperties("AWS::Logs::MetricFilter", {
     MetricTransformations: [
       {
         MetricName: "Errors",
@@ -38,12 +44,12 @@ test("no handler: metric-based error filter is created", () => {
     ],
   })
 
-  expect(stack).not.toHaveResource("AWS::Logs::SubscriptionFilter")
+  template.resourceCountIs("AWS::Logs::SubscriptionFilter", 0)
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("with handler: subscription filter is created and metric filter omitted", () => {
+test("with handler: subscription filter is created and metric filter omitted", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack2")
 
@@ -73,12 +79,18 @@ test("with handler: subscription filter is created and metric filter omitted", (
 
   alarms.addErrorAlarm({ logGroup })
 
-  expect(stack).toHaveResource("AWS::Logs::SubscriptionFilter")
-  expect(stack).not.toHaveResource("AWS::Logs::MetricFilter")
-  expect(stack).toMatchCdkSnapshot()
+  const template = Template.fromStack(stack)
+
+  assert.ok(
+    Object.keys(template.findResources("AWS::Logs::SubscriptionFilter"))
+      .length > 0,
+    "expected a subscription filter",
+  )
+  template.resourceCountIs("AWS::Logs::MetricFilter", 0)
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("creates invocation error alarms (single and multiple) with defaults", () => {
+test("creates invocation error alarms (single and multiple) with defaults", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack3")
 
@@ -99,24 +111,26 @@ test("creates invocation error alarms (single and multiple) with defaults", () =
 
   alarms.addInvocationErrorAlarm()
 
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  const template = Template.fromStack(stack)
+
+  template.hasResourceProperties("AWS::CloudWatch::Alarm", {
     Namespace: "AWS/Lambda",
     MetricName: "Errors",
     EvaluationPeriods: 1,
     Threshold: 1,
   })
 
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  template.hasResourceProperties("AWS::CloudWatch::Alarm", {
     Namespace: "AWS/Lambda",
     MetricName: "Errors",
     EvaluationPeriods: 3,
     Threshold: 1,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm", () => {
+test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter and alarm", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack-UJ-1")
 
@@ -139,8 +153,10 @@ test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter an
 
   alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
 
+  const template = Template.fromStack(stack)
+
   // Should create a metric filter specifically for UncaughtJavaException
-  expect(stack).toHaveResourceLike("AWS::Logs::MetricFilter", {
+  template.hasResourceProperties("AWS::Logs::MetricFilter", {
     MetricTransformations: [
       {
         MetricName: "UncaughtJavaException",
@@ -149,17 +165,17 @@ test("addUncaughtJavaExceptionAlarm: without logHandler creates metric filter an
   })
 
   // Should create a CloudWatch alarm for that metric
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  template.hasResourceProperties("AWS::CloudWatch::Alarm", {
     MetricName: "UncaughtJavaException",
   })
 
   // No subscription filter when logHandler is not set
-  expect(stack).not.toHaveResource("AWS::Logs::SubscriptionFilter")
+  template.resourceCountIs("AWS::Logs::SubscriptionFilter", 0)
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter", () => {
+test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack-UJ-2")
 
@@ -189,11 +205,17 @@ test("addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter
 
   alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
 
+  const template = Template.fromStack(stack)
+
   // Should create a subscription filter forwarding logs to handlerFn
-  expect(stack).toHaveResource("AWS::Logs::SubscriptionFilter")
+  assert.ok(
+    Object.keys(template.findResources("AWS::Logs::SubscriptionFilter"))
+      .length > 0,
+    "expected a subscription filter",
+  )
 
   // Should not create a metric filter when handler exists
-  expect(stack).not.toHaveResource("AWS::Logs::MetricFilter")
+  template.resourceCountIs("AWS::Logs::MetricFilter", 0)
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

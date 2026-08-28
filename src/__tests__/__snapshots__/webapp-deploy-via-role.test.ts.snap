@@ -1,48 +1,46 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`webapp-deploy-via-role 1`] = `
-Object {
-  "Outputs": Object {
-    "WebappDeployFunctionArnOutputDA242124": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
+{
+  "Outputs": {
+    "WebappDeployFunctionArnOutputDA242124": {
+      "Value": {
+        "Fn::GetAtt": [
           "WebappDeployWebappDeployResourceD148398D",
           "Arn",
         ],
       },
     },
-    "WebappDeployRoleArnOutputF50737C4": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
+    "WebappDeployRoleArnOutputF50737C4": {
+      "Value": {
+        "Fn::GetAtt": [
           "WebappDeployRole6BC5D130",
           "Arn",
         ],
       },
     },
   },
-  "Resources": Object {
-    "WebBucket12880F5B": Object {
+  "Resources": {
+    "WebBucket12880F5B": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappDeployProviderframeworkonEvent93982F31": Object {
-      "DependsOn": Array [
+    "WebappDeployProviderframeworkonEvent93982F31": {
+      "DependsOn": [
         "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2",
         "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "e16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (Stack1/WebappDeploy/Resource/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "WebappDeployWebappDeployResourceD148398D",
                 "Arn",
               ],
@@ -50,12 +48,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
             "Arn",
           ],
@@ -65,26 +63,26 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "WebappDeployWebappDeployResourceD148398D",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "WebappDeployWebappDeployResourceD148398D",
                           "Arn",
                         ],
@@ -95,11 +93,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappDeployWebappDeployResourceD148398D",
                   "Arn",
                 ],
@@ -109,35 +107,35 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "WebappDeployProviderframeworkonEventServiceRoleDefaultPolicy81F824E2",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "WebappDeployProviderframeworkonEventServiceRoleF0B4B311",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "WebappDeployProviderframeworkonEventServiceRoleF0B4B311": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployProviderframeworkonEventServiceRoleF0B4B311": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -148,14 +146,14 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "WebappDeployRole6BC5D130": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployRole6BC5D130": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "AWS": "arn:aws:iam::112233445566:role/some-role",
               },
             },
@@ -166,26 +164,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "WebappDeployRoleDefaultPolicy4A1D7118": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployRoleDefaultPolicy4A1D7118": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "WebappDeployWebappDeployResourceD148398D",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "WebappDeployWebappDeployResourceD148398D",
                           "Arn",
                         ],
@@ -200,35 +198,35 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "WebappDeployRoleDefaultPolicy4A1D7118",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "WebappDeployRole6BC5D130",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "WebappDeployWebappDeployResourceD148398D": Object {
-      "DependsOn": Array [
+    "WebappDeployWebappDeployResourceD148398D": {
+      "DependsOn": [
         "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A",
         "WebappDeployWebappDeployResourceServiceRoleE152E052",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "9ca2182f361a76bbc9ba6674672007ccc230e8a993d5f2b115df519fbf27a2c6.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "CF_DISTRIBUTION_ID": "EKJ2IPY1KTEAR1",
-            "DEPLOY_LOG_BUCKET_URL": Object {
-              "Fn::Join": Array [
+            "DEPLOY_LOG_BUCKET_URL": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "s3://",
-                  Object {
+                  {
                     "Ref": "WebBucket12880F5B",
                   },
                   "/deployments.log",
@@ -236,12 +234,12 @@ Object {
               ],
             },
             "EXPIRE_SECONDS": "432000",
-            "TARGET_BUCKET_URL": Object {
-              "Fn::Join": Array [
+            "TARGET_BUCKET_URL": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "s3://",
-                  Object {
+                  {
                     "Ref": "WebBucket12880F5B",
                   },
                   "/web",
@@ -252,8 +250,8 @@ Object {
         },
         "Handler": "webapp_deploy.main.handler",
         "ReservedConcurrentExecutions": 1,
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "WebappDeployWebappDeployResourceServiceRoleE152E052",
             "Arn",
           ],
@@ -263,17 +261,17 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "cloudfront:CreateInvalidation",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
@@ -286,19 +284,19 @@ Object {
                 "s3:Abort*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "WebBucket12880F5B",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "WebBucket12880F5B",
                           "Arn",
                         ],
@@ -309,32 +307,32 @@ Object {
                 },
               ],
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::Join": Array [
+              "Resource": [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::bucket-name",
                     ],
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::bucket-name/*",
@@ -347,35 +345,35 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "WebappDeployWebappDeployResourceServiceRoleDefaultPolicyBD628B6A",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "WebappDeployWebappDeployResourceServiceRoleE152E052",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "WebappDeployWebappDeployResourceServiceRoleE152E052": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappDeployWebappDeployResourceServiceRoleE152E052": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",

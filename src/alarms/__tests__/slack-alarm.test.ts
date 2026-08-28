@@ -1,10 +1,12 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import { SlackAlarm } from "../slack-alarm"
 
-test("create slack alarm", () => {
+configureCdkSnapshots()
+
+test("create slack alarm", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
 
@@ -18,5 +20,5 @@ test("create slack alarm", () => {
     slackWebhookUrlSecret: secret,
   })
 
-  expect(stack).toMatchCdkSnapshot({ ignoreAssets: true })
+  t.assert.snapshot(cdkTemplate(stack, { ignoreAssets: true }))
 })

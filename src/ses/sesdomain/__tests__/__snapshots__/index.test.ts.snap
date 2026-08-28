@@ -1,16 +1,14 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`ses-domain with custom SPF values 1`] = `
-Object {
-  "Resources": Object {
-    "SesDomain0A5DC5B8": Object {
+{
+  "Resources": {
+    "SesDomain0A5DC5B8": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "example.com",
         "IncludeVerificationRecord": "true",
         "Serial": 1,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",
             "Arn",
           ],
@@ -19,16 +17,16 @@ Object {
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
-    "lifligcdksesdomainproviderFunctionB62280C6": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderFunctionB62280C6": {
+      "DependsOn": [
         "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderFunctionServiceRole4F119253",
             "Arn",
           ],
@@ -38,27 +36,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderFunctionServiceRole4F119253": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderFunctionServiceRole4F119253": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -69,12 +67,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ses:DeleteIdentity",
                 "ses:GetIdentityDkimAttributes",
                 "ses:GetIdentityMailFromDomainAttributes",
@@ -92,26 +90,26 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderFunctionServiceRole4F119253",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": {
+      "DependsOn": [
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "lifligcdksesdomainproviderFunctionB62280C6",
                 "Arn",
               ],
@@ -119,12 +117,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
             "Arn",
           ],
@@ -134,27 +132,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -165,26 +163,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "lifligcdksesdomainproviderFunctionB62280C6",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "lifligcdksesdomainproviderFunctionB62280C6",
                           "Arn",
                         ],
@@ -195,11 +193,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "lifligcdksesdomainproviderFunctionB62280C6",
                   "Arn",
                 ],
@@ -209,8 +207,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
           },
         ],
@@ -222,17 +220,17 @@ Object {
 `;
 
 exports[`ses-domain with default configuration set 1`] = `
-Object {
-  "Resources": Object {
-    "SesDomain0A5DC5B8": Object {
+{
+  "Resources": {
+    "SesDomain0A5DC5B8": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "DefaultConfigurationSetName": "exampleconfigset",
         "DomainName": "example.com",
         "IncludeVerificationRecord": "true",
         "Serial": 1,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",
             "Arn",
           ],
@@ -241,16 +239,16 @@ Object {
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
-    "lifligcdksesdomainproviderFunctionB62280C6": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderFunctionB62280C6": {
+      "DependsOn": [
         "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderFunctionServiceRole4F119253",
             "Arn",
           ],
@@ -260,27 +258,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderFunctionServiceRole4F119253": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderFunctionServiceRole4F119253": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -291,12 +289,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ses:DeleteIdentity",
                 "ses:GetIdentityDkimAttributes",
                 "ses:GetIdentityMailFromDomainAttributes",
@@ -314,26 +312,26 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderFunctionServiceRole4F119253",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": {
+      "DependsOn": [
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "lifligcdksesdomainproviderFunctionB62280C6",
                 "Arn",
               ],
@@ -341,12 +339,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
             "Arn",
           ],
@@ -356,27 +354,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -387,26 +385,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "lifligcdksesdomainproviderFunctionB62280C6",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "lifligcdksesdomainproviderFunctionB62280C6",
                           "Arn",
                         ],
@@ -417,11 +415,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "lifligcdksesdomainproviderFunctionB62280C6",
                   "Arn",
                 ],
@@ -431,8 +429,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
           },
         ],
@@ -444,16 +442,16 @@ Object {
 `;
 
 exports[`ses-domain with hosted zone 1`] = `
-Object {
-  "Resources": Object {
-    "SesDomain0A5DC5B8": Object {
+{
+  "Resources": {
+    "SesDomain0A5DC5B8": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "example.com",
         "IncludeVerificationRecord": "true",
         "Serial": 1,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",
             "Arn",
           ],
@@ -462,11 +460,11 @@ Object {
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
-    "SesDomainRecordSetGroupF83CCA2C": Object {
-      "Properties": Object {
+    "SesDomainRecordSetGroupF83CCA2C": {
+      "Properties": {
         "HostedZoneId": "ABCDEF12345678",
-        "RecordSets": Object {
-          "Fn::GetAtt": Array [
+        "RecordSets": {
+          "Fn::GetAtt": [
             "SesDomain0A5DC5B8",
             "Route53RecordSets",
           ],
@@ -474,14 +472,14 @@ Object {
       },
       "Type": "AWS::Route53::RecordSetGroup",
     },
-    "SesDomainStaticRecordSetGroup5A3938AB": Object {
-      "Properties": Object {
+    "SesDomainStaticRecordSetGroup5A3938AB": {
+      "Properties": {
         "HostedZoneId": "ABCDEF12345678",
-        "RecordSets": Array [
-          Object {
+        "RecordSets": [
+          {
             "Name": "example.com",
-            "ResourceRecords": Array [
-              "\\"v=spf1 include:amazonses.com ~all\\"",
+            "ResourceRecords": [
+              ""v=spf1 include:amazonses.com ~all"",
             ],
             "TTL": "60",
             "Type": "TXT",
@@ -490,16 +488,16 @@ Object {
       },
       "Type": "AWS::Route53::RecordSetGroup",
     },
-    "lifligcdksesdomainproviderFunctionB62280C6": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderFunctionB62280C6": {
+      "DependsOn": [
         "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderFunctionServiceRole4F119253",
             "Arn",
           ],
@@ -509,27 +507,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderFunctionServiceRole4F119253": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderFunctionServiceRole4F119253": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -540,12 +538,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ses:DeleteIdentity",
                 "ses:GetIdentityDkimAttributes",
                 "ses:GetIdentityMailFromDomainAttributes",
@@ -563,26 +561,26 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderFunctionServiceRole4F119253",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": {
+      "DependsOn": [
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "lifligcdksesdomainproviderFunctionB62280C6",
                 "Arn",
               ],
@@ -590,12 +588,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
             "Arn",
           ],
@@ -605,27 +603,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -636,26 +634,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "lifligcdksesdomainproviderFunctionB62280C6",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "lifligcdksesdomainproviderFunctionB62280C6",
                           "Arn",
                         ],
@@ -666,11 +664,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "lifligcdksesdomainproviderFunctionB62280C6",
                   "Arn",
                 ],
@@ -680,8 +678,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
           },
         ],
@@ -693,16 +691,16 @@ Object {
 `;
 
 exports[`ses-domain without hosted zone 1`] = `
-Object {
-  "Resources": Object {
-    "SesDomain0A5DC5B8": Object {
+{
+  "Resources": {
+    "SesDomain0A5DC5B8": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "example.com",
         "IncludeVerificationRecord": "true",
         "Serial": 1,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7",
             "Arn",
           ],
@@ -711,16 +709,16 @@ Object {
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
-    "lifligcdksesdomainproviderFunctionB62280C6": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderFunctionB62280C6": {
+      "DependsOn": [
         "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
         "lifligcdksesdomainproviderFunctionServiceRole4F119253",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderFunctionServiceRole4F119253",
             "Arn",
           ],
@@ -730,27 +728,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderFunctionServiceRole4F119253": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderFunctionServiceRole4F119253": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -761,12 +759,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ses:DeleteIdentity",
                 "ses:GetIdentityDkimAttributes",
                 "ses:GetIdentityMailFromDomainAttributes",
@@ -784,26 +782,26 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderFunctionServiceRoleDefaultPolicy378DC1DA",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderFunctionServiceRole4F119253",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": Object {
-      "DependsOn": Array [
+    "lifligcdksesdomainproviderProviderframeworkonEventEFBE5AD7": {
+      "DependsOn": [
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
         "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
       ],
-      "Properties": Object {
+      "Properties": {
         "Code": Any<Object>,
         "Description": "AWS CDK resource provider framework - onEvent (Stack/liflig-cdk.ses-domain.provider/Provider)",
-        "Environment": Object {
-          "Variables": Object {
-            "USER_ON_EVENT_FUNCTION_ARN": Object {
-              "Fn::GetAtt": Array [
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
                 "lifligcdksesdomainproviderFunctionB62280C6",
                 "Arn",
               ],
@@ -811,12 +809,12 @@ Object {
           },
         },
         "Handler": "framework.onEvent",
-        "LoggingConfig": Object {
+        "LoggingConfig": {
           "ApplicationLogLevel": "FATAL",
           "LogFormat": "JSON",
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
             "Arn",
           ],
@@ -826,27 +824,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -857,26 +855,26 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "lifligcdksesdomainproviderFunctionB62280C6",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "lifligcdksesdomainproviderFunctionB62280C6",
                           "Arn",
                         ],
@@ -887,11 +885,11 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "lambda:GetFunction",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "lifligcdksesdomainproviderFunctionB62280C6",
                   "Arn",
                 ],
@@ -901,8 +899,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "lifligcdksesdomainproviderProviderframeworkonEventServiceRoleDefaultPolicy389AABE6",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lifligcdksesdomainproviderProviderframeworkonEventServiceRole23759D5D",
           },
         ],

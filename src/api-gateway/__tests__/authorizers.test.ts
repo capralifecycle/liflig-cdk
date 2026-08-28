@@ -1,6 +1,6 @@
-import "@aws-cdk/assert/jest"
+import assert from "node:assert/strict"
+import { after, afterEach, before, beforeEach, describe, test } from "node:test"
 import type { SecretsManager } from "@aws-sdk/client-secrets-manager"
-import { expect, jest } from "@jest/globals"
 import type {
   APIGatewayRequestAuthorizerEventV2,
   APIGatewaySimpleAuthorizerResult,
@@ -191,7 +191,10 @@ describe("API Gateway Lambda authorizers", () => {
       const result = await testCase.authorizer.handler(
         createAuthorizerEvent(authHeader),
       )
-      expect(result.isAuthorized).toBe(testCase.expectedResult.isAuthorized)
+      assert.strictEqual(
+        result.isAuthorized,
+        testCase.expectedResult.isAuthorized,
+      )
 
       if (result.isAuthorized) {
         const expectedResultContext: Record<string, string> = {}
@@ -217,7 +220,7 @@ describe("API Gateway Lambda authorizers", () => {
               basicAuthHeader(DEFAULT_CREDENTIALS)
           }
         }
-        expect(result.context).toEqual(expectedResultContext)
+        assert.deepStrictEqual(result.context, expectedResultContext)
       }
     })
   }
@@ -238,14 +241,14 @@ describe("API Gateway Lambda authorizers", () => {
         error = e
       }
 
-      expect(error).toBeDefined()
-      expect(error).toBeInstanceOf(Error)
+      assert.notStrictEqual(error, undefined)
+      assert.ok(error instanceof Error)
       // See comment in cognito-user-pool-authorizer
-      expect((error as Error).message).toBe("Unauthorized")
+      assert.strictEqual((error as Error).message, "Unauthorized")
     })
   }
 
-  beforeAll(() => {
+  before(() => {
     const mockSecretsManager = () =>
       new MockSecretsManager() as unknown as SecretsManager
 
@@ -272,15 +275,13 @@ describe("API Gateway Lambda authorizers", () => {
     cognitoUserPoolOrBasicAuthAuthorizer.clearCache()
   })
 
-  // Reset process.env between tests: https://stackoverflow.com/a/48042799
   const OLD_ENV = process.env
 
   beforeEach(() => {
-    jest.resetModules()
-    process.env = { ...OLD_ENV } // Make a copy
+    process.env = { ...OLD_ENV }
   })
 
-  afterAll(() => {
+  after(() => {
     process.env = OLD_ENV // Restore old environment
   })
 })
