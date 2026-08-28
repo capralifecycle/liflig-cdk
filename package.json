@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --enable-source-maps' jest",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "test:update-snapshots": "node --import tsx --test --test-update-snapshots \"src/**/*.test.ts\"",
     "lint": "biome check",
     "lint:fix": "biome check --fix",
     "format": "biome format --write",
@@ -39,7 +40,6 @@
     "provenance": true
   },
   "devDependencies": {
-    "@aws-cdk/assert": "2.68.0",
     "@aws-sdk/client-cloudwatch-logs": "3.1117.0",
     "@aws-sdk/client-codebuild": "3.1117.0",
     "@aws-sdk/client-codepipeline": "3.1117.0",
@@ -54,19 +54,16 @@
     "@biomejs/biome": "2.5.10",
     "@commitlint/cli": "21.2.2",
     "@commitlint/config-conventional": "21.2.2",
+    "@liflig/cdk-snapshot": "1.0.0",
     "@types/aws-lambda": "8.10.162",
-    "@types/jest": "30.0.0",
     "@types/node": "24.13.3",
     "aws-cdk": "2.1138.0",
     "aws-cdk-lib": "2.266.0",
     "constructs": "10.8.1",
     "esbuild": "0.28.2",
-    "jest": "30.4.2",
-    "jest-cdk-snapshot": "2.3.6",
     "lefthook": "2.1.10",
     "npm-check-updates": "23.1.0",
     "semantic-release": "25.0.9",
-    "ts-jest": "29.4.12",
     "tsx": "4.23.12",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"

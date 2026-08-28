@@ -1,14 +1,16 @@
-import type { Construct } from "constructs"
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as sns from "aws-cdk-lib/aws-sns"
 import * as ssm from "aws-cdk-lib/aws-ssm"
-import "jest-cdk-snapshot"
+import type { Construct } from "constructs"
 import {
   PlatformConsumer,
   PlatformProducer,
   type PlatformProducerProps,
 } from "../platform"
+
+configureCdkSnapshots()
 
 interface ProducerProps extends PlatformProducerProps {
   alarmTopic: sns.Topic
@@ -32,7 +34,7 @@ class ExamplePlatformConsumer extends PlatformConsumer {
   )
 }
 
-test("produce example plaform", () => {
+test("produce example plaform", (t) => {
   const app = new App()
   const stack = new Stack(app, "ProducerStack")
 
@@ -47,10 +49,10 @@ test("produce example plaform", () => {
     alarmTopic: alarmTopic,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("consume example platform", () => {
+test("consume example platform", (t) => {
   const app = new App()
   const stack = new Stack(app, "ConsumerStack")
 
@@ -64,5 +66,5 @@ test("consume example platform", () => {
     stringValue: platform.alarmTopic.topicArn,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

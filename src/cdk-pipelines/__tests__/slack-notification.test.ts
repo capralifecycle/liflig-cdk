@@ -1,5 +1,6 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
 import { App, CfnOutput, Stack, Stage } from "aws-cdk-lib"
+import { Template } from "aws-cdk-lib/assertions"
 import { Bucket } from "aws-cdk-lib/aws-s3"
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager"
 import { LifligCdkPipeline } from "../liflig-cdk-pipeline"
@@ -58,7 +59,9 @@ test("slack-notification", () => {
     artifactsBucket: pipeline.artifactsBucket,
   })
 
-  expect(pipelineStack).toHaveResourceLike("AWS::Events::Rule", {
+  const template = Template.fromStack(pipelineStack)
+
+  template.hasResourceProperties("AWS::Events::Rule", {
     EventPattern: {
       source: ["aws.codepipeline"],
     },
@@ -71,7 +74,7 @@ test("slack-notification", () => {
     slackMentions.group.expected,
   ].join(" ")
 
-  expect(pipelineStack).toHaveResourceLike("AWS::Lambda::Function", {
+  template.hasResourceProperties("AWS::Lambda::Function", {
     Environment: {
       Variables: {
         SLACK_MENTIONS: expectedFormattedSlackMentions,

@@ -1,8 +1,11 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { ConfigurationSetDeliveryOptions } from "../index"
 
-test("configuration-set-delivery-options", () => {
+configureCdkSnapshots()
+
+test("configuration-set-delivery-options", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
 
@@ -11,7 +14,9 @@ test("configuration-set-delivery-options", () => {
     tlsPolicy: "Require",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  t.assert.snapshot(
+    cdkTemplate(stack, {
+      ignoreAssets: true,
+    }),
+  )
 })

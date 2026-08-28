@@ -1,27 +1,29 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Duration, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SecurityPolicyProtocol } from "aws-cdk-lib/aws-cloudfront"
 import { Webapp } from "../"
 import { generateContentSecurityPolicyHeader } from "../security-headers"
 
-test("create webapp with default parameters", () => {
+configureCdkSnapshots()
+
+test("create webapp with default parameters", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new Webapp(stack, "Webapp", {})
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("create webapp with domain and security headers", () => {
+test("create webapp with domain and security headers", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new Webapp(stack, "Webapp", {
     domainNames: ["example.com"],
   })
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("create webapp with domain and custom response header policy with CSP", () => {
+test("create webapp with domain and custom response header policy with CSP", (t) => {
   const app = new App()
   const responseHeadersPolicy = generateContentSecurityPolicyHeader({
     connectSrc: "'self'",
@@ -42,10 +44,10 @@ test("create webapp with domain and custom response header policy with CSP", () 
       },
     },
   })
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("create webapp with domain and custom response header policy with report-only CSP", () => {
+test("create webapp with domain and custom response header policy with report-only CSP", (t) => {
   const app = new App()
   const responseHeadersPolicy = generateContentSecurityPolicyHeader({
     connectSrc: "'self'",
@@ -68,10 +70,10 @@ test("create webapp with domain and custom response header policy with report-on
       },
     },
   })
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("create webapp with domain and override TLS configuration", () => {
+test("create webapp with domain and override TLS configuration", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new Webapp(stack, "Webapp", {
@@ -79,5 +81,5 @@ test("create webapp with domain and override TLS configuration", () => {
       minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
     },
   })
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

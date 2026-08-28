@@ -36,7 +36,7 @@ fmt: npm-fmt py-fmt
 fmt-check: npm-fmt-check py-fmt-check
 
 .PHONY: snapshots
-snapshots: npm-cdk-snapshots npm-jest-snapshots
+snapshots: npm-cdk-snapshots npm-test-snapshots
 
 .PHONY: snapshots-check
 snapshots-check: npm-snapshots-check
@@ -81,14 +81,14 @@ npm-fmt-check:
 
 .PHONY: npm-cdk-snapshots
 # Needs `lib/` because create-snapshots.sh runs the compiled cdk-create-snapshots.js.
-# Also serialized after npm-jest-snapshots: both contend on cdk.out, and the CDK CLI's
-# lock blocks jest's in-process synth (Template.fromStack) when they run concurrently.
-npm-cdk-snapshots: npm-build npm-jest-snapshots
+# Also serialized after npm-test-snapshots: both contend on cdk.out, and the CDK CLI's
+# lock blocks the in-process synth (Template.fromStack) when they run concurrently.
+npm-cdk-snapshots: npm-build npm-test-snapshots
 	npm run snapshots
 
-.PHONY: npm-jest-snapshots
-npm-jest-snapshots:
-	npm test -- --updateSnapshot
+.PHONY: npm-test-snapshots
+npm-test-snapshots:
+	npm run test:update-snapshots
 
 .PHONY: npm-snapshots-check
 npm-snapshots-check: snapshots

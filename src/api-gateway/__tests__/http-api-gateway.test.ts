@@ -1,27 +1,29 @@
-import "@aws-cdk/assert/jest"
+import { beforeEach, describe, test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
+import { EventBus } from "aws-cdk-lib/aws-events"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as lambda from "aws-cdk-lib/aws-lambda"
-import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import "jest-cdk-snapshot"
-import { EventBus } from "aws-cdk-lib/aws-events"
 import {
   InlineCode,
   Function as LambdaFunction,
   Runtime,
 } from "aws-cdk-lib/aws-lambda"
+import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs"
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
+import * as route53 from "aws-cdk-lib/aws-route53"
 import { type ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Queue } from "aws-cdk-lib/aws-sqs"
 import { FargateService, ListenerRule } from "../../ecs"
 import { LoadBalancer } from "../../load-balancer"
 import { ApiGateway } from ".."
+
+configureCdkSnapshots()
 
 describe("HTTP API Gateway", () => {
   const albListenerHostName = "my-test-service-behind-alb.example.com"
@@ -38,7 +40,7 @@ describe("HTTP API Gateway", () => {
     retention: RetentionDays.SIX_MONTHS,
   }
 
-  test("creates API-GW HTTP API using IAM auth and ALB integration", () => {
+  test("creates API-GW HTTP API using IAM auth and ALB integration", (t) => {
     // The loadbalancer security group MUST have an egress rule to the API-GW.
     // Check the createEcsAlbService method for this.
     createEcsAlbService()
@@ -69,10 +71,10 @@ describe("HTTP API Gateway", () => {
     })
     apiGw.grantInvoke(externalCallerRole)
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API using basic auth and SQS integration", () => {
+  test("creates API-GW HTTP API using basic auth and SQS integration", (t) => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const ingressSqsQueue = new Queue(stack, "IngressQueue", {
@@ -91,10 +93,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API using EventBridge integration with a default role", () => {
+  test("creates API-GW HTTP API using EventBridge integration with a default role", (t) => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
@@ -116,10 +118,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with default integration using same role on default integration as in a route integration", () => {
+  test("creates API-GW HTTP API with default integration using same role on default integration as in a route integration", (t) => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
@@ -157,10 +159,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API without default integration where all routes shared the same role", () => {
+  test("creates API-GW HTTP API without default integration where all routes shared the same role", (t) => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
@@ -200,13 +202,13 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
   /**
    * This should most likely never occur, but the design supports it, so lets test it does not create any issues for us
    */
-  test("creates API-GW HTTP API using multiple EventBridge where different roles are used for default and routes with a specific role", () => {
+  test("creates API-GW HTTP API using multiple EventBridge where different roles are used for default and routes with a specific role", (t) => {
     const credentialsSecret = createBasicAuthCredentialsSecret()
 
     const eventBus = new EventBus(stack, "EventBus", {
@@ -248,10 +250,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with no auth and Lambda integration", () => {
+  test("creates API-GW HTTP API with no auth and Lambda integration", (t) => {
     const apiLambda = new LambdaFunction(stack, "MyApiLambda", {
       vpc: vpc,
       code: new InlineCode(
@@ -269,10 +271,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with Cognito User Pool authorizer", () => {
+  test("creates API-GW HTTP API with Cognito User Pool authorizer", (t) => {
     createEcsAlbService()
     const userPool = createCognitoUserPool()
     const credentialsSecret = createBasicAuthCredentialsSecret()
@@ -296,10 +298,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with Cognito User Pool/Basic Auth authorizer", () => {
+  test("creates API-GW HTTP API with Cognito User Pool/Basic Auth authorizer", (t) => {
     createEcsAlbService()
     const userPool = createCognitoUserPool()
     const credentialsSecret = createBasicAuthCredentialsSecret()
@@ -326,10 +328,10 @@ describe("HTTP API Gateway", () => {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with custom Lambda authorizer", () => {
+  test("creates API-GW HTTP API with custom Lambda authorizer", (t) => {
     createEcsAlbService()
 
     const lambdaAuthorizer = new lambdaNodejs.NodejsFunction(
@@ -370,10 +372,10 @@ export async function handler(event) {
       accessLogs,
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("creates API-GW HTTP API with custom access log format", () => {
+  test("creates API-GW HTTP API with custom access log format", (t) => {
     createEcsAlbService()
 
     new ApiGateway(stack, "TestApiGatewayWithCustomAccessLogFormat", {
@@ -403,7 +405,7 @@ export async function handler(event) {
       },
     })
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
   beforeEach(() => {

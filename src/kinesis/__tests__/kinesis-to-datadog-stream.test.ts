@@ -1,10 +1,12 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as logs from "aws-cdk-lib/aws-logs"
-import "jest-cdk-snapshot"
 import { KinesisToDatadogStream } from "../kinesis-to-datadog-stream"
 
-test("create kinesis stream", () => {
+configureCdkSnapshots()
+
+test("create kinesis stream", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack", {
     env: {
@@ -24,5 +26,5 @@ test("create kinesis stream", () => {
     datadogApiKeySecretName: "DATADOG-SECRET",
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

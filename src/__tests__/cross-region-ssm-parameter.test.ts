@@ -1,7 +1,10 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 
-test("cross-region-ssm-parameter", () => {
+configureCdkSnapshots()
+
+test("cross-region-ssm-parameter", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1", {
     env: {
@@ -9,5 +12,5 @@ test("cross-region-ssm-parameter", () => {
     },
   })
 
-  expect(stack1).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
 })

@@ -1,11 +1,14 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, type CfnElement, Stack } from "aws-cdk-lib"
 import { Match, Template } from "aws-cdk-lib/assertions"
 import * as cw_actions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { WebappMonitor } from ".."
 
-test("App monitor default vaules snapshot test", () => {
+configureCdkSnapshots()
+
+test("App monitor default vaules snapshot test", (t) => {
   const app = new App()
 
   const appMonitorStack = new Stack(app, "AppMonitorStack")
@@ -19,7 +22,7 @@ test("App monitor default vaules snapshot test", () => {
     ),
   })
 
-  expect(appMonitorStack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(appMonitorStack))
 })
 
 test("App monitor has custom events alarm properties", () => {

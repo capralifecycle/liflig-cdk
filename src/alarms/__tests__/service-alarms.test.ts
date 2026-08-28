@@ -1,13 +1,17 @@
-import "@aws-cdk/assert/jest"
+import assert from "node:assert/strict"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
+import { Template } from "aws-cdk-lib/assertions"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
-import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
+import * as sns from "aws-cdk-lib/aws-sns"
 import { ServiceAlarms } from "../service-alarms"
 
-test("creates single 5xx alarm (enabled) with expected defaults", () => {
+configureCdkSnapshots()
+
+test("creates single 5xx alarm (enabled) with expected defaults", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
@@ -27,17 +31,17 @@ test("creates single 5xx alarm (enabled) with expected defaults", () => {
     single5xxResponseAlarm: {},
   })
 
-  expect(stack).toHaveResourceLike("AWS::CloudWatch::Alarm", {
+  Template.fromStack(stack).hasResourceProperties("AWS::CloudWatch::Alarm", {
     MetricName: "HTTPCode_Target_5XX_Count",
     Namespace: "AWS/ApplicationELB",
     EvaluationPeriods: 1,
     Threshold: 1,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("does not create single 5xx alarm when disabled", () => {
+test("does not create single 5xx alarm when disabled", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack2")
   const stack = new Stack(app, "Stack2")
@@ -58,14 +62,18 @@ test("does not create single 5xx alarm when disabled", () => {
   })
 
   // No alarm should be created that matches the single-5xx signature
-  expect(stack).not.toHaveResourceLike("AWS::CloudWatch::Alarm", {
-    MetricName: "HTTPCode_Target_5XX_Count",
-    Namespace: "AWS/ApplicationELB",
-    EvaluationPeriods: 1,
-    Threshold: 1,
-  })
+  Template.fromStack(stack).resourcePropertiesCountIs(
+    "AWS::CloudWatch::Alarm",
+    {
+      MetricName: "HTTPCode_Target_5XX_Count",
+      Namespace: "AWS/ApplicationELB",
+      EvaluationPeriods: 1,
+      Threshold: 1,
+    },
+    0,
+  )
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
 test("log group receives exactly two subscription filters when logHandler is present", () => {
@@ -99,5 +107,5 @@ test("log group receives exactly two subscription filters when logHandler is pre
     (r: any) => r.Type === "AWS::Logs::SubscriptionFilter",
   )
 
-  expect(subs.length).toBe(2)
+  assert.strictEqual(subs.length, 2)
 })

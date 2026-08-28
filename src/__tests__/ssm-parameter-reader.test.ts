@@ -1,9 +1,12 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import { CfnParameter } from "aws-cdk-lib/aws-ssm"
-import "jest-cdk-snapshot"
 import { SsmParameterReader } from "../ssm-parameter-reader"
 
-test("ssm-parameter-reader", () => {
+configureCdkSnapshots()
+
+test("ssm-parameter-reader", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1")
   const parameterName = "/my/param"
@@ -21,5 +24,5 @@ test("ssm-parameter-reader", () => {
     nonce: "123",
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack2))
 })

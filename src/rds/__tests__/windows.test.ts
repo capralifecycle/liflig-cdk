@@ -1,3 +1,5 @@
+import assert from "node:assert/strict"
+import { describe, test } from "node:test"
 import { overlaps, parseBackupWindow, parseMaintenanceWindow } from "../windows"
 
 describe("parseMaintenanceWindow", () => {
@@ -20,9 +22,11 @@ describe("parseMaintenanceWindow", () => {
     { input: "SUN:03:00-sun:04:00", description: "mixed case across ends" },
   ]
 
-  test.each(validCases)("accepts $description ($input)", ({ input }) => {
-    expect(() => parseMaintenanceWindow(input)).not.toThrow()
-  })
+  for (const { input, description } of validCases) {
+    test(`accepts ${description} (${input})`, () => {
+      assert.doesNotThrow(() => parseMaintenanceWindow(input))
+    })
+  }
 
   const invalidCases: Array<{
     input: string
@@ -76,12 +80,11 @@ describe("parseMaintenanceWindow", () => {
     },
   ]
 
-  test.each(invalidCases)(
-    "rejects $description ($input)",
-    ({ input, messageMatches }) => {
-      expect(() => parseMaintenanceWindow(input)).toThrow(messageMatches)
-    },
-  )
+  for (const { input, description, messageMatches } of invalidCases) {
+    test(`rejects ${description} (${input})`, () => {
+      assert.throws(() => parseMaintenanceWindow(input), messageMatches)
+    })
+  }
 })
 
 describe("parseBackupWindow", () => {
@@ -92,9 +95,11 @@ describe("parseBackupWindow", () => {
     { input: "23:59-00:00", description: "end before start (deferred to AWS)" },
   ]
 
-  test.each(validCases)("accepts $description ($input)", ({ input }) => {
-    expect(() => parseBackupWindow(input)).not.toThrow()
-  })
+  for (const { input, description } of validCases) {
+    test(`accepts ${description} (${input})`, () => {
+      assert.doesNotThrow(() => parseBackupWindow(input))
+    })
+  }
 
   const invalidCases: Array<{
     input: string
@@ -143,12 +148,11 @@ describe("parseBackupWindow", () => {
     },
   ]
 
-  test.each(invalidCases)(
-    "rejects $description ($input)",
-    ({ input, messageMatches }) => {
-      expect(() => parseBackupWindow(input)).toThrow(messageMatches)
-    },
-  )
+  for (const { input, description, messageMatches } of invalidCases) {
+    test(`rejects ${description} (${input})`, () => {
+      assert.throws(() => parseBackupWindow(input), messageMatches)
+    })
+  }
 })
 
 describe("overlaps", () => {
@@ -232,9 +236,11 @@ describe("overlaps", () => {
     },
   ]
 
-  test.each(cases)("$description", ({ maintenance, backup, expected }) => {
-    const mw = parseMaintenanceWindow(maintenance)
-    const bw = parseBackupWindow(backup)
-    expect(overlaps(mw, bw)).toBe(expected)
-  })
+  for (const { description, maintenance, backup, expected } of cases) {
+    test(description, () => {
+      const mw = parseMaintenanceWindow(maintenance)
+      const bw = parseBackupWindow(backup)
+      assert.strictEqual(overlaps(mw, bw), expected)
+    })
+  }
 })

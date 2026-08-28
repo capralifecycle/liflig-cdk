@@ -1,3 +1,5 @@
+import assert from "node:assert/strict"
+import { describe, test } from "node:test"
 import { SlackMention } from "../slack-notification"
 
 describe("SlackMention.formatMention", () => {
@@ -19,12 +21,11 @@ describe("SlackMention.formatMention", () => {
       { mention: "SABCDEFGHIJ", expected: "<!subteam^SABCDEFGHIJ>" },
       { mention: "S0", expected: "<!subteam^S0>" },
     ]
-    test.each(validCases)(
-      "formats $mention to $expected",
-      ({ mention, expected }) => {
-        expect(SlackMention.formatMention(mention)).toBe(expected)
-      },
-    )
+    for (const { mention, expected } of validCases) {
+      test(`formats ${mention} to ${expected}`, () => {
+        assert.strictEqual(SlackMention.formatMention(mention), expected)
+      })
+    }
   })
 
   describe("invalid cases", () => {
@@ -43,8 +44,10 @@ describe("SlackMention.formatMention", () => {
       { mention: "A1234567890", desc: "unknown prefix" },
       { mention: "V1234567890", desc: "unknown prefix" },
     ]
-    test.each(invalidCases)("throws on $desc: $mention", ({ mention }) => {
-      expect(() => SlackMention.formatMention(mention)).toThrow()
-    })
+    for (const { mention, desc } of invalidCases) {
+      test(`throws on ${desc}: ${mention}`, () => {
+        assert.throws(() => SlackMention.formatMention(mention))
+      })
+    }
   })
 })

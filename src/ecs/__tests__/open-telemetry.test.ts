@@ -1,11 +1,13 @@
-import "@aws-cdk/assert/jest"
+import { describe, test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
 import * as ecr from "aws-cdk-lib/aws-ecr"
 import * as ecs from "aws-cdk-lib/aws-ecs"
-import "jest-cdk-snapshot"
 import { RetentionDays } from "aws-cdk-lib/aws-logs"
 import { FargateService, OpenTelemetryCollectors } from ".."
+
+configureCdkSnapshots()
 
 describe("OpenTelemetryCollectors", () => {
   const createService = () => {
@@ -43,17 +45,17 @@ describe("OpenTelemetryCollectors", () => {
     return { service, stack }
   }
 
-  test("creates OpenTelemetry collector sidecar", () => {
+  test("creates OpenTelemetry collector sidecar", (t) => {
     const { service, stack } = createService()
 
     new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
       service: service,
     }).addOpenTelemetryCollectorSidecar()
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("sets all options on OpenTelemetry collector sidecar", () => {
+  test("sets all options on OpenTelemetry collector sidecar", (t) => {
     const { service, stack } = createService()
 
     new OpenTelemetryCollectors(stack, "OpenTelemetryCollectors", {
@@ -68,13 +70,13 @@ describe("OpenTelemetryCollectors", () => {
       },
     }).addOpenTelemetryCollectorSidecar()
 
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 
-  test("disables OpenTelemetry Java agent", () => {
+  test("disables OpenTelemetry Java agent", (t) => {
     const { service, stack } = createService()
 
     OpenTelemetryCollectors.disableOpenTelemetryJavaAgent(service)
-    expect(stack).toMatchCdkSnapshot()
+    t.assert.snapshot(cdkTemplate(stack))
   })
 })

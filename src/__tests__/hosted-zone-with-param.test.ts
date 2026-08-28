@@ -1,8 +1,11 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, CfnOutput, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { HostedZoneWithParam } from "../hosted-zone-with-param"
 
-test("hosted-zone-with-param for same region", () => {
+configureCdkSnapshots()
+
+test("hosted-zone-with-param for same region", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1", {
     env: {
@@ -25,11 +28,11 @@ test("hosted-zone-with-param for same region", () => {
     value: hostedZone2.hostedZoneId,
   })
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
+  t.assert.snapshot(cdkTemplate(stack2))
 })
 
-test("hosted-zone-with-param for different region", () => {
+test("hosted-zone-with-param for different region", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1", {
     env: {
@@ -52,6 +55,6 @@ test("hosted-zone-with-param for different region", () => {
     value: hostedZone2.hostedZoneId,
   })
 
-  expect(stack1).toMatchCdkSnapshot()
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack1))
+  t.assert.snapshot(cdkTemplate(stack2))
 })

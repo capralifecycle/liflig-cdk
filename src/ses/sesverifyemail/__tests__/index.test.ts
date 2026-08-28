@@ -1,8 +1,11 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
-import "jest-cdk-snapshot"
 import { SesVerifyEmail } from ".."
 
-test("ses-verify-email", () => {
+configureCdkSnapshots()
+
+test("ses-verify-email", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
 
@@ -10,7 +13,9 @@ test("ses-verify-email", () => {
     emailAddress: "example@example.com",
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  t.assert.snapshot(
+    cdkTemplate(stack, {
+      ignoreAssets: true,
+    }),
+  )
 })

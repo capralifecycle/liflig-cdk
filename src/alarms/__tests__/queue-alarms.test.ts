@@ -1,12 +1,14 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import * as cdk from "aws-cdk-lib"
 import { App, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { QueueAlarms } from "../queue-alarms"
 
-test("queue alarms default setup", () => {
+configureCdkSnapshots()
+
+test("queue alarms default setup", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
@@ -24,10 +26,10 @@ test("queue alarms default setup", () => {
   alarms.addApproximateAgeOfOldestMessageAlarm()
   alarms.addTooManyMessagesExistAlarm({ messageAmountLimit: 1 })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("queue alarms custom overrides", () => {
+test("queue alarms custom overrides", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack")
   const stack = new Stack(app, "Stack")
@@ -64,5 +66,5 @@ test("queue alarms custom overrides", () => {
     alarmDescription: "Custom alarm for too many messages",
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })

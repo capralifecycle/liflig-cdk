@@ -1,9 +1,12 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as sns from "aws-cdk-lib/aws-sns"
-import "jest-cdk-snapshot"
 import { ConfigurationSetSnsDestination } from "../index"
 
-test("configuration-set-sns-destination", () => {
+configureCdkSnapshots()
+
+test("configuration-set-sns-destination", (t) => {
   const app = new App()
   const stack = new Stack(app, "Stack")
 
@@ -23,7 +26,9 @@ test("configuration-set-sns-destination", () => {
     ],
   })
 
-  expect(stack).toMatchCdkSnapshot({
-    ignoreAssets: true,
-  })
+  t.assert.snapshot(
+    cdkTemplate(stack, {
+      ignoreAssets: true,
+    }),
+  )
 })

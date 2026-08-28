@@ -1,9 +1,12 @@
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import { SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2"
-import "jest-cdk-snapshot"
 import { BastionHost } from ".."
 
-test("minimal bastion-host", () => {
+configureCdkSnapshots()
+
+test("minimal bastion-host", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1")
   const stack2 = new Stack(app, "Stack2")
@@ -14,10 +17,10 @@ test("minimal bastion-host", () => {
     vpc,
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack2))
 })
 
-test("bastion-host with custom security group", () => {
+test("bastion-host with custom security group", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1")
   const stack2 = new Stack(app, "Stack2")
@@ -32,10 +35,10 @@ test("bastion-host with custom security group", () => {
     vpc,
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack2))
 })
 
-test("bastion-host with custom instance name", () => {
+test("bastion-host with custom instance name", (t) => {
   const app = new App()
   const stack1 = new Stack(app, "Stack1")
   const stack2 = new Stack(app, "Stack2")
@@ -47,5 +50,5 @@ test("bastion-host with custom instance name", () => {
     instanceName: "CustomInstanceName",
   })
 
-  expect(stack2).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack2))
 })

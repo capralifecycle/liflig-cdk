@@ -1,13 +1,15 @@
-import "@aws-cdk/assert/jest"
+import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
-import * as route53 from "aws-cdk-lib/aws-route53"
-import "jest-cdk-snapshot"
 import { SslPolicy } from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import * as route53 from "aws-cdk-lib/aws-route53"
 import { LoadBalancer } from ".."
 
-test("create load balancer", () => {
+configureCdkSnapshots()
+
+test("create load balancer", (t) => {
   const app = new App()
   const supportStack = new Stack(app, "SupportStack", {
     env: {
@@ -37,10 +39,10 @@ test("create load balancer", () => {
     vpc: vpc,
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
 
-test("create load balancer and override TLS configuration", () => {
+test("create load balancer and override TLS configuration", (t) => {
   const app = new App()
 
   const supportStack = new Stack(app, "SuuportStack", {
@@ -75,5 +77,5 @@ test("create load balancer and override TLS configuration", () => {
     },
   })
 
-  expect(stack).toMatchCdkSnapshot()
+  t.assert.snapshot(cdkTemplate(stack))
 })
