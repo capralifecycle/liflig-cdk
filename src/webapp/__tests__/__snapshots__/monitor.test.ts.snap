@@ -1,33 +1,31 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`App monitor default vaules snapshot test 1`] = `
-Object {
-  "Resources": Object {
-    "TopicBFC7AF6E": Object {
+{
+  "Resources": {
+    "TopicBFC7AF6E": {
       "Type": "AWS::SNS::Topic",
     },
-    "WebappMonitorAppMonitor3AFF5E53": Object {
-      "Properties": Object {
-        "AppMonitorConfiguration": Object {
+    "WebappMonitorAppMonitor3AFF5E53": {
+      "Properties": {
+        "AppMonitorConfiguration": {
           "AllowCookies": true,
           "EnableXRay": false,
-          "GuestRoleArn": Object {
-            "Fn::GetAtt": Array [
+          "GuestRoleArn": {
+            "Fn::GetAtt": [
               "WebappMonitorRumRoleE2A6B583",
               "Arn",
             ],
           },
-          "IdentityPoolId": Object {
+          "IdentityPoolId": {
             "Ref": "WebappMonitorRumIdentityPool14A4031C",
           },
           "SessionSampleRate": 1,
-          "Telemetries": Array [
+          "Telemetries": [
             "errors",
             "http",
             "performance",
           ],
         },
-        "CustomEvents": Object {
+        "CustomEvents": {
           "Status": "DISABLED",
         },
         "CwLogEnabled": false,
@@ -36,17 +34,17 @@ Object {
       },
       "Type": "AWS::RUM::AppMonitor",
     },
-    "WebappMonitorEventsAlarmFB4FE35F": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "WebappMonitorEventsAlarmFB4FE35F": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Ref": "TopicBFC7AF6E",
           },
         ],
         "AlarmDescription": "A high number of events are being sent to CloudWatch RUM for app monitor 'local'. This may lead to high costs, so you'll likely want to investigate this.",
         "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "application_name",
             "Value": "local",
           },
@@ -61,14 +59,14 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "WebappMonitorRoleAttachment003A8509": Object {
-      "Properties": Object {
-        "IdentityPoolId": Object {
+    "WebappMonitorRoleAttachment003A8509": {
+      "Properties": {
+        "IdentityPoolId": {
           "Ref": "WebappMonitorRumIdentityPool14A4031C",
         },
-        "Roles": Object {
-          "unauthenticated": Object {
-            "Fn::GetAtt": Array [
+        "Roles": {
+          "unauthenticated": {
+            "Fn::GetAtt": [
               "WebappMonitorRumRoleE2A6B583",
               "Arn",
             ],
@@ -77,57 +75,57 @@ Object {
       },
       "Type": "AWS::Cognito::IdentityPoolRoleAttachment",
     },
-    "WebappMonitorRumIdentityPool14A4031C": Object {
-      "Properties": Object {
+    "WebappMonitorRumIdentityPool14A4031C": {
+      "Properties": {
         "AllowUnauthenticatedIdentities": true,
       },
       "Type": "AWS::Cognito::IdentityPool",
     },
-    "WebappMonitorRumRoleE2A6B583": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "WebappMonitorRumRoleE2A6B583": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRoleWithWebIdentity",
-              "Condition": Object {
-                "ForAnyValue:StringEquals": Object {
+              "Condition": {
+                "ForAnyValue:StringEquals": {
                   "cognito-identity.amazonaws.com:amr": "unauthenticated",
                 },
-                "StringEquals": Object {
-                  "cognito-identity.amazonaws.com:aud": Object {
+                "StringEquals": {
+                  "cognito-identity.amazonaws.com:aud": {
                     "Ref": "WebappMonitorRumIdentityPool14A4031C",
                   },
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Federated": "cognito-identity.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
                   "Action": "rum:PutRumEvents",
                   "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Join": Array [
+                  "Resource": {
+                    "Fn::Join": [
                       "",
-                      Array [
+                      [
                         "arn:",
-                        Object {
+                        {
                           "Ref": "AWS::Partition",
                         },
                         ":rum:",
-                        Object {
+                        {
                           "Ref": "AWS::Region",
                         },
                         ":",
-                        Object {
+                        {
                           "Ref": "AWS::AccountId",
                         },
                         ":appmonitor/local",

@@ -1,47 +1,45 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`create load balancer 1`] = `
-Object {
-  "Resources": Object {
-    "LoadBalancer8E47CE52": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "LoadBalancer8E47CE52": {
+      "DependsOn": [
         "LoadBalancerAccessLogsBucketPolicy6B02AF07",
       ],
-      "Properties": Object {
-        "LoadBalancerAttributes": Array [
-          Object {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
             "Key": "deletion_protection.enabled",
             "Value": "false",
           },
-          Object {
+          {
             "Key": "access_logs.s3.enabled",
             "Value": "true",
           },
-          Object {
+          {
             "Key": "access_logs.s3.bucket",
-            "Value": Object {
+            "Value": {
               "Ref": "LoadBalancerAccessLogsBucketD82011C7",
             },
           },
-          Object {
+          {
             "Key": "access_logs.s3.prefix",
             "Value": "",
           },
         ],
         "Scheme": "internet-facing",
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerSecurityGroupC89CA14B",
               "GroupId",
             ],
           },
         ],
-        "Subnets": Array [
-          Object {
+        "Subnets": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
           },
-          Object {
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
           },
         ],
@@ -49,27 +47,27 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerAccessLogsBucketD82011C7": Object {
+    "LoadBalancerAccessLogsBucketD82011C7": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
           ],
         },
-        "LifecycleConfiguration": Object {
-          "Rules": Array [
-            Object {
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
               "ExpirationInDays": 30,
               "Status": "Enabled",
             },
           ],
         },
-        "PublicAccessBlockConfiguration": Object {
+        "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
           "IgnorePublicAcls": true,
@@ -79,23 +77,23 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "LoadBalancerAccessLogsBucketPolicy6B02AF07": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "LoadBalancerAccessLogsBucketPolicy6B02AF07": {
+      "Properties": {
+        "Bucket": {
           "Ref": "LoadBalancerAccessLogsBucketD82011C7",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:PutObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::156460612806:root",
@@ -103,18 +101,18 @@ Object {
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "LoadBalancerAccessLogsBucketD82011C7",
                         "Arn",
                       ],
                     },
                     "/AWSLogs/",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     "/*",
@@ -122,29 +120,29 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:PutObject",
-              "Condition": Object {
-                "StringEquals": Object {
+              "Condition": {
+                "StringEquals": {
                   "s3:x-amz-acl": "bucket-owner-full-control",
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "delivery.logs.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "LoadBalancerAccessLogsBucketD82011C7",
                         "Arn",
                       ],
                     },
                     "/AWSLogs/",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     "/*",
@@ -152,14 +150,14 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:GetBucketAcl",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "delivery.logs.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "LoadBalancerAccessLogsBucketD82011C7",
                   "Arn",
                 ],
@@ -171,28 +169,28 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "LoadBalancerDefaultTargetGroup162BFC2A": Object {
-      "Properties": Object {
+    "LoadBalancerDefaultTargetGroup162BFC2A": {
+      "Properties": {
         "Port": 80,
         "Protocol": "HTTP",
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "instance",
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "LoadBalancerHttpListener9DD37EAA": Object {
-      "Properties": Object {
-        "DefaultActions": Array [
-          Object {
-            "RedirectConfig": Object {
+    "LoadBalancerHttpListener9DD37EAA": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "RedirectConfig": {
               "Port": "443",
               "Protocol": "HTTPS",
               "StatusCode": "HTTP_301",
@@ -200,7 +198,7 @@ Object {
             "Type": "redirect",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancer8E47CE52",
         },
         "Port": 80,
@@ -208,24 +206,24 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerHttpsListener68D81C94": Object {
-      "Properties": Object {
-        "Certificates": Array [
-          Object {
-            "CertificateArn": Object {
+    "LoadBalancerHttpsListener68D81C94": {
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
               "Fn::ImportValue": "SupportStack:ExportsOutputRefCertificate4E7ABB08F7C8AF50",
             },
           },
         ],
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
               "Ref": "LoadBalancerDefaultTargetGroup162BFC2A",
             },
             "Type": "forward",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancer8E47CE52",
         },
         "Port": 443,
@@ -234,11 +232,11 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerSecurityGroupC89CA14B": Object {
-      "Properties": Object {
+    "LoadBalancerSecurityGroupC89CA14B": {
+      "Properties": {
         "GroupDescription": "Automatically created Security Group for ELB StackLoadBalancerF0AF61AA",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "255.255.255.255/32",
             "Description": "Disallow all traffic",
             "FromPort": 252,
@@ -246,15 +244,15 @@ Object {
             "ToPort": 86,
           },
         ],
-        "SecurityGroupIngress": Array [
-          Object {
+        "SecurityGroupIngress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow from anyone on port 80",
             "FromPort": 80,
             "IpProtocol": "tcp",
             "ToPort": 80,
           },
-          Object {
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow from anyone on port 443",
             "FromPort": 443,
@@ -262,7 +260,7 @@ Object {
             "ToPort": 443,
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
@@ -273,47 +271,47 @@ Object {
 `;
 
 exports[`create load balancer and override TLS configuration 1`] = `
-Object {
-  "Resources": Object {
-    "LoadBalancer8E47CE52": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "LoadBalancer8E47CE52": {
+      "DependsOn": [
         "LoadBalancerAccessLogsBucketPolicy6B02AF07",
       ],
-      "Properties": Object {
-        "LoadBalancerAttributes": Array [
-          Object {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
             "Key": "deletion_protection.enabled",
             "Value": "false",
           },
-          Object {
+          {
             "Key": "access_logs.s3.enabled",
             "Value": "true",
           },
-          Object {
+          {
             "Key": "access_logs.s3.bucket",
-            "Value": Object {
+            "Value": {
               "Ref": "LoadBalancerAccessLogsBucketD82011C7",
             },
           },
-          Object {
+          {
             "Key": "access_logs.s3.prefix",
             "Value": "",
           },
         ],
         "Scheme": "internet-facing",
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerSecurityGroupC89CA14B",
               "GroupId",
             ],
           },
         ],
-        "Subnets": Array [
-          Object {
+        "Subnets": [
+          {
             "Fn::ImportValue": "SuuportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
           },
-          Object {
+          {
             "Fn::ImportValue": "SuuportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
           },
         ],
@@ -321,27 +319,27 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerAccessLogsBucketD82011C7": Object {
+    "LoadBalancerAccessLogsBucketD82011C7": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
           ],
         },
-        "LifecycleConfiguration": Object {
-          "Rules": Array [
-            Object {
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
               "ExpirationInDays": 30,
               "Status": "Enabled",
             },
           ],
         },
-        "PublicAccessBlockConfiguration": Object {
+        "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
           "IgnorePublicAcls": true,
@@ -351,23 +349,23 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "LoadBalancerAccessLogsBucketPolicy6B02AF07": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "LoadBalancerAccessLogsBucketPolicy6B02AF07": {
+      "Properties": {
+        "Bucket": {
           "Ref": "LoadBalancerAccessLogsBucketD82011C7",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:PutObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::897822967062:root",
@@ -375,18 +373,18 @@ Object {
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "LoadBalancerAccessLogsBucketD82011C7",
                         "Arn",
                       ],
                     },
                     "/AWSLogs/",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     "/*",
@@ -394,29 +392,29 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:PutObject",
-              "Condition": Object {
-                "StringEquals": Object {
+              "Condition": {
+                "StringEquals": {
                   "s3:x-amz-acl": "bucket-owner-full-control",
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "delivery.logs.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "LoadBalancerAccessLogsBucketD82011C7",
                         "Arn",
                       ],
                     },
                     "/AWSLogs/",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     "/*",
@@ -424,14 +422,14 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:GetBucketAcl",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "delivery.logs.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "LoadBalancerAccessLogsBucketD82011C7",
                   "Arn",
                 ],
@@ -443,28 +441,28 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "LoadBalancerDefaultTargetGroup162BFC2A": Object {
-      "Properties": Object {
+    "LoadBalancerDefaultTargetGroup162BFC2A": {
+      "Properties": {
         "Port": 80,
         "Protocol": "HTTP",
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "instance",
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SuuportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "LoadBalancerHttpListener9DD37EAA": Object {
-      "Properties": Object {
-        "DefaultActions": Array [
-          Object {
-            "RedirectConfig": Object {
+    "LoadBalancerHttpListener9DD37EAA": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "RedirectConfig": {
               "Port": "443",
               "Protocol": "HTTPS",
               "StatusCode": "HTTP_301",
@@ -472,7 +470,7 @@ Object {
             "Type": "redirect",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancer8E47CE52",
         },
         "Port": 80,
@@ -480,24 +478,24 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerHttpsListener68D81C94": Object {
-      "Properties": Object {
-        "Certificates": Array [
-          Object {
-            "CertificateArn": Object {
+    "LoadBalancerHttpsListener68D81C94": {
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
               "Fn::ImportValue": "SuuportStack:ExportsOutputRefCertificate4E7ABB08F7C8AF50",
             },
           },
         ],
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
               "Ref": "LoadBalancerDefaultTargetGroup162BFC2A",
             },
             "Type": "forward",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancer8E47CE52",
         },
         "Port": 443,
@@ -506,11 +504,11 @@ Object {
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerSecurityGroupC89CA14B": Object {
-      "Properties": Object {
+    "LoadBalancerSecurityGroupC89CA14B": {
+      "Properties": {
         "GroupDescription": "Automatically created Security Group for ELB StackLoadBalancerF0AF61AA",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "255.255.255.255/32",
             "Description": "Disallow all traffic",
             "FromPort": 252,
@@ -518,15 +516,15 @@ Object {
             "ToPort": 86,
           },
         ],
-        "SecurityGroupIngress": Array [
-          Object {
+        "SecurityGroupIngress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow from anyone on port 80",
             "FromPort": 80,
             "IpProtocol": "tcp",
             "ToPort": 80,
           },
-          Object {
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow from anyone on port 443",
             "FromPort": 443,
@@ -534,7 +532,7 @@ Object {
             "ToPort": 443,
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Fn::ImportValue": "SuuportStack:ExportsOutputRefVpc8378EB38272D6E3A",
         },
       },

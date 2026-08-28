@@ -1,20 +1,18 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`create kinesis stream 1`] = `
-Object {
-  "Resources": Object {
-    "KinesisToDatadogStreamCloudWatchLogsPolicy5D6050AF": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+{
+  "Resources": {
+    "KinesisToDatadogStreamCloudWatchLogsPolicy5D6050AF": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "firehose:PutRecord",
                 "firehose:PutRecordBatch",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "KinesisToDatadogStreamDeliveryStream83902C8C",
                   "Arn",
                 ],
@@ -24,22 +22,22 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "KinesisToDatadogStreamCloudWatchLogsPolicy5D6050AF",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "KinesisToDatadogStreamCloudWatchLogsRole8BADDC70",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "KinesisToDatadogStreamCloudWatchLogsRole8BADDC70": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "KinesisToDatadogStreamCloudWatchLogsRole8BADDC70": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "logs.eu-west-1.amazonaws.com",
               },
             },
@@ -49,34 +47,34 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "KinesisToDatadogStreamDeliveryStream83902C8C": Object {
-      "Properties": Object {
+    "KinesisToDatadogStreamDeliveryStream83902C8C": {
+      "Properties": {
         "DeliveryStreamType": "DirectPut",
-        "HttpEndpointDestinationConfiguration": Object {
-          "BufferingHints": Object {
+        "HttpEndpointDestinationConfiguration": {
+          "BufferingHints": {
             "IntervalInSeconds": 60,
             "SizeInMBs": 4,
           },
-          "CloudWatchLoggingOptions": Object {
+          "CloudWatchLoggingOptions": {
             "Enabled": true,
-            "LogGroupName": Object {
+            "LogGroupName": {
               "Ref": "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142",
             },
-            "LogStreamName": Object {
+            "LogStreamName": {
               "Ref": "KinesisToDatadogStreamDeliveryStreamLogStream32974BF1",
             },
           },
-          "EndpointConfiguration": Object {
-            "AccessKey": Object {
-              "Fn::Join": Array [
+          "EndpointConfiguration": {
+            "AccessKey": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "{{resolve:secretsmanager:arn:",
-                  Object {
+                  {
                     "Ref": "AWS::Partition",
                   },
                   ":secretsmanager:eu-west-1:",
-                  Object {
+                  {
                     "Ref": "AWS::AccountId",
                   },
                   ":secret:DATADOG-SECRET:SecretString:value::}}",
@@ -86,29 +84,29 @@ Object {
             "Name": "datadog-logs-endpoint",
             "Url": "https://aws-kinesis-http-intake.logs.datadoghq.eu/v1/input",
           },
-          "RequestConfiguration": Object {
+          "RequestConfiguration": {
             "ContentEncoding": "GZIP",
           },
-          "RetryOptions": Object {
+          "RetryOptions": {
             "DurationInSeconds": 60,
           },
-          "RoleARN": Object {
-            "Fn::GetAtt": Array [
+          "RoleARN": {
+            "Fn::GetAtt": [
               "KinesisToDatadogStreamFirehoseLogsRoleDF723823",
               "Arn",
             ],
           },
           "S3BackupMode": "FailedDataOnly",
-          "S3Configuration": Object {
-            "BucketARN": Object {
-              "Fn::GetAtt": Array [
+          "S3Configuration": {
+            "BucketARN": {
+              "Fn::GetAtt": [
                 "KinesisToDatadogStreamFailedDataBucket95726055",
                 "Arn",
               ],
             },
             "CompressionFormat": "UNCOMPRESSED",
-            "RoleARN": Object {
-              "Fn::GetAtt": Array [
+            "RoleARN": {
+              "Fn::GetAtt": [
                 "KinesisToDatadogStreamFirehoseLogsRoleDF723823",
                 "Arn",
               ],
@@ -118,28 +116,28 @@ Object {
       },
       "Type": "AWS::KinesisFirehose::DeliveryStream",
     },
-    "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142": Object {
+    "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 731,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "KinesisToDatadogStreamDeliveryStreamLogStream32974BF1": Object {
+    "KinesisToDatadogStreamDeliveryStreamLogStream32974BF1": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "LogGroupName": Object {
+      "Properties": {
+        "LogGroupName": {
           "Ref": "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142",
         },
       },
       "Type": "AWS::Logs::LogStream",
       "UpdateReplacePolicy": "Retain",
     },
-    "KinesisToDatadogStreamFailedDataBucket95726055": Object {
+    "KinesisToDatadogStreamFailedDataBucket95726055": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "PublicAccessBlockConfiguration": Object {
+      "Properties": {
+        "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
           "IgnorePublicAcls": true,
@@ -149,12 +147,12 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "KinesisToDatadogStreamFirehoseLogsPolicy6D41913D": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "KinesisToDatadogStreamFirehoseLogsPolicy6D41913D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "s3:AbortMultipartUpload",
                 "s3:GetBucketLocation",
                 "s3:GetObject",
@@ -163,19 +161,19 @@ Object {
                 "s3:PutObject",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "KinesisToDatadogStreamFailedDataBucket95726055",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "KinesisToDatadogStreamFailedDataBucket95726055",
                           "Arn",
                         ],
@@ -186,38 +184,38 @@ Object {
                 },
               ],
             },
-            Object {
+            {
               "Action": "logs:PutLogEvents",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:logs:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":log-group:",
-                    Object {
+                    {
                       "Ref": "KinesisToDatadogStreamDeliveryStreamLogGroup7179F142",
                     },
                     ":log-stream:",
-                    Object {
+                    {
                       "Ref": "KinesisToDatadogStreamDeliveryStreamLogStream32974BF1",
                     },
                   ],
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kinesis:DescribeStream",
                 "kinesis:GetShardIterator",
                 "kinesis:GetRecords",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "KinesisToDatadogStreamDeliveryStream83902C8C",
                   "Arn",
                 ],
@@ -227,22 +225,22 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "KinesisToDatadogStreamFirehoseLogsPolicy6D41913D",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "KinesisToDatadogStreamFirehoseLogsRoleDF723823",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "KinesisToDatadogStreamFirehoseLogsRoleDF723823": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "KinesisToDatadogStreamFirehoseLogsRoleDF723823": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "firehose.amazonaws.com",
               },
             },
@@ -252,20 +250,20 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "KinesisToDatadogStreamSubscriptionFilter0D455E7D8": Object {
-      "Properties": Object {
-        "DestinationArn": Object {
-          "Fn::GetAtt": Array [
+    "KinesisToDatadogStreamSubscriptionFilter0D455E7D8": {
+      "Properties": {
+        "DestinationArn": {
+          "Fn::GetAtt": [
             "KinesisToDatadogStreamDeliveryStream83902C8C",
             "Arn",
           ],
         },
         "FilterPattern": "",
-        "LogGroupName": Object {
+        "LogGroupName": {
           "Fn::ImportValue": "SupportStack:ExportsOutputRefLogGroupF5B4693119CE9848",
         },
-        "RoleArn": Object {
-          "Fn::GetAtt": Array [
+        "RoleArn": {
+          "Fn::GetAtt": [
             "KinesisToDatadogStreamCloudWatchLogsRole8BADDC70",
             "Arn",
           ],

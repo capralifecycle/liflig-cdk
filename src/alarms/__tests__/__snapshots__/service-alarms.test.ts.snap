@@ -1,24 +1,22 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`creates single 5xx alarm (enabled) with expected defaults 1`] = `
-Object {
-  "Resources": Object {
-    "ServiceAlarmsAlbTargets5xxAlarm55A1710E": Object {
-      "Properties": Object {
+{
+  "Resources": {
+    "ServiceAlarmsAlbTargets5xxAlarm55A1710E": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "Load balancer received too many 5XX responses from target(s) in ECS service 'my-service'.",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/456",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/123",
           },
@@ -26,8 +24,8 @@ Object {
         "EvaluationPeriods": 3,
         "MetricName": "HTTPCode_Target_5XX_Count",
         "Namespace": "AWS/ApplicationELB",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -38,22 +36,22 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarmsAlbTargetsSingle5xxAlarmDEEF5967": Object {
-      "Properties": Object {
+    "ServiceAlarmsAlbTargetsSingle5xxAlarmDEEF5967": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "Load balancer received a 5XX response from target(s) in ECS service 'my-service'.",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/456",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/123",
           },
@@ -61,8 +59,8 @@ Object {
         "EvaluationPeriods": 1,
         "MetricName": "HTTPCode_Target_5XX_Count",
         "Namespace": "AWS/ApplicationELB",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -73,17 +71,17 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarmsConnectionAlarm1F083C01": Object {
-      "Properties": Object {
+    "ServiceAlarmsConnectionAlarm1F083C01": {
+      "Properties": {
         "ActionsEnabled": true,
         "AlarmDescription": "Load balancer is failing to connect to target(s) in ECS service 'my-service'.",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/456",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/123",
           },
@@ -98,16 +96,16 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarmsHealthAlarm888BAAB5": Object {
-      "Properties": Object {
+    "ServiceAlarmsHealthAlarm888BAAB5": {
+      "Properties": {
         "AlarmDescription": "There are no healthy target(s) in ECS service 'my-service'.",
         "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/456",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/123",
           },
@@ -122,60 +120,60 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarmsTargetHealthAlarm18599060": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "ServiceAlarmsTargetHealthAlarm18599060": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "The load balancer is either receiving bad health checks from or is unable to connect to target(s) in ECS service 'my-service'",
         "AlarmName": "StackServiceAlarmsTargetHealthAlarm30873D46",
-        "AlarmRule": Object {
-          "Fn::Join": Array [
+        "AlarmRule": {
+          "Fn::Join": [
             "",
-            Array [
-              "(ALARM(\\"",
-              Object {
-                "Fn::GetAtt": Array [
+            [
+              "(ALARM("",
+              {
+                "Fn::GetAtt": [
                   "ServiceAlarmsConnectionAlarm1F083C01",
                   "Arn",
                 ],
               },
-              "\\") OR ALARM(\\"",
-              Object {
-                "Fn::GetAtt": Array [
+              "") OR ALARM("",
+              {
+                "Fn::GetAtt": [
                   "ServiceAlarmsHealthAlarm888BAAB5",
                   "Arn",
                 ],
               },
-              "\\"))",
+              ""))",
             ],
           ],
         },
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
       },
       "Type": "AWS::CloudWatch::CompositeAlarm",
     },
-    "ServiceAlarmsTargetResponseTimeAlarmA0DC0898": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "ServiceAlarmsTargetResponseTimeAlarmA0DC0898": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
         "AlarmDescription": "5% of responses from ECS service 'my-service' are taking longer than the expected duration of 1 s.",
         "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/456",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/123",
           },
@@ -184,8 +182,8 @@ Object {
         "ExtendedStatistic": "p95",
         "MetricName": "TargetResponseTime",
         "Namespace": "AWS/ApplicationELB",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -200,24 +198,24 @@ Object {
 `;
 
 exports[`does not create single 5xx alarm when disabled 1`] = `
-Object {
-  "Resources": Object {
-    "ServiceAlarms2AlbTargets5xxAlarm7FA5A413": Object {
-      "Properties": Object {
+{
+  "Resources": {
+    "ServiceAlarms2AlbTargets5xxAlarm7FA5A413": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],
         "AlarmDescription": "Load balancer received too many 5XX responses from target(s) in ECS service 'my-service-2'.",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/789",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/456",
           },
@@ -225,8 +223,8 @@ Object {
         "EvaluationPeriods": 3,
         "MetricName": "HTTPCode_Target_5XX_Count",
         "Namespace": "AWS/ApplicationELB",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],
@@ -237,17 +235,17 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarms2ConnectionAlarm0918FCD4": Object {
-      "Properties": Object {
+    "ServiceAlarms2ConnectionAlarm0918FCD4": {
+      "Properties": {
         "ActionsEnabled": true,
         "AlarmDescription": "Load balancer is failing to connect to target(s) in ECS service 'my-service-2'.",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/789",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/456",
           },
@@ -262,16 +260,16 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarms2HealthAlarmB4C2F55E": Object {
-      "Properties": Object {
+    "ServiceAlarms2HealthAlarmB4C2F55E": {
+      "Properties": {
         "AlarmDescription": "There are no healthy target(s) in ECS service 'my-service-2'.",
         "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/789",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/456",
           },
@@ -286,60 +284,60 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ServiceAlarms2TargetHealthAlarm9164518C": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "ServiceAlarms2TargetHealthAlarm9164518C": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],
         "AlarmDescription": "The load balancer is either receiving bad health checks from or is unable to connect to target(s) in ECS service 'my-service-2'",
         "AlarmName": "Stack2ServiceAlarms2TargetHealthAlarmE2E2B8E1",
-        "AlarmRule": Object {
-          "Fn::Join": Array [
+        "AlarmRule": {
+          "Fn::Join": [
             "",
-            Array [
-              "(ALARM(\\"",
-              Object {
-                "Fn::GetAtt": Array [
+            [
+              "(ALARM("",
+              {
+                "Fn::GetAtt": [
                   "ServiceAlarms2ConnectionAlarm0918FCD4",
                   "Arn",
                 ],
               },
-              "\\") OR ALARM(\\"",
-              Object {
-                "Fn::GetAtt": Array [
+              "") OR ALARM("",
+              {
+                "Fn::GetAtt": [
                   "ServiceAlarms2HealthAlarmB4C2F55E",
                   "Arn",
                 ],
               },
-              "\\"))",
+              ""))",
             ],
           ],
         },
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],
       },
       "Type": "AWS::CloudWatch::CompositeAlarm",
     },
-    "ServiceAlarms2TargetResponseTimeAlarm4652CF1A": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "ServiceAlarms2TargetResponseTimeAlarm4652CF1A": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],
         "AlarmDescription": "5% of responses from ECS service 'my-service-2' are taking longer than the expected duration of 1 s.",
         "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
             "Value": "app/my-alb/789",
           },
-          Object {
+          {
             "Name": "TargetGroup",
             "Value": "targetgroup/abc/456",
           },
@@ -348,8 +346,8 @@ Object {
         "ExtendedStatistic": "p95",
         "MetricName": "TargetResponseTime",
         "Namespace": "AWS/ApplicationELB",
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack2:ExportsOutputRefTopic269377B7501C5D6AF",
           },
         ],

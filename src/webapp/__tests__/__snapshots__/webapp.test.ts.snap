@@ -1,15 +1,13 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`create webapp with default parameters 1`] = `
-Object {
-  "Resources": Object {
-    "WebappBucketD38541E4": Object {
+{
+  "Resources": {
+    "WebappBucketD38541E4": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
@@ -19,30 +17,30 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappBucketPolicy4224ABFE": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "WebappBucketPolicy4224ABFE": {
+      "Properties": {
+        "Bucket": {
           "Ref": "WebappBucketD38541E4",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "WebappBucketD38541E4",
                         "Arn",
                       ],
@@ -52,19 +50,19 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "Arn",
                 ],
@@ -76,20 +74,20 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "WebappDistribution43D777AD": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "CustomErrorResponses": Array [
-            Object {
+    "WebappDistribution43D777AD": {
+      "Properties": {
+        "DistributionConfig": {
+          "CustomErrorResponses": [
+            {
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/index.html",
             },
           ],
-          "DefaultCacheBehavior": Object {
+          "DefaultCacheBehavior": {
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "ResponseHeadersPolicyId": Object {
+            "ResponseHeadersPolicyId": {
               "Ref": "WebappSecurityHeadersResponseHeadersPolicyF5614597",
             },
             "TargetOriginId": "StackWebappDistributionOrigin1098E590D",
@@ -99,23 +97,23 @@ Object {
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "RegionalDomainName",
                 ],
               },
               "Id": "StackWebappDistributionOrigin1098E590D",
               "OriginPath": "/web",
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "origin-access-identity/cloudfront/",
-                      Object {
+                      {
                         "Ref": "WebappOriginAccessIdentityA216A4CF",
                       },
                     ],
@@ -129,41 +127,41 @@ Object {
       },
       "Type": "AWS::CloudFront::Distribution",
     },
-    "WebappOriginAccessIdentityA216A4CF": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
+    "WebappOriginAccessIdentityA216A4CF": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
           "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersResponseHeadersPolicyF5614597": Object {
-      "Properties": Object {
-        "ResponseHeadersPolicyConfig": Object {
+    "WebappSecurityHeadersResponseHeadersPolicyF5614597": {
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
           "Name": "StackWebappSecurityHeadersResponseHeadersPolicyD3A7BCA3",
-          "SecurityHeadersConfig": Object {
-            "ContentSecurityPolicy": Object {
+          "SecurityHeadersConfig": {
+            "ContentSecurityPolicy": {
               "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self' https:;default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
               "Override": true,
             },
-            "ContentTypeOptions": Object {
+            "ContentTypeOptions": {
               "Override": true,
             },
-            "FrameOptions": Object {
+            "FrameOptions": {
               "FrameOption": "DENY",
               "Override": true,
             },
-            "ReferrerPolicy": Object {
+            "ReferrerPolicy": {
               "Override": true,
               "ReferrerPolicy": "same-origin",
             },
-            "StrictTransportSecurity": Object {
+            "StrictTransportSecurity": {
               "AccessControlMaxAgeSec": 15768000,
               "IncludeSubdomains": false,
               "Override": true,
               "Preload": false,
             },
-            "XSSProtection": Object {
+            "XSSProtection": {
               "ModeBlock": true,
               "Override": true,
               "Protection": true,
@@ -178,15 +176,15 @@ Object {
 `;
 
 exports[`create webapp with domain and custom response header policy with CSP 1`] = `
-Object {
-  "Resources": Object {
-    "WebappBucketD38541E4": Object {
+{
+  "Resources": {
+    "WebappBucketD38541E4": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
@@ -196,30 +194,30 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappBucketPolicy4224ABFE": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "WebappBucketPolicy4224ABFE": {
+      "Properties": {
+        "Bucket": {
           "Ref": "WebappBucketD38541E4",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "WebappBucketD38541E4",
                         "Arn",
                       ],
@@ -229,19 +227,19 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "Arn",
                 ],
@@ -253,23 +251,23 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "WebappDistribution43D777AD": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "Aliases": Array [
+    "WebappDistribution43D777AD": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
             "example.com",
           ],
-          "CustomErrorResponses": Array [
-            Object {
+          "CustomErrorResponses": [
+            {
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/index.html",
             },
           ],
-          "DefaultCacheBehavior": Object {
+          "DefaultCacheBehavior": {
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "ResponseHeadersPolicyId": Object {
+            "ResponseHeadersPolicyId": {
               "Ref": "WebappSecurityHeadersResponseHeadersPolicyF5614597",
             },
             "TargetOriginId": "StackWebappDistributionOrigin1098E590D",
@@ -279,23 +277,23 @@ Object {
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "RegionalDomainName",
                 ],
               },
               "Id": "StackWebappDistributionOrigin1098E590D",
               "OriginPath": "/web",
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "origin-access-identity/cloudfront/",
-                      Object {
+                      {
                         "Ref": "WebappOriginAccessIdentityA216A4CF",
                       },
                     ],
@@ -309,39 +307,39 @@ Object {
       },
       "Type": "AWS::CloudFront::Distribution",
     },
-    "WebappOriginAccessIdentityA216A4CF": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
+    "WebappOriginAccessIdentityA216A4CF": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
           "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersResponseHeadersPolicyF5614597": Object {
-      "Properties": Object {
-        "ResponseHeadersPolicyConfig": Object {
+    "WebappSecurityHeadersResponseHeadersPolicyF5614597": {
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
           "Name": "StackWebappSecurityHeadersResponseHeadersPolicyD3A7BCA3",
-          "SecurityHeadersConfig": Object {
-            "ContentSecurityPolicy": Object {
+          "SecurityHeadersConfig": {
+            "ContentSecurityPolicy": {
               "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self';default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
               "Override": true,
             },
-            "ContentTypeOptions": Object {
+            "ContentTypeOptions": {
               "Override": true,
             },
-            "FrameOptions": Object {
+            "FrameOptions": {
               "FrameOption": "DENY",
               "Override": true,
             },
-            "ReferrerPolicy": Object {
+            "ReferrerPolicy": {
               "Override": true,
               "ReferrerPolicy": "same-origin",
             },
-            "StrictTransportSecurity": Object {
+            "StrictTransportSecurity": {
               "AccessControlMaxAgeSec": 15552000,
               "Override": true,
             },
-            "XSSProtection": Object {
+            "XSSProtection": {
               "ModeBlock": true,
               "Override": true,
               "Protection": true,
@@ -356,15 +354,15 @@ Object {
 `;
 
 exports[`create webapp with domain and custom response header policy with report-only CSP 1`] = `
-Object {
-  "Resources": Object {
-    "WebappBucketD38541E4": Object {
+{
+  "Resources": {
+    "WebappBucketD38541E4": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
@@ -374,30 +372,30 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappBucketPolicy4224ABFE": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "WebappBucketPolicy4224ABFE": {
+      "Properties": {
+        "Bucket": {
           "Ref": "WebappBucketD38541E4",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "WebappBucketD38541E4",
                         "Arn",
                       ],
@@ -407,19 +405,19 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "Arn",
                 ],
@@ -431,23 +429,23 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "WebappDistribution43D777AD": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "Aliases": Array [
+    "WebappDistribution43D777AD": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
             "example.com",
           ],
-          "CustomErrorResponses": Array [
-            Object {
+          "CustomErrorResponses": [
+            {
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/index.html",
             },
           ],
-          "DefaultCacheBehavior": Object {
+          "DefaultCacheBehavior": {
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "ResponseHeadersPolicyId": Object {
+            "ResponseHeadersPolicyId": {
               "Ref": "WebappSecurityHeadersResponseHeadersPolicyF5614597",
             },
             "TargetOriginId": "StackWebappDistributionOrigin1098E590D",
@@ -457,23 +455,23 @@ Object {
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "RegionalDomainName",
                 ],
               },
               "Id": "StackWebappDistributionOrigin1098E590D",
               "OriginPath": "/web",
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "origin-access-identity/cloudfront/",
-                      Object {
+                      {
                         "Ref": "WebappOriginAccessIdentityA216A4CF",
                       },
                     ],
@@ -487,20 +485,20 @@ Object {
       },
       "Type": "AWS::CloudFront::Distribution",
     },
-    "WebappOriginAccessIdentityA216A4CF": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
+    "WebappOriginAccessIdentityA216A4CF": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
           "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersResponseHeadersPolicyF5614597": Object {
-      "Properties": Object {
-        "ResponseHeadersPolicyConfig": Object {
-          "CustomHeadersConfig": Object {
-            "Items": Array [
-              Object {
+    "WebappSecurityHeadersResponseHeadersPolicyF5614597": {
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
+          "CustomHeadersConfig": {
+            "Items": [
+              {
                 "Header": "Content-Security-Policy-Report-Only",
                 "Override": true,
                 "Value": "base-uri 'self';child-src 'self';connect-src 'self';default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
@@ -508,25 +506,25 @@ Object {
             ],
           },
           "Name": "StackWebappSecurityHeadersResponseHeadersPolicyD3A7BCA3",
-          "SecurityHeadersConfig": Object {
-            "ContentTypeOptions": Object {
+          "SecurityHeadersConfig": {
+            "ContentTypeOptions": {
               "Override": true,
             },
-            "FrameOptions": Object {
+            "FrameOptions": {
               "FrameOption": "DENY",
               "Override": true,
             },
-            "ReferrerPolicy": Object {
+            "ReferrerPolicy": {
               "Override": true,
               "ReferrerPolicy": "same-origin",
             },
-            "StrictTransportSecurity": Object {
+            "StrictTransportSecurity": {
               "AccessControlMaxAgeSec": 15768000,
               "IncludeSubdomains": false,
               "Override": true,
               "Preload": false,
             },
-            "XSSProtection": Object {
+            "XSSProtection": {
               "ModeBlock": false,
               "Override": true,
               "Protection": false,
@@ -541,15 +539,15 @@ Object {
 `;
 
 exports[`create webapp with domain and override TLS configuration 1`] = `
-Object {
-  "Resources": Object {
-    "WebappBucketD38541E4": Object {
+{
+  "Resources": {
+    "WebappBucketD38541E4": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
@@ -559,30 +557,30 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappBucketPolicy4224ABFE": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "WebappBucketPolicy4224ABFE": {
+      "Properties": {
+        "Bucket": {
           "Ref": "WebappBucketD38541E4",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "WebappBucketD38541E4",
                         "Arn",
                       ],
@@ -592,19 +590,19 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "Arn",
                 ],
@@ -616,20 +614,20 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "WebappDistribution43D777AD": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "CustomErrorResponses": Array [
-            Object {
+    "WebappDistribution43D777AD": {
+      "Properties": {
+        "DistributionConfig": {
+          "CustomErrorResponses": [
+            {
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/index.html",
             },
           ],
-          "DefaultCacheBehavior": Object {
+          "DefaultCacheBehavior": {
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "ResponseHeadersPolicyId": Object {
+            "ResponseHeadersPolicyId": {
               "Ref": "WebappSecurityHeadersResponseHeadersPolicyF5614597",
             },
             "TargetOriginId": "StackWebappDistributionOrigin1098E590D",
@@ -639,23 +637,23 @@ Object {
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "RegionalDomainName",
                 ],
               },
               "Id": "StackWebappDistributionOrigin1098E590D",
               "OriginPath": "/web",
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "origin-access-identity/cloudfront/",
-                      Object {
+                      {
                         "Ref": "WebappOriginAccessIdentityA216A4CF",
                       },
                     ],
@@ -669,41 +667,41 @@ Object {
       },
       "Type": "AWS::CloudFront::Distribution",
     },
-    "WebappOriginAccessIdentityA216A4CF": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
+    "WebappOriginAccessIdentityA216A4CF": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
           "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersResponseHeadersPolicyF5614597": Object {
-      "Properties": Object {
-        "ResponseHeadersPolicyConfig": Object {
+    "WebappSecurityHeadersResponseHeadersPolicyF5614597": {
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
           "Name": "StackWebappSecurityHeadersResponseHeadersPolicyD3A7BCA3",
-          "SecurityHeadersConfig": Object {
-            "ContentSecurityPolicy": Object {
+          "SecurityHeadersConfig": {
+            "ContentSecurityPolicy": {
               "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self' https:;default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
               "Override": true,
             },
-            "ContentTypeOptions": Object {
+            "ContentTypeOptions": {
               "Override": true,
             },
-            "FrameOptions": Object {
+            "FrameOptions": {
               "FrameOption": "DENY",
               "Override": true,
             },
-            "ReferrerPolicy": Object {
+            "ReferrerPolicy": {
               "Override": true,
               "ReferrerPolicy": "same-origin",
             },
-            "StrictTransportSecurity": Object {
+            "StrictTransportSecurity": {
               "AccessControlMaxAgeSec": 15768000,
               "IncludeSubdomains": false,
               "Override": true,
               "Preload": false,
             },
-            "XSSProtection": Object {
+            "XSSProtection": {
               "ModeBlock": true,
               "Override": true,
               "Protection": true,
@@ -718,15 +716,15 @@ Object {
 `;
 
 exports[`create webapp with domain and security headers 1`] = `
-Object {
-  "Resources": Object {
-    "WebappBucketD38541E4": Object {
+{
+  "Resources": {
+    "WebappBucketD38541E4": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "BucketEncryption": Object {
-          "ServerSideEncryptionConfiguration": Array [
-            Object {
-              "ServerSideEncryptionByDefault": Object {
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256",
               },
             },
@@ -736,30 +734,30 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "WebappBucketPolicy4224ABFE": Object {
-      "Properties": Object {
-        "Bucket": Object {
+    "WebappBucketPolicy4224ABFE": {
+      "Properties": {
+        "Bucket": {
           "Ref": "WebappBucketD38541E4",
         },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
+                  [
+                    {
+                      "Fn::GetAtt": [
                         "WebappBucketD38541E4",
                         "Arn",
                       ],
@@ -769,19 +767,19 @@ Object {
                 ],
               },
             },
-            Object {
+            {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
                     "WebappOriginAccessIdentityA216A4CF",
                     "S3CanonicalUserId",
                   ],
                 },
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "Arn",
                 ],
@@ -793,23 +791,23 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "WebappDistribution43D777AD": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "Aliases": Array [
+    "WebappDistribution43D777AD": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
             "example.com",
           ],
-          "CustomErrorResponses": Array [
-            Object {
+          "CustomErrorResponses": [
+            {
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/index.html",
             },
           ],
-          "DefaultCacheBehavior": Object {
+          "DefaultCacheBehavior": {
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "ResponseHeadersPolicyId": Object {
+            "ResponseHeadersPolicyId": {
               "Ref": "WebappSecurityHeadersResponseHeadersPolicyF5614597",
             },
             "TargetOriginId": "StackWebappDistributionOrigin1098E590D",
@@ -819,23 +817,23 @@ Object {
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
                   "WebappBucketD38541E4",
                   "RegionalDomainName",
                 ],
               },
               "Id": "StackWebappDistributionOrigin1098E590D",
               "OriginPath": "/web",
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "origin-access-identity/cloudfront/",
-                      Object {
+                      {
                         "Ref": "WebappOriginAccessIdentityA216A4CF",
                       },
                     ],
@@ -849,41 +847,41 @@ Object {
       },
       "Type": "AWS::CloudFront::Distribution",
     },
-    "WebappOriginAccessIdentityA216A4CF": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
+    "WebappOriginAccessIdentityA216A4CF": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
           "Comment": "Allows CloudFront to reach the bucket",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "WebappSecurityHeadersResponseHeadersPolicyF5614597": Object {
-      "Properties": Object {
-        "ResponseHeadersPolicyConfig": Object {
+    "WebappSecurityHeadersResponseHeadersPolicyF5614597": {
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
           "Name": "StackWebappSecurityHeadersResponseHeadersPolicyD3A7BCA3",
-          "SecurityHeadersConfig": Object {
-            "ContentSecurityPolicy": Object {
+          "SecurityHeadersConfig": {
+            "ContentSecurityPolicy": {
               "ContentSecurityPolicy": "base-uri 'self';child-src 'self';connect-src 'self' https:;default-src 'none';font-src 'self';frame-src 'self';form-action 'none';frame-ancestors 'none';img-src 'self' data:;manifest-src 'self';media-src 'self';object-src 'none';script-src 'self';style-src 'self'",
               "Override": true,
             },
-            "ContentTypeOptions": Object {
+            "ContentTypeOptions": {
               "Override": true,
             },
-            "FrameOptions": Object {
+            "FrameOptions": {
               "FrameOption": "DENY",
               "Override": true,
             },
-            "ReferrerPolicy": Object {
+            "ReferrerPolicy": {
               "Override": true,
               "ReferrerPolicy": "same-origin",
             },
-            "StrictTransportSecurity": Object {
+            "StrictTransportSecurity": {
               "AccessControlMaxAgeSec": 15768000,
               "IncludeSubdomains": false,
               "Override": true,
               "Preload": false,
             },
-            "XSSProtection": Object {
+            "XSSProtection": {
               "ModeBlock": true,
               "Override": true,
               "Protection": true,

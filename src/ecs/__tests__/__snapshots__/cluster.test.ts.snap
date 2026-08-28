@@ -1,22 +1,20 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
 exports[`cluster 1`] = `
-Object {
-  "Resources": Object {
-    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": Object {
-      "DependsOn": Array [
+{
+  "Resources": {
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+      "DependsOn": [
         "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "9b8fce7ae7f25ef82fdbaf6b72523b99d0875c0c9c826642819fb51f11d9b125.zip",
         },
         "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
             "Arn",
           ],
@@ -26,27 +24,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -57,39 +55,39 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "Cluster9EE0221C": Object {
-      "Properties": Object {
-        "Configuration": Object {
-          "ExecuteCommandConfiguration": Object {
+    "Cluster9EE0221C": {
+      "Properties": {
+        "Configuration": {
+          "ExecuteCommandConfiguration": {
             "Logging": "NONE",
           },
         },
       },
       "Type": "AWS::ECS::Cluster",
     },
-    "ClusterEventLogsD0A45D00": Object {
+    "ClusterEventLogsD0A45D00": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
+      "Properties": {
         "RetentionInDays": 30,
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "ClusterEventLogsProvisioningErrorMetricFilter39B72E16": Object {
-      "Properties": Object {
-        "FilterPattern": "{ ($.detail-type = \\"ECS Task State Change\\") && ($.detail.lastStatus = \\"PROVISIONING\\") }",
-        "LogGroupName": Object {
+    "ClusterEventLogsProvisioningErrorMetricFilter39B72E16": {
+      "Properties": {
+        "FilterPattern": "{ ($.detail-type = "ECS Task State Change") && ($.detail.lastStatus = "PROVISIONING") }",
+        "LogGroupName": {
           "Ref": "ClusterEventLogsD0A45D00",
         },
-        "MetricTransformations": Array [
-          Object {
+        "MetricTransformations": [
+          {
             "MetricName": "Provisioning",
-            "MetricNamespace": Object {
-              "Fn::Join": Array [
+            "MetricNamespace": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "ECS/Cluster/",
-                  Object {
+                  {
                     "Ref": "Cluster9EE0221C",
                   },
                 ],
@@ -101,19 +99,19 @@ Object {
       },
       "Type": "AWS::Logs::MetricFilter",
     },
-    "ClusterRestartFrequencyAlarm62312C73": Object {
-      "Properties": Object {
-        "AlarmActions": Array [
-          Object {
+    "ClusterRestartFrequencyAlarm62312C73": {
+      "Properties": {
+        "AlarmActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
-        "AlarmDescription": Object {
-          "Fn::Join": Array [
+        "AlarmDescription": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "Tasks in ",
-              Object {
+              {
                 "Ref": "Cluster9EE0221C",
               },
               " is frequently provisioning",
@@ -123,19 +121,19 @@ Object {
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "EvaluationPeriods": 1,
         "MetricName": "Provisioning",
-        "Namespace": Object {
-          "Fn::Join": Array [
+        "Namespace": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "ECS/Cluster/",
-              Object {
+              {
                 "Ref": "Cluster9EE0221C",
               },
             ],
           ],
         },
-        "OKActions": Array [
-          Object {
+        "OKActions": [
+          {
             "Fn::ImportValue": "SupportStack:ExportsOutputRefTopicBFC7AF6ECB4A357A",
           },
         ],
@@ -146,44 +144,44 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ClusterStateRule129A3E44": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail": Object {
-            "clusterArn": Array [
-              Object {
-                "Fn::GetAtt": Array [
+    "ClusterStateRule129A3E44": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
                   "Cluster9EE0221C",
                   "Arn",
                 ],
               },
             ],
           },
-          "source": Array [
+          "source": [
             "aws.ecs",
           ],
         },
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::Join": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "arn:",
-                  Object {
+                  {
                     "Ref": "AWS::Partition",
                   },
                   ":logs:",
-                  Object {
+                  {
                     "Ref": "AWS::Region",
                   },
                   ":",
-                  Object {
+                  {
                     "Ref": "AWS::AccountId",
                   },
                   ":log-group:",
-                  Object {
+                  {
                     "Ref": "ClusterEventLogsD0A45D00",
                   },
                 ],
@@ -195,47 +193,47 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "EventsLogGroupPolicyStackClusterStateRule78FAED208E1BCE73": Object {
+    "EventsLogGroupPolicyStackClusterStateRule78FAED208E1BCE73": {
       "DeletionPolicy": "Delete",
-      "DependsOn": Array [
+      "DependsOn": [
         "EventsLogGroupPolicyStackClusterStateRule78FAED20CustomResourcePolicy32F1E1B2",
       ],
-      "Properties": Object {
-        "Create": Object {
-          "Fn::Join": Array [
+      "Properties": {
+        "Create": {
+          "Fn::Join": [
             "",
-            Array [
-              "{\\"service\\":\\"CloudWatchLogs\\",\\"action\\":\\"putResourcePolicy\\",\\"parameters\\":{\\"policyName\\":\\"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A\\",\\"policyDocument\\":\\"{\\\\\\"Statement\\\\\\":[{\\\\\\"Action\\\\\\":[\\\\\\"logs:PutLogEvents\\\\\\",\\\\\\"logs:CreateLogStream\\\\\\"],\\\\\\"Effect\\\\\\":\\\\\\"Allow\\\\\\",\\\\\\"Principal\\\\\\":{\\\\\\"Service\\\\\\":\\\\\\"events.amazonaws.com\\\\\\"},\\\\\\"Resource\\\\\\":\\\\\\"",
-              Object {
-                "Fn::GetAtt": Array [
+            [
+              "{"service":"CloudWatchLogs","action":"putResourcePolicy","parameters":{"policyName":"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A","policyDocument":"{\\"Statement\\":[{\\"Action\\":[\\"logs:PutLogEvents\\",\\"logs:CreateLogStream\\"],\\"Effect\\":\\"Allow\\",\\"Principal\\":{\\"Service\\":\\"events.amazonaws.com\\"},\\"Resource\\":\\"",
+              {
+                "Fn::GetAtt": [
                   "ClusterEventLogsD0A45D00",
                   "Arn",
                 ],
               },
-              "\\\\\\"}],\\\\\\"Version\\\\\\":\\\\\\"2012-10-17\\\\\\"}\\"},\\"physicalResourceId\\":{\\"id\\":\\"EventsLogGroupPolicyStackClusterStateRule78FAED20\\"}}",
+              "\\"}],\\"Version\\":\\"2012-10-17\\"}"},"physicalResourceId":{"id":"EventsLogGroupPolicyStackClusterStateRule78FAED20"}}",
             ],
           ],
         },
-        "Delete": "{\\"service\\":\\"CloudWatchLogs\\",\\"action\\":\\"deleteResourcePolicy\\",\\"parameters\\":{\\"policyName\\":\\"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A\\"},\\"ignoreErrorCodesMatching\\":\\"ResourceNotFoundException\\"}",
+        "Delete": "{"service":"CloudWatchLogs","action":"deleteResourcePolicy","parameters":{"policyName":"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A"},"ignoreErrorCodesMatching":"ResourceNotFoundException"}",
         "InstallLatestAwsSdk": false,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
             "Arn",
           ],
         },
-        "Update": Object {
-          "Fn::Join": Array [
+        "Update": {
+          "Fn::Join": [
             "",
-            Array [
-              "{\\"service\\":\\"CloudWatchLogs\\",\\"action\\":\\"putResourcePolicy\\",\\"parameters\\":{\\"policyName\\":\\"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A\\",\\"policyDocument\\":\\"{\\\\\\"Statement\\\\\\":[{\\\\\\"Action\\\\\\":[\\\\\\"logs:PutLogEvents\\\\\\",\\\\\\"logs:CreateLogStream\\\\\\"],\\\\\\"Effect\\\\\\":\\\\\\"Allow\\\\\\",\\\\\\"Principal\\\\\\":{\\\\\\"Service\\\\\\":\\\\\\"events.amazonaws.com\\\\\\"},\\\\\\"Resource\\\\\\":\\\\\\"",
-              Object {
-                "Fn::GetAtt": Array [
+            [
+              "{"service":"CloudWatchLogs","action":"putResourcePolicy","parameters":{"policyName":"StackEventsLogGroupPolicyStackClusterStateRule78FAED207342992A","policyDocument":"{\\"Statement\\":[{\\"Action\\":[\\"logs:PutLogEvents\\",\\"logs:CreateLogStream\\"],\\"Effect\\":\\"Allow\\",\\"Principal\\":{\\"Service\\":\\"events.amazonaws.com\\"},\\"Resource\\":\\"",
+              {
+                "Fn::GetAtt": [
                   "ClusterEventLogsD0A45D00",
                   "Arn",
                 ],
               },
-              "\\\\\\"}],\\\\\\"Version\\\\\\":\\\\\\"2012-10-17\\\\\\"}\\"},\\"physicalResourceId\\":{\\"id\\":\\"EventsLogGroupPolicyStackClusterStateRule78FAED20\\"}}",
+              "\\"}],\\"Version\\":\\"2012-10-17\\"}"},"physicalResourceId":{"id":"EventsLogGroupPolicyStackClusterStateRule78FAED20"}}",
             ],
           ],
         },
@@ -243,16 +241,16 @@ Object {
       "Type": "Custom::CloudwatchLogResourcePolicy",
       "UpdateReplacePolicy": "Delete",
     },
-    "EventsLogGroupPolicyStackClusterStateRule78FAED20CustomResourcePolicy32F1E1B2": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "EventsLogGroupPolicyStackClusterStateRule78FAED20CustomResourcePolicy32F1E1B2": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "logs:PutResourcePolicy",
               "Effect": "Allow",
               "Resource": "*",
             },
-            Object {
+            {
               "Action": "logs:DeleteResourcePolicy",
               "Effect": "Allow",
               "Resource": "*",
@@ -261,8 +259,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "EventsLogGroupPolicyStackClusterStateRule78FAED20CustomResourcePolicy32F1E1B2",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
           },
         ],
