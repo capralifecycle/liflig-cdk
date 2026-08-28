@@ -4310,6 +4310,745 @@ exports[`HTTP API Gateway > creates API-GW HTTP API with Cognito User Pool/Basic
 }
 `;
 
+exports[`HTTP API Gateway > creates API-GW HTTP API with JWT authorizer 1`] = `
+{
+  "Resources": {
+    "DnsARecordFED6ED67": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::Join": [
+              "",
+              [
+                "dualstack.",
+                {
+                  "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancer8E47CE52DNSName59BE487A",
+                },
+              ],
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancer8E47CE52CanonicalHostedZoneID7C0E7DD7",
+          },
+        },
+        "HostedZoneId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+        },
+        "Name": "my-test-service-behind-alb.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "DnsListenerRule18B182CC": {
+      "Properties": {
+        "Actions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+            "Type": "forward",
+          },
+        ],
+        "Conditions": [
+          {
+            "Field": "host-header",
+            "HostHeaderConfig": {
+              "Values": [
+                "my-test-service-behind-alb.example.com",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefLoadBalancerHttpsListener68D81C9458BEEF85",
+        },
+        "Priority": 10,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
+    "Service9571FDD8": {
+      "DependsOn": [
+        "DnsListenerRule18B182CC",
+        "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "ServiceTaskDefinitionTaskRole3BD32B0F",
+      ],
+      "Properties": {
+        "Cluster": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefClusterEB0386A796A0E3FE",
+        },
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DesiredCount": 2,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "Container",
+            "ContainerPort": 8080,
+            "TargetGroupArn": {
+              "Ref": "ServiceTargetGroupE74A3394",
+            },
+          },
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": [
+              {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+              },
+              {
+                "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+              },
+            ],
+          },
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "example-service",
+        "TaskDefinition": {
+          "Ref": "ServiceTaskDefinition55FA0F15",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceLogGroupB910EE76": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ServiceSecurityGroupC96ED6A7": {
+      "Properties": {
+        "GroupDescription": "Stack/Service/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceSecurityGroupSupportStackLoadBalancerSecurityGroup0F63AB0C8080from36CDC9C8": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "ServiceSecurityGroupC96ED6A7",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8080,
+        "GroupId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8080,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ServiceSecurityGroupfromSupportStackLoadBalancerSecurityGroup0F63AB0C80803CEA72C3": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8080,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "ServiceSecurityGroupC96ED6A7",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+        },
+        "ToPort": 8080,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ServiceTargetGroupE74A3394": {
+      "Properties": {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/health",
+        "HealthyThresholdCount": 2,
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "15",
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "ServiceTaskDefinition55FA0F15": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Environment": [
+              {
+                "Name": "SSM_PREFIX",
+                "Value": "/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters",
+              },
+              {
+                "Name": "PARAMS_HASH",
+                "Value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              },
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Select": [
+                      4,
+                      {
+                        "Fn::Split": [
+                          ":",
+                          {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  {
+                    "Fn::Select": [
+                      3,
+                      {
+                        "Fn::Split": [
+                          ":",
+                          {
+                            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  {
+                    "Fn::ImportValue": "SupportStack:ExportsOutputRefRepository22E53BBD9A9E013B",
+                  },
+                  ":exampleEcrTag",
+                ],
+              ],
+            },
+            "LinuxParameters": {
+              "Capabilities": {},
+              "InitProcessEnabled": true,
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-datetime-format": "%Y-%m-%dT%H:%M:%S",
+                "awslogs-group": {
+                  "Ref": "ServiceLogGroupB910EE76",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "ecs",
+                "mode": "blocking",
+              },
+            },
+            "Name": "Container",
+            "PortMappings": [
+              {
+                "ContainerPort": 8080,
+                "HostPort": 8080,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "ServiceTaskDefinitionExecutionRole5D3DB197",
+            "Arn",
+          ],
+        },
+        "Family": "StackServiceTaskDefinition81B5CCD5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "ServiceTaskDefinitionTaskRole3BD32B0F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ServiceTaskDefinitionExecutionRole5D3DB197": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttRepository22E53BBDArn3AD4E30B",
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ServiceLogGroupB910EE76",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionExecutionRoleDefaultPolicyE16C69DE",
+        "Roles": [
+          {
+            "Ref": "ServiceTaskDefinitionExecutionRole5D3DB197",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceTaskDefinitionTaskRole3BD32B0F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/liflig-cdk/Stack/c8cabff989df74f9b2755f4ae923cc6492f944970b/parameters/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceTaskDefinitionTaskRoleDefaultPolicyED991BA3",
+        "Roles": [
+          {
+            "Ref": "ServiceTaskDefinitionTaskRole3BD32B0F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestApiGatewayWithJwtAuthorizerAccessLogsAccessLogGroup8DF1F053": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 180,
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "my-test-api-with-jwt-authorizer",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestApiGatewayWithJwtAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleC9F206EC": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "my-test-api-with-jwt-authorizer",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestApiGatewayWithJwtAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyB2C539D1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "TestApiGatewayWithJwtAuthorizerAccessLogsAccessLogGroup8DF1F053",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestApiGatewayWithJwtAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleDefaultPolicyB2C539D1",
+        "Roles": [
+          {
+            "Ref": "TestApiGatewayWithJwtAuthorizerAccessLogsApiGatewayPushToCloudwatchLogsRoleC9F206EC",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestApiGatewayWithJwtAuthorizerAlbVpcLink14AA9BB0": {
+      "Properties": {
+        "Name": "StackTestApiGatewayWithJwtAuthorizerAlbVpcLinkBDE5CCA4",
+        "SecurityGroupIds": [
+          {
+            "Fn::ImportValue": "SupportStack:ExportsOutputFnGetAttLoadBalancerSecurityGroup3036A0FCGroupId98A51D63",
+          },
+        ],
+        "SubnetIds": [
+          {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+          },
+          {
+            "Fn::ImportValue": "SupportStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3",
+          },
+        ],
+        "Tags": {
+          "service": "my-test-api-with-jwt-authorizer",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::VpcLink",
+    },
+    "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369": {
+      "Properties": {
+        "DomainName": "my-test-api-with-jwt-authorizer.example.com",
+        "DomainNameConfigurations": [
+          {
+            "CertificateArn": {
+              "Ref": "TestApiGatewayWithJwtAuthorizerCustomDomainHttpsCertificateE7E8C749",
+            },
+            "EndpointType": "REGIONAL",
+            "SecurityPolicy": "TLS_1_2",
+          },
+        ],
+        "Tags": {
+          "service": "my-test-api-with-jwt-authorizer",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::DomainName",
+    },
+    "TestApiGatewayWithJwtAuthorizerCustomDomainHttpsCertificateE7E8C749": {
+      "Properties": {
+        "DomainName": "my-test-api-with-jwt-authorizer.example.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "my-test-api-with-jwt-authorizer.example.com",
+            "HostedZoneId": {
+              "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+            },
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Stack/TestApiGatewayWithJwtAuthorizer/CustomDomain/HttpsCertificate",
+          },
+          {
+            "Key": "service",
+            "Value": "my-test-api-with-jwt-authorizer",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "TestApiGatewayWithJwtAuthorizerCustomDomainRoute53ARecordApigwAlias49F09C0A": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369",
+              "RegionalDomainName",
+            ],
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369",
+              "RegionalHostedZoneId",
+            ],
+          },
+        },
+        "HostedZoneId": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefHostedZoneDB99F8662BBAE844",
+        },
+        "Name": "my-test-api-with-jwt-authorizer.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD": {
+      "Properties": {
+        "Description": "An HTTP API for my-test-api-with-jwt-authorizer.example.com.",
+        "DisableExecuteApiEndpoint": true,
+        "Name": "HttpApi-my-test-api-with-jwt-authorizer",
+        "ProtocolType": "HTTP",
+        "Tags": {
+          "service": "my-test-api-with-jwt-authorizer",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizerDefaultAuthorizer72D33F9A": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD",
+        },
+        "AuthorizerType": "JWT",
+        "IdentitySource": [
+          "$request.header.Authorization",
+        ],
+        "JwtConfiguration": {
+          "Audience": [
+            "my-audience",
+          ],
+          "Issuer": "https://example.com/issuer",
+        },
+        "Name": "DefaultAuthorizer",
+      },
+      "Type": "AWS::ApiGatewayV2::Authorizer",
+    },
+    "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizerDefaultStage8BD856B6": {
+      "DependsOn": [
+        "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369",
+      ],
+      "Properties": {
+        "AccessLogSettings": {
+          "DestinationArn": {
+            "Fn::GetAtt": [
+              "TestApiGatewayWithJwtAuthorizerAccessLogsAccessLogGroup8DF1F053",
+              "Arn",
+            ],
+          },
+          "Format": "{"requestId":"$context.requestId","userAgent":"$context.identity.userAgent","ip":"$context.identity.sourceIp","requestTime":"$context.requestTime","requestTimeEpoch":"$context.requestTimeEpoch","dataProcessed":"$context.dataProcessed","httpMethod":"$context.httpMethod","path":"$context.path","routeKey":"$context.routeKey","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","responseLatency":"$context.responseLatency","domainName":"$context.domainName","error":{"type":"$context.error.responseType","gatewayError":"$context.error.message","integrationError":"$context.integration.error","authorizerError":"$context.authorizer.error"},"integration":{"latency":"$context.integration.latency","requestId":"$context.integration.requestId","responseStatus":"$context.integration.status"},"auth":{"iam":{"userArn":"$context.identity.userArn","awsAccount":"$context.identity.accountId","awsPrincipal":"$context.identity.caller","awsPrincipalOrg":"$context.identity.principalOrgId"},"basic":{"username":"$context.authorizer.username"},"cognito":{"clientId":"$context.authorizer.clientId"}},"awsEndpointRequest":{"id":"$context.awsEndpointRequestId","id2":"$context.awsEndpointRequestId2"},"message":"$context.identity.sourceIp - $context.httpMethod $context.domainName $context.path ($context.routeKey) - $context.status [$context.responseLatency ms]"}",
+        },
+        "ApiId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD",
+        },
+        "AutoDeploy": true,
+        "DefaultRouteSettings": {
+          "DetailedMetricsEnabled": true,
+        },
+        "StageName": "$default",
+        "Tags": {
+          "service": "my-test-api-with-jwt-authorizer",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizerDefaultStageStackTestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerundefined8EB5ABE5": {
+      "DependsOn": [
+        "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369",
+        "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizerDefaultStage8BD856B6",
+      ],
+      "Properties": {
+        "ApiId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD",
+        },
+        "DomainName": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerCustomDomainDomainNamemytestapiwithjwtauthorizerF34F6369",
+        },
+        "Stage": "$default",
+      },
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+    },
+    "TestApiGatewayWithJwtAuthorizerRouteapi81213B72": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD",
+        },
+        "AuthorizationType": "JWT",
+        "AuthorizerId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizerDefaultAuthorizer72D33F9A",
+        },
+        "RouteKey": "ANY /api",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "TestApiGatewayWithJwtAuthorizerRouteapiAlbIntegrationmytestapiwithjwtauthorizer0DDFA01D",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "TestApiGatewayWithJwtAuthorizerRouteapiAlbIntegrationmytestapiwithjwtauthorizer0DDFA01D": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerHttpApimytestapiwithjwtauthorizer06F30EAD",
+        },
+        "ConnectionId": {
+          "Ref": "TestApiGatewayWithJwtAuthorizerAlbVpcLink14AA9BB0",
+        },
+        "ConnectionType": "VPC_LINK",
+        "IntegrationMethod": "ANY",
+        "IntegrationType": "HTTP_PROXY",
+        "IntegrationUri": {
+          "Fn::ImportValue": "SupportStack:ExportsOutputRefLoadBalancerHttpsListener68D81C9458BEEF85",
+        },
+        "PayloadFormatVersion": "1.0",
+        "RequestParameters": {
+          "overwrite:header.Host": "my-test-service-behind-alb.example.com",
+        },
+        "TlsConfig": {
+          "ServerNameToVerify": "my-test-service-behind-alb.example.com",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+  },
+}
+`;
+
 exports[`HTTP API Gateway > creates API-GW HTTP API with custom Lambda authorizer 1`] = `
 {
   "Resources": {

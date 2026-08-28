@@ -321,6 +321,15 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
    */
   | { type: "IAM" }
   /**
+   * Creates a generic JWT authorizer. It uses the OpenID Connect configuration published at the
+   * issuer's `/.well-known/openid-configuration` endpoint to validate the JWT, and checks that the
+   * token's audience matches the given `audience`.
+   * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html
+   */
+  | ({
+      type: "JWT"
+    } & JwtAuthorizerProps)
+  /**
    * Creates a custom Lambda authorizer which reads `Authorization: Bearer <access token>` header
    * and verifies the token against a Cognito user pool.
    */
@@ -427,6 +436,23 @@ export type BasicAuthAuthorizerProps = {
    * Authorization header against any one of the credentials.
    */
   credentialsSecretName: string
+}
+
+/** An array that is guaranteed by the type system to have at least one element. */
+export type NonEmptyArray<T> = [T, ...T[]]
+
+export type JwtAuthorizerProps = {
+  /**
+   * The base URL of the token issuer. API Gateway fetches the issuer's OpenID Connect configuration
+   * from `<issuerUrl>/.well-known/openid-configuration` to obtain the keys used to validate the JWT.
+   */
+  issuerUrl: string
+
+  /**
+   * A list of the intended recipients of the JWT. A valid JWT must provide an `aud` (or `client_id`)
+   * claim that matches one of these values. At least one audience must be given.
+   */
+  audience: NonEmptyArray<string>
 }
 
 export type CognitoUserPoolOrBasicAuthAuthorizerProps<
@@ -768,6 +794,11 @@ export class ApiGateway<
         // Read this page for help with IAM and API-GW https://docs.aws.amazon.com/apigateway/latest/developerguide/security_iam_service-with-iam.html
         // Note that [resource policies are not supported yet for HTTP](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-access-control-iam.html)
         return new authorizers.HttpIamAuthorizer()
+      }
+      case "JWT": {
+        return new authorizers.HttpJwtAuthorizer(id, authorization.issuerUrl, {
+          jwtAudience: authorization.audience,
+        })
       }
       case "COGNITO_USER_POOL": {
         // We use a custom lambda authorizer here instead of the `HttpUserPoolAuthorizer` provided
