@@ -61,7 +61,7 @@
     "aws-cdk-lib": "2.266.0",
     "constructs": "10.8.1",
     "esbuild": "0.28.2",
-    "lefthook": "2.1.10",
+    "lefthook": "2.1.12",
     "npm-check-updates": "23.1.0",
     "semantic-release": "25.0.9",
     "tsx": "4.23.12",
