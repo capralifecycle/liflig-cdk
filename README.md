@@ -21,10 +21,11 @@ Project commands are defined using `Make`. Examples:
 # Primary commands
 $ make         # runs '$ make build'
 $ make build   # build project, apply lint and formatting fixes, update snapshots
-$ make verify  # verify project, ensure lint, formatting and snapshots are up-to-date
+$ make verify  # verify project, check types and lint, ensure formatting and snapshots are up-to-date
 
 # Misc commands
 $ make lint      # lint code
+$ make typecheck # type check all of src/, including tests
 $ make fmt       # reformat code
 $ make snapshots # regenerate snapshots
 ```

@@ -6,14 +6,14 @@ all: build
 ######################
 
 .PHONY: build
-build: clean install fmt lint-fix npm-build snapshots
+build: clean install fmt lint-fix typecheck npm-build snapshots
 
 .PHONY: ci
 ci: install verify
 
 .PHONY: verify
 verify:
-	@$(MAKE) --no-print-directory -j 4 lint fmt-check snapshots-check py-test
+	@$(MAKE) --no-print-directory -j 5 lint typecheck fmt-check snapshots-check py-test
 
 
 ######################
@@ -28,6 +28,9 @@ lint: npm-lint py-lint
 
 .PHONY: lint-fix
 lint-fix: npm-lint-fix py-lint-fix
+
+.PHONY: typecheck
+typecheck: npm-typecheck
 
 .PHONY: fmt
 fmt: npm-fmt py-fmt
@@ -62,6 +65,12 @@ endif
 .PHONY: npm-build
 npm-build:
 	npm run build
+
+# `tsconfig.json` excludes `src/**/__tests__` so tests are not emitted to lib/, and tsx runs
+# them without type checking, so test sources are only type checked here.
+.PHONY: npm-typecheck
+npm-typecheck:
+	npm run typecheck
 
 .PHONY: npm-lint
 npm-lint:
