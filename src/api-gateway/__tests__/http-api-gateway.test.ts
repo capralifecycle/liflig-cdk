@@ -375,6 +375,33 @@ export async function handler(event) {
     t.assert.snapshot(cdkTemplate(stack))
   })
 
+  test("creates API-GW HTTP API with JWT authorizer", (t) => {
+    createEcsAlbService()
+
+    new ApiGateway(stack, "TestApiGatewayWithJwtAuthorizer", {
+      dns: {
+        subdomain: "my-test-api-with-jwt-authorizer",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: {
+        type: "JWT",
+        issuerUrl: "https://example.com/issuer",
+        audience: ["my-audience"],
+      },
+      routes: [{ path: "/api" }],
+      accessLogs,
+    })
+
+    t.assert.snapshot(cdkTemplate(stack))
+  })
+
   test("creates API-GW HTTP API with custom access log format", (t) => {
     createEcsAlbService()
 
