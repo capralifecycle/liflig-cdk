@@ -65,7 +65,7 @@
     "lefthook": "2.1.12",
     "npm-check-updates": "23.1.0",
     "semantic-release": "25.0.9",
-    "tsx": "4.23.12",
+    "tsx": "4.23.13",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"
   },
