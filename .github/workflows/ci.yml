@@ -24,6 +24,8 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: capralifecycle/actions-lib/check-runtime-dependencies@6dfc999f2b7c6a541ef43dfcc11e8551fa4f803f # v1.10.4
 
