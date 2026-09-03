@@ -72,24 +72,6 @@ export interface Props {
     ownerId?: number
   }[]
   /**
-   * Whether to trust the immutable subject claim format in addition to the
-   * original one.
-   *
-   * GitHub issues the repository segment of the `sub` claim either as
-   * `owner/repo`, or in an immutable format that appends the numeric owner and
-   * repository IDs, `owner@1234/repo@5678`. Which one a repository gets depends
-   * on a per-repository Actions setting, so a role has to trust both formats
-   * for the duration of the migration to let the repositories it trusts opt in
-   * one at a time.
-   *
-   * Once every repository has opted in, the original format stops being issued
-   * and support for it is dropped, along with this property.
-   *
-   * @default false
-   * @see https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens/
-   */
-  trustImmutableSubjectClaim?: boolean
-  /**
    * An existing OpenID Connect Provider for GitHub Actions.
    */
   oidcProvider: iam.IOpenIdConnectProvider
@@ -135,20 +117,10 @@ export const validateProps = (props: Props): string[] => {
 }
 
 /**
- * The repository segment of a GitHub Actions OIDC subject claim, in each
- * trusted format.
+ * The repository segment of a GitHub Actions OIDC subject claim.
  */
-const repositoryClaims = (
-  repository: Props["repositories"][number],
-  trustImmutableSubjectClaim: boolean,
-) => [
-  `${repository.owner}/${repository.name}`,
-  ...(trustImmutableSubjectClaim
-    ? [
-        `${repository.owner}@${repository.ownerId ?? "*"}/${repository.name}@${repository.repositoryId ?? "*"}`,
-      ]
-    : []),
-]
+const repositoryClaim = (repository: Props["repositories"][number]) =>
+  `${repository.owner}@${repository.ownerId ?? "*"}/${repository.name}@${repository.repositoryId ?? "*"}`
 
 /**
  * Creates an IAM role that can be assumed by GitHub Actions workflows
@@ -165,13 +137,9 @@ export class GithubActionsRole extends constructs.Construct {
     }
 
     const branch = props.trustedBranch ?? "master"
-    const subjects = props.repositories.flatMap((repository) =>
-      repositoryClaims(
-        repository,
-        props.trustImmutableSubjectClaim ?? false,
-      ).map(
-        (repositoryClaim) => `repo:${repositoryClaim}:ref:refs/heads/${branch}`,
-      ),
+    const subjects = props.repositories.map(
+      (repository) =>
+        `repo:${repositoryClaim(repository)}:ref:refs/heads/${branch}`,
     )
     if (subjects.length === 0) {
       throw new Error(
