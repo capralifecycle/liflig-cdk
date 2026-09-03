@@ -260,9 +260,9 @@
             {
               "Action": "sts:AssumeRoleWithWebIdentity",
               "Condition": {
-                "StringEquals": {
+                "StringLike": {
                   "token.actions.githubusercontent.com:sub": [
-                    "repo:capralifecycle/my-repository:ref:refs/heads/master"
+                    "repo:capralifecycle@*/my-repository@*:ref:refs/heads/master"
                   ]
                 }
               },
@@ -378,7 +378,7 @@
               "Condition": {
                 "StringLike": {
                   "token.actions.githubusercontent.com:sub": [
-                    "repo:capralifecycle/my-repository:ref:refs/heads/*"
+                    "repo:capralifecycle@*/my-repository@*:ref:refs/heads/*"
                   ]
                 }
               },

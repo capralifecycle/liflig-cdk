@@ -153,7 +153,7 @@ test("should support creation of only 1 role", () => {
           Condition: {
             StringLike: {
               "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/*",
+                "repo:capralifecycle@*/my-repository@*:ref:refs/heads/*",
               ],
             },
           },
@@ -163,7 +163,7 @@ test("should support creation of only 1 role", () => {
   })
 })
 
-test("should trust both the original and the immutable subject claim format", () => {
+test("should trust the immutable subject claim format", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new BuildArtifacts(stack, "BuildArtifacts", {
@@ -171,7 +171,6 @@ test("should trust both the original and the immutable subject claim format", ()
     bucketName: "bucket-name",
     githubActions: {
       defaultBranch: "master",
-      trustImmutableSubjectClaim: true,
       repositories: [{ name: "my-repository", owner: "capralifecycle" }],
     },
   })
@@ -185,7 +184,6 @@ test("should trust both the original and the immutable subject claim format", ()
           Condition: {
             StringLike: {
               "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/master",
                 "repo:capralifecycle@*/my-repository@*:ref:refs/heads/master",
               ],
             },
@@ -203,7 +201,6 @@ test("should trust both the original and the immutable subject claim format", ()
           Condition: {
             StringLike: {
               "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/*",
                 "repo:capralifecycle@*/my-repository@*:ref:refs/heads/*",
               ],
             },
@@ -245,7 +242,6 @@ test("should match the immutable subject claim exactly when the IDs are pinned",
     bucketName: "bucket-name",
     githubActions: {
       defaultBranch: "master",
-      trustImmutableSubjectClaim: true,
       repositories: [
         {
           name: "my-repository",
@@ -265,7 +261,6 @@ test("should match the immutable subject claim exactly when the IDs are pinned",
           Condition: {
             StringEquals: {
               "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/master",
                 "repo:capralifecycle@13219542/my-repository@845069697:ref:refs/heads/master",
               ],
             },
@@ -314,7 +309,7 @@ test("should throw on empty list of repositories", () => {
   })
 })
 
-test("should leave trust policies untouched by default", () => {
+test("should trust only the immutable subject claim format by default", () => {
   const app = new App()
   const stack = new Stack(app, "Stack")
   new BuildArtifacts(stack, "BuildArtifacts", {
@@ -332,9 +327,9 @@ test("should leave trust policies untouched by default", () => {
         {
           Action: "sts:AssumeRoleWithWebIdentity",
           Condition: {
-            StringEquals: {
+            StringLike: {
               "token.actions.githubusercontent.com:sub": [
-                "repo:capralifecycle/my-repository:ref:refs/heads/master",
+                "repo:capralifecycle@*/my-repository@*:ref:refs/heads/master",
               ],
             },
           },
@@ -352,7 +347,6 @@ test("should never split subjects across two condition operators", () => {
     bucketName: "bucket-name",
     githubActions: {
       defaultBranch: "master",
-      trustImmutableSubjectClaim: true,
       repositories: [{ name: "my-repository", owner: "capralifecycle" }],
     },
   })

@@ -255,8 +255,6 @@ export class BuildArtifacts extends constructs.Construct {
             // and that role then needs to be assumable from all branches.
             "*",
         repositories: props.githubActions.repositories,
-        trustImmutableSubjectClaim:
-          props.githubActions.trustImmutableSubjectClaim,
       })
       this.role = role.role
       this.role.addToPolicy(policyStatements.allowPipelineVariables(this))
@@ -275,8 +273,6 @@ export class BuildArtifacts extends constructs.Construct {
             // NOTE: The limited role can be assumed from all branches.
             trustedBranch: "*",
             repositories: props.githubActions.repositories,
-            trustImmutableSubjectClaim:
-              props.githubActions.trustImmutableSubjectClaim,
           },
         )
         this.limitedRole = limitedRole.role
