@@ -47,9 +47,6 @@ snapshots-check: npm-snapshots-check
 .PHONY: upgrade-dependencies
 upgrade-dependencies: npm-upgrade-dependencies
 
-.PHONY: update-docs
-update-docs: npm-update-docs
-
 ######################
 # Node targets
 ######################
@@ -130,10 +127,6 @@ clean-all: clean
 npm-upgrade-dependencies:
 	npm run upgrade-dependencies
 	npm run snapshots
-
-.PHONY: npm-update-docs
-npm-update-docs:
-	npm run docs
 
 ######################
 # Python targets

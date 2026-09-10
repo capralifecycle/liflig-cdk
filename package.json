@@ -19,7 +19,6 @@
     "format:check": "biome format",
     "semantic-release": "semantic-release",
     "snapshots": "./scripts/create-snapshots.sh",
-    "docs": "typedoc src --out docs",
     "upgrade-dependencies": "ncu --upgrade --install always --format group"
   },
   "bin": {
@@ -66,7 +65,6 @@
     "npm-check-updates": "23.1.0",
     "semantic-release": "25.0.9",
     "tsx": "4.23.13",
-    "typedoc": "0.28.20",
     "typescript": "7.0.2"
   },
   "dependencies": {
