@@ -6,7 +6,6 @@ node_modules/
 cdk.out/
 /*.tgz
 .idea
-docs/
 .DS_Store
 # Python virtualenvs and caches
 .venv*/
