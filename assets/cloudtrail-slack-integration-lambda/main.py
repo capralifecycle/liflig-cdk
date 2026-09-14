@@ -10,6 +10,7 @@ The code below contains entrypoints for two Lambda functions (prefixed with `han
 import os
 import logging
 import json
+import urllib.parse
 import urllib.request
 import re
 import boto3
@@ -193,6 +194,8 @@ def get_augmented_friendly_names(event, friendly_names):
 
 def post_to_slack(slack_payload, slack_webhook_url):
     """Post a payload to Slack's webhook API"""
+    if urllib.parse.urlparse(slack_webhook_url).scheme != "https":
+        raise ValueError("Slack webhook URL must use the https scheme")
     encoded_slack_payload = json.dumps(slack_payload).encode("utf-8")
     try:
         slack_request = urllib.request.Request(
@@ -248,7 +251,6 @@ def handler_event_transformer(event, context):
             or event["id"]
         )
         body = {
-            "slackWebhookUrl": slack_webhook_url,
             "slackPayload": slack_payload,
         }
 
@@ -267,11 +269,11 @@ def handler_event_transformer(event, context):
 def handler_slack_forwarder(event, context):
     """Lambda handler for the Slack forwarder Lambda"""
     logger.info("Triggered with event: %s", json.dumps(event, indent=2))
+    slack_webhook_url = os.environ["SLACK_WEBHOOK_URL"]
     records = event["Records"]
     for record in records:
         body = json.loads(record["body"])
         slack_channel = body.get("slackChannel", "")
-        slack_webhook_url = body.get("slackWebhookUrl", "")
         slack_payload = {
             **body["slackPayload"],
             **({"channel": slack_channel} if slack_channel else {}),
