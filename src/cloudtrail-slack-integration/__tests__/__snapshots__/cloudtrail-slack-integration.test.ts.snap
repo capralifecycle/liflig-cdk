@@ -11,7 +11,7 @@ exports[`setup new cloudtrail to slack integration 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
+          "S3Key": "d95d8e7ddc78b8ee905ef432f21d7b57386c5edc892012dda286dbe8ba15a366.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": {
@@ -492,7 +492,7 @@ exports[`setup new cloudtrail to slack integration with event deduplication 1`] 
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
+          "S3Key": "d95d8e7ddc78b8ee905ef432f21d7b57386c5edc892012dda286dbe8ba15a366.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": {
@@ -992,9 +992,14 @@ exports[`setup new cloudtrail to slack integration with event deduplication 1`] 
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
+          "S3Key": "d95d8e7ddc78b8ee905ef432f21d7b57386c5edc892012dda286dbe8ba15a366.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
+        "Environment": {
+          "Variables": {
+            "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+          },
+        },
         "Handler": "main.handler_slack_forwarder",
         "LoggingConfig": {
           "LogGroup": {
@@ -1147,7 +1152,7 @@ exports[`setup new cloudtrail to slack integration with event deduplication and 
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
+          "S3Key": "d95d8e7ddc78b8ee905ef432f21d7b57386c5edc892012dda286dbe8ba15a366.zip",
         },
         "Description": "Formats CloudTrail API calls sent through EventBridge, and posts them directly to Slack or first to an SQS FIFO queue for deduplication",
         "Environment": {
@@ -1680,9 +1685,14 @@ exports[`setup new cloudtrail to slack integration with event deduplication and 
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-east-1",
           },
-          "S3Key": "2fc19559351e833384ddfd6691bf3576d0bdb69173b95732eb9371bbc7971439.zip",
+          "S3Key": "d95d8e7ddc78b8ee905ef432f21d7b57386c5edc892012dda286dbe8ba15a366.zip",
         },
         "Description": "Polls from an SQS FIFO queue containing formatted CloudTrail API calls and sends them to Slack.",
+        "Environment": {
+          "Variables": {
+            "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+          },
+        },
         "Handler": "main.handler_slack_forwarder",
         "LoggingConfig": {
           "LogGroup": {
