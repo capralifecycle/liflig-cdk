@@ -138,6 +138,9 @@ export class CloudTrailSlackIntegration extends constructs.Construct {
         handler: "main.handler_slack_forwarder",
         runtime: lambda.Runtime.PYTHON_3_13,
         timeout: cdk.Duration.seconds(15),
+        environment: {
+          SLACK_WEBHOOK_URL: props.slackWebhookUrl,
+        },
         logGroup: new logs.LogGroup(this, "SlackForwarderLambdaLogGroup", {
           retention: logs.RetentionDays.TWO_WEEKS,
         }),
