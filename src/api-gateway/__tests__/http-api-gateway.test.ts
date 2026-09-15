@@ -1,6 +1,7 @@
 import { beforeEach, describe, test } from "node:test"
 import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib"
+import { Template } from "aws-cdk-lib/assertions"
 import * as cm from "aws-cdk-lib/aws-certificatemanager"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as ec2 from "aws-cdk-lib/aws-ec2"
@@ -21,7 +22,7 @@ import { type ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Queue } from "aws-cdk-lib/aws-sqs"
 import { FargateService, ListenerRule } from "../../ecs"
 import { LoadBalancer } from "../../load-balancer"
-import { ApiGateway } from ".."
+import { ApiGateway, type AuthorizationProps } from ".."
 
 configureCdkSnapshots()
 
@@ -398,6 +399,156 @@ export async function handler(event) {
       routes: [{ path: "/api" }],
       accessLogs,
     })
+
+    t.assert.snapshot(cdkTemplate(stack))
+  })
+
+  test("creates API-GW HTTP API with JWT authorizer and required scope", (t) => {
+    createEcsAlbService()
+
+    new ApiGateway(stack, "TestApiGatewayWithJwtAuthorizerScope", {
+      dns: {
+        subdomain: "my-test-api-with-jwt-authorizer-scope",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: {
+        type: "JWT",
+        issuerUrl: "https://example.com/issuer",
+        audience: ["my-audience"],
+        requiredScope: "external/default_scope",
+      },
+      routes: [
+        { path: "/api" },
+        {
+          path: "/other-api",
+          authorization: {
+            type: "JWT",
+            issuerUrl: "https://example.com/issuer",
+            audience: ["my-audience"],
+            requiredScope: "external/other_scope",
+          },
+        },
+      ],
+      accessLogs,
+    })
+
+    t.assert.snapshot(cdkTemplate(stack))
+  })
+
+  test("reuses a single JWT authorizer across routes with different scopes", (t) => {
+    createEcsAlbService()
+
+    const jwt: Extract<AuthorizationProps, { type: "JWT" }> = {
+      type: "JWT",
+      issuerUrl: "https://example.com/issuer",
+      audience: ["my-audience"],
+    }
+
+    new ApiGateway(stack, "TestApiGatewayWithSharedJwtAuthorizer", {
+      dns: {
+        subdomain: "my-test-api-with-shared-jwt-authorizer",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: { ...jwt, requiredScope: "external/read_users" },
+      routes: [
+        { path: "/users" },
+        {
+          path: "/orders",
+          authorization: { ...jwt, requiredScope: "external/write_users" },
+        },
+        {
+          path: "/admin",
+          authorization: { ...jwt, requiredScope: "internal/admin" },
+        },
+        // Same audiences as the default, but listed in a different order. `Audience` is matched as
+        // a set, so this must not produce a separate authorizer either.
+        {
+          path: "/reports",
+          authorization: {
+            type: "JWT",
+            issuerUrl: "https://example.com/issuer",
+            audience: ["my-audience"],
+            requiredScope: "external/read_users",
+          },
+        },
+      ],
+      accessLogs,
+    })
+
+    const template = Template.fromStack(stack)
+
+    // All four routes share one issuer and audience, so they must resolve to a single authorizer
+    // resource. API Gateway allows only 10 authorizers per API, so creating one per route would
+    // cap the gateway at 10 distinct scopes.
+    template.resourceCountIs("AWS::ApiGatewayV2::Authorizer", 1)
+    template.resourceCountIs("AWS::ApiGatewayV2::Route", 4)
+
+    t.assert.snapshot(cdkTemplate(stack))
+  })
+
+  test("creates separate JWT authorizers for different issuers and audiences", (t) => {
+    createEcsAlbService()
+
+    new ApiGateway(stack, "TestApiGatewayWithDistinctJwtAuthorizers", {
+      dns: {
+        subdomain: "my-test-api-with-distinct-jwt-authorizers",
+        hostedZone,
+      },
+      defaultIntegration: {
+        type: "ALB",
+        loadBalancerListener: loadBalancer.httpsListener,
+        hostName: albListenerHostName,
+        securityGroup: loadBalancerSecurityGroup,
+        vpc,
+      },
+      defaultAuthorization: {
+        type: "JWT",
+        issuerUrl: "https://example.com/issuer",
+        audience: ["my-audience"],
+      },
+      routes: [
+        { path: "/api" },
+        // Different issuer.
+        {
+          path: "/other-issuer",
+          authorization: {
+            type: "JWT",
+            issuerUrl: "https://other.example.com/issuer",
+            audience: ["my-audience"],
+          },
+        },
+        // Same issuer, different audience.
+        {
+          path: "/other-audience",
+          authorization: {
+            type: "JWT",
+            issuerUrl: "https://example.com/issuer",
+            audience: ["my-other-audience"],
+          },
+        },
+      ],
+      accessLogs,
+    })
+
+    const template = Template.fromStack(stack)
+
+    // These differ in the properties that actually configure the authorizer resource, so they
+    // cannot be shared.
+    template.resourceCountIs("AWS::ApiGatewayV2::Authorizer", 3)
 
     t.assert.snapshot(cdkTemplate(stack))
   })
