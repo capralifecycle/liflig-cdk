@@ -64,7 +64,7 @@
     "lefthook": "2.1.14",
     "npm-check-updates": "23.1.0",
     "semantic-release": "25.0.9",
-    "tsx": "4.23.13",
+    "tsx": "4.23.15",
     "typescript": "7.0.2"
   },
   "dependencies": {
