@@ -328,7 +328,7 @@ export type AuthorizationProps<AuthScopesT extends string = string> =
    */
   | ({
       type: "JWT"
-    } & JwtAuthorizerProps)
+    } & JwtAuthorizerProps<AuthScopesT>)
   /**
    * Creates a custom Lambda authorizer which reads `Authorization: Bearer <access token>` header
    * and verifies the token against a Cognito user pool.
@@ -441,7 +441,7 @@ export type BasicAuthAuthorizerProps = {
 /** An array that is guaranteed by the type system to have at least one element. */
 export type NonEmptyArray<T> = [T, ...T[]]
 
-export type JwtAuthorizerProps = {
+export type JwtAuthorizerProps<AuthScopesT extends string = string> = {
   /**
    * The base URL of the token issuer. API Gateway fetches the issuer's OpenID Connect configuration
    * from `<issuerUrl>/.well-known/openid-configuration` to obtain the keys used to validate the JWT.
@@ -453,6 +453,18 @@ export type JwtAuthorizerProps = {
    * claim that matches one of these values. At least one audience must be given.
    */
   audience: NonEmptyArray<string>
+
+  /**
+   * Verifies that the token's `scope` (or `scp`) claim contains the given scope. API Gateway
+   * enforces this on the route, and rejects the request with 403 if the scope is missing.
+   *
+   * When defined as part of a resource server, scopes are on the format:
+   * `{resource server identifier}/{scope name}`, e.g. `external/view_users`.
+   *
+   * To get more type safety on this parameter, see the docs for the `AuthScopesT` type parameter on
+   * {@link ApiGateway}.
+   */
+  requiredScope?: AuthScopesT
 }
 
 export type CognitoUserPoolOrBasicAuthAuthorizerProps<
@@ -584,6 +596,16 @@ export class ApiGateway<
   /** Access log group. */
   public readonly logGroup: logs.LogGroup
 
+  /**
+   * JWT authorizers, keyed on their issuer and audience. The scope check for a JWT authorizer lives
+   * on the route (`authorizationScopes`), not on the authorizer, so routes that differ only in
+   * their `requiredScope` can share a single authorizer. See {@link createAuthorizer}.
+   */
+  private readonly jwtAuthorizers = new Map<
+    string,
+    apigw.IHttpRouteAuthorizer
+  >()
+
   private readonly props: ApiGatewayProps<AuthScopesT>
 
   constructor(
@@ -680,6 +702,14 @@ export class ApiGateway<
         authorizer = defaultAuthorizer
       }
 
+      // The JWT authorizer's scope check is configured on the route rather than on the authorizer,
+      // so it has to be resolved here. The other authorizer types check scope inside their Lambdas.
+      const authorization = route.authorization ?? props.defaultAuthorization
+      const authorizationScopes =
+        authorization?.type === "JWT" && authorization.requiredScope
+          ? [authorization.requiredScope]
+          : undefined
+
       const routePaths = [route.path]
       if (route.includeSubpaths === true) {
         // If we include sub-paths, we add an additional route with /{proxy+} (the + means it will
@@ -705,6 +735,7 @@ export class ApiGateway<
             httpApi: api,
             integration: integration,
             authorizer: authorizer,
+            authorizationScopes: authorizationScopes,
             routeKey: apigw.HttpRouteKey.with(
               routePath,
               route.method
@@ -796,9 +827,28 @@ export class ApiGateway<
         return new authorizers.HttpIamAuthorizer()
       }
       case "JWT": {
-        return new authorizers.HttpJwtAuthorizer(id, authorization.issuerUrl, {
-          jwtAudience: authorization.audience,
-        })
+        // An `AWS::ApiGatewayV2::Authorizer` of type JWT is configured by only its issuer and
+        // audience - the scope check lives on the route instead. So routes that differ only in
+        // their `requiredScope` can share one authorizer, and API Gateway allows just 10
+        // authorizers per API, so we reuse them rather than creating one per route.
+        const key = JSON.stringify([
+          authorization.issuerUrl,
+          // `Audience` is matched as a set, so ordering must not affect reuse.
+          [...authorization.audience].sort(),
+        ])
+
+        const existingAuthorizer = this.jwtAuthorizers.get(key)
+        if (existingAuthorizer !== undefined) {
+          return existingAuthorizer
+        }
+
+        const authorizer = new authorizers.HttpJwtAuthorizer(
+          id,
+          authorization.issuerUrl,
+          { jwtAudience: authorization.audience },
+        )
+        this.jwtAuthorizers.set(key, authorizer)
+        return authorizer
       }
       case "COGNITO_USER_POOL": {
         // We use a custom lambda authorizer here instead of the `HttpUserPoolAuthorizer` provided
