@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "3.1142.0",
-    "@capraconsulting/webapp-deploy-lambda": "2.5.179",
+    "@capraconsulting/webapp-deploy-lambda": "2.5.180",
     "aws-jwt-verify": "5.2.1"
   },
   "peerDependencies": {
