@@ -56,7 +56,7 @@
     "@liflig/cdk-snapshot": "1.2.0",
     "@types/aws-lambda": "8.10.164",
     "@types/node": "24.19.1",
-    "aws-cdk": "2.1143.0",
+    "aws-cdk": "2.1144.0",
     "aws-cdk-lib": "2.270.0",
     "constructs": "10.8.1",
     "esbuild": "0.28.2",
