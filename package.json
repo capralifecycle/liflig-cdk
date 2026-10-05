@@ -40,16 +40,16 @@
     "provenance": true
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudwatch-logs": "3.1144.0",
-    "@aws-sdk/client-codebuild": "3.1144.0",
-    "@aws-sdk/client-codepipeline": "3.1144.0",
-    "@aws-sdk/client-ecs": "3.1144.0",
-    "@aws-sdk/client-s3": "3.1144.0",
-    "@aws-sdk/client-secrets-manager": "3.1144.0",
-    "@aws-sdk/client-ses": "3.1144.0",
-    "@aws-sdk/client-sesv2": "3.1144.0",
-    "@aws-sdk/client-sfn": "3.1144.0",
-    "@aws-sdk/lib-storage": "3.1144.0",
+    "@aws-sdk/client-cloudwatch-logs": "3.1146.0",
+    "@aws-sdk/client-codebuild": "3.1146.0",
+    "@aws-sdk/client-codepipeline": "3.1146.0",
+    "@aws-sdk/client-ecs": "3.1146.0",
+    "@aws-sdk/client-s3": "3.1146.0",
+    "@aws-sdk/client-secrets-manager": "3.1146.0",
+    "@aws-sdk/client-ses": "3.1146.0",
+    "@aws-sdk/client-sesv2": "3.1146.0",
+    "@aws-sdk/client-sfn": "3.1146.0",
+    "@aws-sdk/lib-storage": "3.1146.0",
     "@biomejs/biome": "2.5.15",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
@@ -67,7 +67,7 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "3.1144.0",
+    "@aws-sdk/client-ssm": "3.1146.0",
     "@capraconsulting/webapp-deploy-lambda": "2.5.183",
     "aws-jwt-verify": "5.2.1"
   },
