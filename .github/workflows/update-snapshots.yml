@@ -18,7 +18,7 @@ jobs:
     if: |
       github.event.issue.pull_request != null &&
       contains(github.event.comment.body, '/update-snapshots')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       pull-requests: write
