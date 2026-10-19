@@ -110,13 +110,6 @@ test("log group receives exactly two subscription filters when logHandler is pre
   assert.strictEqual(subs.length, 2)
 })
 
-const logsPermissions = (stack: Stack) =>
-  Object.keys(
-    Template.fromStack(stack).findResources("AWS::Lambda::Permission", {
-      Properties: { Principal: "logs.amazonaws.com" },
-    }),
-  )
-
 test("addLogHandlerPermissions adds a permission per subscription filter", () => {
   const app = new App()
   const stack = new Stack(app, "Stack-OwnHandler")
@@ -141,5 +134,11 @@ test("addLogHandlerPermissions adds a permission per subscription filter", () =>
   alarms.addJsonErrorAlarm({ logGroup })
   alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
 
-  assert.strictEqual(logsPermissions(stack).length, 2)
+  const lambdaResourcePolicyPermissions = Object.keys(
+    Template.fromStack(stack).findResources("AWS::Lambda::Permission", {
+      Properties: { Principal: "logs.amazonaws.com" },
+    }),
+  )
+
+  assert.strictEqual(lambdaResourcePolicyPermissions.length, 2)
 })
