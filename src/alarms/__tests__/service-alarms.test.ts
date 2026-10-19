@@ -110,55 +110,36 @@ test("log group receives exactly two subscription filters when logHandler is pre
   assert.strictEqual(subs.length, 2)
 })
 
-test("shared logHandler gets a single invoke permission regardless of number of log groups", () => {
-  const app = new App()
-  const supportStack = new Stack(app, "SupportStack-Permission", {
-    env: { account: "111111111111", region: "eu-west-1" },
-  })
-  const stack = new Stack(app, "Stack-Permission", {
-    env: { account: "111111111111", region: "eu-west-1" },
-  })
+const logsPermissions = (stack: Stack) =>
+  Object.keys(
+    Template.fromStack(stack).findResources("AWS::Lambda::Permission", {
+      Properties: { Principal: "logs.amazonaws.com" },
+    }),
+  )
 
-  const topic = new sns.Topic(supportStack, "Topic")
+test("addLogHandlerPermissions adds a permission per subscription filter", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack-OwnHandler")
+
+  const topic = new sns.Topic(stack, "Topic")
   const action = new cloudwatchActions.SnsAction(topic)
 
-  const handlerFn = new lambda.Function(supportStack, "Handler", {
+  const handlerFn = new lambda.Function(stack, "Handler", {
     runtime: lambda.Runtime.NODEJS_24_X,
     handler: "index.handler",
     code: lambda.Code.fromInline("exports.handler = async () => {}"),
   })
 
-  for (const name of ["a", "b", "c"]) {
-    const alarms = new ServiceAlarms(stack, `ServiceAlarms-${name}`, {
-      alarmAction: action,
-      warningAction: action,
-      serviceName: `svc-${name}`,
-      logHandler: handlerFn,
-    })
-    const logGroup = new logs.LogGroup(stack, `LogGroup-${name}`)
-    alarms.addJsonErrorAlarm({ logGroup })
-    alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
-  }
-
-  const supportTemplate = Template.fromStack(supportStack)
-  const serviceTemplate = Template.fromStack(stack)
-
-  serviceTemplate.resourceCountIs("AWS::Logs::SubscriptionFilter", 6)
-  serviceTemplate.resourceCountIs("AWS::Lambda::Permission", 0)
-  supportTemplate.resourceCountIs("AWS::Lambda::Permission", 1)
-  supportTemplate.hasResourceProperties("AWS::Lambda::Permission", {
-    Action: "lambda:InvokeFunction",
-    Principal: "logs.amazonaws.com",
-    SourceAccount: "111111111111",
-    SourceArn: {
-      "Fn::Join": [
-        "",
-        [
-          "arn:",
-          { Ref: "AWS::Partition" },
-          ":logs:eu-west-1:111111111111:log-group:*",
-        ],
-      ],
-    },
+  const alarms = new ServiceAlarms(stack, "Alarms", {
+    alarmAction: action,
+    warningAction: action,
+    serviceName: "svc",
+    logHandler: handlerFn,
+    addLogHandlerPermissions: true,
   })
+  const logGroup = new logs.LogGroup(stack, "LogGroup")
+  alarms.addJsonErrorAlarm({ logGroup })
+  alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
+
+  assert.strictEqual(logsPermissions(stack).length, 2)
 })

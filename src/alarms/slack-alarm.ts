@@ -1,6 +1,6 @@
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
-import { Duration } from "aws-cdk-lib"
+import { ArnFormat, Duration, Stack } from "aws-cdk-lib"
 import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions"
 import * as iam from "aws-cdk-lib/aws-iam"
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam"
@@ -80,6 +80,18 @@ export class SlackAlarm extends constructs.Construct {
 
     props.slackWebhookUrlSecret.grantRead(this.logHandler)
     props.slackWebhookUrlSecret.grantRead(slackLambda)
+
+    // https://github.com/capralifecycle/liflig-cdk/pull/479
+    this.logHandler.addPermission("AllowInvokeFromCloudWatchLogs", {
+      principal: new iam.ServicePrincipal("logs.amazonaws.com"),
+      sourceAccount: Stack.of(this).account,
+      sourceArn: Stack.of(this).formatArn({
+        service: "logs",
+        resource: "log-group",
+        resourceName: "*",
+        arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+      }),
+    })
 
     slackLambda.addPermission("InvokePermission", {
       action: "lambda:InvokeFunction",

@@ -2,9 +2,9 @@ import * as cdk from "aws-cdk-lib"
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import type * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
+import * as logsDestinations from "aws-cdk-lib/aws-logs-destinations"
 import * as constructs from "constructs"
 import { jsonErrorFilterPattern } from "./log-filter-patterns"
-import { LogHandlerDestination } from "./log-handler-destination"
 
 export interface LambdaAlarmsProps {
   /**
@@ -22,12 +22,9 @@ export interface LambdaAlarmsProps {
   /**
    * Optional Lambda function that will receive forwarded log events.
    * If provided, subscription filters will be created to forward matching logs
-   *
-   * The handler is granted a single permission allowing CloudWatch Logs to
-   * invoke it from any log group in its account and region, so it can be
-   * shared by many log groups without growing its resource policy.
    */
   logHandler?: lambda.IFunction
+  addLogHandlerPermissions?: boolean
 }
 
 /**
@@ -47,6 +44,7 @@ export class LambdaAlarms extends constructs.Construct {
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly lambdaFunction: lambda.IFunction
   private readonly logHandler?: lambda.IFunction
+  private readonly addLogHandlerPermissions: boolean
 
   constructor(
     scope: constructs.Construct,
@@ -59,6 +57,7 @@ export class LambdaAlarms extends constructs.Construct {
     this.warningAction = props.warningAction
     this.lambdaFunction = props.lambdaFunction
     this.logHandler = props.logHandler
+    this.addLogHandlerPermissions = props.addLogHandlerPermissions ?? false
   }
 
   /**
@@ -244,7 +243,9 @@ export class LambdaAlarms extends constructs.Construct {
       props.logGroup.addSubscriptionFilter(
         "liflig-cdk-log-content-to-slack-error-subscription",
         {
-          destination: new LogHandlerDestination(this.logHandler),
+          destination: new logsDestinations.LambdaDestination(this.logHandler, {
+            addPermissions: this.addLogHandlerPermissions,
+          }),
           filterPattern: jsonErrorFilterPattern(),
         },
       )
@@ -306,7 +307,12 @@ export class LambdaAlarms extends constructs.Construct {
         props.logGroup.addSubscriptionFilter(
           "liflig-cdk-log-content-to-slack-uncaught-exception-subscription",
           {
-            destination: new LogHandlerDestination(this.logHandler),
+            destination: new logsDestinations.LambdaDestination(
+              this.logHandler,
+              {
+                addPermissions: this.addLogHandlerPermissions,
+              },
+            ),
             filterPattern: filterPattern,
           },
         )

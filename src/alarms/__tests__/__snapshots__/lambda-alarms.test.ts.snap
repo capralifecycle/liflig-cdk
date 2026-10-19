@@ -1,42 +1,6 @@
 exports[`addUncaughtJavaExceptionAlarm: with logHandler creates subscription filter and no metric filter 1`] = `
 {
   "Resources": {
-    "HandlerUJ2AllowInvokeFromCloudWatchLogs0B2CE78A": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "HandlerUJ2EE2E5D99",
-            "Arn",
-          ],
-        },
-        "Principal": "logs.amazonaws.com",
-        "SourceAccount": {
-          "Ref": "AWS::AccountId",
-        },
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition",
-              },
-              ":logs:",
-              {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId",
-              },
-              ":log-group:*",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
     "HandlerUJ2EE2E5D99": {
       "DependsOn": [
         "HandlerUJ2ServiceRole65D1C30E",
@@ -96,9 +60,6 @@ exports[`addUncaughtJavaExceptionAlarm: with logHandler creates subscription fil
       "UpdateReplacePolicy": "Retain",
     },
     "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionF0227099": {
-      "DependsOn": [
-        "HandlerUJ2AllowInvokeFromCloudWatchLogs0B2CE78A",
-      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -618,42 +579,6 @@ exports[`with handler: subscription filter is created and metric filter omitted 
       },
       "Type": "AWS::Lambda::Function",
     },
-    "HandlerAllowInvokeFromCloudWatchLogs7B4C4841": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "Handler886CB40B",
-            "Arn",
-          ],
-        },
-        "Principal": "logs.amazonaws.com",
-        "SourceAccount": {
-          "Ref": "AWS::AccountId",
-        },
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition",
-              },
-              ":logs:",
-              {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId",
-              },
-              ":log-group:*",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
     "HandlerServiceRoleFCDC14AE": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -694,9 +619,6 @@ exports[`with handler: subscription filter is created and metric filter omitted 
       "UpdateReplacePolicy": "Retain",
     },
     "LogGroup2lifligcdklogcontenttoslackerrorsubscription2468A563": {
-      "DependsOn": [
-        "HandlerAllowInvokeFromCloudWatchLogs7B4C4841",
-      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
