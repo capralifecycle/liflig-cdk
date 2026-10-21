@@ -232,3 +232,47 @@ exports[`hosted-zone-with-param for same region 2`] = `
   },
 }
 `;
+
+exports[`hosted-zone-with-param with delegation set id 1`] = `
+{
+  "Outputs": {
+    "HostedZoneIdFC741845": {
+      "Value": {
+        "Ref": "HostedZoneA9DD9B89",
+      },
+    },
+    "HostedZoneNameservers0897D4B3": {
+      "Value": {
+        "Fn::Join": [
+          ", ",
+          {
+            "Fn::GetAtt": [
+              "HostedZoneA9DD9B89",
+              "NameServers",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  "Resources": {
+    "HostedZoneA9DD9B89": {
+      "Properties": {
+        "DelegationSetId": "N1234567890ABC",
+        "Name": "example.com.",
+      },
+      "Type": "AWS::Route53::HostedZone",
+    },
+    "HostedZoneIdParamE55EE91C": {
+      "Properties": {
+        "Name": "/cf/hosted-zone-id/example.com-public",
+        "Type": "String",
+        "Value": {
+          "Ref": "HostedZoneA9DD9B89",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+  },
+}
+`;

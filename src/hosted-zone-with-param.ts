@@ -14,6 +14,12 @@ interface Props extends route53.HostedZoneProps {
    * @default 1
    */
   nonce?: string
+  /**
+   * The ID of the reusable delegation set to associate with this hosted zone.
+   *
+   * @see https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateReusableDelegationSet.html
+   */
+  delegationSetId?: string
 }
 
 /**
@@ -36,6 +42,15 @@ export class HostedZoneWithParam extends constructs.Construct {
     }`
 
     this.hostedZone = new route53.HostedZone(this, "Resource", props)
+
+    if (props.delegationSetId) {
+      const cfnHostedZone = this.hostedZone.node
+        .defaultChild as route53.CfnHostedZone
+      cfnHostedZone.addPropertyOverride(
+        "DelegationSetId",
+        props.delegationSetId,
+      )
+    }
 
     new ssm.CfnParameter(this, "IdParam", {
       type: "String",
