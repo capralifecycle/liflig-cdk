@@ -68,11 +68,26 @@ export interface LifligCdkPipelineProps {
    * The Node.js version used by CodeBuild when synthesizing the
    * CDK application. Set as `runtime-versions.nodejs` in the buildspec.
    *
+   * Must be Node.js 24 or newer, given as a major version ("24"), the
+   * latest minor of a major ("24.x"), or a specific version ("24.22.1").
+   * "latest" is rejected since it lets the build image pick the major.
+   *
    * Only relevant for sourceType of "cdk-source".
    *
    * @default "24"
    */
   synthNodeVersion?: string
+}
+
+const MIN_SYNTH_NODE_MAJOR = 24
+
+function validateSynthNodeVersion(version: string): void {
+  const match = /^(\d+)(\.(x|\d+(\.\d+)?))?$/.exec(version)
+  if (!match || Number(match[1]) < MIN_SYNTH_NODE_MAJOR) {
+    throw new Error(
+      `synthNodeVersion must be Node.js ${MIN_SYNTH_NODE_MAJOR} or newer, given as "<major>", "<major>.x" or "<major>.<minor>[.<patch>]", got "${version}"`,
+    )
+  }
 }
 
 /**
@@ -146,6 +161,8 @@ export class LifligCdkPipeline extends constructs.Construct {
 
     this.artifactsBucket = props.artifactsBucket
 
+    const synthNodeVersion = props.synthNodeVersion ?? "24"
+
     const cloudAssemblyArtifact = new codepipeline.Artifact()
 
     let synth: pipelines.IFileSetProducer
@@ -163,6 +180,7 @@ export class LifligCdkPipeline extends constructs.Construct {
         break
       }
       case "cdk-source": {
+        validateSynthNodeVersion(synthNodeVersion)
         const cdkSource = this.cdkSourceStage(
           cloudAssemblyArtifact,
           this.artifactsBucket,
@@ -229,7 +247,7 @@ export class LifligCdkPipeline extends constructs.Construct {
                 phases: {
                   install: {
                     "runtime-versions": {
-                      nodejs: props.synthNodeVersion ?? "24",
+                      nodejs: synthNodeVersion,
                     },
                   },
                 },
