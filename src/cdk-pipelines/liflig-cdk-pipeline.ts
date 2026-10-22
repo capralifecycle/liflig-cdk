@@ -3,6 +3,7 @@ import { createRequire } from "node:module"
 import * as path from "node:path"
 import { fileURLToPath } from "node:url"
 import * as cdk from "aws-cdk-lib"
+import * as codebuild from "aws-cdk-lib/aws-codebuild"
 import * as codepipeline from "aws-cdk-lib/aws-codepipeline"
 import * as codepipelineActions from "aws-cdk-lib/aws-codepipeline-actions"
 import * as events from "aws-cdk-lib/aws-events"
@@ -63,6 +64,15 @@ export interface LifligCdkPipelineProps {
    * @default default
    */
   parametersNamespace?: string
+  /**
+   * The Node.js version used by CodeBuild when synthesizing the
+   * CDK application. Set as `runtime-versions.nodejs` in the buildspec.
+   *
+   * Only relevant for sourceType of "cdk-source".
+   *
+   * @default "24"
+   */
+  synthNodeVersion?: string
 }
 
 /**
@@ -212,6 +222,20 @@ export class LifligCdkPipeline extends constructs.Construct {
       synth,
       useChangeSets: false,
       codePipeline: this.codePipeline,
+      synthCodeBuildDefaults:
+        props.sourceType === "cdk-source"
+          ? {
+              partialBuildSpec: codebuild.BuildSpec.fromObject({
+                phases: {
+                  install: {
+                    "runtime-versions": {
+                      nodejs: props.synthNodeVersion ?? "24",
+                    },
+                  },
+                },
+              }),
+            }
+          : undefined,
     })
   }
 
