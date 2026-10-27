@@ -50,7 +50,7 @@
     "@aws-sdk/client-sesv2": "3.1156.0",
     "@aws-sdk/client-sfn": "3.1156.0",
     "@aws-sdk/lib-storage": "3.1156.0",
-    "@biomejs/biome": "2.6.2",
+    "@biomejs/biome": "2.6.3",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@liflig/cdk-snapshot": "1.2.0",
