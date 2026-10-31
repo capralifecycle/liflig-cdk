@@ -24,6 +24,7 @@ export interface ServiceAlarmsProps extends cdk.StackProps {
    * If provided, subscription filters will be created to forward matching logs.
    */
   logHandler?: lambda.IFunction
+  addLogHandlerPermissions?: boolean
 }
 
 /**
@@ -39,6 +40,7 @@ export class ServiceAlarms extends constructs.Construct {
   private readonly warningAction: cloudwatch.IAlarmAction
   private readonly serviceName: string
   private readonly logHandler?: lambda.IFunction
+  private readonly addLogHandlerPermissions: boolean
 
   constructor(
     scope: constructs.Construct,
@@ -51,6 +53,7 @@ export class ServiceAlarms extends constructs.Construct {
     this.warningAction = props.warningAction
     this.serviceName = props.serviceName
     this.logHandler = props.logHandler
+    this.addLogHandlerPermissions = props.addLogHandlerPermissions ?? false
   }
 
   /**
@@ -113,7 +116,9 @@ export class ServiceAlarms extends constructs.Construct {
       props.logGroup.addSubscriptionFilter(
         "liflig-cdk-log-content-to-slack-error-subscription",
         {
-          destination: new logsDestinations.LambdaDestination(this.logHandler),
+          destination: new logsDestinations.LambdaDestination(this.logHandler, {
+            addPermissions: this.addLogHandlerPermissions,
+          }),
           filterPattern: jsonErrorFilterPattern(),
         },
       )
@@ -174,6 +179,9 @@ export class ServiceAlarms extends constructs.Construct {
           {
             destination: new logsDestinations.LambdaDestination(
               this.logHandler,
+              {
+                addPermissions: this.addLogHandlerPermissions,
+              },
             ),
             filterPattern: filterPattern,
           },

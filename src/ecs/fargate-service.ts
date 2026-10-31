@@ -28,6 +28,7 @@ export type ServiceAlarmsConfig =
       /** Optional Lambda function that will receive
        * forwarded log events */
       logHandler?: lambda.IFunction
+      addLogHandlerPermissions?: boolean
       /**
        * Individual alarm configuration overrides defaults.
        */
@@ -327,6 +328,7 @@ export class FargateService extends constructs.Construct {
         alarmAction: alarms.alarmAction,
         warningAction: alarms.warningAction,
         logHandler: alarms.logHandler,
+        addLogHandlerPermissions: alarms.addLogHandlerPermissions,
       })
 
       // Enabled by default (opt-out).
