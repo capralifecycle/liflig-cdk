@@ -55,7 +55,7 @@
     "@commitlint/config-conventional": "21.2.4",
     "@liflig/cdk-snapshot": "1.2.0",
     "@types/aws-lambda": "8.10.164",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "aws-cdk": "2.1146.1",
     "aws-cdk-lib": "2.270.0",
     "constructs": "10.8.1",
