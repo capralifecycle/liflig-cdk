@@ -52,6 +52,11 @@ jobs:
       - name: build project
         run: make ci
 
+      - uses: capralifecycle/actions-lib/aikido-upload-coverage@0a06bdb0f034493aa869274a4605d5f4a869eebd # v1.22.1
+        if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+        with:
+          file-paths: "coverage/lcov.info"
+
       - name: conditionally semantic release
         run: make release
         if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}

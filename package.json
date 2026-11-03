@@ -12,7 +12,7 @@
     "watch": "tsc -w",
     "typecheck": "tsc -p tsconfig.typecheck.json",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
-    "test:update-snapshots": "node --import tsx --test --test-update-snapshots \"src/**/*.test.ts\"",
+    "test:update-snapshots": "mkdir -p coverage && node --import tsx --test --test-update-snapshots --experimental-test-coverage --test-coverage-exclude='**/*.test.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \"src/**/*.test.ts\"",
     "lint": "biome check",
     "lint:fix": "biome check --fix",
     "format": "biome format --write",
