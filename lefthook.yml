@@ -26,8 +26,8 @@ pre-commit:
         - assets/open-telemetry/otel-collector-task-metrics-config.yaml
 
     - name: lint json
-      glob: "*.json"
-      run: jsonlint {staged_files} --no-duplicate-keys --compact --quiet
+      glob: "*.{json,jsonc}"
+      run: npx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
 
     - name: validate renovate config
       glob: "renovate.json*"
