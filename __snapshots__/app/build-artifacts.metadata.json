@@ -1,6 +1,10 @@
 {
   "/build-artifacts": [
     {
+      "type": "aws:cdk:templateFile",
+      "data": "build-artifacts.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {

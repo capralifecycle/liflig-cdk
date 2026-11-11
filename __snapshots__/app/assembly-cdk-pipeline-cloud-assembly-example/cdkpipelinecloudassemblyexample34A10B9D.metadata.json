@@ -1,4 +1,10 @@
 {
+  "/cdk-pipeline-cloud-assembly/example/example": [
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "cdkpipelinecloudassemblyexample34A10B9D.template.json"
+    }
+  ],
   "/cdk-pipeline-cloud-assembly/example/example/ExampleOutput": [
     {
       "type": "aws:cdk:logicalId",

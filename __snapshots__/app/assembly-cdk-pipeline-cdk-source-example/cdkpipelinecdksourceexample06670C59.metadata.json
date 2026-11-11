@@ -1,4 +1,10 @@
 {
+  "/cdk-pipeline-cdk-source/example/example": [
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "cdkpipelinecdksourceexample06670C59.template.json"
+    }
+  ],
   "/cdk-pipeline-cdk-source/example/example/ExampleOutput": [
     {
       "type": "aws:cdk:logicalId",

@@ -1,6 +1,10 @@
 {
   "/webapp": [
     {
+      "type": "aws:cdk:templateFile",
+      "data": "webapp.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {
