@@ -1,6 +1,10 @@
 {
   "/cdk-pipeline-cloud-assembly": [
     {
+      "type": "aws:cdk:templateFile",
+      "data": "cdk-pipeline-cloud-assembly.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {

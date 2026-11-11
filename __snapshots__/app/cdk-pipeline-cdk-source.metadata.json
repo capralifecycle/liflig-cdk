@@ -1,6 +1,10 @@
 {
   "/cdk-pipeline-cdk-source": [
     {
+      "type": "aws:cdk:templateFile",
+      "data": "cdk-pipeline-cdk-source.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {

@@ -1,6 +1,10 @@
 {
   "/ssm-parameter-reader": [
     {
+      "type": "aws:cdk:templateFile",
+      "data": "ssm-parameter-reader.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {
