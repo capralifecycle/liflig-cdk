@@ -69,7 +69,13 @@ export class DatabaseAlarms extends constructs.Construct {
 
     this.alarmAction = props.alarmAction
     this.warningAction = props.warningAction
-    this.databaseInstanceIdentifier = props.instanceIdentifier
+    // RDS keeps the instance identifier in lowercase, and CloudWatch
+    // dimensions are case-sensitive.
+    this.databaseInstanceIdentifier = cdk.Token.isUnresolved(
+      props.instanceIdentifier,
+    )
+      ? props.instanceIdentifier
+      : props.instanceIdentifier.toLowerCase()
     this.instanceType = props.instanceType
     this.allocatedStorage = props.allocatedStorage
   }
