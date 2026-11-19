@@ -8,6 +8,7 @@ import * as loadBalancer from "./load-balancer"
 import * as platform from "./platform"
 import * as rds from "./rds"
 import * as ses from "./ses"
+import * as waf from "./waf"
 import * as webapp from "./webapp"
 
 // TODO: We want to switch exports so they every construct under
@@ -34,6 +35,7 @@ export {
   platform,
   rds,
   ses,
+  waf,
   webapp,
 }
 
