@@ -32,6 +32,10 @@ $ make snapshots # regenerate snapshots
 
 For a complete list of commands, refer to the `Makefile`.
 
+## Modules
+
+- [WAF](./docs/waf.md): web ACLs with rule sets owned by apps, scoping, logging, and guidance on managed rule groups.
+
 ## Testing library changes before releasing
 
 ### Alternative 1: Install liflig-cdk from tarball
