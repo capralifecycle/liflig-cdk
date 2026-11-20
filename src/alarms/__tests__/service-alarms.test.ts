@@ -109,3 +109,56 @@ test("log group receives exactly two subscription filters when logHandler is pre
 
   assert.strictEqual(subs.length, 2)
 })
+
+test("logHandler gets no permissions by default", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack-LogHandler")
+
+  const topic = new sns.Topic(stack, "Topic")
+  const action = new cloudwatchActions.SnsAction(topic)
+
+  const handlerFn = new lambda.Function(stack, "Handler", {
+    runtime: lambda.Runtime.NODEJS_24_X,
+    handler: "index.handler",
+    code: lambda.Code.fromInline("exports.handler = async () => {}"),
+  })
+
+  const alarms = new ServiceAlarms(stack, "Alarms", {
+    alarmAction: action,
+    warningAction: action,
+    serviceName: "svc",
+    logHandler: handlerFn,
+  })
+  const logGroup = new logs.LogGroup(stack, "LogGroup")
+  alarms.addJsonErrorAlarm({ logGroup })
+  alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
+
+  Template.fromStack(stack).resourceCountIs("AWS::Lambda::Permission", 0)
+})
+
+test("addLogHandlerPermissions adds a permission per subscription filter", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack-LogHandler")
+
+  const topic = new sns.Topic(stack, "Topic")
+  const action = new cloudwatchActions.SnsAction(topic)
+
+  const handlerFn = new lambda.Function(stack, "Handler", {
+    runtime: lambda.Runtime.NODEJS_24_X,
+    handler: "index.handler",
+    code: lambda.Code.fromInline("exports.handler = async () => {}"),
+  })
+
+  const alarms = new ServiceAlarms(stack, "Alarms", {
+    alarmAction: action,
+    warningAction: action,
+    serviceName: "svc",
+    logHandler: handlerFn,
+    addLogHandlerPermissions: true,
+  })
+  const logGroup = new logs.LogGroup(stack, "LogGroup")
+  alarms.addJsonErrorAlarm({ logGroup })
+  alarms.addUncaughtJavaExceptionAlarm({ logGroup, enabled: true })
+
+  Template.fromStack(stack).resourceCountIs("AWS::Lambda::Permission", 2)
+})
