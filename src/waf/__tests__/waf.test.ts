@@ -17,6 +17,7 @@ import {
   Match,
   Rule,
   RuleSet,
+  WafValidationError,
   WebAcl,
   type WebAclProps,
 } from "../index"
@@ -1000,5 +1001,228 @@ test("merging compares resolved values of Lazy values", () => {
   assert.throws(
     () => webAclTemplate({ ruleSets: [set(100), set(200)] }),
     /different rules/,
+  )
+})
+
+function webAclProblemsFor(props: Partial<WebAclProps>): string {
+  try {
+    webAclTemplate(props)
+  } catch (e) {
+    return (e as Error).message
+  }
+  assert.fail("expected the web ACL to be invalid")
+}
+
+test("validation lists every problem of the web ACL at once", () => {
+  const message = webAclProblemsFor({
+    ruleSets: [
+      new RuleSet("App", {
+        rules: [
+          Rule.custom("Bad", {
+            match: Match.statement({
+              andStatement: {
+                statements: [
+                  {
+                    byteMatchStatement: {
+                      fieldToMatch: { uriPath: {} },
+                      positionalConstraint: "CONTAINS_WORD",
+                      searchString: "a-b",
+                      textTransformations: [
+                        { priority: 0, type: "NONE" },
+                        { priority: 0, type: "LOWERCASE" },
+                      ],
+                    },
+                  },
+                ],
+              },
+            }),
+            action: Action.block(),
+          }),
+          Rule.custom("Geo", {
+            match: Match.geo(["no"]),
+            action: Action.block(),
+            labels: ["awswaf:x", "a:b:c:d:e:f:g"],
+          }),
+        ],
+      }),
+    ],
+  })
+  assert.match(
+    message,
+    /^WebAcl initialization failed due to the following validation error\(s\) in Stack\/WebAcl:\n {2}- /,
+  )
+  assert.match(message, /andStatement: must have at least 2 statements/)
+  assert.match(message, /priorities must be different/)
+  assert.match(message, /CONTAINS_WORD/)
+  assert.match(message, /'no' is not a two-letter uppercase/)
+  assert.match(message, /label 'a:b:c:d:e:f:g': can have at most 5 namespaces/)
+  assert.doesNotMatch(message, /awswaf:x/)
+})
+
+test("validation rejects reserved words in labels", () => {
+  assert.match(
+    webAclProblemsFor({
+      ruleSets: [
+        new RuleSet("App", {
+          rules: [
+            Rule.custom("R", {
+              match: Match.geo(["NO"]),
+              action: Action.count(),
+              labels: ["app:WebAcl:x"],
+            }),
+          ],
+        }),
+      ],
+    }),
+    /'WebAcl' is reserved/,
+  )
+})
+
+test("validation rejects search strings over 200 bytes", () => {
+  assert.match(
+    webAclProblemsFor({
+      ruleSets: [
+        new RuleSet("App", {
+          rules: [
+            Rule.custom("R", {
+              // 101 two-byte characters
+              match: Match.pathPrefix(`/${"ø".repeat(100)}`),
+              action: Action.block(),
+            }),
+          ],
+        }),
+      ],
+    }),
+    /searchString must be 1 to 200 bytes, got 201/,
+  )
+})
+
+test("validation checks custom response body keys and codes", () => {
+  const message = webAclProblemsFor({
+    defaultAction: DefaultAction.block({
+      customResponse: { responseCode: 403, customResponseBodyKey: "missing" },
+    }),
+    customResponseBodies: {
+      blocked: { contentType: "TEXT_PLAIN", content: "Blocked" },
+    },
+    ruleSets: [
+      new RuleSet("App", {
+        rules: [
+          Rule.custom("R", {
+            match: Match.geo(["NO"]),
+            action: Action.block({
+              customResponse: {
+                responseCode: 199,
+                customResponseBodyKey: "blocked",
+              },
+            }),
+          }),
+          Rule.managed("AWSManagedRulesCommonRuleSet", {
+            ruleActionOverrides: {
+              SizeRestrictions_BODY: Action.block({
+                customResponse: {
+                  responseCode: 413,
+                  customResponseBodyKey: "tooLarge",
+                },
+              }),
+            },
+          }),
+        ],
+      }),
+    ],
+  })
+  assert.match(
+    message,
+    /defaultAction.block.customResponse: customResponseBodyKey 'missing' is not a key/,
+  )
+  assert.match(message, /responseCode must be 200 to 599, got 199/)
+  assert.match(
+    message,
+    /ruleActionOverrides\[0\]\.actionToUse.*'tooLarge' is not a key/,
+  )
+  assert.doesNotMatch(message, /'blocked' is not a key/)
+})
+
+test("validation accepts custom response bodies set through overrideWebAclProps", () => {
+  webAclTemplate({
+    defaultAction: DefaultAction.block({
+      customResponse: { responseCode: 403, customResponseBodyKey: "blocked" },
+    }),
+    overrideWebAclProps: {
+      customResponseBodies: {
+        blocked: { contentType: "TEXT_PLAIN", content: "Blocked" },
+      },
+    },
+  })
+})
+
+test("validation limits rate-based rules, reference statements and token domains", () => {
+  const message = webAclProblemsFor({
+    tokenDomains: Array.from({ length: 11 }, (_, i) => `d${i}.example.com`),
+    ruleSets: [
+      new RuleSet("App", {
+        rules: [
+          ...Array.from({ length: 11 }, (_, i) =>
+            Rule.rateLimit(`Rate${i}`, { limit: 100 }),
+          ),
+          ...Array.from({ length: 51 }, (_, i) =>
+            Rule.custom(`Ip${i}`, {
+              match: Match.ipSet(
+                `arn:aws:wafv2:eu-west-1:1:regional/ipset/x/${i}`,
+              ),
+              action: Action.block(),
+            }),
+          ),
+        ],
+      }),
+    ],
+  })
+  assert.match(message, /at most 10 rate-based rules, got 11/)
+  assert.match(message, /at most 50 IP set.*got 51/)
+  assert.match(message, /tokenDomains: can have at most 10 domains, got 11/)
+})
+
+test("validation skips values that are only known at deploy time", () => {
+  const { stack } = setup()
+  const param = new cdk.CfnParameter(stack, "Country")
+  new WebAcl(stack, "WebAcl", {
+    defaultAction: DefaultAction.allow(),
+    ruleSets: [
+      new RuleSet("App", {
+        rules: [
+          Rule.custom("R", {
+            match: Match.geo([param.valueAsString]),
+            action: Action.block(),
+          }),
+          Rule.custom("Host", {
+            match: Match.hostNames([`${param.valueAsString}.example.com`]),
+            action: Action.block(),
+          }),
+        ],
+      }),
+    ],
+  })
+  Template.fromStack(stack)
+})
+
+test("validation throws a WafValidationError with the path and each problem", () => {
+  assert.throws(
+    () =>
+      webAclTemplate({
+        tokenDomains: Array.from({ length: 11 }, (_, i) => `d${i}.example.com`),
+        defaultAction: DefaultAction.block({
+          customResponse: { responseCode: 600 },
+        }),
+      }),
+    (e: unknown) => {
+      assert.ok(e instanceof WafValidationError)
+      assert.equal(e.name, "WafValidationError")
+      assert.equal(e.constructPath, "Stack/WebAcl")
+      assert.deepEqual(e.problems, [
+        "defaultAction.block.customResponse: responseCode must be 200 to 599, got 600",
+        "tokenDomains: can have at most 10 domains, got 11",
+      ])
+      return true
+    },
   )
 })

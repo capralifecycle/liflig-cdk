@@ -17,6 +17,7 @@ export {
   type RuleRenderContext,
 } from "./rule"
 export { RuleSet, type RuleSetProps } from "./rule-set"
+export { WafValidationError } from "./validate"
 export {
   WebAcl,
   type WebAclLoggingProps,
