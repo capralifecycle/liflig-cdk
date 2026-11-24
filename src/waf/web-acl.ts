@@ -7,6 +7,7 @@ import * as constructs from "constructs"
 import type { DefaultAction } from "./action"
 import { Match } from "./match"
 import { RuleSet } from "./rule-set"
+import { WafValidationError, webAclProblems } from "./validate"
 
 export interface WebAclLoggingProps {
   /**
@@ -325,7 +326,7 @@ export class WebAcl extends constructs.Construct {
       }
     }
 
-    this.webAcl = new wafv2.CfnWebACL(this, "WebAcl", {
+    const webAclProps: wafv2.CfnWebACLProps = {
       name: this.webAclName,
       scope: this.scope,
       defaultAction: props.defaultAction.render(),
@@ -334,7 +335,12 @@ export class WebAcl extends constructs.Construct {
       customResponseBodies: props.customResponseBodies,
       tokenDomains: props.tokenDomains,
       ...props.overrideWebAclProps,
-    })
+    }
+    const problems = webAclProblems(stack.resolve(webAclProps))
+    if (problems.length > 0) {
+      throw new WafValidationError(this.node.path, problems)
+    }
+    this.webAcl = new wafv2.CfnWebACL(this, "WebAcl", webAclProps)
     this.webAclArn = this.webAcl.attrArn
     this.webAclId = this.webAcl.attrId
 
