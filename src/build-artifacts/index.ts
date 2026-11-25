@@ -4,9 +4,22 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as constructs from "constructs"
 import {
+  AikidoScannerRole,
+  type Props as AikidoScannerRoleProps,
+  validateProps as validateAikidoScannerRoleProps,
+} from "./aikido-scanner-role"
+import {
   GithubActionsRole,
   type Props as GithubActionsRoleProps,
 } from "./github-actions-role"
+import {
+  grantServiceRepositoriesPullPush,
+  type ServiceRepositoryProps,
+  serviceRepositoryLifecycleRules,
+  serviceRepositoryName,
+  validateServiceRepositories,
+  validateServiceRepositoryName,
+} from "./service-repositories"
 
 interface Props {
   /**
@@ -17,9 +30,15 @@ interface Props {
    */
   bucketName: string
   /**
-   * The name to use for the ECR Repository.
+   * The name of a shared ECR repository for all services.
+   *
+   * Legacy, to be removed in the next major version. Use
+   * {@link serviceRepositories} instead. Removing this deletes the shared
+   * repository from the stack, while AWS keeps the repository itself.
+   *
+   * @default - no shared repository is created
    */
-  ecrRepositoryName: string
+  ecrRepositoryName?: string
   /**
    * Create a role that can be assumed by Liflig Jenkins.
    *
@@ -28,11 +47,45 @@ interface Props {
    */
   ciRoleName?: string
   /**
-   * The lifecycle rules to apply to images stored in the ECR repository.
+   * The lifecycle rules to apply to images stored in the shared ECR repository.
+   *
+   * Legacy, to be removed in the next major version. Service repositories
+   * have fixed lifecycle rules.
    *
    * @default - Expire untagged images after 10 days and any image older than 180 days
    */
   ecrRepositoryLifecycleRules?: ecr.LifecycleRule[]
+  /**
+   * One ECR repository per service, named `services/<name>`.
+   *
+   * Each repository has immutable tags and is kept by AWS when it is
+   * removed from this list or the stack is deleted. Adding it back
+   * afterwards fails until the existing repository is imported or deleted.
+   *
+   * Lifecycle rules, in priority order:
+   * - Untagged images expire after 10 days.
+   * - The 10 most recent images with a tag starting with `nd-` are kept.
+   * - The 50 most recent tagged images are kept, `nd-` images included.
+   *
+   * The CI roles may push to and pull from every service repository, and
+   * {@link targetAccountIds} may pull from them.
+   * Use {@link BuildArtifacts.importServiceRepository} to reference one
+   * from another stack.
+   *
+   * @default - no service repositories are created
+   */
+  serviceRepositories?: ServiceRepositoryProps[]
+  /**
+   * Let Aikido scan the service repositories.
+   *
+   * Creates the IAM role `AikidoSecurityEcrScanningRole`, which Aikido
+   * assumes to read images from the service repositories, and tags each
+   * service repository with `aik:repository` so Aikido links its images to
+   * the GitHub repository.
+   *
+   * @default - no role is created and no repository is tagged
+   */
+  aikido?: AikidoScannerRoleProps
   /**
    * ID of AWS accounts that will be granted permission to read from
    * the artifact repos.
@@ -128,7 +181,13 @@ const policyStatements = {
  * Returns a list of validation error messages. An empty list means the props are valid.
  */
 export const validateProps = (props: Props): string[] => {
-  const errors: string[] = []
+  const errors: string[] = [
+    ...validateServiceRepositories(props.serviceRepositories ?? []),
+    ...(props.aikido ? validateAikidoScannerRoleProps(props.aikido) : []),
+    ...(props.aikido && !props.serviceRepositories?.length
+      ? ["Aikido can only scan service repositories, but none were given"]
+      : []),
+  ]
   if (
     props.githubActions?.defaultBranch &&
     !props.githubActions.defaultBranch.match(/^[a-zA-Z0-9-]+$/)
@@ -143,22 +202,99 @@ export const validateProps = (props: Props): string[] => {
 /**
  * Create various artifacts used as part of Continuous Integration (CI).
  *
- * This includes artifact repositories such as S3 bucket and ECR
- * repository, as well as IAM role(s) that grant the CI server write
- * access to these repositories.
+ * This includes an S3 bucket, ECR repositories, and IAM role(s) that
+ * grant the CI server write access to them.
  *
- * TODO: How can we cleanup stuff that goes into this S3 Bucket and
- *  ECR Repository? Can we ever reliably cleanup? We probably need
- *  some strategy for how we put stuff here to be able to do it.
+ * Noncurrent S3 object versions expire after 10 days. ECR images expire
+ * through the lifecycle rules of each repository.
  *
  * @experimental
  */
 export class BuildArtifacts extends constructs.Construct {
   public readonly bucketName: string | undefined
-  public readonly ecrRepositoryArn: string
-  public readonly ecrRepositoryName: string
+  private readonly sharedEcrRepositoryName?: string
   public readonly role?: iam.Role
   public readonly limitedRole?: iam.Role
+  public readonly aikidoRole?: iam.Role
+
+  /**
+   * The name of the shared ECR repository.
+   *
+   * Legacy, to be removed in the next major version.
+   *
+   * @throws if {@link Props.ecrRepositoryName} is not set
+   */
+  public get ecrRepositoryName(): string {
+    if (this.sharedEcrRepositoryName === undefined) {
+      throw new Error(
+        "BuildArtifacts has no shared ECR repository, since ecrRepositoryName is not set",
+      )
+    }
+    return this.sharedEcrRepositoryName
+  }
+
+  /**
+   * The ARN of the shared ECR repository.
+   *
+   * Legacy, to be removed in the next major version.
+   *
+   * @throws if {@link Props.ecrRepositoryName} is not set
+   */
+  public get ecrRepositoryArn(): string {
+    return cdk.Arn.format(
+      {
+        service: "ecr",
+        resource: "repository",
+        resourceName: this.ecrRepositoryName,
+      },
+      cdk.Stack.of(this),
+    )
+  }
+
+  /**
+   * Reference a repository created through {@link Props.serviceRepositories}
+   * from a stack in any account, such as the one that runs the service.
+   *
+   * `ecr.Repository.fromRepositoryName` cannot be used for this, as it
+   * resolves the repository to the account of the importing stack.
+   */
+  public static importServiceRepository(
+    scope: constructs.Construct,
+    id: string,
+    props: {
+      /**
+       * The ID of the account that holds the build artifacts.
+       */
+      account: string
+      /**
+       * The name of the service repository, without the `services/` prefix.
+       */
+      name: string
+      /**
+       * @default - the region of the stack that `scope` belongs to
+       */
+      region?: string
+    },
+  ): ecr.IRepository {
+    const errors = validateServiceRepositoryName(props.name)
+    if (errors.length > 0) {
+      throw new Error(`Invalid props were supplied: ${errors.join("; ")}`)
+    }
+    const repositoryName = serviceRepositoryName(props.name)
+    return ecr.Repository.fromRepositoryAttributes(scope, id, {
+      repositoryName,
+      repositoryArn: cdk.Arn.format(
+        {
+          service: "ecr",
+          resource: "repository",
+          resourceName: repositoryName,
+          account: props.account,
+          region: props.region,
+        },
+        cdk.Stack.of(scope),
+      ),
+    })
+  }
 
   constructor(scope: constructs.Construct, id: string, props: Props) {
     super(scope, id)
@@ -169,17 +305,8 @@ export class BuildArtifacts extends constructs.Construct {
     }
 
     this.bucketName = props.bucketName
-    this.ecrRepositoryName = props.ecrRepositoryName
-    this.ecrRepositoryArn = cdk.Arn.format(
-      {
-        service: "ecr",
-        resource: "repository",
-        resourceName: this.ecrRepositoryName,
-      },
-      cdk.Stack.of(this),
-    )
-
-    const ecrRepositoryName = props.ecrRepositoryName
+    this.sharedEcrRepositoryName = props.ecrRepositoryName
+    const serviceRepositories = props.serviceRepositories ?? []
 
     const bucket = new s3.Bucket(this, "S3Bucket", {
       bucketName: props.bucketName,
@@ -194,26 +321,68 @@ export class BuildArtifacts extends constructs.Construct {
       ],
     })
 
-    const ecrRepo = new ecr.Repository(this, "EcrRepository", {
-      repositoryName: ecrRepositoryName,
-      lifecycleRules: props.ecrRepositoryLifecycleRules || [
-        {
-          maxImageAge: cdk.Duration.days(10),
-          tagStatus: ecr.TagStatus.UNTAGGED,
-        },
-        {
-          maxImageAge: cdk.Duration.days(180),
-          tagStatus: ecr.TagStatus.ANY,
-        },
-      ],
+    const ecrRepo =
+      props.ecrRepositoryName === undefined
+        ? undefined
+        : new ecr.Repository(this, "EcrRepository", {
+            repositoryName: props.ecrRepositoryName,
+            lifecycleRules: props.ecrRepositoryLifecycleRules || [
+              {
+                maxImageAge: cdk.Duration.days(10),
+                tagStatus: ecr.TagStatus.UNTAGGED,
+              },
+              {
+                maxImageAge: cdk.Duration.days(180),
+                tagStatus: ecr.TagStatus.ANY,
+              },
+            ],
+          })
+
+    const serviceRepositoriesScope = new constructs.Construct(
+      this,
+      "ServiceRepositories",
+    )
+    // Construct IDs come from the name, so reordering the list never
+    // replaces a repository.
+    const serviceEcrRepos = serviceRepositories.map((service) => {
+      const repo = new ecr.Repository(serviceRepositoriesScope, service.name, {
+        repositoryName: serviceRepositoryName(service.name),
+        imageTagMutability: ecr.TagMutability.IMMUTABLE,
+        removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+        lifecycleRules: serviceRepositoryLifecycleRules(),
+      })
+      if (props.aikido) {
+        cdk.Tags.of(repo).add(
+          "aik:repository",
+          `https://github.com/${service.owner ?? "capralifecycle"}/${service.name}`,
+        )
+      }
+      return repo
     })
+
+    if (props.aikido) {
+      this.aikidoRole = new AikidoScannerRole(
+        this,
+        "AikidoScannerRole",
+        props.aikido,
+      ).role
+    }
 
     // Allow a target to read from the repos. As any specific roles need
     // to exist before we can grant access, we delegate that responsibility
     // to the target account.
     for (const targetAccountId of props.targetAccountIds || []) {
       bucket.grantRead(new iam.AccountPrincipal(targetAccountId))
-      ecrRepo.grantPull(new iam.AccountPrincipal(targetAccountId))
+      ecrRepo?.grantPull(new iam.AccountPrincipal(targetAccountId))
+      for (const serviceEcrRepo of serviceEcrRepos) {
+        serviceEcrRepo.grantPull(new iam.AccountPrincipal(targetAccountId))
+      }
+    }
+    const grantCiEcrAccess = (role: iam.IRole) => {
+      ecrRepo?.grantPullPush(role)
+      if (serviceEcrRepos.length > 0) {
+        grantServiceRepositoriesPullPush(this, role)
+      }
     }
 
     if (props.githubActions) {
@@ -259,7 +428,7 @@ export class BuildArtifacts extends constructs.Construct {
       this.role = role.role
       this.role.addToPolicy(policyStatements.allowPipelineVariables(this))
       bucket.grantPut(this.role)
-      ecrRepo.grantPullPush(this.role)
+      grantCiEcrAccess(this.role)
       if (createLimitedRole) {
         const limitedRole = new GithubActionsRole(
           this,
@@ -283,7 +452,7 @@ export class BuildArtifacts extends constructs.Construct {
           policyStatements.denyProdPipelines(scope, bucket),
         )
         bucket.grantPut(this.limitedRole)
-        ecrRepo.grantPullPush(this.limitedRole)
+        grantCiEcrAccess(this.limitedRole)
       }
     }
     if (props.ciRoleName) {
@@ -297,12 +466,14 @@ export class BuildArtifacts extends constructs.Construct {
         policyStatements.allowPipelineVariables(this),
       )
       bucket.grantPut(legacyRoleForJenkins)
-      ecrRepo.grantPullPush(legacyRoleForJenkins)
+      grantCiEcrAccess(legacyRoleForJenkins)
     }
 
-    new cdk.CfnOutput(this, "EcrRepoUri", {
-      value: ecrRepo.repositoryUri,
-    })
+    if (ecrRepo) {
+      new cdk.CfnOutput(this, "EcrRepoUri", {
+        value: ecrRepo.repositoryUri,
+      })
+    }
 
     new cdk.CfnOutput(this, "BucketName", {
       value: bucket.bucketName,
@@ -316,6 +487,11 @@ export class BuildArtifacts extends constructs.Construct {
     if (this.limitedRole) {
       new cdk.CfnOutput(this, "LimitedRoleArn", {
         value: this.limitedRole.roleArn,
+      })
+    }
+    if (this.aikidoRole) {
+      new cdk.CfnOutput(this, "AikidoRoleArn", {
+        value: this.aikidoRole.roleArn,
       })
     }
   }

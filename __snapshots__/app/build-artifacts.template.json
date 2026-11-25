@@ -168,13 +168,14 @@
         "aws:cdk:path": "build-artifacts/BuildArtifacts/S3Bucket/Policy/Resource"
       }
     },
-    "BuildArtifactsEcrRepository58C90D9A": {
+    "BuildArtifactsServiceRepositoriesmyrepositoryE79A5730": {
       "Type": "AWS::ECR::Repository",
       "Properties": {
+        "ImageTagMutability": "IMMUTABLE",
         "LifecyclePolicy": {
-          "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countNumber\":10,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":2,\"selection\":{\"tagStatus\":\"any\",\"countType\":\"sinceImagePushed\",\"countNumber\":180,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}}]}"
+          "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Expire untagged images after 10 days\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countNumber\":10,\"countUnit\":\"days\"},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":2,\"description\":\"Keep the 10 most recent images built from a non-default branch\",\"selection\":{\"tagStatus\":\"tagged\",\"tagPrefixList\":[\"nd-\"],\"countType\":\"imageCountMoreThan\",\"countNumber\":10},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":3,\"description\":\"Keep the 50 most recent tagged images\",\"selection\":{\"tagStatus\":\"tagged\",\"tagPatternList\":[\"*\"],\"countType\":\"imageCountMoreThan\",\"countNumber\":50},\"action\":{\"type\":\"expire\"}}]}"
         },
-        "RepositoryName": "some-ecr-repo-name",
+        "RepositoryName": "services/my-repository",
         "RepositoryPolicyText": {
           "Statement": [
             {
@@ -218,9 +219,9 @@
         ]
       },
       "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "RetainExceptOnCreate",
       "Metadata": {
-        "aws:cdk:path": "build-artifacts/BuildArtifacts/EcrRepository/Resource"
+        "aws:cdk:path": "build-artifacts/BuildArtifacts/ServiceRepositories/my-repository/Resource"
       }
     },
     "BuildArtifactsOpenIdConnectProviderD0DD3330": {
@@ -343,9 +344,15 @@
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::GetAtt": [
-                  "BuildArtifactsEcrRepository58C90D9A",
-                  "Arn"
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":ecr:eu-west-1:112233445566:repository/services/*"
+                  ]
                 ]
               }
             },
@@ -493,9 +500,15 @@
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::GetAtt": [
-                  "BuildArtifactsEcrRepository58C90D9A",
-                  "Arn"
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":ecr:eu-west-1:112233445566:repository/services/*"
+                  ]
                 ]
               }
             },
@@ -606,56 +619,6 @@
     }
   },
   "Outputs": {
-    "BuildArtifactsEcrRepoUri8E98C2C4": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            {
-              "Fn::Select": [
-                4,
-                {
-                  "Fn::Split": [
-                    ":",
-                    {
-                      "Fn::GetAtt": [
-                        "BuildArtifactsEcrRepository58C90D9A",
-                        "Arn"
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            ".dkr.ecr.",
-            {
-              "Fn::Select": [
-                3,
-                {
-                  "Fn::Split": [
-                    ":",
-                    {
-                      "Fn::GetAtt": [
-                        "BuildArtifactsEcrRepository58C90D9A",
-                        "Arn"
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            ".",
-            {
-              "Ref": "AWS::URLSuffix"
-            },
-            "/",
-            {
-              "Ref": "BuildArtifactsEcrRepository58C90D9A"
-            }
-          ]
-        ]
-      }
-    },
     "BuildArtifactsBucketNameFFDA2A82": {
       "Value": {
         "Ref": "BuildArtifactsS3BucketF34A0F91"
