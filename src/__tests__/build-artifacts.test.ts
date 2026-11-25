@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
 import { App, Stack } from "aws-cdk-lib"
 import { Match, Template } from "aws-cdk-lib/assertions"
 import * as iam from "aws-cdk-lib/aws-iam"
@@ -8,6 +9,25 @@ import {
   validateProps as validateBuildArtifactsProps,
 } from "../build-artifacts"
 import { validateProps as validateGithubActionsRoleProps } from "../build-artifacts/github-actions-role"
+
+configureCdkSnapshots()
+
+test("build-artifacts with a shared repository", (t) => {
+  const app = new App()
+  const stack = new Stack(app, "Stack", {
+    env: { account: "111111111111", region: "eu-west-1" },
+  })
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    bucketName: "my-bucket",
+    ecrRepositoryName: "my-ecr-repo",
+    targetAccountIds: ["222222222222", "333333333333"],
+    ciRoleName: "my-ci-role",
+    githubActions: {
+      repositories: [{ name: "my-repository", owner: "capralifecycle" }],
+    },
+  })
+  t.assert.snapshot(cdkTemplate(stack))
+})
 
 test("should fail validation on invalid default branch", () => {
   const errors = validateBuildArtifactsProps({
