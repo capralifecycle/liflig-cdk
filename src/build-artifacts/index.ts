@@ -4,6 +4,11 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import * as s3 from "aws-cdk-lib/aws-s3"
 import * as constructs from "constructs"
 import {
+  AikidoScannerRole,
+  type Props as AikidoScannerRoleProps,
+  validateProps as validateAikidoScannerRoleProps,
+} from "./aikido-scanner-role"
+import {
   GithubActionsRole,
   type Props as GithubActionsRoleProps,
 } from "./github-actions-role"
@@ -70,6 +75,17 @@ interface Props {
    * @default - no service repositories are created
    */
   serviceRepositories?: ServiceRepositoryProps[]
+  /**
+   * Let Aikido scan the service repositories.
+   *
+   * Creates the IAM role `AikidoSecurityEcrScanningRole`, which Aikido
+   * assumes to read images from the service repositories, and tags each
+   * service repository with `aik:repository` so Aikido links its images to
+   * the GitHub repository.
+   *
+   * @default - no role is created and no repository is tagged
+   */
+  aikido?: AikidoScannerRoleProps
   /**
    * ID of AWS accounts that will be granted permission to read from
    * the artifact repos.
@@ -165,9 +181,13 @@ const policyStatements = {
  * Returns a list of validation error messages. An empty list means the props are valid.
  */
 export const validateProps = (props: Props): string[] => {
-  const errors: string[] = validateServiceRepositories(
-    props.serviceRepositories ?? [],
-  )
+  const errors: string[] = [
+    ...validateServiceRepositories(props.serviceRepositories ?? []),
+    ...(props.aikido ? validateAikidoScannerRoleProps(props.aikido) : []),
+    ...(props.aikido && !props.serviceRepositories?.length
+      ? ["Aikido can only scan service repositories, but none were given"]
+      : []),
+  ]
   if (
     props.githubActions?.defaultBranch &&
     !props.githubActions.defaultBranch.match(/^[a-zA-Z0-9-]+$/)
@@ -195,6 +215,7 @@ export class BuildArtifacts extends constructs.Construct {
   private readonly sharedEcrRepositoryName?: string
   public readonly role?: iam.Role
   public readonly limitedRole?: iam.Role
+  public readonly aikidoRole?: iam.Role
 
   /**
    * The name of the shared ECR repository.
@@ -323,15 +344,29 @@ export class BuildArtifacts extends constructs.Construct {
     )
     // Construct IDs come from the name, so reordering the list never
     // replaces a repository.
-    const serviceEcrRepos = serviceRepositories.map(
-      (service) =>
-        new ecr.Repository(serviceRepositoriesScope, service.name, {
-          repositoryName: serviceRepositoryName(service.name),
-          imageTagMutability: ecr.TagMutability.IMMUTABLE,
-          removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
-          lifecycleRules: serviceRepositoryLifecycleRules(),
-        }),
-    )
+    const serviceEcrRepos = serviceRepositories.map((service) => {
+      const repo = new ecr.Repository(serviceRepositoriesScope, service.name, {
+        repositoryName: serviceRepositoryName(service.name),
+        imageTagMutability: ecr.TagMutability.IMMUTABLE,
+        removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+        lifecycleRules: serviceRepositoryLifecycleRules(),
+      })
+      if (props.aikido) {
+        cdk.Tags.of(repo).add(
+          "aik:repository",
+          `https://github.com/${service.owner ?? "capralifecycle"}/${service.name}`,
+        )
+      }
+      return repo
+    })
+
+    if (props.aikido) {
+      this.aikidoRole = new AikidoScannerRole(
+        this,
+        "AikidoScannerRole",
+        props.aikido,
+      ).role
+    }
 
     // Allow a target to read from the repos. As any specific roles need
     // to exist before we can grant access, we delegate that responsibility
@@ -452,6 +487,11 @@ export class BuildArtifacts extends constructs.Construct {
     if (this.limitedRole) {
       new cdk.CfnOutput(this, "LimitedRoleArn", {
         value: this.limitedRole.roleArn,
+      })
+    }
+    if (this.aikidoRole) {
+      new cdk.CfnOutput(this, "AikidoRoleArn", {
+        value: this.aikidoRole.roleArn,
       })
     }
   }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import { cdkTemplate, configureCdkSnapshots } from "@liflig/cdk-snapshot/node"
-import { App, Stack } from "aws-cdk-lib"
+import { App, CfnParameter, Stack } from "aws-cdk-lib"
 import { Match, Template } from "aws-cdk-lib/assertions"
 import * as iam from "aws-cdk-lib/aws-iam"
 import {
@@ -710,4 +710,193 @@ test("should fail validation on a service repository name longer than ECR allows
     }),
     [`Service repository name ${name} must be at most 247 characters`],
   )
+})
+
+test("build-artifacts with service repositories scanned by Aikido", (t) => {
+  t.assert.snapshot(
+    cdkTemplate(
+      serviceRepositoriesStack({ aikido: { externalId: "my-external-id" } }),
+    ),
+  )
+})
+
+test("should let Aikido assume the scanner role with the external ID", () => {
+  const template = Template.fromStack(
+    serviceRepositoriesStack({ aikido: { externalId: "my-external-id" } }),
+  )
+  template.hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "AikidoSecurityEcrScanningRole",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        {
+          Action: "sts:AssumeRole",
+          Effect: "Allow",
+          Principal: {
+            AWS: "arn:aws:iam::881830977366:role/service-role/lambda-container-image-scanner-role-pb0qotst",
+          },
+          Condition: {
+            StringEquals: { "sts:ExternalId": "my-external-id" },
+          },
+        },
+      ],
+    },
+  })
+})
+
+test("should trust the given Aikido principal", () => {
+  const template = Template.fromStack(
+    serviceRepositoriesStack({
+      aikido: {
+        externalId: "my-external-id",
+        principalArn: "arn:aws:iam::444444444444:role/my-scanner",
+      },
+    }),
+  )
+  template.hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "AikidoSecurityEcrScanningRole",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        Match.objectLike({
+          Principal: { AWS: "arn:aws:iam::444444444444:role/my-scanner" },
+        }),
+      ],
+    },
+  })
+})
+
+test("should let Aikido read images only from service repositories", () => {
+  const template = Template.fromStack(
+    serviceRepositoriesStack({ aikido: { externalId: "my-external-id" } }),
+  )
+  const [roleLogicalId] = Object.keys(
+    template.findResources("AWS::IAM::Role", {
+      Properties: { RoleName: "AikidoSecurityEcrScanningRole" },
+    }),
+  )
+  template.hasResourceProperties("AWS::IAM::Policy", {
+    Roles: [{ Ref: roleLogicalId }],
+    PolicyDocument: {
+      Statement: [
+        {
+          Action: [
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:BatchGetImage",
+            "ecr:DescribeImages",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:ListImages",
+            "ecr:ListTagsForResource",
+          ],
+          Effect: "Allow",
+          Resource: {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                { Ref: "AWS::Partition" },
+                ":ecr:eu-west-1:111111111111:repository/services/*",
+              ],
+            ],
+          },
+        },
+        {
+          Action: [
+            "ecr:DescribeRegistry",
+            "ecr:DescribeRepositories",
+            "ecr:GetAuthorizationToken",
+          ],
+          Effect: "Allow",
+          Resource: "*",
+        },
+      ],
+    },
+  })
+})
+
+test("should link each service repository to its GitHub repository when Aikido is enabled", () => {
+  const template = Template.fromStack(
+    serviceRepositoriesStack({
+      aikido: { externalId: "my-external-id" },
+      serviceRepositories: [
+        { name: "my-service" },
+        { name: "other-service", owner: "other-owner" },
+      ],
+    }),
+  )
+  template.hasResourceProperties("AWS::ECR::Repository", {
+    RepositoryName: "services/my-service",
+    Tags: [
+      {
+        Key: "aik:repository",
+        Value: "https://github.com/capralifecycle/my-service",
+      },
+    ],
+  })
+  template.hasResourceProperties("AWS::ECR::Repository", {
+    RepositoryName: "services/other-service",
+    Tags: [
+      {
+        Key: "aik:repository",
+        Value: "https://github.com/other-owner/other-service",
+      },
+    ],
+  })
+})
+
+test("should neither create the scanner role nor tag repositories without Aikido", () => {
+  const template = Template.fromStack(serviceRepositoriesStack())
+  template.resourcePropertiesCountIs(
+    "AWS::IAM::Role",
+    { RoleName: "AikidoSecurityEcrScanningRole" },
+    0,
+  )
+  template.resourcePropertiesCountIs(
+    "AWS::ECR::Repository",
+    { Tags: Match.anyValue() },
+    0,
+  )
+})
+
+test("should fail validation on an Aikido external ID that IAM rejects", () => {
+  const errors = validateBuildArtifactsProps({
+    bucketName: "my-bucket",
+    serviceRepositories: [{ name: "my-service" }],
+    aikido: { externalId: "a" },
+  })
+  assert.deepStrictEqual(errors, [
+    "Aikido external ID must be 2 to 1224 characters of letters, digits and +=,.@:/-_",
+  ])
+})
+
+test("should accept an Aikido external ID resolved at deploy time", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  const externalId = new CfnParameter(stack, "ExternalId").valueAsString
+  new BuildArtifacts(stack, "BuildArtifacts", {
+    bucketName: "my-bucket",
+    serviceRepositories: [{ name: "my-service" }],
+    aikido: { externalId },
+  })
+  Template.fromStack(stack).hasResourceProperties("AWS::IAM::Role", {
+    RoleName: "AikidoSecurityEcrScanningRole",
+    AssumeRolePolicyDocument: {
+      Statement: [
+        Match.objectLike({
+          Condition: {
+            StringEquals: { "sts:ExternalId": { Ref: "ExternalId" } },
+          },
+        }),
+      ],
+    },
+  })
+})
+
+test("should fail validation on Aikido without service repositories", () => {
+  const errors = validateBuildArtifactsProps({
+    bucketName: "my-bucket",
+    ecrRepositoryName: "my-ecr-repo",
+    aikido: { externalId: "my-external-id" },
+  })
+  assert.deepStrictEqual(errors, [
+    "Aikido can only scan service repositories, but none were given",
+  ])
 })
