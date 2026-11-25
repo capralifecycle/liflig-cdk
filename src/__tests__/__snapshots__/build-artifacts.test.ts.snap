@@ -1697,10 +1697,7 @@ def sort_filter_rules(json_obj):
               "Action": [
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:BatchGetImage",
-                "ecr:DescribeImages",
                 "ecr:GetDownloadUrlForLayer",
-                "ecr:ListImages",
-                "ecr:ListTagsForResource",
               ],
               "Effect": "Allow",
               "Resource": {
@@ -1718,9 +1715,12 @@ def sort_filter_rules(json_obj):
             },
             {
               "Action": [
+                "ecr:DescribeImages",
                 "ecr:DescribeRegistry",
                 "ecr:DescribeRepositories",
                 "ecr:GetAuthorizationToken",
+                "ecr:ListImages",
+                "ecr:ListTagsForResource",
               ],
               "Effect": "Allow",
               "Resource": "*",
