@@ -5,7 +5,12 @@ import { serviceRepositoriesArn } from "./service-repositories"
 
 export interface Props {
   /**
-   * The external ID that Aikido shows when connecting an ECR registry.
+   * The external ID of the Aikido workspace, which Aikido sends when it
+   * assumes the role.
+   *
+   * It is the same for every account connected to the workspace. Aikido's
+   * connection dialog for an ECR registry includes it in the Terraform file
+   * it offers for download.
    */
   externalId: string
   /**
@@ -43,8 +48,9 @@ export const validateProps = (props: Props): string[] =>
  * Creates the IAM role that Aikido assumes to scan the service repositories
  * in this account.
  *
- * The role reads images only from service repositories. It may list every
- * repository, which Aikido needs to discover them.
+ * The role pulls images only from service repositories. It may list and
+ * describe the images in every repository, because Aikido does that for all
+ * repositories in the registry before applying its scan scope.
  */
 export class AikidoScannerRole extends constructs.Construct {
   public readonly role: iam.Role
@@ -68,10 +74,7 @@ export class AikidoScannerRole extends constructs.Construct {
         actions: [
           "ecr:BatchCheckLayerAvailability",
           "ecr:BatchGetImage",
-          "ecr:DescribeImages",
           "ecr:GetDownloadUrlForLayer",
-          "ecr:ListImages",
-          "ecr:ListTagsForResource",
         ],
         resources: [serviceRepositoriesArn(this)],
       }),
@@ -79,9 +82,12 @@ export class AikidoScannerRole extends constructs.Construct {
     this.role.addToPolicy(
       new iam.PolicyStatement({
         actions: [
+          "ecr:DescribeImages",
           "ecr:DescribeRegistry",
           "ecr:DescribeRepositories",
           "ecr:GetAuthorizationToken",
+          "ecr:ListImages",
+          "ecr:ListTagsForResource",
         ],
         resources: ["*"],
       }),

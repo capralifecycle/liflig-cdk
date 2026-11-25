@@ -764,7 +764,7 @@ test("should trust the given Aikido principal", () => {
   })
 })
 
-test("should let Aikido read images only from service repositories", () => {
+test("should let Aikido pull images only from service repositories and describe images everywhere", () => {
   const template = Template.fromStack(
     serviceRepositoriesStack({ aikido: { externalId: "my-external-id" } }),
   )
@@ -781,10 +781,7 @@ test("should let Aikido read images only from service repositories", () => {
           Action: [
             "ecr:BatchCheckLayerAvailability",
             "ecr:BatchGetImage",
-            "ecr:DescribeImages",
             "ecr:GetDownloadUrlForLayer",
-            "ecr:ListImages",
-            "ecr:ListTagsForResource",
           ],
           Effect: "Allow",
           Resource: {
@@ -800,9 +797,12 @@ test("should let Aikido read images only from service repositories", () => {
         },
         {
           Action: [
+            "ecr:DescribeImages",
             "ecr:DescribeRegistry",
             "ecr:DescribeRepositories",
             "ecr:GetAuthorizationToken",
+            "ecr:ListImages",
+            "ecr:ListTagsForResource",
           ],
           Effect: "Allow",
           Resource: "*",
