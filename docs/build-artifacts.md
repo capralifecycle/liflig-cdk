@@ -51,14 +51,14 @@ Set `aikido` to let Aikido scan the service repositories. It requires `serviceRe
 ```ts
 new BuildArtifacts(this, "BuildArtifacts", {
   // ...
-  aikido: { externalId: "<external ID shown by Aikido>" },
+  aikido: { externalId: "<external ID of your Aikido workspace>" },
 })
 ```
 
 - Creates the IAM role `AikidoSecurityEcrScanningRole`. The `AikidoRoleArn` output holds the ARN to enter in Aikido when connecting the registry. IAM role names are unique per account, so only one stack per account can set `aikido`.
-- The external ID belongs to the Aikido workspace. Every account that connects to the same workspace uses the same one.
+- The external ID belongs to the Aikido workspace. Every account that connects to the same workspace uses the same one. Aikido's connection dialog for an ECR registry includes it in the Terraform file it offers for download.
 - The role trusts Aikido's EU container image scanner role. Set `principalArn` for another Aikido region.
-- The role reads images only from `services/*`. It may list every repository in the account. Limit the scan scope in Aikido to `services/*` so that other repositories, such as the CDK assets repository, do not count against the container limit.
+- The role pulls images only from `services/*`. It may list and describe the images in every repository, because Aikido does that for all repositories in the registry before applying its scan scope. Limit the scan scope in Aikido to `services/*` so that other repositories, such as the CDK assets repository, do not count against the container limit.
 - Each service repository gets the tag `aik:repository=https://github.com/<owner>/<name>`, which links its images to the code repository in Aikido. `owner` defaults to `capralifecycle`.
 
 ## Migrating from the shared repository
