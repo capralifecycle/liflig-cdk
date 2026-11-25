@@ -9,7 +9,7 @@ export class BuildArtifactsStack extends cdk.Stack {
     new BuildArtifacts(this, "BuildArtifacts", {
       bucketName: "some-bucket-name",
       targetAccountIds: ["112233445566"],
-      ecrRepositoryName: "some-ecr-repo-name",
+      serviceRepositories: [{ name: "my-repository" }],
       githubActions: {
         repositories: [
           {

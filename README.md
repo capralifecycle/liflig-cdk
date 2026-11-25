@@ -34,6 +34,7 @@ For a complete list of commands, refer to the `Makefile`.
 
 ## Modules
 
+- [Build artifacts](./docs/build-artifacts.md): S3 bucket, per-service ECR repositories, GitHub Actions roles, the Aikido scanner role, and migrating from the shared ECR repository.
 - [WAF](./docs/waf.md): web ACLs with rule sets owned by apps, scoping, logging, and guidance on managed rule groups.
 
 ## Testing library changes before releasing
