@@ -119,6 +119,46 @@ test("creates storage space and CPU utilization alarms by default when alarms en
   })
 })
 
+test("alarms use the same instance identifier as the database instance", () => {
+  const app = new App()
+  const stack = new Stack(app, "Stack")
+  const vpc = new ec2.Vpc(stack, "Vpc")
+  const action = new cloudwatchActions.SnsAction(new sns.Topic(stack, "Topic"))
+
+  new Database(stack, "Database", {
+    vpc,
+    engine: rds.DatabaseInstanceEngine.postgres({
+      version: rds.PostgresEngineVersion.VER_17,
+    }),
+    instanceType: ec2.InstanceType.of(
+      ec2.InstanceClass.BURSTABLE3,
+      ec2.InstanceSize.MICRO,
+    ),
+    instanceIdentifier: "Example-DatabaseStack-database-v1",
+    alarms: { alarmAction: action, warningAction: action },
+  })
+
+  const template = assertions.Template.fromStack(stack)
+  const [instance] = Object.values(
+    template.findResources("AWS::RDS::DBInstance"),
+  )
+  const alarms = Object.values(template.findResources("AWS::CloudWatch::Alarm"))
+
+  assert.equal(
+    instance.Properties.DBInstanceIdentifier,
+    "example-databasestack-database-v1",
+  )
+  assert.ok(alarms.length > 0)
+  for (const alarm of alarms) {
+    assert.deepEqual(alarm.Properties.Dimensions, [
+      {
+        Name: "DBInstanceIdentifier",
+        Value: instance.Properties.DBInstanceIdentifier,
+      },
+    ])
+  }
+})
+
 function synth(opts: {
   version?: rds.PostgresEngineVersion
   autoMinorVersionUpgrade?: boolean
