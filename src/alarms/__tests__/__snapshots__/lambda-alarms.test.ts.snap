@@ -59,29 +59,7 @@ exports[`addUncaughtJavaExceptionAlarm: with logHandler creates subscription fil
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionCanInvokeLambdaBD8CA9BD": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "HandlerUJ2EE2E5D99",
-            "Arn",
-          ],
-        },
-        "Principal": "logs.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "LogGroupUJ23A78E572",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
     "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionF0227099": {
-      "DependsOn": [
-        "LogGroupUJ2lifligcdklogcontenttoslackuncaughtexceptionsubscriptionCanInvokeLambdaBD8CA9BD",
-      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -641,9 +619,6 @@ exports[`with handler: subscription filter is created and metric filter omitted 
       "UpdateReplacePolicy": "Retain",
     },
     "LogGroup2lifligcdklogcontenttoslackerrorsubscription2468A563": {
-      "DependsOn": [
-        "LogGroup2lifligcdklogcontenttoslackerrorsubscriptionCanInvokeLambda8C05276F",
-      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -657,25 +632,6 @@ exports[`with handler: subscription filter is created and metric filter omitted 
         },
       },
       "Type": "AWS::Logs::SubscriptionFilter",
-    },
-    "LogGroup2lifligcdklogcontenttoslackerrorsubscriptionCanInvokeLambda8C05276F": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "Handler886CB40B",
-            "Arn",
-          ],
-        },
-        "Principal": "logs.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "LogGroup2477F707C",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "TestedLambda267C519AF": {
       "DependsOn": [

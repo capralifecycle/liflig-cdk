@@ -179,6 +179,42 @@ exports[`create slack alarm 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
+    "SlackAlarmLogHandlerAllowInvokeFromCloudWatchLogsA3E14B9E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "SlackAlarmLogHandler7A652A1B",
+            "Arn",
+          ],
+        },
+        "Principal": "logs.amazonaws.com",
+        "SourceAccount": {
+          "Ref": "AWS::AccountId",
+        },
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":logs:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":log-group:*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "SlackAlarmLogHandlerServiceRole0308E4D8": {
       "Properties": {
         "AssumeRolePolicyDocument": {
